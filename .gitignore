@@ -1,0 +1,36 @@
+# For Vim users:
+*.swp
+*.swo
+
+# For VSCode users
+*.vscode
+
+# General:
+*.zip
+
+# Convention for old files held temporarily in local filesystem:
+*.old
+junk
+
+# data/co-ops-uk/2015-06/Makefile creates a directory for output:
+data/co-ops-uk/2015-06/generated-data
+
+# data/co-ops-uk/2016-06/Makefile creates a directory for output:
+data/co-ops-uk/2016-06/generated-data
+# data/co-ops-uk/2016-06/generate-triples.rb creates some reports:
+data/co-ops-uk/2016-06/duplicates.html
+data/co-ops-uk/2016-06/websites.html
+
+# data/co-ops-uk/2016-06/generate-triples.rb creates JSON of initiatives, as temporary measure until SPARQL is in place to return these results:
+data/co-ops-uk/2016-06/initiatives.json
+dotcoop/domains2018-04-24/original-data
+dotcoop/domains2019-10-03/original-data
+dotcoop/domains2018-04-24/generated-data
+dotcoop/domains2019-10-03/generated-data
+dotcoop/domains2019-10-03/docs
+dotcoop/domains2018-04-24/docs
+dotcoop/domains2019-10-03/csv2geo.20191003_Results.csv
+dotcoop/domains2019-10-03/geodata_cache.json
+tools/se_open_data/lib/se_open_data/APIs
+# Mac OS/X cruft:
+.DS_Store

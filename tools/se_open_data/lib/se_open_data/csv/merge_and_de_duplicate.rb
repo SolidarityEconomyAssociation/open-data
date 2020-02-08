@@ -1,0 +1,246 @@
+# Merge domains and de-duplicate rows of CSV (primarily for dotcoop).
+# A duplicate is defined as having the same keys as a previous row
+# OR
+# The same fields as another row
+# TODO - this should really take the field to merge as an argument so
+# it can be used by any other project that needs fields merging
+# TODO separate field merging into different module
+require "csv"
+require "levenshtein"
+
+module SeOpenData
+  module CSV
+    MAX_DIST = 4
+    NAME_FIELD = "Name"
+    def CSV.merge_and_de_duplicate(
+      input_io,         # Input CSV (must have headers)
+      output_io,        # CSV with duplicates removed
+      error_io,         # CSV containing duplicates (no headers)
+      keys,             # Array of column headings that make up the unique key
+      domainHeader,     # Array of column heading for the domain
+      nameHeader, # Array of column heading for the name
+      original_csv = nil # original csv before geocoding
+      
+    )
+
+      #tidy me
+      small_words = %w(on the and ltd limited llp community SCCL)
+      small_word_regex = /\b#{small_words.map { |w| w.upcase }.join("|")}\b/
+      #TIDY ME
+
+      csv_opts = {}
+      csv_opts.merge!(headers: true)
+      csv_in = ::CSV.new(input_io, csv_opts)
+      csv_out = ::CSV.new(output_io)
+      csv_err = ::CSV.new(error_io)
+      used_keys = {}
+      csv_map = {}
+      headers = nil
+      headersOutput = false
+      # Since some ids for the same coop are sometimes different,
+      # we use all other fields (except the domain and the id)
+      # to identify duplicate coop entries. We do this by building a map (string -> row)
+      # the key of which is composed of all the other fields.
+      # Some of the fields though might have some misspelled data, to catch that we can implement
+      # fuzzy hashing, and hash the string key using Soundex or another algorithm
+      field_map = {}
+      name_map = {}
+
+      duplicate_by_ids = {}
+      duplicate_by_fields = []
+
+      # Since we can't be certain that the id will run lexicographically we need
+      # to loop through the original data once and build a hashmap of the csv
+      # with multiple domains moved into a single field.
+      csv_in.each do |row|
+        unless headers
+          headers = row.headers
+        end
+        key = keys.map { |k| row[k] }
+        fields_key = ""
+        name = row.field(NAME_FIELD)
+
+        #mix fields and make a key
+        #if matches that means that entry is a duplicate
+        row.headers.each do |head|
+          unless head == domainHeader || keys.include?(head) || row.field(head) == nil || head == NAME_FIELD
+            fields_key += row.field(head)
+          end
+        end
+
+        fields_key.tr!("^A-Za-z0-9", "")
+        fields_key.upcase!
+
+        name = name.
+          gsub(/\s/, "").
+          upcase.
+          gsub(small_word_regex, "").
+          sub(/\([[:alpha:]]*\)/, "").
+          gsub(/[[:punct:]]/, "").
+          sub(/COOPERATIVE/, "COOP").
+          sub("SCCL", "")
+
+        #map name => (map fields_key => set of key)
+        #order them by name
+        if !name_map.has_key? name
+          name_map[name] = { fields_key => [key] }
+        else
+
+          # name_map[name].push(key)
+          # build up field_map
+          if !name_map[name].has_key? fields_key
+            #here
+            name_map[name][fields_key] = [key]
+          else
+            name_map[name][fields_key].push(key)
+          end
+        end
+
+        # filter duplicates by id
+        # If the key is already being used, add the domain to the existing domain.
+        if csv_map.has_key? key
+          domain = row.field(domainHeader)
+          existingDomain = csv_map[key][domainHeader]
+          if !existingDomain.include?(domain)
+            csv_map[key][domainHeader] += SeOpenData::CSV::Standard::V1::SubFieldSeparator + domain
+            duplicate_by_ids[key].push(row)
+            #remove key from field_map as it was already found as a duplicate
+            name_map[name][fields_key].pop()
+          end
+          # csv_err << row
+        else
+          # csv_out << row
+          csv_map[key] = row.to_h
+          duplicate_by_ids[key] = [row]
+        end
+      end
+
+      nm = name_map
+      #name_map groups them by name
+      #merge entries (in csv_map) that have the same name, and a leivenstein distance of < 2
+      name_map.each { |name, val|
+        #for each mapping check the distance between the keys
+        matched_keys = name_map[name].keys.select { |nmkey|
+          match_exists = false
+          name_map[name].keys { |key|
+            match_exists = Levenshtein.distance(nmkey, key) < MAX_DIST
+          }
+          match_exists
+        }
+        # buiname_mapld up field_map
+        #if there are matched keys that means we have to merge them
+        #i.e. add all of the entries to one of them
+        if !matched_keys.empty?
+          first_key = matched_keys.first
+          matched_keys.each { |key|
+            unless key == first_key
+              # merge
+              nm[name][first_key] = nm[name][first_key] + nm[name][key]
+              # remove
+              nm[name].reject! { |k, v| k == key }
+            end
+          }
+        end
+      }
+      #flatten nm
+      nm.each { |name, fieldskey|
+        fieldskey.each { |fkey, keys|
+          str_key = name + fkey
+          field_map[str_key] = keys
+        }
+      }
+
+      # filter duplicates by all other fields
+      # merge rows that have duplicated data for all fields (except id and domain)
+      field_map.each do |hash, values|
+        #skip if no duplicates to merge
+        next unless values.length > 1
+        duplicate_by_fields.push(values)
+        # merge domains into the first found duplicate
+        # and remove all duplicate rows
+        first = values.first
+        values.each { |dup|
+          #ifit isn't the first one
+          unless dup == first
+            # add domain to the first entry (only it doesn't exist already)
+            domain = csv_map[dup][domainHeader]
+            existingDomain = csv_map[first][domainHeader]
+            if !existingDomain.include?(domain)
+              csv_map[first][domainHeader] += SeOpenData::CSV::Standard::V1::SubFieldSeparator + domain
+            end
+            # remove the duplicates from the map (this loop keeps only the first duplicate entry)
+
+            csv_map.delete(dup)
+          end
+        }
+      end
+
+      csv_map.each do |key, row|
+        unless headersOutput
+          csv_out << headers
+          headersOutput = true
+        end
+
+        # Fix any entries that have no name
+        if !row[nameHeader]
+          row[nameHeader] = "N/A"
+        end
+        csv_out << row.values
+      end
+      dup_ids = duplicate_by_ids.values.select { |a| a.length > 1 }
+
+
+
+
+
+      #print documents 
+      #duplicate_by_fields currently holds an array of arrays. [[key,key],[key,key]]
+      #replace each key with it's corresponding row
+      #TODO probably could be done better
+
+      flat_dups = duplicate_by_fields.clone
+      flat_dups.flatten!(1)
+
+      #csv_in should be the original document before geo uniformication
+      original_csv_in = nil
+      headers = nil
+      if original_csv != nil
+        original_csv_in = ::CSV.read(original_csv, csv_opts)
+      else
+        original_csv_in = csv_in
+        original_csv_in.rewind
+      end
+
+      original_csv_in.each do |row|
+        unless headers
+          headers = row.headers
+        end
+        key = keys.map { |k| row[k] }
+        
+        next unless flat_dups.include?(key)
+
+        #replace all
+        duplicate_by_fields.each do |subarray_of_dups|
+          subarray_of_dups.map! { |dup| dup == key ? row : dup }
+        end
+
+        #rm key so it's skipped next time
+        flat_dups.delete(key)
+
+        break unless flat_dups.length > 0
+      end
+
+
+      err_doc_client = SeOpenData::Utils::ErrorDocumentGenerator.new("Duplicates Title", "Some description about the document",nameHeader,domainHeader,headers)
+
+      if original_csv != nil
+        err_doc_client.add_similar_entries_fields_after_geo_uniform("Duplicates by Field", "This document lists the duplicates in the csv document found with different ids that have similar fields", duplicate_by_fields)
+
+      else
+        err_doc_client.add_similar_entries_fields("Duplicates by Field after Geocoding", "This document lists the duplicates in the csv document found with different ids that have similar fields after making the address information uniform", duplicate_by_fields)
+
+      end
+      err_doc_client.add_similar_entries_id("Duplicates by ID", "Duplicate ids found", dup_ids)
+    end
+  end
+end
