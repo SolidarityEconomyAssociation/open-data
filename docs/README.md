@@ -45,11 +45,12 @@ macOS comes with Ruby preinstalled so you can skip this step – unless you want
 sudo apt-get install ruby
 ```
 
-The Ruby scripts for generating RDF/TTL files rely on a package called `linkeddata` which in turn depends on an HTML, XML, SAX, and Reader parser called [Nokogiri](https://nokogiri.org/). The commands for installing these are the same for macOS and Ubuntu.
+The Ruby scripts for generating RDF/TTL files rely on a package called `linkeddata` which in turn depends on an HTML, XML, SAX, and Reader parser called [Nokogiri](https://nokogiri.org/). There are also some other dependencies you'll need. The commands for installing these are the same for macOS and Ubuntu.
 
 ```
 sudo gem install nokogiri
 sudo gem install linkeddata
+sudo gem install opencage-geocoder
 ```
 
 ### Make a local clone the repository
@@ -57,15 +58,9 @@ sudo gem install linkeddata
 To make a local clone of the repository, run the following command in your terminal:
 
 ```
-git clone https://github.com/SolidarityEconomyAssociation/open-data-and-maps.git
+git clone https://github.com/SolidarityEconomyAssociation/open-data.git
 ```
 
-Development work happens on the `development` branch, so run
-
-```
-cd open-data-and-maps
-git checkout development
-```
 
 ### Access to the server and Virtuoso
 
@@ -183,7 +178,7 @@ This process involves taking a source CSV (the data about initiatives that's col
 To start the process, navigate into the folder for the project you're working on:
 
 ```
-cd data/[project_name]/[project_version]/
+cd [project_name]/[project_version]/
 ```
 
 Place your original data in the folder name 'original-data' and follow the naming convention of the files in there. You'll now need to make a change to the csv.mk file before running it to make sure it knows to use the new source data.
