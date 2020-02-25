@@ -231,16 +231,49 @@ module SeOpenData
       end
 
 
-      err_doc_client = SeOpenData::Utils::ErrorDocumentGenerator.new("Duplicates Title", "Some description about the document",nameHeader,domainHeader,headers)
+      err_doc_client = SeOpenData::Utils::ErrorDocumentGenerator.new("Duplicates DotCoop Title Page", "The process of importing data from DotCoop requires us to undergo several stages of data cleanup, fixing and rejecting some incompatible data that we cannot interpret.
+
+        The following documents describe the 3 stages of processing and lists the corrections and decisions made.
+        
+        These documents make it clear how SEA is interpreting the DotCoop data and can be used by DotCoop to suggest corrections they can make to the source data.
+        
+        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]",nameHeader,domainHeader,headers)
+
 
       if original_csv != nil
-        err_doc_client.add_similar_entries_fields_after_geo_uniform("Duplicates by Field", "This document lists the duplicates in the csv document found with different ids that have similar fields", duplicate_by_fields)
+        err_doc_client.add_similar_entries_fields_after_geo_uniform("Duplicates by Field after address cleaning with Geocoding service", "There are still some potential duplicates to find.
+
+          A geocoding service is used to identify a more standard and sometimes more complete address for each domain. 
+          The process of identifying potential duplicates using this cleaner data is repeated.  
+          
+          This ‘corrected’ address will be noted in the report and used in the database.
+          
+          
+          geodups will list 
+            - groups with different RegistrantIDs but identical or very similar names and addresses, noting that they will be considered the same co-op. Only one RegistrantID will be chosen to represent all the domains in this group from here on. A chosen name and corrected address will identified.", duplicate_by_fields)
 
       else
-        err_doc_client.add_similar_entries_fields("Duplicates by Field after Geocoding", "This document lists the duplicates in the csv document found with different ids that have similar fields after making the address information uniform", duplicate_by_fields)
+        err_doc_client.add_similar_entries_fields("Duplicates by Field before Geocoding", "The next stage is to organise domains into groups which have very similar names and addresses but different RegistrantIDs. This is done by using a fuzzy string comparison on the names and addresses.  
+
+
+          fielddups will list 
+            - the groups with different RegistrantIDs but identical or very similar names and addresses, noting that they will be considered the same co-op. Only one RegistrantID and one name and address will be chosen to represent all the domains in this group from here on. 
+           ", duplicate_by_fields)
 
       end
-      err_doc_client.add_similar_entries_id("Duplicates by ID", "Duplicate ids found", dup_ids)
+
+
+
+      err_doc_client.add_similar_entries_id("Identical by RegistrantIDs", "All domains registered with the same RegistrantID are considered the same organisation.
+
+        If there are small differences in the names or addresses registered with the same ID, we pick one of them and that is used for all the others.
+         
+        If there are larger differences, we cannot interpret which is correct, so we need this to be corrected at source, and none of this data will be included in the map.
+        
+        idsdups will list 
+          - the groups with identical RegistrantIDs, names and addresses, noting that they will be considered the same co-op, with no corrections required
+          - all the groups with identical RegistrantIDs but slight differences in name and/or address and display the name and address chosen to be used by all.
+          - all the groups with identical RegistrantIDs but significantly different names and/or address, noting that they will not be included in the database.", dup_ids)
     end
   end
 end

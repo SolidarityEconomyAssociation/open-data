@@ -35,13 +35,15 @@ module SeOpenData
         pdf = Prawn::Document.new
         pdf.text title, :align => :center, :size => 25 # heading
         pdf.pad(10) { } #padding
-
+        
         pdf.text description, :size => 12  # sum
+        first = nil
 
         similar_entries.each { |subarr|
           #subbarr :: [row,row,row]
           name = subarr.first[@name_header].encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
-          pdf.pad_top(30) { pdf.text (name + " duplicates"), :size => 15 } # mini heading name
+          pdf.pad_top(30) { pdf.text name, :size => 15 } # mini heading name
+          pdf.text "We think these are the same", :size => 10
           data = subarr.map { |row|
             #Remove empties
             rowarr = []
@@ -49,11 +51,20 @@ module SeOpenData
             #use only rows that have something in them
             @headers.each { |h| rowarr.push(row[h]) if (row[h] != nil && row[h] != "") }
             strrow = rowarr.join(",").encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
+            first = [strrow] if first == nil
+
             [strrow]
           }
           pdf.table(data) do
             rows(0).width = 72
           end
+
+          pdf.pad(5) { } #padding
+          pdf.text "This is the entry we have kept", :size => 10 # heading
+          pdf.text first.join
+          first = nil
+
+
         }
 
         pdf.render_file filename
@@ -74,26 +85,7 @@ module SeOpenData
         create_doc(title, description, similar_entries, @geo_pdf)
       end
 
-      def combine_docs
-        pdf_file_paths = [@title_pdf,@fields_pdf,@geo_pdf]
-        Prawn::Document.generate("result.pdf", {:page_size => 'A4', :skip_page_creation => true}) do |pdf|
-          pdf_file_paths.each do |pdf_file|
-            if File.exists?(pdf_file)
-              pdf_temp_nb_pages = Prawn::Document.new(:template => pdf_file).page_count
-              (1..pdf_temp_nb_pages).each do |i|
-
-                pdf.start_new_page(:template => pdf_file, :template_page => i)
-
-              end
-            end
-          end
-        end
-        
-        
-      
-    
-
-      end
+ 
     end
   end
 end

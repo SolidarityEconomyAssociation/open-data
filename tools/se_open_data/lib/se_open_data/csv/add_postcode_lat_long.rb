@@ -28,7 +28,6 @@ module SeOpenData
       row_count = csv_in.count
       csv_in.rewind
       prog_ctr = SeOpenData::Utils::ProgressCounter.new("Fetching geodata... ", row_count,$stderr)
-
       csv_in.each do |row|        
         unless headers
           headers = row.headers + new_headers.values.reject {|h| row.headers.include? h }

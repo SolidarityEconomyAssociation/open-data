@@ -50,7 +50,10 @@ module SeOpenData
         ::RDF::URI("#{uri}#Email")
       end
       def geocontainer_uri
-        initiative.geocontainer && !initiative.geocontainer.empty? ?
+	
+        (initiative.geocontainer && !initiative.geocontainer.empty? &&
+	 initiative.geocontainer_lon && !initiative.geocontainer_lon.empty?
+	 initiative.geocontainer_lat && !initiative.geocontainer_lat.empty?) ?
           ::RDF::URI(initiative.geocontainer) : nil
       end
       def companies_house_uri
@@ -154,41 +157,42 @@ module SeOpenData
           graph.insert([uri, Config::Rov.hasRegisteredOrganization, companies_house_uri])
         end
 
-        if(initiative.postcode && !initiative.postcode.empty?)
-          graph.insert([uri, config.essglobal_vocab.hasAddress, address_uri])
 
-          # Populate the Address:
-          graph.insert([address_uri, ::RDF.type, config.essglobal_vocab["Address"]])
+        graph.insert([uri, config.essglobal_vocab.hasAddress, address_uri])
 
-          # This is the actual lat/long as opposed to the lat/long of a geocontainer (such as a postcode)
-          loc = lat_lng
-          if loc
-            graph.insert([address_uri, Config::Geo["lat"], ::RDF::Literal::Decimal.new(loc[:lat])])
-            graph.insert([address_uri, Config::Geo["long"], ::RDF::Literal::Decimal.new(loc[:lng])])
+        # Populate the Address:
+        graph.insert([address_uri, ::RDF.type, config.essglobal_vocab["Address"]])
+
+        # This is the actual lat/long as opposed to the lat/long of a geocontainer (such as a postcode)
+        loc = lat_lng
+        if loc
+          graph.insert([address_uri, Config::Geo["lat"], ::RDF::Literal::Decimal.new(loc[:lat])])
+          graph.insert([address_uri, Config::Geo["long"], ::RDF::Literal::Decimal.new(loc[:lng])])
+        end
+
+        # Map values onto their VCARD porperties:
+        {
+          initiative.street_address => "street-address",
+          initiative.locality => "locality",
+          initiative.region => "region",
+          initiative.postcode => "postal-code",
+          initiative.country_name => "country-name"
+        }.each {|val, property|
+          if val && !val.empty?
+            graph.insert([address_uri, ::RDF::Vocab::VCARD[property], val])
           end
+        }
 
-          # Map values onto their VCARD porperties:
-          {
-            initiative.street_address => "street-address",
-            initiative.locality => "locality",
-            initiative.region => "region",
-            initiative.postcode => "postal-code",
-            initiative.country_name => "country-name"
-          }.each {|val, property|
-            if val && !val.empty?
-              graph.insert([address_uri, ::RDF::Vocab::VCARD[property], val])
-            end
-          }
 
-          if geocontainer_uri
-            graph.insert([address_uri, Config::Osspatialrelations.within, geocontainer_uri])
-            loc = geocontainer_lat_lng
-            if loc
-              graph.insert([geocontainer_uri, Config::Geo["lat"], ::RDF::Literal::Decimal.new(loc[:lat])])
-              graph.insert([geocontainer_uri, Config::Geo["long"], ::RDF::Literal::Decimal.new(loc[:lng])])
-            end
+        if geocontainer_uri
+          graph.insert([address_uri, Config::Osspatialrelations.within, geocontainer_uri])
+          loc = geocontainer_lat_lng
+          if loc
+            graph.insert([geocontainer_uri, Config::Geo["lat"], ::RDF::Literal::Decimal.new(loc[:lat])])
+            graph.insert([geocontainer_uri, Config::Geo["long"], ::RDF::Literal::Decimal.new(loc[:lng])])
           end
         end
+        
         
         if(initiative.phone && !initiative.phone.empty?)
           graph.insert([uri, ::RDF::Vocab::VCARD.hasTelephone, phone_uri])

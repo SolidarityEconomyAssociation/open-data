@@ -17,8 +17,8 @@ module SeOpenData
           @one_big_file_basename = one_big_file_basename
           @map_app_sparql_query_filename = map_app_sparql_query_filename
           @css_files = css_files
-          @postcodeunit_cache = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache_filename)
-
+          #@postcodeunit_cache = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache_filename)
+          @postcodeunit_cache = nil
           # Lookups for standard vocabs:
           # second param is a string that matches one of the filenames (but without `.skos`) in:
           # https://github.com/essglobal-linked-open-data/map-sse/tree/develop/vocabs/standard
