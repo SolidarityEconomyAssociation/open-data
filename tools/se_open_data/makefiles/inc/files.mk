@@ -10,7 +10,7 @@ GEN_VIRTUOSO_DIR := $(TOP_OUTPUT_DIR)virtuoso/
 # Where to put files to be transferred to the web server where RDF can be dereferenced, and HTML provided:
 WWW_DIR := $(TOP_OUTPUT_DIR)www/
 GEN_DOC_DIR := $(WWW_DIR)doc/
-GEN_CSS_DIR := $(WWW_DIR)css/
+GEN_CSS_DIR := $(WWW_DIR)doc/css/
 
 $(GEN_SPARQL_DIR):
 	mkdir -p $@
@@ -24,13 +24,13 @@ $(GEN_DOC_DIR):
 $(GEN_CSS_DIR):
 	mkdir -p $@
 
+# CSS files are deployed within DEPLOYMENT_DOC_SUBDIR under DEPLOYMENT_CSS_SUBDIR
+# Thus they can be deployed as one directory tree.
 CSS_FILES := $(wildcard $(CSS_SRC_DIR)*.css)
 DEPLOYMENT_DOC_SUBDIR := $(URI_PATH_PREFIX)
 DEPLOYMENT_DOC_DIR := $(DEPLOYMENT_WEBROOT)$(DEPLOYMENT_DOC_SUBDIR)
-DEPLOYMENT_CSS_SUBDIR := css/$(URI_PATH_PREFIX)
-DEPLOYMENT_CSS_DIR := $(DEPLOYMENT_WEBROOT)$(DEPLOYMENT_CSS_SUBDIR)
-
-DEPLOYED_CSS_FILES := $(CSS_FILES:css/%=/$(DEPLOYMENT_CSS_SUBDIR)%)
+DEPLOYMENT_CSS_SUBDIR := css/
+DEPLOYED_CSS_FILES := $(CSS_FILES:css/%=$(DEPLOYMENT_CSS_SUBDIR)%)
 
 SPARQL_GET_ALL_FILE := $(GEN_SPARQL_DIR)query.rq
 SPARQL_LIST_GRAPHS_FILE := $(GEN_SPARQL_DIR)list-graphs.rq

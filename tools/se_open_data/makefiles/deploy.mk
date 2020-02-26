@@ -30,8 +30,6 @@ SSH := ssh
 all:
 	$(SSH) $(DEPLOYMENT_SERVER) 'cd $(DEPLOYMENT_WEBROOT) && mkdir -p $(DEPLOYMENT_DOC_SUBDIR)'
 	$(RSYNC) $(DEPLOYMENT_RSYNC_FLAGS) $(GEN_DOC_DIR) $(DEPLOYMENT_SERVER):$(DEPLOYMENT_DOC_DIR)
-	$(SSH) $(DEPLOYMENT_SERVER) 'cd $(DEPLOYMENT_WEBROOT) && mkdir -p $(DEPLOYMENT_CSS_SUBDIR)'
-	$(RSYNC) $(DEPLOYMENT_RSYNC_FLAGS) $(GEN_CSS_DIR) $(DEPLOYMENT_SERVER):$(DEPLOYMENT_CSS_DIR)
 
 # ------------------------------------------------------------------
 # Test content negotiation and redirection:
