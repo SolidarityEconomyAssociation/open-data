@@ -50,6 +50,9 @@ The Ruby scripts for generating RDF/TTL files rely on a package called `linkedda
 ```
 sudo gem install nokogiri
 sudo gem install linkeddata
+sudo gem install prawn
+sudo gem install prawn-table
+sudo gem install levenshtein
 sudo gem install opencage-geocoder
 ```
 
