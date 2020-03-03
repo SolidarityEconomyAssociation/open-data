@@ -8,6 +8,7 @@ module SeOpenData
     require "csv"
     require "prawn"
     require "prawn/table"
+    require "fileutils"
 
     class ErrorDocumentGenerator
       def initialize(title, introduction, name_header, domain_header, headers)
@@ -25,6 +26,8 @@ module SeOpenData
 
         pdf.text introduction, :size => 12  # sum
 
+        # Create the directory before rendering
+        FileUtils.mkdir_p File.dirname(@title_pdf)
         pdf.render_file @title_pdf
 
         #create intro doc only if no other intro doc exists

@@ -28,7 +28,7 @@ CSV_TO_RDF := $(SE_OPEN_DATA_BIN_DIR)csv/standard/csv-to-rdf.rb
 RUBY := ruby
 
 css: | $(GEN_CSS_DIR)
-	cp -r $(CSS_SRC_DIR) $(GEN_CSS_DIR)
+	rsync -r $(CSS_SRC_DIR) $(GEN_CSS_DIR)
 
 all: $(STANDARD_CSV) $(SAMEAS_CSV) css | $(GEN_DOC_DIR) $(GEN_VIRTUOSO_DIR) $(GEN_SPARQL_DIR)
 	echo "$(SPARQL_ENDPOINT)" > $(SPARQL_ENDPOINT_FILE)
