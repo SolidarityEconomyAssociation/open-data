@@ -49,6 +49,27 @@ module SeOpenData
       duplicate_by_ids = {}
       duplicate_by_fields = []
 
+      # CHANGE THIS
+
+      #csv_in should be the original document before geo uniformication
+      addr_csv_original = {}
+      headers = nil
+      csvorig = nil
+      csvorig = ::CSV.read(original_csv, csv_opts) if original_csv != nil
+        
+      if csvorig
+
+      csvorig.each do |row|
+        unless headers
+          headers = row.headers
+        end
+        key = keys.map { |k| row[k] }
+        addr_csv_original[key] = row.to_h
+      end
+
+      end
+      # CHANGE THIS
+
       # Since we can't be certain that the id will run lexicographically we need
       # to loop through the original data once and build a hashmap of the csv
       # with multiple domains moved into a single field.
@@ -174,19 +195,36 @@ module SeOpenData
           end
         }
       end
+      $stderr.puts ( "I A M GERE")
+
 
       csv_map.each do |key, row|
         unless headersOutput
           csv_out << headers
           headersOutput = true
         end
+        #row.id to identify orig row
+        #row[:addr] = original[:addr]
 
+        #This is a quick fix
+        #TODO: FIX ME
+        id = row["Identifier"]
+        orig_addr_entry = addr_csv_original[[id]]
+
+        if orig_addr_entry
+          row["Street Address"] = orig_addr_entry["Street Address"]
+          row["Locality"] = orig_addr_entry["Locality"]
+          row["Region"] = orig_addr_entry["Region"]
+        end
         # Fix any entries that have no name
         if !row[nameHeader]
           row[nameHeader] = "N/A"
         end
         csv_out << row.values
       end
+
+
+
       dup_ids = duplicate_by_ids.values.select { |a| a.length > 1 }
 
 
@@ -229,6 +267,8 @@ module SeOpenData
 
         break unless flat_dups.length > 0
       end
+
+      
 
 
       err_doc_client = SeOpenData::Utils::ErrorDocumentGenerator.new("Duplicates DotCoop Title Page", "The process of importing data from DotCoop requires us to undergo several stages of data cleanup, fixing and rejecting some incompatible data that we cannot interpret.
