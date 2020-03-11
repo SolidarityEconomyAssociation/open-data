@@ -39,6 +39,8 @@ To build the data you will need to have:
 - an API key. This is just a text file for the current version. File must be placed at open-data/APIs/key.txt (keep the name of the file given, the only key we are storing now is OpenCageKey.txt)
 - a cache file containing cached api requests (this is currently needed only for the dotcoop deployments), this is placed in the top level directory of the data you want to publish (e.g. open-data/dotcoop/domains2019-10-03/thecachefile.json)
 
+To get these files request them from the current developers or the project manager.
+
 ### Install Ruby and required packages (Gems)
 
 **macOS:**
