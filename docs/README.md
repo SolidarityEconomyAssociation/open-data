@@ -33,6 +33,12 @@ To install Homebrew, run the command
 1. Run `sudo apt-get update` to make sure you have the most recent package version and dependency information
 2. Run `sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev git`
 
+### Get Required Secure Files
+To build the data you will need to have:
+- a file containing the original csv data we are importing (this is currently needed only for the dotcoop deployments), this is placed in the original-data folder in the data you want to publish (e.g. open-data/dotcoop/domains2019-10-03/original-data/DataFile.csv)
+- an API key. This is just a text file for the current version. File must be placed at open-data/APIs/key.txt (keep the name of the file given, the only key we are storing now is OpenCageKey.txt)
+- a cache file containing cached api requests (this is currently needed only for the dotcoop deployments), this is placed in the top level directory of the data you want to publish (e.g. open-data/dotcoop/domains2019-10-03/thecachefile.json)
+
 ### Install Ruby and required packages (Gems)
 
 **macOS:**
