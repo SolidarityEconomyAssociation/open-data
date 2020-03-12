@@ -1,4 +1,7 @@
-# Generating and deploying Linked Open Data
+## Management
+[@ColmMassey](https://github.com/ColmMassey) is currently responsible for this repository. Create an issue tagging him, to get in touch.
+
+## Generating and deploying Linked Open Data
 
 There are four main parts to generating Linked Open Data for SEA projects.
 
@@ -39,7 +42,7 @@ To build the data you will need to have:
 - an API key. This is just a text file for the current version. File must be placed at open-data/APIs/key.txt (keep the name of the file given, the only key we are storing now is OpenCageKey.txt)
 - a cache file containing cached api requests (this is currently needed only for the dotcoop deployments), this is placed in the top level directory of the data you want to publish (e.g. open-data/dotcoop/domains2019-10-03/thecachefile.json)
 
-To get these files request them from the current developers or the project manager.
+To get these files you may request them from the repository manager. (See top of this page.)
 
 ### Install Ruby and required packages (Gems)
 
@@ -222,7 +225,7 @@ rm generated-data/[edition]/www/doc/*.*
 
 ## Generate RDF/TTL/HTML files from standard CSV
 
-The following step is to generate the RDF, TTL, HTML represetnations of the data. From the same location, run the following command:
+The following step is to generate the RDF, TTL, HTML representations of the data. From the same location, run the following command:
 
 ```
 make -f ../../tools/se_open_data/makefiles/generate.mk edition=experimental
