@@ -137,6 +137,7 @@ module SeOpenData
       end
 
       nm = name_map
+      $stderr.puts(name_map.keys)
       #name_map groups them by name
       #merge entries (in csv_map) that have the same name, and a leivenstein distance of < 2
       name_map.each { |name, val|
@@ -195,7 +196,6 @@ module SeOpenData
           end
         }
       end
-      $stderr.puts ( "I A M GERE")
 
 
       csv_map.each do |key, row|
@@ -215,6 +215,9 @@ module SeOpenData
           row["Street Address"] = orig_addr_entry["Street Address"]
           row["Locality"] = orig_addr_entry["Locality"]
           row["Region"] = orig_addr_entry["Region"]
+          if row["Postcode"] == '' || !row["Postcode"]
+            row["Postcode"] = orig_addr_entry["Postcode"]
+          end
         end
         # Fix any entries that have no name
         if !row[nameHeader]
