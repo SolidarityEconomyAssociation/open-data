@@ -38,7 +38,7 @@ module SeOpenData
         postcode = row[input_csv_postcode_header]
         country = row[input_country_header]
         #if uk_postcode?(postcode)
-        if false#TODO: TURNED OFF FOR NOW, NEED TO MAKE DECISION WHAT TO DO IN THE FUTURE
+        if uk_postcode?(postcode)#TODO NEED TO REMOVE FOR GLOBAL GEO LOCATOR
           pcunit = postcode_client.get(postcode)
           loc_data = {
             geocontainer: pcunit ? pcunit[:within] : nil,
