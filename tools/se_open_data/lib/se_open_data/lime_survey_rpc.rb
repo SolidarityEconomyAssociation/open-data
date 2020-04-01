@@ -1,0 +1,54 @@
+
+require 'net/http'
+require 'net/https'
+require 'uri'
+require 'json'
+
+
+module SeOpenData
+  
+  # Class to access Lime Survey's JSON-RPC API, "RemoteControl 2"
+  # See https://manual.limesurvey.org/RemoteControl_2_API
+  #
+  # In its current form it's fairly low-level, essentially it's just a
+  # JSON RPC client, with no built-in knowledge of the API itself. You
+  # need to know how to use the API, and possibly perform extra
+  # conversions on the returned data. See the API docuentation linked
+  # above.
+  #
+  # To use this, you need log-in credentials, and you must enable the
+  # API in RPCJSON mode, by logging in to the LimeSurvey
+  # administration, going to "Global settings", choosing the tab
+  # "Interfaces" and selecting the JSON-RPC service.
+  #
+  # Adapted from this example:
+  # https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)#Ruby
+  class LimeSurveyRpc
+    # Initialise an instance, given the API endpoint.
+    def initialize(service_url)
+      @uri = URI.parse(service_url)
+    end
+
+    # Dynamically implements the API by mapping method calls to
+    # RPC calls.
+    def method_missing(name, *args)
+      post_body = { 'method' => name, 'params' => args, 'id' => 'jsonrpc' }.to_json
+      resp = JSON.parse( http_post_request(post_body) )
+      raise JSONRPCError, resp['error'] if resp['error']
+      resp['result']
+    end
+
+    # Post a request to the API
+    def http_post_request(post_body)
+      http    = Net::HTTP.new(@uri.host, @uri.port)
+      http.use_ssl = @uri.scheme == 'https'
+      request = Net::HTTP::Post.new(@uri.request_uri)
+      request.basic_auth @uri.user, @uri.password
+      request.content_type = 'application/json'
+      request.body = post_body
+      http.request(request).body
+    end
+
+    class JSONRPCError < RuntimeError; end
+  end
+end
