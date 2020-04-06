@@ -21,6 +21,7 @@ module SeOpenData
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, csv_opts)
       csv_out = ::CSV.new(output_io)
+      allHeaders = new_headers.merge!(address_headers)
       postcode_client = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache)
       global_postcode_client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client.new(global_postcode_cache,geocoder_standard)
       #add global postcode
@@ -51,8 +52,11 @@ module SeOpenData
         else #geocode using global geocoder
           
           #standardize the address if indicated
+          headersToUse = {}
           if replace_address
-            new_headers.merge!(address_headers)
+            headersToUse = allHeaders
+          else
+            headersToUse = new_headers
           end
           #need to match standard h
           address = []
@@ -67,7 +71,7 @@ module SeOpenData
             next
           end
 
-          new_headers.each { |k, v|
+          headersToUse.each { |k, v|
               row[v] = pcunit[geocoder_headers[k]]
           }
 
