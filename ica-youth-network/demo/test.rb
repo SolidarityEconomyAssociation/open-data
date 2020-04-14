@@ -16,7 +16,7 @@ f.each_line do |line|
         # if string matches \".+\"\, then its good
         # if it doesn't match it, try to fix it
 end
-
+# this is just a test file
 # remove all single quotes not followed by a quote 
 # replace ' with empty
 # replace double quotes with single quote

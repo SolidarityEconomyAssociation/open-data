@@ -26,7 +26,7 @@ CSV_target := csv
 .DEFAULT_GOAL := $(CSV_target)
 
 # Source files:
-ORIGINAL_CSV := $(SRC_CSV_DIR)Youth-led-Co-ops-Coops_new.csv
+ORIGINAL_CSV := $(SRC_CSV_DIR)Youth-ledCoops.csv
 
 # Here's the directory where we generate intermediate csv files
 GEN_CSV_DIR := $(TOP_OUTPUT_DIR)csv/
