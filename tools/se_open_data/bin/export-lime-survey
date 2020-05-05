@@ -11,6 +11,8 @@
 # administration, going to "Global settings", choosing the tab
 # "Interfaces" and selecting the JSON-RPC service.
 
+
+require_relative '../lib/load_path'
 require 'se_open_data/lime_survey_exporter'
 
 usage = <<USAGE
