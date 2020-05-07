@@ -14,10 +14,16 @@ insert_final_newline = true
 [*.{js,json}]
 charset = utf-8
 
-# 4 space indentation
+# 2 space indentation
 [*.{js,json}]
 indent_style = space
 indent_size = 2
+
+# Ruby files
+[*.rb]
+indent_style = space
+indent_size = 2
+charset = utf-8
 
 # Tab indentation
 [Makefile,*.mk]
