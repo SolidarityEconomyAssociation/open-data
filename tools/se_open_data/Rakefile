@@ -35,3 +35,13 @@ task doc: %w(yard)
 #desc 'Run all style checks'
 #task style: %w(style:ruby)
 
+desc 'Run tests'
+task :test do
+  require "rake/testtask"
+  Rake::TestTask.new(:test) do |t|
+    t.libs << "test"
+    t.libs << "lib"
+    t.test_files = FileList["test/**/test_*.rb"]
+  end
+end
+
