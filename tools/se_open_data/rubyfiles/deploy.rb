@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require "./load_config"
 
 rsync = "rsync -avz --no-perms --omit-dir-times"

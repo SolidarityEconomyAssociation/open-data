@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require "./load_config"
 
 if !File.file?($config_map["ONE_BIG_FILE_BASENAME"])
