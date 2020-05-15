@@ -1,3 +1,4 @@
+USE_ENV_PASSWORDS=false
 SRC_CSV_DIR=original-data/
 ORIGINAL_CSV_1=Youth-ledCoops.csv
 URI_SCHEME=https
@@ -15,7 +16,7 @@ AUTO_LOAD_TRIPLETS=true
 SE_OPEN_DATA_BIN_DIR=../../tools/se_open_data/bin/
 SE_OPEN_DATA_LIB_DIR=../../tools/se_open_data/lib/
 CSS_SRC_DIR=css/
-VIRTUOSO_PASS_FILE=settings/pass.txt
+VIRTUOSO_PASS_FILE=deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password
 W3ID_REMOTE_LOCATION=/var/www/html/w3id.org/
 SERVER_ALIAS=data1.solidarityeconomy.coop
 TEST_INITIATIVE_IDENTIFIERS=16 40
