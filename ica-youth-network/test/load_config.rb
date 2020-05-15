@@ -76,15 +76,10 @@ module Config
 
 
 
-    if conf.key?("VIRTUOSO_PASS_FILE") && File.file?(conf["VIRTUOSO_PASS_FILE"])
-      conf["VIRTUOSO_PASS"] = File.read(conf["VIRTUOSO_PASS_FILE"])
-      raise ArgumentError, "VIRTUOSO_PASS_FILE" + " empty or non-existent" if conf["VIRTUOSO_PASS"] == ""
-
-      if conf.key?("AUTO_LOAD_TRIPLETS") && conf["AUTO_LOAD_TRIPLETS"].to_s.downcase == "true"
-        conf["AUTO_LOAD_TRIPLETS"] = true
-      else
-        conf["AUTO_LOAD_TRIPLETS"] = false
-      end
+    if conf.key?("AUTO_LOAD_TRIPLETS") && conf["AUTO_LOAD_TRIPLETS"].to_s.downcase == "true"
+      conf["AUTO_LOAD_TRIPLETS"] = true
+    else
+      conf["AUTO_LOAD_TRIPLETS"] = false
     end
 
     #end config
