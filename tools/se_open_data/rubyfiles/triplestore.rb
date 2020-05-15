@@ -2,15 +2,19 @@
 require "./load_config"
 require_relative "../lib/load_path"
 require "se_open_data/utils/password_store"
+require "se_open_data/utils/log_factory"
+Log = SeOpenData::Utils::LogFactory.default
 
 rsync = "rsync -avz"
 ssh = "ssh"
 
 # This gets (encrypted) passwords. Read the documentation in the class.
 pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: $config_map["USE_ENV_PASSWORDS"])
+Log.debug "Checking ENV for passwords" if pass.use_env_vars?
 
 if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
-
+    Log.debug "Creating #{$config_map["VIRTUOSO_SCRIPT_LOCAL"]}"
+    
     get_rdfxml_curl = 'curl --silent -H "Accept: application/rdf+xml" -L'
     get_rdfxml = -> (x,y) {system("echo 'Creating #{y} from #{x}' && #{get_rdfxml_curl} #{x} > #{y}")}
     get_rdfxml_for_virtuoso = -> (x,y) {get_rdfxml.call(x,$config_map["GEN_VIRTUOSO_DIR"]+y)}
@@ -38,12 +42,14 @@ if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
         pass = pass.get $config_map["VIRTUOSO_PASS_FILE"]
         system("ssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba #{pass} #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'")
     else
-        system("echo \"****\"")
-        system("echo \"**** IMPORTANT! ****\"")
-        system("echo \"**** The final step is to load the data into Virtuoso with graph named #{$config_map["GRAPH_NAME"]}:\"")
-        system("echo \"**** Execute the following command, providing the password for the Virtuoso dba user:\"")
-        system("echo \"****\tssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba ******** #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'\"")
-    end    
+        puts <<HERE
+****
+**** IMPORTANT! ****
+**** The final step is to load the data into Virtuoso with graph named #{$config_map["GRAPH_NAME"]}.
+**** Execute the following command, providing the password for the Virtuoso dba user:
+****\tssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba ******** #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}
+HERE
+    end
 else
-    puts "File exists: #{$config_map['VIRTUOSO_SCRIPT_LOCAL']}"
+    puts "File exists, nothing to do: #{$config_map['VIRTUOSO_SCRIPT_LOCAL']}"
 end
