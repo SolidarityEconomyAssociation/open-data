@@ -12,7 +12,8 @@ ssh = "ssh"
 pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: $config_map["USE_ENV_PASSWORDS"])
 Log.debug "Checking ENV for passwords" if pass.use_env_vars?
 
-if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
+begin
+  if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
     Log.debug "Creating #{$config_map["VIRTUOSO_SCRIPT_LOCAL"]}"
     
     get_rdfxml_curl = 'curl --silent -H "Accept: application/rdf+xml" -L'
@@ -38,11 +39,11 @@ if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
 
 
     if($config_map["AUTO_LOAD_TRIPLETS"])
-        puts "ssh -T #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba ******** #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'"
-        pass = pass.get $config_map["VIRTUOSO_PASS_FILE"]
-        system("ssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba #{pass} #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'")
+      puts "ssh -T #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba ******** #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'"
+      pass = pass.get $config_map["VIRTUOSO_PASS_FILE"]
+      system("ssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba #{pass} #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'")
     else
-        puts <<HERE
+      puts <<HERE
 ****
 **** IMPORTANT! ****
 **** The final step is to load the data into Virtuoso with graph named #{$config_map["GRAPH_NAME"]}.
@@ -50,6 +51,11 @@ if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
 ****\tssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba ******** #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}
 HERE
     end
-else
+  else
     puts "File exists, nothing to do: #{$config_map['VIRTUOSO_SCRIPT_LOCAL']}"
+  end
+rescue
+  # Delete this output file, and rethrow
+  File.delete $config_map['VIRTUOSO_SCRIPT_LOCAL']
+  raise
 end
