@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
+# This script controls a pipeline of processes that convert the original
+# CSV data into the se_open_data standard, one step at a time.
+
 require  "./load_config"
-
-"""
-This script controls a pipeline of processes that convert the original
-CSV data into the se_open_data standard, one step at a time.
-
-"""
 
 # original src csv files 
 csv_to_standard_1 = $config_map["SRC_CSV_DIR"]+$config_map["ORIGINAL_CSV_1"]
