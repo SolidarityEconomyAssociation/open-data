@@ -4,48 +4,57 @@
 
 require  "./load_config"
 
+SRC_DIR = $config_map["SRC_CSV_DIR"]
+GEN_DIR = $config_map["GEN_CSV_DIR"]
+BIN_DIR = $config_map["SE_OPEN_DATA_BIN_DIR"]
+
 # original src csv files 
-csv_to_standard_1 = $config_map["SRC_CSV_DIR"]+$config_map["ORIGINAL_CSV_1"]
+csv_to_standard_1 = File.join(SRC_DIR, $config_map["ORIGINAL_CSV_1"])
+
+# Intermediate csv files
+added_ids = File.join(GEN_DIR, "with_ids.csv")
+cleared_errors = File.join(GEN_DIR, "cleared_errors.csv")
+
+# Output csv file
+output_csv = $config_map["STANDARD_CSV"]
 
 
-# csv_to_standard_1 CSV files
-added_ids = $config_map["GEN_CSV_DIR"] + "with_ids.csv"
-cleared_errors = $config_map["GEN_CSV_DIR"] + "cleared_errors.csv"
+def clear_csv_errors(in_f:, out_f:)
+  Config.gen_ruby_command(
+    in_f,
+    "clear_csv_errors.rb",
+    nil,
+    out_f,
+    nil
+  )  
+end
 
-# local scripts to help with the conversion:
-original_converter_loc_script = "converter.rb"
-error_cleaner_loc_script = "clear_csv_errors.rb"
+def add_unique_ids(in_f:, out_f:)
+  Config.gen_ruby_command(
+    in_f,
+    File.join(BIN_DIR, "csv/standard/add-unique-id.rb"),
+    nil,
+    out_f,
+    nil
+  )
+end
 
-# library to be used in the pipeline:
-add_ids_lib_script = $config_map["SE_OPEN_DATA_BIN_DIR"] + "csv/standard/add-unique-id.rb" 
+def convert_for_coops_uk(in_f:, out_f:)
+  Config.gen_ruby_command(
+    in_f,
+    "converter.rb",
+    nil,
+    out_f,
+    nil
+  )
+end
 
-# cache files
-#postcode_cache = 
-
-
-if(!File.file?($config_map["STANDARD_CSV"]))
+if(!File.file?(output_csv))
+  ## handle limesurvey
   # generate the cleared error file
-  Config.gen_ruby_command(
-    csv_to_standard_1,
-    error_cleaner_loc_script,
-    nil,
-    cleared_errors,
-    nil
-  )
-  Config.gen_ruby_command(
-    cleared_errors,
-    add_ids_lib_script,
-    nil,
-    added_ids,
-    nil
-  )
-  Config.gen_ruby_command(
-    added_ids,
-    original_converter_loc_script,
-    nil,
-    $config_map["STANDARD_CSV"],
-    nil
-  )
+  clear_csv_errors in_f: csv_to_standard_1, out_f: cleared_errors
+  add_unique_ids in_f: cleared_errors, out_f: added_ids
+  convert_for_coops_uk in_f: added_ids, out_f: output_csv
 else
-  puts "Work is already done "
+  puts "Refusing to overwrite existing output file: #{output_csv}"
 end
