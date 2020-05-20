@@ -14,8 +14,14 @@ module SeOpenData
   module CSV
     module Standard
       module V1
-        # Note - from ruby 1.9, keys and values are returned in insertion order,
-        #        so the headers Hash also defines the ordering of the columns.
+        # Note - from ruby 1.9, keys and values are returned in
+        # insertion order, so the headers Hash also defines the
+        # ordering of the columns.
+        #
+        # [LATER] But beware: see this, which suggests it isn't
+        # entirely guaranteed for hash literals in all
+        # implementations.
+        # https://stackoverflow.com/questions/31418673/is-order-of-a-ruby-hash-literal-guaranteed
         Headers = {
           id: "Identifier",
           name: "Name",
