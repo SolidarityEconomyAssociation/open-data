@@ -10,11 +10,13 @@ end
 module SeOpenData
   module CSV
 
-    #should take in which headers to change with which standardSTANDARD_HEADERS from global
-    #should have boolean weather to change addresses
-    #postcode unit cache is legacy?
-    #TODO: this is becoming a noodle factory, fix and clean it
-    #TODO: abstract away so that you only pass the standard and the io and it does the work for you
+    # - should take in which headers to change with which standard STANDARD_HEADERS from global
+    # - should have boolean weather to change addresses
+    # - postcode unit cache is legacy?
+    #
+    # TODO: this is becoming a noodle factory, fix and clean it
+    #
+    # TODO: abstract away so that you only pass the standard and the io and it does the work for you
     def CSV.add_postcode_lat_long(input_io, output_io, input_csv_postcode_header, input_country_header,
       new_headers, postcodeunit_cache, csv_opts = {},
       global_postcode_cache,address_headers,replace_address,geocoder_headers,geocoder_standard)

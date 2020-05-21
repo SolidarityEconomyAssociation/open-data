@@ -5,9 +5,9 @@ require 'net/http'
 module SeOpenData
   module Essglobal
     class Standard
+      # taxonomy is a string that matches one of the filenames (but without `.skos`) in:
+      # https://github.com/essglobal-linked-open-data/map-sse/tree/develop/vocabs/standard
       def initialize(essglobal_uri, taxonomy)
-        # taxonomy is a string that matches one of the filenames (but without `.skos`) in:
-        # https://github.com/essglobal-linked-open-data/map-sse/tree/develop/vocabs/standard
         uri = "#{essglobal_uri}standard/#{taxonomy}"
 
         #follow redirects until you reach the final one

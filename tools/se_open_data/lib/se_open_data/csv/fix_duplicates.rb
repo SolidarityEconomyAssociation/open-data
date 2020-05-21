@@ -1,15 +1,20 @@
-# De-duplicates rows of CSV.
-# A duplicate is defined as having the same keys as a previous row.
-
 require 'csv'
 
 module SeOpenData
   module CSV
+    # De-duplicates rows of CSV.
+    #
+    # A duplicate is defined as having the same keys as a previous row.
+    #
+    # @param input_io          Input CSV (must have headers)
+    # @param output_io         CSV with duplicates removed
+    # @param id_column_heading
+    # @param new_id            proc to call to get new id to replace duplicate id
     def CSV.fix_duplicates(
-      input_io,         # Input CSV (must have headers)
-      output_io,        # CSV with duplicates removed
+      input_io,
+      output_io,
       id_column_heading,
-      new_id            # proc to call to get new id to replace duplicate id
+      new_id
     )
       csv_opts = {}
       csv_opts.merge!(headers: true)

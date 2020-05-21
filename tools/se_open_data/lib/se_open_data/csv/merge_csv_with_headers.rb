@@ -1,7 +1,3 @@
-#  Merge a list of CSV files into one.
-#  All are assumed to have a header row.
-#  It is an error for their header rows not to be identical.
-
 require 'csv'
 
 module SeOpenData

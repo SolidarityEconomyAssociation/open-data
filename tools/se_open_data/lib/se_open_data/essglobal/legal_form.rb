@@ -3,13 +3,11 @@ require 'rdf/rdfxml'
 
 module SeOpenData
   module Essglobal
+    
+    # **This module may well be OBSOLETE**
+    #
+    # It has been replaced by SeOpenData::Eddglobal::Standard
     class LegalForm
-
-      # ################################
-      # This module may well be OBSOLETE
-      # ################################
-      # It has been replaced by SeOpenData::Eddglobal::Standard
-
       def initialize(essglobal_uri)
         uri = "#{essglobal_uri}standard/legal-form"
         puts uri

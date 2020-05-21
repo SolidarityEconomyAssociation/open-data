@@ -1,8 +1,3 @@
-# Document generator
-# generates errror reports
-
-#this uses prawn to generate a formatted PDF
-
 module SeOpenData
   module Utils
     require "csv"
@@ -10,6 +5,9 @@ module SeOpenData
     require "prawn/table"
     require "fileutils"
 
+    # Document generator - generates errror reports
+    #
+    # It uses prawn to generate a formatted PDF
     class ErrorDocumentGenerator
       def initialize(title, introduction, name_header, domain_header, headers)
         @title_pdf = "docs/titledoc.pdf"

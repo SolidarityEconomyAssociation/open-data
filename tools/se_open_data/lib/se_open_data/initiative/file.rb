@@ -1,18 +1,24 @@
-# Stuff to do with files associated with initiatives.
 
 module SeOpenData
   class Initiative
+
+    # Stuff to do with files associated with initiatives.
     class File
+
+      # Returns the filename for this initiative.
+      #
+      # ALSO - side effect - makes sure the directory exists.
+      #
+      # History: This was not necessary when RDF serializations were written to files like:
+      #
+      #     R000001BD157AB.ttl
+      #
+      # But now, in keeping with the URIs for initiatives, the filenames might be like this:
+      #
+      #     R000001/BD158AB/2.ttl
+      #
+      # So we have to create subdirectories for these.
       def self.name(id, outdir, ext)
-        # Returns the filename for this initiative.
-
-        # ALSO - side effect - makes sure the directory exists.
-        # History: This was not necessary when RDF serializations were written to files like:
-        #    R000001BD157AB.ttl
-        # But now, in keeping with the URIs for initiatives, the filenames might be like this:
-        #    R000001/BD158AB/2.ttl
-        # So we have to create subdirectories for these.
-
         dirsep = "/"
         # The parent dir is assumed to already exist ...
         parent_dir = outdir
@@ -29,8 +35,9 @@ module SeOpenData
         end
         parent_dir + id + ext
       end
+
+      # This is not really a method of this class. Just a convenience utility.
       def self.ensure_subdir_exists(path)
-        # This is not really a method of this class. Just a convenience utility.
         dir = path.shift
         Dir.mkdir(dir) unless Dir.exist?(dir)
         if path.size > 0

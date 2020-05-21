@@ -1,6 +1,3 @@
-# This is motivated initially by the need to cache the lat/long results about postcodeunits.
-#
-
 require 'pp'
 require 'json'
 require 'linkeddata'
@@ -10,16 +7,21 @@ require 'objspace'
 
 module SeOpenData
   module RDF
+    # This class's existence is motivated initially by the need to
+    # cache the lat/long results about postcodeunits.
+    #
     class Cache
       Failure_value = 0 # value stored in cache when query fails
       Literal_type = "literal"
       Uri_type = "uri"
+      
+      # Example:
+      #
+      #     rdf_cache = Cache.new("os_postcode_cache.json", {
+      #       lat: "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
+      #       lng: "http://www.w3.org/2003/01/geo/wgs84_pos#long"
+      #     })
       def initialize(cache_file, query_hash)
-        # Example
-        #  rdf_cache = Cache.new("os_postcode_cache.json", {
-        #    lat: "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
-        #    lng: "http://www.w3.org/2003/01/geo/wgs84_pos#long"
-        #  })
 
         @cache_file = cache_file
 

@@ -1,10 +1,14 @@
-# ProgressCounter
-# On initialize, outputs the 'explanation' (without a '\n').
-# On step, backspaces over the previous progress status message, and outputs a new progress status message (without '\n').
-# When we reach 100% done, a final '\n\ is output.
 
 module SeOpenData
   module Utils
+    # ProgressCounter
+    #
+    # On initialize, outputs the 'explanation' (without a `\n`).
+    #
+    # On step, backspaces over the previous progress status message,
+    # and outputs a new progress status message (without `\n`).
+    #
+    # When we reach 100% done, a final `\n` is output.
     class ProgressCounter
 
       # @param explanation [String] description of the process whose progress is being counted
