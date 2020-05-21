@@ -31,7 +31,7 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
   # Headers in input CSV (with Hash key symbols matching Hash key symbols in output CSV Headers)
   InputHeaders = {
     # These symbols match symbols in OutputStandard::Headers.
-    # So the corresponding cells with be copied fro inpiut to output:
+    # So the corresponding cells with be copied from input to output:
     name: "",
     # postcode: "PostCode",
     country_name: "Country",
@@ -41,8 +41,10 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
     desc: "Description",
     additional_desc: "Additional Details",
 
-    # These symbols don't match symbols in OutputStandard::Headers.
-    # But CSV::RowReader creates method using these symbol names to read that column from the row:
+    # These symbols don't match symbols in OutputStandard::Headers,
+    # but CSV::RowReader creates a method using these symbol names to
+    # read that column from the row:
+    
     #registrar: "Registrar",
     #registered_number: "Registered Number"
     mail:"Email",
