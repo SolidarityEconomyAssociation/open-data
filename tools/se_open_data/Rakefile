@@ -17,6 +17,12 @@ task :yard do
   end
 end
 
+desc 'Run yard documentation server'
+task :yardserver do
+  # See .yardopts for the options for this
+  `yard server --reload`
+end
+
 desc 'Generate Ruby documentation'
 task doc: %w(yard)
 
