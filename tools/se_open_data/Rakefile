@@ -13,7 +13,7 @@ desc 'Generate Ruby documentation using yard'
 task :yard do
   require 'yard'
   YARD::Rake::YardocTask.new do |t|
-    t.stats_options = %w(--list-undoc)
+    # See .yardopts for the options for this
   end
 end
 
