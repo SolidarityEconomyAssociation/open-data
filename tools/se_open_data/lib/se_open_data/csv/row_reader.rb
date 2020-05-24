@@ -4,6 +4,9 @@ module SeOpenData
     #
     # The idea is to extend this and curry the `headers` initializer
     # parameter with a hash defining the field mapping.
+    #
+    # The use of this is best illustrated by example. See the example
+    # in {file:CSV_MAPPING.md}.
     class RowReader
 
       attr_reader :row, :headers
@@ -44,6 +47,3 @@ module SeOpenData
   end
 end
 
-__END__
-
-The use of this is best illustrated by example. See co-ops-uk-orgs-converter.rb
