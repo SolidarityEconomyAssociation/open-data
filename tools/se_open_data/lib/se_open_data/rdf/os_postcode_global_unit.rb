@@ -33,7 +33,7 @@ module SeOpenData
           end
         end
 
-        #has to include standard cache headers or returns nil
+        # Has to include standard cache headers or returns nil
         def get(address_array, country)
           begin
             #clean entry

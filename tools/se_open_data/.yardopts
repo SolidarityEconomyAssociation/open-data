@@ -1,0 +1,7 @@
+--markup markdown
+--charset utf-8
+'lib/**/*.rb'
+'bin/**/*'
+'rubyfiles/**/*.rb' -
+CSV_MAPPING.md
+

@@ -1,10 +1,4 @@
-# Merge domains and de-duplicate rows of CSV (primarily for dotcoop).
-# A duplicate is defined as having the same keys as a previous row
-# OR
-# The same fields as another row
-# TODO - this should really take the field to merge as an argument so
-# it can be used by any other project that needs fields merging
-# TODO separate field merging into different module
+# coding: utf-8
 require "csv"
 require "levenshtein"
 
@@ -12,16 +6,36 @@ module SeOpenData
   module CSV
     MAX_DIST = 4
     NAME_FIELD = "Name"
+
+    # Merge domains and de-duplicate rows of CSV (primarily for dotcoop).
+    #
+    # A duplicate is defined as having the same keys as a previous row
+    #
+    # OR
+    #
+    # The same fields as another row
+    #
+    # TODO - this should really take the field to merge as an argument so
+    # it can be used by any other project that needs fields merging
+    #
+    # TODO separate field merging into different module
+    #
+    # @param input_io          Input CSV (must have headers)
+    # @param output_io         CSV with duplicates removed
+    # @param error_io          CSV containing duplicates (no headers)
+    # @param keys              Array of column headings that make up the unique key
+    # @param domainHeader      Array of column heading for the domain
+    # @param nameHeader        Array of column heading for the name
+    # @param original_csv      Original csv before geocoding
     def CSV.merge_and_de_duplicate(
-      input_io,         # Input CSV (must have headers)
-      output_io,        # CSV with duplicates removed
-      error_io,         # CSV containing duplicates (no headers)
-      keys,             # Array of column headings that make up the unique key
-      domainHeader,     # Array of column heading for the domain
-      nameHeader, # Array of column heading for the name
-      original_csv = nil # original csv before geocoding
-      
-    )
+      input_io,
+      output_io,
+      error_io,
+      keys,
+      domainHeader,
+      nameHeader,
+      original_csv = nil
+   )
 
       #tidy me
       small_words = %w(on the and ltd limited llp community SCCL)

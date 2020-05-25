@@ -4,16 +4,16 @@ module SeOpenData
   class Initiative
     class Collection
       class Sparql
-	attr_reader :collection, :config
-	def initialize(collection, config)
-	  @collection, @config = collection, config
-	end
-	def save_map_app_sparql_query
-	  ::File.open(config.map_app_sparql_query_filename, "w") {|f|
-	    config.prefixes.each {|prefix, uri|
-	      f.puts "PREFIX #{prefix.to_s}: <#{uri}>"
-	    }
-	    f.puts <<ENDSPARQL
+	      attr_reader :collection, :config
+	      def initialize(collection, config)
+	        @collection, @config = collection, config
+	      end
+	      def save_map_app_sparql_query
+	        ::File.open(config.map_app_sparql_query_filename, "w") {|f|
+	          config.prefixes.each {|prefix, uri|
+	            f.puts "PREFIX #{prefix.to_s}: <#{uri}>"
+	          }
+	          f.puts <<ENDSPARQL
 PREFIX : <#{config.uri_prefix}>
 
 SELECT ?name ?uri ?within ?lat ?lng ?www ?regorg ?sameas ?desc
@@ -31,8 +31,8 @@ WHERE {
 }
 LIMIT #{collection.size}
 ENDSPARQL
-	  }
-	end
+	        }
+	      end
       end
     end
   end

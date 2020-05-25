@@ -1,19 +1,22 @@
-#  SeOpenData::CSV.convert converts a CSV into a new CSV with diffent columns
 
 require 'pp'
 require 'csv'
 
 module SeOpenData
+  
   module CSV
     @@report_csv = nil
     @@report_csv_filename = nil
+    
+    # Generates a CSV file with the same content as the input CSV, but
+    # with an extra column of comments added.  Comments can be added
+    # using the {SeOpenData::CSV::RowReader#add_comment} method (grep for it for examples!)
     def self.set_csv_comment_filename(filename)
-      # if called, then a CSV file will be generated with the same content as 
-      # the input CSV, but with an extra column of comments added.
-      # Comments can be added using the add_comment method (grep for it for examples!)
       @@report_csv_filename = filename
       @@report_csv = ::CSV::open(filename, "wb")
     end
+
+    # Converts a CSV into a new CSV with diffent columns.
     def CSV.convert(output_io, output_headers, input_io, csv_row_reader, csv_opts = {})
       # The way this works is based on having column headings:
       csv_opts.merge!(headers: true, skip_blanks: true)

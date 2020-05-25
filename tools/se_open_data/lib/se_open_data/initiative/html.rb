@@ -1,10 +1,11 @@
-# Generating HTML for initiatives
 
 require 'se_open_data/utils/xml'
 require 'se_open_data/utils/html'
 
 module SeOpenData
   class Initiative
+
+    # Generates HTML for initiatives
     class HTML
       include SeOpenData::Utils::Xml    # for method xml()
       include SeOpenData::Utils::Html

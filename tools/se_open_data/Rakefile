@@ -13,8 +13,14 @@ desc 'Generate Ruby documentation using yard'
 task :yard do
   require 'yard'
   YARD::Rake::YardocTask.new do |t|
-    t.stats_options = %w(--list-undoc)
+    # See .yardopts for the options for this
   end
+end
+
+desc 'Run yard documentation server'
+task :yardserver do
+  # See .yardopts for the options for this
+  `yard server --reload`
 end
 
 desc 'Generate Ruby documentation'
