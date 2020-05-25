@@ -3,7 +3,6 @@
 
 # This is the Converter for Co-ops UK 'outlets' CSV.
 # It converts it into a CSV with standard column headings.
-$LOAD_PATH.unshift '/Volumes/Extra/SEA-dev/open-data-and-maps/data/tools/se_open_data/lib'
 require 'se_open_data'
 
 # This is the CSV standard that we're converting into:
