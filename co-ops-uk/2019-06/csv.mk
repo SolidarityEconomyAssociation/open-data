@@ -90,7 +90,7 @@ $(STD_DE_DUPED_CSV) : $(STD_FIXED_DUPS_CSV)  | $(GEN_CSV_DIR)
 
 # Populate the container lat/long fields, where the postcodeunit is the container:
 $(STANDARD_CSV) : $(STD_DE_DUPED_CSV) | $(GEN_CSV_DIR)
-	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) $< > $@
+	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE)  --postcode-global-cache os_postcode_cache.json $< > $@
 
 # Create a CSV file from the STANDARD one with just a few columns: URI, Name and Normalized postcode
 $(STD_URI_NAME_POSTCODE_CSV): $(STANDARD_CSV) | $(GEN_CSV_DIR)

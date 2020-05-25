@@ -56,6 +56,7 @@ class OptParse
       # Mandatory argument.
       opts.on("--postcodeunit-cache FILENAME",
               "JSON file where OS postcode unit results are cached") do |filename|
+        raise "no such file: #{filename}" unless File.exists?(filename)
         options.postcodeunit_cache = filename
       end
 
@@ -63,7 +64,8 @@ class OptParse
       opts.on("--postcode-global-cache FILENAME",
               "CSV file where all the postcodes are kept (note that this will be a json in the future
               WIP)") do |filename|
-        options.postcodeunit_global_cache = filename.empty? ? nil : filename
+        raise "no such file: #{filename}" unless File.exists?(filename)
+        options.postcodeunit_global_cache = filename
       end
 
       opts.separator ""

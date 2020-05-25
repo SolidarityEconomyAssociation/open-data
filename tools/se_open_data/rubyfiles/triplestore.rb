@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require "./load_config"
 
 
@@ -40,5 +41,5 @@ if !File.file?($config_map["VIRTUOSO_SCRIPT_LOCAL"])
         system("echo \"****\tssh #{$config_map["DEPLOYMENT_SERVER"]} 'isql-vt localhost dba #{$config_map["VIRTUOSO_PASS"]} #{$config_map["VIRTUOSO_SCRIPT_REMOTE"]}'\"")
     end    
 else
-    puts "Done Work Already, load latest version"
+    puts "File exists: #{$config_map['VIRTUOSO_SCRIPT_LOCAL']}"
 end

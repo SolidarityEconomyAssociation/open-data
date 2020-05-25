@@ -20,12 +20,12 @@ end
 desc 'Generate Ruby documentation'
 task doc: %w(yard)
 
-namespace :style do
-  require 'rubocop/rake_task'
-  desc 'Run Ruby style checks using rubocop'
-  RuboCop::RakeTask.new(:ruby)
-end
-
-desc 'Run all style checks'
-task style: %w(style:ruby)
+#namespace :style do
+#  require 'rubocop/rake_task'
+#  desc 'Run Ruby style checks using rubocop'
+#  RuboCop::RakeTask.new(:ruby)
+#end
+#
+#desc 'Run all style checks'
+#task style: %w(style:ruby)
 
