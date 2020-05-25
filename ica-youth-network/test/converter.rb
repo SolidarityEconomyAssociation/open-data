@@ -1,3 +1,4 @@
+# coding: utf-8
 
 
 # This is the Converter for Co-ops UK 'outlets' CSV.
@@ -88,16 +89,8 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
   end
 
   def description
-    
-    descript = ""
-    if desc
-      descript += desc
-    end
-    if additional_desc
-      descript += additional_desc
-    end
-
-  end
+    [desc, additional_desc].compact.join("\\n\\n")
+   end
   
   def email
     if mail && !mail.empty?
