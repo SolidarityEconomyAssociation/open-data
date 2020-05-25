@@ -176,16 +176,19 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
 
     org_st
   end
-  
+
+  # Script entry point method
+  def self.convert(in_io, out_io)
+    SeOpenData::CSV.convert(
+      # Output:
+      out_io, OutputStandard::Headers,
+      # Input:
+      # ARGF.read, SpecializedCsvReader, encoding: "UTF-8"
+      in_io, SpecializedCsvReader, {}
+      # inputContent, SpecializedCsvReader, {}
+    )
+  end
 end
 
-
-SeOpenData::CSV.convert(
-  # Output:
-  $stdout, OutputStandard::Headers,
-  # Input:
-  # ARGF.read, SpecializedCsvReader, encoding: "UTF-8"
-  ARGF.read, SpecializedCsvReader, {}
-  # inputContent, SpecializedCsvReader, {}
-)
-
+# Run the entry point if we're invoked as a script
+SpecializedCsvReader.convert(ARGF.read, $stdout) if __FILE__ == $0
