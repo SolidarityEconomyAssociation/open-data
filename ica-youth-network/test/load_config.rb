@@ -94,12 +94,9 @@ module SeOpenData
       conf["REDIRECT_W3ID_TO"] = "#{conf["URI_SCHEME"]}://#{conf["SERVER_ALIAS"]}/#{conf["URI_PATH_PREFIX"]}"
       #create_w3id.rb
 
-
-
-      if conf.key?("AUTO_LOAD_TRIPLETS") && conf["AUTO_LOAD_TRIPLETS"].to_s.downcase == "true"
-        conf["AUTO_LOAD_TRIPLETS"] = true
-      else
-        conf["AUTO_LOAD_TRIPLETS"] = false
+      # Preserve booleans in these cases
+      %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
+       conf[key] = conf.key?(key) && conf[key].to_s.downcase == "true"
       end
 
       #end config
