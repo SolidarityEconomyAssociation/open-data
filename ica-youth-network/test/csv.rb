@@ -4,6 +4,13 @@
 
 require  "./load_config"
 
+config_file = File.join(__dir__, 'settings/config.txt')
+if !File.file?(config_file)
+  config_file = File.join(__dir__, 'settings/default.txt')
+end
+Config = SeOpenData::Config.new(config_file)
+$config_map = Config.map
+  
 SRC_DIR = $config_map["SRC_CSV_DIR"]
 GEN_DIR = $config_map["GEN_CSV_DIR"]
 BIN_DIR = $config_map["SE_OPEN_DATA_BIN_DIR"]

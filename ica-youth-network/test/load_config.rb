@@ -1,18 +1,15 @@
 module SeOpenData
-  module Config
-    #this is an abstraction layer from the config file itself
-    #i.e. variables here are independant from names in config file
-    $default_file = "settings/defaults.txt"
-    $config_file = "settings/config.txt"
+  # This is an abstraction layer from the config file itself.
+  # i.e. Variables here are independant from names in config file
+  class Config
 
-    $config_map = nil
+    def initialize(file)
+    @config_file = "settings/config.txt"
 
-    if !$config_map
-      if (File.file?($config_file))
-        conf_lines = File.read($config_file).split
-      else
-        conf_lines = File.read($default_file).split
-      end
+    @config_map = nil
+
+    if !@config_map
+      conf_lines = File.read(@config_file).split
       conf = {}
       conf_lines.each do |line|
         if line.split("=").length > 1
@@ -92,13 +89,19 @@ module SeOpenData
       system("mkdir -p " + conf["GEN_SPARQL_DIR"])
       system("mkdir -p " + conf["W3ID_LOCAL_DIR"])
 
-      $config_map = conf
+      @config_map = conf
     end
-
+    end
+    
+    # Gets the config hash
+    def map
+      @config_map
+    end
+    
     #f stands for file
-    def self.gen_ruby_command(in_f, script, options, out_f, err_f)
+    def gen_ruby_command(in_f, script, options, out_f, err_f)
       #generate ruby commands to execute ruby scripts for pipelined processes
-      rb_template = "ruby -I " + $config_map["SE_OPEN_DATA_LIB_DIR"]
+      rb_template = "ruby -I " + @config_map["SE_OPEN_DATA_LIB_DIR"]
 
       command = ""
 
