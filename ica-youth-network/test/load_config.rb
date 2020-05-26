@@ -65,8 +65,7 @@ module SeOpenData
       conf["VIRTUOSO_NAMED_GRAPH_FILE"]=conf["GEN_VIRTUOSO_DIR"]+"global.graph"
       conf["VIRTUOSO_SQL_SCRIPT"]="loaddata.sql"
 
-      t = Time.now
-      conf["VERSION"] = "#{t.year}#{t.month}#{t.day}#{t.hour}#{t.min}#{t.sec}"
+      conf["VERSION"] = make_version
       conf["VIRTUOSO_DATA_DIR"] = "#{conf["VIRTUOSO_ROOT_DATA_DIR"]}#{conf["VERSION"]}/"
       conf["VIRTUOSO_SCRIPT_LOCAL"] = conf["GEN_VIRTUOSO_DIR"]+conf["VIRTUOSO_SQL_SCRIPT"]
       conf["VIRTUOSO_SCRIPT_REMOTE"] = conf["VIRTUOSO_DATA_DIR"] + conf["VIRTUOSO_SQL_SCRIPT"]
@@ -133,6 +132,13 @@ module SeOpenData
     end
 
 
+    protected
+
+    # For overriding in tests
+    def make_version
+      t = Time.now
+      "#{t.year}#{t.month}#{t.day}#{t.hour}#{t.min}#{t.sec}"
+    end
     
     private
 
