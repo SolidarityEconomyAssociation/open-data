@@ -1,3 +1,6 @@
+MULTI_EQUAL=foo=bar=baz
+NO_EQUAL
+EMPTY_EQUAL=
 USE_ENV_PASSWORDS=false
 SRC_CSV_DIR=original-data/
 ORIGINAL_CSV_1=Youth-ledCoops.csv

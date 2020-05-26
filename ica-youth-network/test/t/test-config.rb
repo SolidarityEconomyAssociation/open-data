@@ -30,6 +30,9 @@ describe SeOpenData::Config do
 
     #puts config_map
     expected_map = {
+      "MULTI_EQUAL" => "foo=bar=baz",
+      "NO_EQUAL" => "",
+      "EMPTY_EQUAL" => "",
       "USE_ENV_PASSWORDS" => false,
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
       "ORIGINAL_CSV_1" => "Youth-ledCoops.csv",
