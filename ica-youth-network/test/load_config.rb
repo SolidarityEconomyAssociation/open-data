@@ -1,9 +1,18 @@
 module SeOpenData
+  # Reads a simple key-value plain-text config file.
+  #
+  # Values are delimited by an `=` character. Expected values are
+  # expanded with some hard-wired know-how, and some directories are
+  # found relative to the {base_dir} parameter, which defaults to the
+  # caller script's directory.
+  #
   # This is an abstraction layer from the config file itself.
-  # i.e. Variables here are independant from names in config file
+  # i.e. Variables here are independant from names in the config file.
   class Config
 
-    def initialize(file)
+    # @param file [String] - the path to the config file to load.
+    # @param base_dir [String] - the base directory in which to locate certain paths
+    def initialize(file, base_dir = Config.caller_dir)
       @config_file = file
 
       conf_lines = File.read(@config_file).split
@@ -16,8 +25,8 @@ module SeOpenData
       t = Time.now
       # setup Config
       # setup lib path, this needs to be changed
-      conf["SE_OPEN_DATA_LIB_DIR"] = File.expand_path(conf["SE_OPEN_DATA_LIB_DIR"], __dir__)
-      conf["SE_OPEN_DATA_BIN_DIR"] = File.expand_path(conf["SE_OPEN_DATA_BIN_DIR"], __dir__) + "/"
+      conf["SE_OPEN_DATA_LIB_DIR"] = File.expand_path(conf["SE_OPEN_DATA_LIB_DIR"], base_dir)
+      conf["SE_OPEN_DATA_BIN_DIR"] = File.expand_path(conf["SE_OPEN_DATA_BIN_DIR"], base_dir) + "/"
 
       # csv.rb
       # This is the directory where we generate intermediate csv files
@@ -121,6 +130,14 @@ module SeOpenData
       system(command)
     end
 
+
+    
+    private
+
+    # Used only in the constructor as a default value for base_dir
+    def self.caller_dir
+      File.dirname(caller_locations(2, 1).first.absolute_path)
+    end
     
   end
 end
