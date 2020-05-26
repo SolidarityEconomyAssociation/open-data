@@ -4,11 +4,8 @@ module SeOpenData
   class Config
 
     def initialize(file)
-    @config_file = "settings/config.txt"
+      @config_file = file
 
-    @config_map = nil
-
-    if !@config_map
       conf_lines = File.read(@config_file).split
       conf = {}
       conf_lines.each do |line|
@@ -90,7 +87,6 @@ module SeOpenData
       system("mkdir -p " + conf["W3ID_LOCAL_DIR"])
 
       @config_map = conf
-    end
     end
     
     # Gets the config hash
