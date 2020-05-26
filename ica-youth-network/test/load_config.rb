@@ -22,7 +22,7 @@ module SeOpenData
           conf[line.split("=")[0]] = line.split("=")[1]
         end
       end
-      t = Time.now
+
       # setup Config
       # setup lib path, this needs to be changed
       conf["SE_OPEN_DATA_LIB_DIR"] = File.expand_path(conf["SE_OPEN_DATA_LIB_DIR"], base_dir)
@@ -64,6 +64,8 @@ module SeOpenData
       #triplestore.rb
       conf["VIRTUOSO_NAMED_GRAPH_FILE"]=conf["GEN_VIRTUOSO_DIR"]+"global.graph"
       conf["VIRTUOSO_SQL_SCRIPT"]="loaddata.sql"
+
+      t = Time.now
       conf["VERSION"] = "#{t.year}#{t.month}#{t.day}#{t.hour}#{t.min}#{t.sec}"
       conf["VIRTUOSO_DATA_DIR"] = "#{conf["VIRTUOSO_ROOT_DATA_DIR"]}#{conf["VERSION"]}/"
       conf["VIRTUOSO_SCRIPT_LOCAL"] = conf["GEN_VIRTUOSO_DIR"]+conf["VIRTUOSO_SQL_SCRIPT"]
