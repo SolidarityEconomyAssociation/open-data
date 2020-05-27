@@ -16,7 +16,7 @@ module SeOpenData
     def initialize(file, base_dir = Config.caller_dir)
       @config_file = file
 
-      conf = {}
+      @map = {}
       File.foreach(@config_file).with_index(1) do |line, num|
         next if line =~ /^\s*$/ # skip blank lines
         next if line =~ /^\s*#/ # skip comments
@@ -32,10 +32,10 @@ module SeOpenData
         raise "config line with no '=' delimiter on line #{num}" if val.nil?
         
         # Guard against duplicates. Likewise a mistake.
-        raise "config key '#{key}' duplicated on line #{num}" if conf.has_key? key
+        raise "config key '#{key}' duplicated on line #{num}" if @map.has_key? key
 
-        # Add the entry
-        conf[key] = val
+        # Add the key and value
+        @map[key] = val
       end
 
       # setup Config
@@ -54,77 +54,75 @@ module SeOpenData
       # Expand these paths relative to base_dir
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR SE_OPEN_DATA_BIN_DIR)
         .each do |key| # expand rel to base_dir, append a slash
-          conf[key] = join File.expand_path(conf[key], base_dir), ""
+          @map[key] = join File.expand_path(@map[key], base_dir), ""
         end
 
       # This is the directory where we generate intermediate csv files
-      conf["GEN_CSV_DIR"] = join conf["TOP_OUTPUT_DIR"], "csv", ""
+      @map["GEN_CSV_DIR"] = join @map["TOP_OUTPUT_DIR"], "csv", ""
 
       #goal end file (standard.csv)
-      conf["STANDARD_CSV"] = join conf["TOP_OUTPUT_DIR"], conf["STANDARD_CSV"]
+      @map["STANDARD_CSV"] = join @map["TOP_OUTPUT_DIR"], @map["STANDARD_CSV"]
       #csv.rb end
       
       #generate.rb
-      conf["WWW_DIR"] = unixjoin conf["TOP_OUTPUT_DIR"], "www", ""
-      conf["GEN_DOC_DIR"] = unixjoin conf["WWW_DIR"], "doc", ""
-      conf["GEN_CSS_DIR"] = unixjoin conf["GEN_DOC_DIR"], "css", ""
-      conf["GEN_VIRTUOSO_DIR"] = unixjoin conf["TOP_OUTPUT_DIR"], "virtuoso", ""
-      conf["GEN_SPARQL_DIR"] = unixjoin conf["TOP_OUTPUT_DIR"], "sparql", ""
-      conf["SPARQL_GET_ALL_FILE"] = unixjoin conf["GEN_SPARQL_DIR"], "query.rq"
-      conf["SPARQL_LIST_GRAPHS_FILE"] = unixjoin conf["GEN_SPARQL_DIR"], "list-graphs.rq"
-      conf["SPARQL_ENDPOINT_FILE"] = unixjoin conf["GEN_SPARQL_DIR"], "endpoint.txt"
-      conf["SPARQL_GRAPH_NAME_FILE"] = unixjoin conf["GEN_SPARQL_DIR"], "default-graph-uri.txt"
-      conf["DATASET_URI_BASE"] = "#{conf["URI_SCHEME"]}://#{conf["URI_HOST"]}/#{conf["URI_PATH_PREFIX"]}"
-      conf["GRAPH_NAME"] = conf["DATASET_URI_BASE"]
-      conf["ONE_BIG_FILE_BASENAME"] = unixjoin conf["GEN_VIRTUOSO_DIR"], "all"
+      @map["WWW_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "www", ""
+      @map["GEN_DOC_DIR"] = unixjoin @map["WWW_DIR"], "doc", ""
+      @map["GEN_CSS_DIR"] = unixjoin @map["GEN_DOC_DIR"], "css", ""
+      @map["GEN_VIRTUOSO_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "virtuoso", ""
+      @map["GEN_SPARQL_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "sparql", ""
+      @map["SPARQL_GET_ALL_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "query.rq"
+      @map["SPARQL_LIST_GRAPHS_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "list-graphs.rq"
+      @map["SPARQL_ENDPOINT_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "endpoint.txt"
+      @map["SPARQL_GRAPH_NAME_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "default-graph-uri.txt"
+      @map["DATASET_URI_BASE"] = "#{@map["URI_SCHEME"]}://#{@map["URI_HOST"]}/#{@map["URI_PATH_PREFIX"]}"
+      @map["GRAPH_NAME"] = @map["DATASET_URI_BASE"]
+      @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
       
-      conf["CSS_FILES"] =  Dir[join conf["CSS_SRC_DIR"], "*.css"].join(",")
-      conf["SAME_AS_FILE"] = conf.key?("SAMEAS_CSV") ? conf["SAMEAS_CSV"] : "" 
-      conf["SAME_AS_HEADERS"] = conf.key?("SAMEAS_HEADERS") ? conf["SAMEAS_HEADERS"] : "" 
+      @map["CSS_FILES"] =  Dir[join @map["CSS_SRC_DIR"], "*.css"].join(",")
+      @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 
+      @map["SAME_AS_HEADERS"] = @map.key?("SAMEAS_HEADERS") ? @map["SAMEAS_HEADERS"] : "" 
 
       #generate.rb
 
       #deploy.rb
-      conf["DEPLOYMENT_DOC_SUBDIR"] = conf["URI_PATH_PREFIX"]
-      conf["DEPLOYMENT_DOC_DIR"] = unixjoin conf["DEPLOYMENT_WEBROOT"], conf["DEPLOYMENT_DOC_SUBDIR"]
+      @map["DEPLOYMENT_DOC_SUBDIR"] = @map["URI_PATH_PREFIX"]
+      @map["DEPLOYMENT_DOC_DIR"] = unixjoin @map["DEPLOYMENT_WEBROOT"], @map["DEPLOYMENT_DOC_SUBDIR"]
 
       #deploy.rb
 
       #triplestore.rb
-      conf["VIRTUOSO_NAMED_GRAPH_FILE"] = unixjoin conf["GEN_VIRTUOSO_DIR"], "global.graph"
-      conf["VIRTUOSO_SQL_SCRIPT"] = "loaddata.sql"
+      @map["VIRTUOSO_NAMED_GRAPH_FILE"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "global.graph"
+      @map["VIRTUOSO_SQL_SCRIPT"] = "loaddata.sql"
 
-      conf["VERSION"] = make_version
-      conf["VIRTUOSO_DATA_DIR"] = unixjoin conf["VIRTUOSO_ROOT_DATA_DIR"], conf["VERSION"], ""
-      conf["VIRTUOSO_SCRIPT_LOCAL"] = join conf["GEN_VIRTUOSO_DIR"], conf["VIRTUOSO_SQL_SCRIPT"]
-      conf["VIRTUOSO_SCRIPT_REMOTE"] = unixjoin conf["VIRTUOSO_DATA_DIR"], conf["VIRTUOSO_SQL_SCRIPT"]
+      @map["VERSION"] = make_version
+      @map["VIRTUOSO_DATA_DIR"] = unixjoin @map["VIRTUOSO_ROOT_DATA_DIR"], @map["VERSION"], ""
+      @map["VIRTUOSO_SCRIPT_LOCAL"] = join @map["GEN_VIRTUOSO_DIR"], @map["VIRTUOSO_SQL_SCRIPT"]
+      @map["VIRTUOSO_SCRIPT_REMOTE"] = unixjoin @map["VIRTUOSO_DATA_DIR"], @map["VIRTUOSO_SQL_SCRIPT"]
 
       #triplestore.rb
 
       #create_w3id.rb
-      conf["W3ID_LOCAL_DIR"] = join conf["TOP_OUTPUT_DIR"], "w3id", ""
-      conf["HTACCESS"] = join conf["W3ID_LOCAL_DIR"], ".htaccess"
-      conf["W3ID_REMOTE_SSH"] = "#{conf["DEPLOYMENT_SERVER"]}:#{conf["W3ID_REMOTE_LOCATION"]}#{conf["URI_PATH_PREFIX"]}"
-      conf["REDIRECT_W3ID_TO"] = "#{conf["URI_SCHEME"]}://#{conf["SERVER_ALIAS"]}/#{conf["URI_PATH_PREFIX"]}"
+      @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
+      @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
+      @map["W3ID_REMOTE_SSH"] = "#{@map["DEPLOYMENT_SERVER"]}:#{@map["W3ID_REMOTE_LOCATION"]}#{@map["URI_PATH_PREFIX"]}"
+      @map["REDIRECT_W3ID_TO"] = "#{@map["URI_SCHEME"]}://#{@map["SERVER_ALIAS"]}/#{@map["URI_PATH_PREFIX"]}"
       #create_w3id.rb
 
       # Preserve booleans in these cases
       %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
-       conf[key] = conf.key?(key) && conf[key].to_s.downcase == "true"
+        @map[key] = @map.key?(key) && @map[key].to_s.downcase == "true"
       end
 
       #end config
 
       # Make sure these dirs exist
-      FileUtils.mkdir_p conf.fetch_values(
+      FileUtils.mkdir_p @map.fetch_values(
         'GEN_CSV_DIR',
         'GEN_CSS_DIR',
         'GEN_VIRTUOSO_DIR',
         'GEN_SPARQL_DIR',
         'W3ID_LOCAL_DIR'
       )
-      
-      @config_map = conf
     end
 
     # Checks whether key is valid
@@ -140,26 +138,26 @@ module SeOpenData
     # @param args (See Hash#fetch)
     # @return (See Hash#fetch)
     def fetch(*args)
-      @config_map.fetch *args
+      @map.fetch *args
     end
-    
+
     # A convenient method for #map.has_key?
     #
     # @param args (See Hash#has_key?)
     # @return (See Hash#has_key?)
     def has_key?(key)
-      @config_map.has_key? key
+      @map.has_key? key
     end
-    
+
     # Gets the underlying config hash
     def map
-      @config_map
+      @map
     end
     
     #f stands for file
     def gen_ruby_command(in_f, script, options, out_f, err_f)
       #generate ruby commands to execute ruby scripts for pipelined processes
-      rb_template = "ruby -I " + @config_map["SE_OPEN_DATA_LIB_DIR"]
+      rb_template = "ruby -I " + @map["SE_OPEN_DATA_LIB_DIR"]
 
       command = ""
 
