@@ -7,21 +7,20 @@ require  "./load_config"
 config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first # first existing match
 
 Config = SeOpenData::Config.new(config_file)
-config_map = Config.map
   
-SRC_DIR = config_map["SRC_CSV_DIR"]
-GEN_DIR = config_map["GEN_CSV_DIR"]
-BIN_DIR = config_map["SE_OPEN_DATA_BIN_DIR"]
+SRC_DIR = Config.fetch "SRC_CSV_DIR"
+GEN_DIR = Config.fetch "GEN_CSV_DIR"
+BIN_DIR = Config.fetch "SE_OPEN_DATA_BIN_DIR"
 
 # original src csv files 
-csv_to_standard_1 = File.join(SRC_DIR, config_map["ORIGINAL_CSV_1"])
+csv_to_standard_1 = File.join(SRC_DIR, Config.fetch("ORIGINAL_CSV_1"))
 
 # Intermediate csv files
 added_ids = File.join(GEN_DIR, "with_ids.csv")
 cleared_errors = File.join(GEN_DIR, "cleared_errors.csv")
 
 # Output csv file
-output_csv = config_map["STANDARD_CSV"]
+output_csv = Config.fetch "STANDARD_CSV"
 
 
 # Performs the following on the input CSV stream
