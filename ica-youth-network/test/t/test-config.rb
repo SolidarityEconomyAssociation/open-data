@@ -12,14 +12,14 @@ class TestConfig < SeOpenData::Config
 end
 
 describe SeOpenData::Config do
+  caller_dir = File.absolute_path(__dir__)
+  generated_dir = caller_dir+"/generated-data"
   
 
   describe "a valid config instance" do
     config_map = nil
     
     lib_dir = File.absolute_path(__dir__+ "/../../tools/se_open_data")
-    caller_dir = File.absolute_path(__dir__)
-    generated_dir = caller_dir+"/generated-data"
 
     # TestConfig should recreate this + some contents
     FileUtils.rm_r generated_dir if File.exists? generated_dir
@@ -27,6 +27,12 @@ describe SeOpenData::Config do
     # expansions relative to caller_dir, i.e. this script's dir
     config = TestConfig.new(caller_dir+"/config/valid.txt")
 
+    # Make recursive directory listing here, before other tests delete it
+    listing = Dir.glob(generated_dir+"/**/*", File::FNM_DOTMATCH)
+                .map {|it| it.delete_prefix(generated_dir)+"\n" }
+                .sort
+                .join
+    
     config_map = config.map
     
     #puts config_map
@@ -110,13 +116,61 @@ describe SeOpenData::Config do
 HERE
     
     it "should create the expected directories" do
-      # Make recursive directory listing
-      listing = Dir.glob(generated_dir+"/**/*", File::FNM_DOTMATCH)
-                  .map {|it| it.delete_prefix(generated_dir)+"\n" }
-                  .sort
-                  .join
-      #puts listing
       value(listing).must_equal expected_listing
+    end
+  end
+
+  describe "a config instance with duplicates" do
+
+    # TestConfig should recreate this + some contents
+    FileUtils.rm_r generated_dir if File.exists? generated_dir
+
+    it "should raise an exception" do
+      err = proc do
+        TestConfig.new(caller_dir+"/config/invalid-dupes.txt")
+      end
+              .must_raise RuntimeError
+      
+      err.message.must_match /config key 'SOMETHING' duplicated on line 3/
+    end
+  end
+
+  describe "a config instance with a invalid keys" do
+
+    # TestConfig should recreate this + some contents
+    FileUtils.rm_r generated_dir if File.exists? generated_dir
+
+    it "(space) should raise an exception" do
+      err = proc do
+        TestConfig.new(caller_dir+"/config/invalid-keys-1.txt")
+      end
+              .must_raise RuntimeError
+      
+      err.message.must_match /invalid config key 'SOMETHING ELSE' at line 2/
+    end
+    
+    it "(colon) should raise an exception" do
+      err = proc do
+        TestConfig.new(caller_dir+"/config/invalid-keys-2.txt")
+      end
+              .must_raise RuntimeError
+      
+      err.message.must_match /invalid config key 'SOMETHING:ELSE' at line 2/
+    end
+  end
+  
+  describe "a config instance with missing delimiters" do
+
+    # TestConfig should recreate this + some contents
+    FileUtils.rm_r generated_dir if File.exists? generated_dir
+
+    it "should raise an exception" do
+      err = proc do
+        TestConfig.new(caller_dir+"/config/invalid-delims.txt")
+      end
+              .must_raise RuntimeError
+      
+      err.message.must_match /config line with no '=' delimiter on line 2/
     end
   end
   
