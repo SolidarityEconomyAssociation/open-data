@@ -16,11 +16,26 @@ module SeOpenData
     def initialize(file, base_dir = Config.caller_dir)
       @config_file = file
 
-      conf_lines = File.read(@config_file).split
       conf = {}
-      conf_lines.each do |line|
-        key, val = line.split("=", 2)
-        conf[key] = val.nil? ? '' : val # handle missing '='
+      File.foreach(@config_file).with_index(1) do |line, num|
+        next if line =~ /^\s*$/ # skip blank lines
+        next if line =~ /^\s*#/ # skip comments
+
+        # Split on the first =, trim the resulting string pair.
+        # If no =, val will be nil.
+        key, val = line.split("=", 2).map(&:strip)
+
+        # Guard against invalid key characters. This is almost certainly a mistake
+        raise "invalid config key '#{key}' at line #{num}" unless valid_key? key
+        
+        # Guard against no '='. Likewise a mistake.
+        raise "config line with no '=' delimiter on line #{num}" if val.nil?
+        
+        # Guard against duplicates. Likewise a mistake.
+        raise "config key '#{key}' duplicated on line #{num}" if conf.has_key? key
+
+        # Add the entry
+        conf[key] = val
       end
 
       # setup Config
@@ -110,6 +125,14 @@ module SeOpenData
       )
       
       @config_map = conf
+    end
+
+    # Checks whether key is valid
+    #
+    # Valid keys must contain only alphanumeric characters, hyphens or underscores.
+    # @return [Boolean] true if it is valid.
+    def valid_key?(key)
+      key !~ /[^-\w]/i
     end
     
     # Gets the config hash
