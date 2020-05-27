@@ -134,8 +134,24 @@ module SeOpenData
     def valid_key?(key)
       key !~ /[^-\w]/i
     end
+
+    # A convenient method for #map.fetch
+    #
+    # @param args (See Hash#fetch)
+    # @return (See Hash#fetch)
+    def fetch(*args)
+      @config_map.fetch *args
+    end
     
-    # Gets the config hash
+    # A convenient method for #map.has_key?
+    #
+    # @param args (See Hash#has_key?)
+    # @return (See Hash#has_key?)
+    def has_key?(key)
+      @config_map.has_key? key
+    end
+    
+    # Gets the underlying config hash
     def map
       @config_map
     end
