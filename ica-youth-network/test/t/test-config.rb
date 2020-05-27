@@ -12,23 +12,23 @@ class TestConfig < SeOpenData::Config
 end
 
 describe SeOpenData::Config do
-  config_map = nil
-  
-  lib_dir = File.absolute_path(__dir__+ "/../../tools/se_open_data")
-  caller_dir = File.absolute_path(__dir__)
-  generated_dir = caller_dir+"/generated-data"
-
-  # TestConfig should recreate this + some contents
-  FileUtils.rm_r generated_dir if File.exists? generated_dir
-
-  # expansions relative to caller_dir, i.e. this script's dir
-  config = TestConfig.new(caller_dir+"/config/valid.txt")
-
-  config_map = config.map
   
 
   describe "a valid config instance" do
+    config_map = nil
+    
+    lib_dir = File.absolute_path(__dir__+ "/../../tools/se_open_data")
+    caller_dir = File.absolute_path(__dir__)
+    generated_dir = caller_dir+"/generated-data"
 
+    # TestConfig should recreate this + some contents
+    FileUtils.rm_r generated_dir if File.exists? generated_dir
+
+    # expansions relative to caller_dir, i.e. this script's dir
+    config = TestConfig.new(caller_dir+"/config/valid.txt")
+
+    config_map = config.map
+    
     #puts config_map
     expected_map = {
       "MULTI_EQUAL" => "foo=bar=baz",
