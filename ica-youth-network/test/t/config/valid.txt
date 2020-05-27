@@ -1,6 +1,13 @@
 MULTI_EQUAL=foo=bar=baz
-NO_EQUAL
 EMPTY_EQUAL=
+
+# This comment should be ignored
+
+# (Along with blank lines)
+
+  # This = also a comment
+  with-Hyphen-Lowercase0123456789 = # this is not a comment #
+  WITH_PADDING = with padding  
 USE_ENV_PASSWORDS=false
 SRC_CSV_DIR=original-data/
 ORIGINAL_CSV_1=Youth-ledCoops.csv

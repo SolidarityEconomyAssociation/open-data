@@ -22,17 +22,19 @@ describe SeOpenData::Config do
   FileUtils.rm_r generated_dir if File.exists? generated_dir
 
   # expansions relative to caller_dir, i.e. this script's dir
-  config = TestConfig.new(caller_dir+"/config/defaults.txt")
+  config = TestConfig.new(caller_dir+"/config/valid.txt")
 
   config_map = config.map
   
-  describe "a config default instance" do
+
+  describe "a valid config instance" do
 
     #puts config_map
     expected_map = {
       "MULTI_EQUAL" => "foo=bar=baz",
-      "NO_EQUAL" => "",
       "EMPTY_EQUAL" => "",
+      "with-Hyphen-Lowercase0123456789" => "# this is not a comment #",
+      "WITH_PADDING" => "with padding",
       "USE_ENV_PASSWORDS" => false,
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
       "ORIGINAL_CSV_1" => "Youth-ledCoops.csv",
@@ -117,4 +119,5 @@ HERE
       value(listing).must_equal expected_listing
     end
   end
+  
 end
