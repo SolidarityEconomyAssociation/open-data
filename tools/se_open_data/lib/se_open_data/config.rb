@@ -138,7 +138,7 @@ module SeOpenData
     # @param args (See Hash#fetch)
     # @return (See Hash#fetch)
     def fetch(*args)
-      @map.fetch *args
+      @map.fetch(*args)
     end
 
     # A convenient method for #map.has_key?

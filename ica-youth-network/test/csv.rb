@@ -2,7 +2,8 @@
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
 
-require  "./load_config"
+require_relative "../../tools/se_open_data/lib/load_path"
+require  "se_open_data/config"
 
 config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first # first existing match
 

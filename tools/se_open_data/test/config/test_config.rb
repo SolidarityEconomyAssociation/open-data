@@ -1,4 +1,5 @@
-require_relative "../load_config.rb"
+require_relative "../../lib/load_path"
+require "se_open_data/config"
 require "minitest/autorun"
 require "fileutils"
 
@@ -22,7 +23,7 @@ describe SeOpenData::Config do
     lib_dir = File.absolute_path(__dir__+ "/../../tools/se_open_data")
 
     # TestConfig should recreate this + some contents
-    FileUtils.rm_r generated_dir if File.exists? generated_dir
+    FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     # expansions relative to caller_dir, i.e. this script's dir
     config = TestConfig.new(caller_dir+"/config/valid.txt")
@@ -123,7 +124,7 @@ HERE
   describe "a config instance with duplicates" do
 
     # TestConfig should recreate this + some contents
-    FileUtils.rm_r generated_dir if File.exists? generated_dir
+    FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
       err = proc do
@@ -131,14 +132,14 @@ HERE
       end
               .must_raise RuntimeError
       
-      err.message.must_match /config key 'SOMETHING' duplicated on line 3/
+      err.message.must_match "config key 'SOMETHING' duplicated on line 3"
     end
   end
 
   describe "a config instance with a invalid keys" do
 
     # TestConfig should recreate this + some contents
-    FileUtils.rm_r generated_dir if File.exists? generated_dir
+    FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "(space) should raise an exception" do
       err = proc do
@@ -146,7 +147,7 @@ HERE
       end
               .must_raise RuntimeError
       
-      err.message.must_match /invalid config key 'SOMETHING ELSE' at line 2/
+      err.message.must_match "invalid config key 'SOMETHING ELSE' at line 2"
     end
     
     it "(colon) should raise an exception" do
@@ -155,14 +156,14 @@ HERE
       end
               .must_raise RuntimeError
       
-      err.message.must_match /invalid config key 'SOMETHING:ELSE' at line 2/
+      err.message.must_match "invalid config key 'SOMETHING:ELSE' at line 2"
     end
   end
   
   describe "a config instance with missing delimiters" do
 
     # TestConfig should recreate this + some contents
-    FileUtils.rm_r generated_dir if File.exists? generated_dir
+    FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
       err = proc do
@@ -170,8 +171,9 @@ HERE
       end
               .must_raise RuntimeError
       
-      err.message.must_match /config line with no '=' delimiter on line 2/
+      err.message.must_match "config line with no '=' delimiter on line 2"
     end
   end
-  
+  # FIXME test missing mandatory values
+  # also unknown values?
 end
