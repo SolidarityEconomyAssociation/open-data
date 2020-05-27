@@ -4,10 +4,8 @@
 
 require  "./load_config"
 
-config_file = File.join(__dir__, 'settings/config.txt')
-if !File.file?(config_file)
-  config_file = File.join(__dir__, 'settings/default.txt')
-end
+config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first # first existing match
+
 Config = SeOpenData::Config.new(config_file)
 $config_map = Config.map
   
