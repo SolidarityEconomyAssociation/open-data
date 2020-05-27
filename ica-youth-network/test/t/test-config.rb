@@ -54,7 +54,7 @@ describe SeOpenData::Config do
       "VIRTUOSO_PASS_FILE" => "deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password",
       "W3ID_REMOTE_LOCATION" => "/var/www/html/w3id.org/",
       "SERVER_ALIAS" => "data1.solidarityeconomy.coop",
-      "TEST_INITIATIVE_IDENTIFIERS" => "16",
+      "TEST_INITIATIVE_IDENTIFIERS" => "16 40",
       "GEN_CSV_DIR" => caller_dir+"/generated-data/csv/",
       "WWW_DIR" => caller_dir+"/generated-data/www/",
       "GEN_DOC_DIR" => caller_dir+"/generated-data/www/doc/",

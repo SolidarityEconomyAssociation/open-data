@@ -19,9 +19,8 @@ module SeOpenData
       conf_lines = File.read(@config_file).split
       conf = {}
       conf_lines.each do |line|
-        if line.split("=").length > 1
-          conf[line.split("=")[0]] = line.split("=")[1]
-        end
+        key, val = line.split("=", 2)
+        conf[key] = val.nil? ? '' : val # handle missing '='
       end
 
       # setup Config
