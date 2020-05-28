@@ -38,15 +38,6 @@ module SeOpenData
         @map[key] = val
       end
 
-      def join(*args)  # joins using local path delimiter
-        File.join(*args)
-      end
-      def unixjoin(first, *rest) # uses the unix '/' delimiter
-        #First part must have trailing slash removed only, rest must
-        # have (a single) leading slash.
-        first.gsub(%r{/+$},'')+rest.map {|it| it.gsub(%r{^/*},"/") }.join
-      end
-
       # These keys are mandatory, because we use them below
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR
          SE_OPEN_DATA_BIN_DIR STANDARD_CSV URI_SCHEME URI_HOST
@@ -201,6 +192,18 @@ module SeOpenData
     
     private
 
+    # Joins directory fragments using local path delimiter
+    def join(*args)  
+      File.join(*args)
+    end
+
+    # Joins directory fragments using the unix '/' delimiter
+    def unixjoin(first, *rest) 
+      #First part must have trailing slash removed only, rest must
+      # have (a single) leading slash.
+      first.gsub(%r{/+$},'')+rest.map {|it| it.gsub(%r{^/*},"/") }.join
+    end
+    
     # Used only in the constructor as a default value for base_dir
     def self.caller_dir
       File.dirname(caller_locations(2, 1).first.absolute_path)
