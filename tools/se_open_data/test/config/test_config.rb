@@ -42,6 +42,9 @@ describe SeOpenData::Config do
       "EMPTY_EQUAL" => "",
       "withLowercase0123456789" => "# this is not a comment #",
       "WITH_PADDING" => "with padding",
+      "unique1" => "unique1",
+      "SHARED" => "shared",
+      "map" => "hello",
       "USE_ENV_PASSWORDS" => false,
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
       "ORIGINAL_CSV_1" => "Youth-ledCoops.csv",
@@ -118,6 +121,42 @@ HERE
     
     it "should create the expected directories" do
       value(listing).must_equal expected_listing
+    end
+
+
+    it "should respond to the keys as methods" do
+      expected_map.each do |key, value|
+        method = key.to_sym
+
+        # Skip methods which are implemented on the class!
+        if !config.class.method_defined? method
+          value(config.send method).must_equal value
+        end
+      end
+    end
+    
+    it "key methods should be singleton methods" do
+      # create an instance with a unique2 key
+      config2 = TestConfig.new(caller_dir+"/config/valid2.txt")
+
+      # methods should be present on the correct instances
+      value(config.unique1).must_equal 'unique1'
+      value(config2.unique2).must_equal 'unique2'
+      
+      # but they shouldn't be present on the others
+      value(config.respond_to? :unique2).must_equal false
+      value(config2.respond_to? :unique1).must_equal false
+
+      # common methods should return different values
+      value(config.SHARED).must_equal 'shared'
+      value(config2.SHARED).must_equal 'shared'
+    end
+
+    it "keys should not redefine existing methods" do
+      # The map key for example should be allowed to exist in the config
+      value(config.fetch 'map').must_equal 'hello'
+      # But not clobber the :map method
+      value(config.map).must_equal expected_map
     end
   end
 
