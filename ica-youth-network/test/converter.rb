@@ -190,5 +190,3 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
   end
 end
 
-# Run the entry point if we're invoked as a script
-SpecializedCsvReader.convert(ARGF.read, $stdout) if __FILE__ == $0

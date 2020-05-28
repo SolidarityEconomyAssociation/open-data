@@ -66,31 +66,48 @@ def clear_csv_errors(in_f:, out_f:)
 end
 
 def add_unique_ids(in_f:, out_f:)
-  Config.gen_ruby_command(
-    in_f,
-    File.join(BIN_DIR, "csv/standard/add-unique-id.rb"),
-    nil,
-    out_f,
-    nil
-  )
+  require 'csv'
+  
+  csv_opts = {}
+  csv_opts.merge!(headers: true)
+  File.open(in_f) do |in_s|
+    File.open(out_f, 'w') do |out_s|
+      csv_in = ::CSV.new(in_s, csv_opts)
+      csv_out = ::CSV.new(out_s)
+      headers = nil
+      i = 0
+      csv_in.each do |row|
+        unless headers
+          headers = row.headers
+          headers.push("Id")
+          csv_out << headers
+        end
+        row['Id'] = i
+        i+=1
+        csv_out << row
+      end
+    end
+  end
 end
 
 def convert_for_coops_uk(in_f:, out_f:)
-  Config.gen_ruby_command(
-    in_f,
-    "converter.rb",
-    nil,
-    out_f,
-    nil
-  )
+  require_relative 'converter.rb'
+  File.open(in_f) do |in_s|
+    File.open(out_f, 'w') do |out_s|
+      # Note the use of #read, convert expects a string so it
+      # can remove BOMs. Possibly not required considering the
+      # work in clear_csv_errors above.
+      SpecializedCsvReader.convert(in_s.read, out_s)
+    end
+  end
 end
 
-if(!File.file?(output_csv))
+if(File.file?(output_csv))
+  puts "Refusing to overwrite existing output file: #{output_csv}"
+else
   ## handle limesurvey
   # generate the cleared error file
   clear_csv_errors in_f: csv_to_standard_1, out_f: cleared_errors
   add_unique_ids in_f: cleared_errors, out_f: added_ids
   convert_for_coops_uk in_f: added_ids, out_f: output_csv
-else
-  puts "Refusing to overwrite existing output file: #{output_csv}"
 end
