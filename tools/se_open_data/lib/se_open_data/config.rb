@@ -38,10 +38,6 @@ module SeOpenData
         @map[key] = val
       end
 
-      # setup Config
-      # setup lib path, this needs to be changed
-
-      # csv.rb
       def join(*args)  # joins using local path delimiter
         File.join(*args)
       end
@@ -62,8 +58,6 @@ module SeOpenData
         end
 
       
-      #create_w3id.rb
-      
       # Expand these paths relative to base_dir
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR SE_OPEN_DATA_BIN_DIR)
         .each do |key| # expand rel to base_dir, append a slash
@@ -73,11 +67,11 @@ module SeOpenData
       # This is the directory where we generate intermediate csv files
       @map["GEN_CSV_DIR"] = join @map["TOP_OUTPUT_DIR"], "csv", ""
 
-      #goal end file (standard.csv)
+      # Final output file (usually "standard.csv")
       @map["STANDARD_CSV"] = join @map["TOP_OUTPUT_DIR"], @map["STANDARD_CSV"]
       #csv.rb end
       
-      #generate.rb
+      # Used by static data generation
       @map["WWW_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "www", ""
       @map["GEN_DOC_DIR"] = unixjoin @map["WWW_DIR"], "doc", ""
       @map["GEN_CSS_DIR"] = unixjoin @map["GEN_DOC_DIR"], "css", ""
@@ -95,15 +89,11 @@ module SeOpenData
       @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 
       @map["SAME_AS_HEADERS"] = @map.key?("SAMEAS_HEADERS") ? @map["SAMEAS_HEADERS"] : "" 
 
-      #generate.rb
-
-      #deploy.rb
+      # Used by static data deployment
       @map["DEPLOYMENT_DOC_SUBDIR"] = @map["URI_PATH_PREFIX"]
       @map["DEPLOYMENT_DOC_DIR"] = unixjoin @map["DEPLOYMENT_WEBROOT"], @map["DEPLOYMENT_DOC_SUBDIR"]
 
-      #deploy.rb
-
-      #triplestore.rb
+      # Used by linked-data graph deployment
       @map["VIRTUOSO_NAMED_GRAPH_FILE"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "global.graph"
       @map["VIRTUOSO_SQL_SCRIPT"] = "loaddata.sql"
 
@@ -112,14 +102,11 @@ module SeOpenData
       @map["VIRTUOSO_SCRIPT_LOCAL"] = join @map["GEN_VIRTUOSO_DIR"], @map["VIRTUOSO_SQL_SCRIPT"]
       @map["VIRTUOSO_SCRIPT_REMOTE"] = unixjoin @map["VIRTUOSO_DATA_DIR"], @map["VIRTUOSO_SQL_SCRIPT"]
 
-      #triplestore.rb
-
-      #create_w3id.rb
+      # Used to define w3ids
       @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
       @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
       @map["W3ID_REMOTE_SSH"] = "#{@map["DEPLOYMENT_SERVER"]}:#{@map["W3ID_REMOTE_LOCATION"]}#{@map["URI_PATH_PREFIX"]}"
       @map["REDIRECT_W3ID_TO"] = "#{@map["URI_SCHEME"]}://#{@map["SERVER_ALIAS"]}/#{@map["URI_PATH_PREFIX"]}"
-      #create_w3id.rb
 
       # Preserve booleans in these cases
       %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
@@ -175,8 +162,8 @@ module SeOpenData
     def map
       @map
     end
-    
-    #f stands for file
+
+    # Generates a ruby script invocation, and invokes it
     def gen_ruby_command(in_f, script, options, out_f, err_f)
       #generate ruby commands to execute ruby scripts for pipelined processes
       rb_template = "ruby -I " + @map["SE_OPEN_DATA_LIB_DIR"]
