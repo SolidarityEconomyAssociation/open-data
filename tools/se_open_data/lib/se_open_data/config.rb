@@ -130,7 +130,7 @@ module SeOpenData
     # Valid keys must contain only alphanumeric characters, hyphens or underscores.
     # @return [Boolean] true if it is valid.
     def valid_key?(key)
-      key !~ /[^-\w]/i
+      key !~ /\W/
     end
 
     # A convenient method for #map.fetch

@@ -40,7 +40,7 @@ describe SeOpenData::Config do
     expected_map = {
       "MULTI_EQUAL" => "foo=bar=baz",
       "EMPTY_EQUAL" => "",
-      "with-Hyphen-Lowercase0123456789" => "# this is not a comment #",
+      "withLowercase0123456789" => "# this is not a comment #",
       "WITH_PADDING" => "with padding",
       "USE_ENV_PASSWORDS" => false,
       "SRC_CSV_DIR" => caller_dir+"/original-data/",

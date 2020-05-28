@@ -6,7 +6,7 @@ EMPTY_EQUAL=
 # (Along with blank lines)
 
   # This = also a comment
-  with-Hyphen-Lowercase0123456789 = # this is not a comment #
+  withLowercase0123456789 = # this is not a comment #
   WITH_PADDING = with padding  
 USE_ENV_PASSWORDS=false
 SRC_CSV_DIR=original-data/
