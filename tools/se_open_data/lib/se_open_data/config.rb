@@ -126,7 +126,16 @@ module SeOpenData
         @map[key] = @map.key?(key) && @map[key].to_s.downcase == "true"
       end
 
-      #end config
+      # Define an accessor method for all the keys on this instance -
+      # but only if they don't exist already
+      @map.each_key do |key|
+        method = key.to_sym
+        if !self.respond_to? method
+          define_singleton_method method do
+            @map[key]
+          end
+        end
+      end
 
       # Make sure these dirs exist
       FileUtils.mkdir_p @map.fetch_values(
