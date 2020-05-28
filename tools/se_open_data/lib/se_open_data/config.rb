@@ -50,6 +50,19 @@ module SeOpenData
         # have (a single) leading slash.
         first.gsub(%r{/+$},'')+rest.map {|it| it.gsub(%r{^/*},"/") }.join
       end
+
+      # These keys are mandatory, because we use them below
+      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR
+         SE_OPEN_DATA_BIN_DIR STANDARD_CSV URI_SCHEME URI_HOST
+         URI_PATH_PREFIX CSS_SRC_DIR DEPLOYMENT_WEBROOT
+         VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER W3ID_REMOTE_LOCATION
+         SERVER_ALIAS)
+        .each do |key| 
+          raise "mandatory key '#{key}' is missing" unless @map.has_key? key
+        end
+
+      
+      #create_w3id.rb
       
       # Expand these paths relative to base_dir
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR SE_OPEN_DATA_BIN_DIR)
