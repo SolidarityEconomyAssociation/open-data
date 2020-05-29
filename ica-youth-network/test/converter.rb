@@ -180,16 +180,24 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
     org_st
   end
 
-  # Script entry point method
-  def self.convert(in_io, out_io)
+  # Transforms the rows from Co-ops UK schema to our standard
+  #
+  # @param input - an input stream, or the name of a file to read
+  # @param output - an output stream, or the name of a file to read
+  def self.convert(input:, output:)
+    input = File.open(input) unless input.is_a? IO
+    output = File.open(output, 'w') unless output.is_a? IO
+    
+    # Note the use of #read, convert expects a string so it can remove
+    # BOMs. Possibly not required if the csv has already been cleaned
+    # up?
     SeOpenData::CSV.convert(
-      # Output:
-      out_io, OutputStandard::Headers,
-      # Input:
-      # ARGF.read, SpecializedCsvReader, encoding: "UTF-8"
-      in_io, SpecializedCsvReader, {}
-      # inputContent, SpecializedCsvReader, {}
+      output, OutputStandard::Headers,
+      input.read, SpecializedCsvReader, {}
     )
+  ensure
+    input.close
+    output.close
   end
 end
 

@@ -3,6 +3,7 @@
 # CSV data into the se_open_data standard, one step at a time.
 
 require_relative "../../tools/se_open_data/lib/load_path"
+require_relative "converter.rb"
 require  "se_open_data/config"
 require  "se_open_data/csv/clean_up"
 
@@ -49,18 +50,6 @@ def add_unique_ids(in_f:, out_f:)
   end
 end
 
-# Transforms the rows from Co-ops UK schema to our standard
-def convert_for_coops_uk(in_f:, out_f:)
-  require_relative 'converter.rb'
-  File.open(in_f) do |in_s|
-    File.open(out_f, 'w') do |out_s|
-      # Note the use of #read, convert expects a string so it
-      # can remove BOMs. Possibly not required considering the
-      # work in clear_csv_errors above.
-      SpecializedCsvReader.convert(in_s.read, out_s)
-    end
-  end
-end
 
 if(File.file?(output_csv))
   puts "Refusing to overwrite existing output file: #{output_csv}"
@@ -69,5 +58,5 @@ else
   # generate the cleared error file
   SeOpenData::CSV.clean_up in_f: csv_to_standard_1, out_f: cleared_errors
   add_unique_ids in_f: cleared_errors, out_f: added_ids
-  convert_for_coops_uk in_f: added_ids, out_f: output_csv
+  SpecializedCsvReader.convert input: added_ids, output: output_csv
 end
