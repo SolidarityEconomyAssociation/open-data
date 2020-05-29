@@ -24,31 +24,6 @@ output_csv = Config.STANDARD_CSV
 
 
 
-# Adds a new last column `Id` and inserts in it a numeric index in each row.
-def add_unique_ids(in_f:, out_f:)
-  require 'csv'
-  
-  csv_opts = {}
-  csv_opts.merge!(headers: true)
-  File.open(in_f) do |in_s|
-    File.open(out_f, 'w') do |out_s|
-      csv_in = ::CSV.new(in_s, csv_opts)
-      csv_out = ::CSV.new(out_s)
-      headers = nil
-      i = 0
-      csv_in.each do |row|
-        unless headers
-          headers = row.headers
-          headers.push("Id")
-          csv_out << headers
-        end
-        row['Id'] = i
-        i+=1
-        csv_out << row
-      end
-    end
-  end
-end
 
 
 if(File.file?(output_csv))
@@ -57,6 +32,6 @@ else
   ## handle limesurvey
   # generate the cleared error file
   SeOpenData::CSV.clean_up in_f: csv_to_standard_1, out_f: cleared_errors
-  add_unique_ids in_f: cleared_errors, out_f: added_ids
+  SpecializedCsvReader.add_unique_ids input: cleared_errors, output: added_ids
   SpecializedCsvReader.convert input: added_ids, output: output_csv
 end

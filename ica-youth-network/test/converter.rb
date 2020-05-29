@@ -7,6 +7,7 @@
 # See discussion here:
 # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
 require 'se_open_data'
+require 'csv'
 
 # This is the CSV standard that we're converting into:
 OutputStandard = SeOpenData::CSV::Standard::V1
@@ -180,6 +181,38 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
     org_st
   end
 
+  # Adds a new last column `Id` and inserts in it a numeric index in each row.
+  #
+  # @param input - an input stream, or the name of a file to read
+  # @param output - an output stream, or the name of a file to read  
+  def self.add_unique_ids(input:, output:)
+    input = File.open(input) unless input.is_a? IO
+    output = File.open(output, 'w') unless output.is_a? IO
+    
+    csv_opts = {}
+    csv_opts.merge!(headers: true)
+
+    csv_in = ::CSV.new(input, csv_opts)
+    csv_out = ::CSV.new(output)
+    headers = nil
+    i = 0
+    csv_in.each do |row|
+      unless headers
+        headers = row.headers
+        headers.push("Id")
+        csv_out << headers
+      end
+      row['Id'] = i
+      i+=1
+      csv_out << row
+    end
+
+  ensure
+    input.close
+    output.close
+  end
+
+  
   # Transforms the rows from Co-ops UK schema to our standard
   #
   # @param input - an input stream, or the name of a file to read
