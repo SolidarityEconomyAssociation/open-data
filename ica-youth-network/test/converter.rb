@@ -8,46 +8,17 @@ require_relative '../../tools/se_open_data/lib/load_path'
 require 'se_open_data'
 require 'csv'
 
-
-# This is the Converter for Co-ops UK 'outlets' CSV.
-# It converts it into a CSV with standard column headings.
-#
-# See discussion here:
-# https://github.com/SolidarityEconomyAssociation/open-data/issues/11
-
-# This is the CSV standard that we're converting into:
-OutputStandard = SeOpenData::CSV::Standard::V1
-EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
-TYPE_TO_ORG_STRUCT = {
-  "Cooperativa de consumo / usuario final" => "Consumer co-operative",
-  "Coop�rative de consommateur.rice.s"=> "Consumer co-operative",
-  "Final consumer/user cooperative"=> "Consumer co-operative",
-  "Cooperativa de m�ltiples actores"=> "Multi-stakeholder co-operative",
-  "Coop�rative pluri-acteurs"=> "Multi-stakeholder co-operative",
-  "Multi-stakeholder cooperative"=> "Multi-stakeholder co-operative",
-  "Cooperativa de producci�n"=> "Producer co-operative",
-  "Coop�rative de producteur.rice.s (dont agricole)"=> "Producer co-operative",
-  "Producer cooperative"=> "Producer co-operative",
-  "Cooperativa de trabajo y empleo"=> "Self-employed",
-  "Cooperativa di lavoro"=> "Self-employed",
-  "Work and employment cooperative"=> "Self-employed",
-  "Coop�rative de travailleur.se.s"=> "Workers co-operative"
-}
-
-
-
 # Defines a schema mapping for ica-youth-network data.
 #
-# The hash {SpecializedCsvReader::InputHeaders} identifies methods which
-# should be implemented as simple CSV field look-ups.
+# The hash {IcaYouthNetworkConverter::InputHeaders} identifies methods
+# which should be implemented as simple CSV field look-ups.
 #
-# Some are named in {OutputStandard}'s keys and so will be copied
+# Some are named in {SeOpenData::CSV::Standard::V1}'s keys and so will be copied
 # verbatim into the output CSV data. These have no underscore prefix.
 #
 # Those with underscore prefixes are used internally.
 #
-# The other keys of {OutputStandard} must also have methods
+# The other keys of {SeOpenData::CSV::Standard::V1} must also have methods
 # implemented in this class. These are the ones which have more
 # complicated transformation rules - they cannot be a simple copy of
 # an existing data field.
@@ -71,43 +42,10 @@ TYPE_TO_ORG_STRUCT = {
 # - Website
 # - Email
 #
-class SpecializedCsvReader < SeOpenData::CSV::RowReader
+# See discussion here:
+# https://github.com/SolidarityEconomyAssociation/open-data/issues/11
+class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
-  # These define methods (as keys) to implement as simple hash
-  # look-ups using CSV field names (values).
-  #
-  InputHeaders = {
-    id: "Id",
-    # postcode: "PostCode",
-    country_name: "Country",
-    type: "Type",
-    street_address: "Address",
-    locality: "City",
-
-    #registrar: "Registrar",
-    #registered_number: "Registered Number"
-    _desc: "Description",
-    _additional_desc: "Additional Details",
-    _mail: "Email",
-    _name: "Name",
-    _country: "Country",
-    _website: "Website",
-    _lt: "Latitude",
-    _ln: "Longitude",
-  }
-  # MISSING!
-  # primary_activity (name?)
-  # activities
-  # region (region?) 
-  # postcode
-  # phone
-  # twitter
-  # facebook
-  # companies_house_number
-  # geocontainer
-  # geocontainer_lat
-  # geocontainer_lon
-  
   # @param row [Hash<String => String>] - a row of CSV data
   def initialize(row)
     # Let CSV::RowReader provide methods for accessing columns described by InputHeaders, above:
@@ -172,14 +110,14 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
   end
 
   def legal_forms
-    # Return a list of strings, separated by OutputStandard::SubFieldSeparator.
+    # Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
     # Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
     # See lib/se_open_data/essglobal/legal_form.rb
     "Cooperative"
   end
 
   def organisational_structure
-    ## Return a list of strings, separated by OutputStandard::SubFieldSeparator.
+    ## Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
     ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
     ## See lib/se_open_data/essglobal/legal_form.rb
     org_st = TYPE_TO_ORG_STRUCT[type]? TYPE_TO_ORG_STRUCT[type] : "Co-operative"
@@ -231,41 +169,109 @@ class SpecializedCsvReader < SeOpenData::CSV::RowReader
     # BOMs. Possibly not required if the csv has already been cleaned
     # up?
     SeOpenData::CSV.convert(
-      output, OutputStandard::Headers,
-      input.read, SpecializedCsvReader, {}
+      output, SeOpenData::CSV::Standard::V1::Headers,
+      input.read, self, {}
     )
   ensure
     input.close
     output.close
   end
+
+  # Entry point if invoked as a script.
+  #
+  #
+  # Expects a config file in a directory `./settings` relative to this
+  # script, called either `default.txt` or `config.txt`. The latter is
+  # loaded preferentially, otherwise the former is.
+  #
+  # See {SeOpenData::Config} for information about this file. It
+  # defines the locations of various resources, and sets options on
+  # the conversion process.
+  def self.main
+    # Find the config file...
+    config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first 
+    config = SeOpenData::Config.new(config_file)
+    
+    # original src csv files 
+    csv_to_standard_1 = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV_1)
+    
+    # Intermediate csv files
+    added_ids = File.join(config.GEN_CSV_DIR, "with_ids.csv")
+    cleared_errors = File.join(config.GEN_CSV_DIR, "cleared_errors.csv")
+    
+    # Output csv file
+    output_csv = config.STANDARD_CSV
+    
+    if(File.file?(output_csv))
+      puts "Refusing to overwrite existing output file: #{output_csv}"
+    else
+      ## handle limesurvey
+      # generate the cleared error file
+      SeOpenData::CSV.clean_up in_f: csv_to_standard_1, out_f: cleared_errors
+      add_unique_ids input: cleared_errors, output: added_ids
+      convert input: added_ids, output: output_csv
+    end
+  end
+
+  private
+
+  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
+  TYPE_TO_ORG_STRUCT = {
+    "Cooperativa de consumo / usuario final" => "Consumer co-operative",
+    "Coop�rative de consommateur.rice.s"=> "Consumer co-operative",
+    "Final consumer/user cooperative"=> "Consumer co-operative",
+    "Cooperativa de m�ltiples actores"=> "Multi-stakeholder co-operative",
+    "Coop�rative pluri-acteurs"=> "Multi-stakeholder co-operative",
+    "Multi-stakeholder cooperative"=> "Multi-stakeholder co-operative",
+    "Cooperativa de producci�n"=> "Producer co-operative",
+    "Coop�rative de producteur.rice.s (dont agricole)"=> "Producer co-operative",
+    "Producer cooperative"=> "Producer co-operative",
+    "Cooperativa de trabajo y empleo"=> "Self-employed",
+    "Cooperativa di lavoro"=> "Self-employed",
+    "Work and employment cooperative"=> "Self-employed",
+    "Coop�rative de travailleur.se.s"=> "Workers co-operative"
+  }
+  
+  # These define methods (as keys) to implement as simple hash
+  # look-ups using CSV field names (values).
+  #
+  InputHeaders = {
+    id: "Id",
+    # postcode: "PostCode",
+    country_name: "Country",
+    type: "Type",
+    street_address: "Address",
+    locality: "City",
+
+    #registrar: "Registrar",
+    #registered_number: "Registered Number"
+    _desc: "Description",
+    _additional_desc: "Additional Details",
+    _mail: "Email",
+    _name: "Name",
+    _country: "Country",
+    _website: "Website",
+    _lt: "Latitude",
+    _ln: "Longitude",
+  }
+  # MISSING!
+  # primary_activity (name?)
+  # activities
+  # region (region?) 
+  # postcode
+  # phone
+  # twitter
+  # facebook
+  # companies_house_number
+  # geocontainer
+  # geocontainer_lat
+  # geocontainer_lon
+  
 end
 
 
-config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first # first existing match
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+IcaYouthNetworkConverter.main if __FILE__ == $0
 
-Config = SeOpenData::Config.new(config_file)
-
-# original src csv files 
-csv_to_standard_1 = File.join(Config.SRC_CSV_DIR, Config.ORIGINAL_CSV_1)
-
-# Intermediate csv files
-added_ids = File.join(Config.GEN_CSV_DIR, "with_ids.csv")
-cleared_errors = File.join(Config.GEN_CSV_DIR, "cleared_errors.csv")
-
-# Output csv file
-output_csv = Config.STANDARD_CSV
-
-
-
-
-
-
-if(File.file?(output_csv))
-  puts "Refusing to overwrite existing output file: #{output_csv}"
-else
-  ## handle limesurvey
-  # generate the cleared error file
-  SeOpenData::CSV.clean_up in_f: csv_to_standard_1, out_f: cleared_errors
-  SpecializedCsvReader.add_unique_ids input: cleared_errors, output: added_ids
-  SpecializedCsvReader.convert input: added_ids, output: output_csv
-end
