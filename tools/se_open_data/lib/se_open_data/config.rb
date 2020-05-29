@@ -8,6 +8,7 @@ module SeOpenData
   #
   # This is an abstraction layer from the config file itself.
   # i.e. Variables here are independant from names in the config file.
+  # FIXME expand
   class Config
     require 'fileutils'
     
@@ -72,7 +73,7 @@ module SeOpenData
       @map["SPARQL_LIST_GRAPHS_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "list-graphs.rq"
       @map["SPARQL_ENDPOINT_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "endpoint.txt"
       @map["SPARQL_GRAPH_NAME_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "default-graph-uri.txt"
-      @map["DATASET_URI_BASE"] = "#{@map["URI_SCHEME"]}://#{@map["URI_HOST"]}/#{@map["URI_PATH_PREFIX"]}"
+      @map["DATASET_URI_BASE"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
       @map["GRAPH_NAME"] = @map["DATASET_URI_BASE"]
       @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
       
@@ -96,8 +97,8 @@ module SeOpenData
       # Used to define w3ids
       @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
       @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
-      @map["W3ID_REMOTE_SSH"] = "#{@map["DEPLOYMENT_SERVER"]}:#{@map["W3ID_REMOTE_LOCATION"]}#{@map["URI_PATH_PREFIX"]}"
-      @map["REDIRECT_W3ID_TO"] = "#{@map["URI_SCHEME"]}://#{@map["SERVER_ALIAS"]}/#{@map["URI_PATH_PREFIX"]}"
+      @map["W3ID_REMOTE_SSH"] = @map["DEPLOYMENT_SERVER"]+':'+unixjoin(@map["W3ID_REMOTE_LOCATION"], @map["URI_PATH_PREFIX"])
+      @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["SERVER_ALIAS"],@map["URI_PATH_PREFIX"])
 
       # Preserve booleans in these cases
       %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
