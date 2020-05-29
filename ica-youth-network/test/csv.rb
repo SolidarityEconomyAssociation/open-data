@@ -26,6 +26,7 @@ output_csv = Config.STANDARD_CSV
 
 # Performs the following on the input CSV stream
 #
+# - remove spurious UTF-8 BOMs sometimes written by MS Excel (maybe? FIXME test this.)
 # - remove all single quotes not followed by a quote 
 # - replace ' with empty
 # - replace double quotes with single quote
@@ -65,6 +66,8 @@ def clear_csv_errors(in_f:, out_f:)
   end
 end
 
+
+# Adds a new last column `Id` and inserts in it a numeric index in each row.
 def add_unique_ids(in_f:, out_f:)
   require 'csv'
   
@@ -90,6 +93,7 @@ def add_unique_ids(in_f:, out_f:)
   end
 end
 
+# Transforms the rows from Co-ops UK schema to our standard
 def convert_for_coops_uk(in_f:, out_f:)
   require_relative 'converter.rb'
   File.open(in_f) do |in_s|
