@@ -70,6 +70,6 @@ HERE
   end
 rescue
   # Delete this output file, and rethrow
-  File.delete config.VIRTUOSO_SCRIPT_LOCAL
+  File.delete config.VIRTUOSO_SCRIPT_LOCAL if File.exist? config.VIRTUOSO_SCRIPT_LOCAL
   raise
 end
