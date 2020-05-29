@@ -8,17 +8,13 @@ require  "se_open_data/config"
 config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first # first existing match
 
 Config = SeOpenData::Config.new(config_file)
-  
-SRC_DIR = Config.SRC_CSV_DIR
-GEN_DIR = Config.GEN_CSV_DIR
-BIN_DIR = Config.SE_OPEN_DATA_BIN_DIR
 
 # original src csv files 
-csv_to_standard_1 = File.join(SRC_DIR, Config.ORIGINAL_CSV_1)
+csv_to_standard_1 = File.join(Config.SRC_CSV_DIR, Config.ORIGINAL_CSV_1)
 
 # Intermediate csv files
-added_ids = File.join(GEN_DIR, "with_ids.csv")
-cleared_errors = File.join(GEN_DIR, "cleared_errors.csv")
+added_ids = File.join(Config.GEN_CSV_DIR, "with_ids.csv")
+cleared_errors = File.join(Config.GEN_CSV_DIR, "cleared_errors.csv")
 
 # Output csv file
 output_csv = Config.STANDARD_CSV
