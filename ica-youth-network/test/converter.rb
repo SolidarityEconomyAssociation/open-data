@@ -3,6 +3,9 @@
 
 # This is the Converter for Co-ops UK 'outlets' CSV.
 # It converts it into a CSV with standard column headings.
+#
+# See discussion here:
+# https://github.com/SolidarityEconomyAssociation/open-data/issues/11
 require 'se_open_data'
 
 # This is the CSV standard that we're converting into:
