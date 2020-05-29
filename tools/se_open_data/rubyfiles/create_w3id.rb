@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
-require "./load_config"
+# This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
+# (strictly, on the server config.DEPLOYMENT_SERVER at config.W3ID_REMOTE_LOCATION)
 
+require_relative "../lib/load_path"
+require "se_open_data/config"
 
-
+config_file = Dir.glob('settings/{config,defaults}.txt').first 
+config = SeOpenData::Config.new 'settings/config.txt', Dir.pwd
 
 #create w3id config
-redir = $config_map["REDIRECT_W3ID_TO"]
+redir = config.REDIRECT_W3ID_TO
 
 htaccess = "# Turn off MultiViews
 Options -MultiViews +FollowSymLinks
@@ -57,13 +61,13 @@ RewriteRule ^(.*)$ #{redir}$1.rdf [R=303,L] "
 
 
 puts "creating htaccess file.."
-system("echo '#{htaccess}' > #{$config_map["HTACCESS"]}")
+system("echo '#{htaccess}' > #{config.HTACCESS}")
 
 rsync = "rsync -a"
 ssh = "ssh"
 
-puts "#{ssh} #{$config_map["DEPLOYMENT_SERVER"]} 'cd #{$config_map["W3ID_REMOTE_LOCATION"]} && mkdir -p #{$config_map["URI_PATH_PREFIX"]}'"
-system "#{ssh} #{$config_map["DEPLOYMENT_SERVER"]} 'cd #{$config_map["W3ID_REMOTE_LOCATION"]} && mkdir -p #{$config_map["URI_PATH_PREFIX"]}'"
+puts "#{ssh} #{config.DEPLOYMENT_SERVER} 'cd #{config.W3ID_REMOTE_LOCATION} && mkdir -p #{config.URI_PATH_PREFIX}'"
+system "#{ssh} #{config.DEPLOYMENT_SERVER} 'cd #{config.W3ID_REMOTE_LOCATION} && mkdir -p #{config.URI_PATH_PREFIX}'"
 
-puts "#{rsync} #{$config_map["W3ID_LOCAL_DIR"]} #{$config_map["W3ID_REMOTE_SSH"]}"
-system "#{rsync} #{$config_map["W3ID_LOCAL_DIR"]} #{$config_map["W3ID_REMOTE_SSH"]}"
+puts "#{rsync} #{config.W3ID_LOCAL_DIR} #{config.W3ID_REMOTE_SSH}"
+system "#{rsync} #{config.W3ID_LOCAL_DIR} #{config.W3ID_REMOTE_SSH}"
