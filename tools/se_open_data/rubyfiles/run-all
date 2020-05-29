@@ -5,7 +5,7 @@ export PATH=${SCRIPT_DIR}:$PATH
 
 set -x
 
-./csv.rb &&
+./converter.rb &&
   generate.rb &&
   deploy.rb &&
   create_w3id.rb &&
