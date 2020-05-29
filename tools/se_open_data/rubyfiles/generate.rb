@@ -11,8 +11,8 @@ if !File.file?(config.ONE_BIG_FILE_BASENAME)
 
 
   #all
-  system("echo '#{config.SPARQL_ENDPOINT}' > #{config.SPARQL_ENDPOINT_FILE}")
-  system("echo '#{config.GRAPH_NAME}' > #{config.SPARQL_GRAPH_NAME_FILE}")
+  IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT+"\n"
+  IO.write config.SPARQL_GRAPH_NAME_FILE, config.GRAPH_NAME+"\n"
 
   csv_to_rdf = config.SE_OPEN_DATA_BIN_DIR+"csv/standard/csv-to-rdf.rb"
 
