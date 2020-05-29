@@ -290,7 +290,7 @@ When this has finished, check that it has been added to the list of graphs in Vi
 
 ### [Converting the data](#converting-the-data)
 
-This standard format is defined in the module [SeOpenData::CSV::Standard::V1](../tools/se_open_data/csv/standard.rb). At the time of writing, this contains the following:
+This standard format is defined in the module [SeOpenData::CSV::Standard::V1](../tools/se_open_data/lib/se_open_data/csv/standard.rb). At the time of writing, this contains the following:
 
 ```
 id: "Identifier",
