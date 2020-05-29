@@ -217,6 +217,9 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
+
+  # See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
+  # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
   TYPE_TO_ORG_STRUCT = {
     "Cooperativa de consumo / usuario final" => "Consumer co-operative",
     "Coop�rative de consommateur.rice.s"=> "Consumer co-operative",
