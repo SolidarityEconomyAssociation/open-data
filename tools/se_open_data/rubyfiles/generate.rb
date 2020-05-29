@@ -6,7 +6,8 @@ config_file = Dir.glob('settings/{config,defaults}.txt').first
 config = SeOpenData::Config.new 'settings/config.txt', Dir.pwd
 
 if !File.file?(config.ONE_BIG_FILE_BASENAME)
-  system("rsync -r #{config.CSS_SRC_DIR} #{config.GEN_CSS_DIR}")
+  # Copy contents of CSS_SRC_DIR into GEN_CSS_DIR
+  FileUtils.cp_r File.join(config.CSS_SRC_DIR, '.'), config.GEN_CSS_DIR
 
 
   #all
