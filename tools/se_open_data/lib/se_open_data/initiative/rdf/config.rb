@@ -1,5 +1,7 @@
 require 'linkeddata'
 require 'csv'
+require 'rdf'
+require 'se_open_data/essglobal/standard'
 
 module SeOpenData
   class Initiative

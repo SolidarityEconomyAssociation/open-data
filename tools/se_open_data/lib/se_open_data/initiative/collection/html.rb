@@ -1,3 +1,6 @@
+require 'se_open_data/utils/xml'
+require 'se_open_data/utils/html'
+
 module SeOpenData
   class Initiative
     class Collection

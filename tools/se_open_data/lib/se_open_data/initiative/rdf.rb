@@ -1,4 +1,6 @@
 require 'linkeddata'
+require 'se_open_data/initiative/rdf/config'
+require 'se_open_data/initiative/file'
 
 module SeOpenData
   class Initiative

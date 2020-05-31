@@ -1,6 +1,15 @@
+require 'se_open_data/csv/row_reader'
+require 'se_open_data/initiative'
+require 'se_open_data/utils/progress_counter'
+
 module SeOpenData
   class Initiative
     class Collection < Array
+      # These files define other methods of this class
+      require 'se_open_data/initiative/collection/rdf'
+      require 'se_open_data/initiative/collection/html'
+      require 'se_open_data/initiative/collection/sparql'
+      
       IndexBasename = "index"
       attr_reader :config
       def initialize(config)
