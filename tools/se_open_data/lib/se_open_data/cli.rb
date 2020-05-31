@@ -12,6 +12,13 @@ module SeOpenData
       SeOpenData::Config.new 'settings/config.txt', Dir.pwd      
     end
 
+    def self.command_run_all
+      %w(convert generate deploy create_w3id triplestore).each do |name|
+        puts "Running command #{name}"
+        send "command_#{name}".to_sym
+      end
+    end
+
     # Runs the converter.rb script in the current directory, if present
     def self.command_convert
       converter_file = File.join(Dir.pwd, 'converter')
