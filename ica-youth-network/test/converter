@@ -106,7 +106,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   end
 
   def name
-    _name || "No Name"
+    _name || "No Name" # FIXME
   end
 
   def legal_forms

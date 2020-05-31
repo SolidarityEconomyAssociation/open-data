@@ -11,6 +11,17 @@ module SeOpenData
       config_file = Dir.glob('settings/{config,defaults}.txt').first 
       SeOpenData::Config.new 'settings/config.txt', Dir.pwd      
     end
+
+    # Runs the converter.rb script in the current directory, if present
+    def self.command_convert
+      converter_file = File.join(Dir.pwd, 'converter')
+      unless File.exist? converter_file
+        raise ArgumentError, "no 'converter' file found in current directory"
+      end
+      unless system converter_file
+        raise "converter command in current directory failed"
+      end
+    end
     
     def self.command_generate
       require "se_open_data/csv/standard"
