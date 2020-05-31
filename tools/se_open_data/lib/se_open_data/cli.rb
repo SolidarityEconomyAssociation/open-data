@@ -1,4 +1,4 @@
-
+require "shellwords"
 
 module SeOpenData
   class Cli
@@ -49,6 +49,39 @@ module SeOpenData
         puts "Work done already"
       end
 
+    end
+
+    def self.deploy
+      config = load_config
+      
+      # create the remote target directory and rsync the data to it
+      ssh_cmd = <<-HERE
+cd "#{esc config.DEPLOYMENT_WEBROOT}" &&
+mkdir -p "#{esc config.DEPLOYMENT_DOC_SUBDIR}"
+HERE
+
+      flags = "-avz --no-perms --omit-dir-times #{config.DEPLOYMENT_RSYNC_FLAGS}"
+      
+      # Make sure there's a trailing slash on these, for rsync,
+      # they're significant!
+      src = File.join(config.GEN_DOC_DIR, '')
+      dest = config.DEPLOYMENT_SERVER+':'+File.join(config.DEPLOYMENT_DOC_DIR, '')
+      
+      cmd = <<-HERE
+ssh "#{esc config.DEPLOYMENT_SERVER}" "#{esc ssh_cmd}" &&
+rsync #{flags} "#{esc src}" "#{esc dest}"
+HERE
+      puts cmd
+      unless system cmd
+        raise "shell command failed"
+      end
+    end
+
+    private
+
+    # escape double quotes in a string
+    def self.esc(string)
+      string.gsub('"', '\\"').gsub('\\', '\\\\')
     end
   end
 end
