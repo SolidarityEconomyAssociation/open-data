@@ -12,7 +12,7 @@ module SeOpenData
       SeOpenData::Config.new 'settings/config.txt', Dir.pwd      
     end
     
-    def self.generate
+    def self.command_generate
       require "se_open_data/csv/standard"
       require "se_open_data/initiative/rdf"
       require "se_open_data/initiative/collection"
@@ -55,7 +55,7 @@ module SeOpenData
 
     end
 
-    def self.deploy
+    def self.command_deploy
       config = load_config
       
       # create the remote target directory and rsync the data to it
@@ -83,7 +83,7 @@ HERE
 
     # This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
     # (strictly, on the server config.DEPLOYMENT_SERVER at config.W3ID_REMOTE_LOCATION)
-    def self.create_w3id
+    def self.command_create_w3id
       config = load_config
 
       # Create w3id config
@@ -170,7 +170,7 @@ HERE
     end
 
     # Uploads the linked-data graph to the Virtuoso triplestore server
-    def self.triplestore
+    def self.command_triplestore
       require "se_open_data/utils/password_store"
 
       config = load_config

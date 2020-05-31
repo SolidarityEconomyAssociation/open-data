@@ -2,5 +2,5 @@
 require_relative "../lib/load_path"
 require "se_open_data/cli"
 
-SeOpenData::Cli.triplestore
+SeOpenData::Cli.command_triplestore
 

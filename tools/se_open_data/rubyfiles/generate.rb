@@ -2,4 +2,4 @@
 require_relative "../lib/load_path"
 require "se_open_data/cli"
 
-SeOpenData::Cli.generate
+SeOpenData::Cli.command_generate

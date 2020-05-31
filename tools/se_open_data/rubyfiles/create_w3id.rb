@@ -2,5 +2,5 @@
 require_relative "../lib/load_path"
 require "se_open_data/cli"
 
-SeOpenData::Cli.create_w3id
+SeOpenData::Cli.command_create_w3id
 
