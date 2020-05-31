@@ -1,7 +1,11 @@
 require "shellwords"
+require "se_open_data/utils/log_factory"
 
 module SeOpenData
   class Cli
+    # Create a log instance
+    Log = SeOpenData::Utils::LogFactory.default
+ 
     def self.load_config
       require "se_open_data/config"
       config_file = Dir.glob('settings/{config,defaults}.txt').first 
@@ -165,11 +169,118 @@ HERE
       end
     end
 
+    # Uploads the linked-data graph to the Virtuoso triplestore server
+    def self.triplestore
+      require "se_open_data/utils/password_store"
+
+      config = load_config
+
+      # This gets (encrypted) passwords. Read the documentation in the class.
+      pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+      Log.debug "Checking ENV for passwords" if pass.use_env_vars?
+
+      if !File.file?(config.VIRTUOSO_SCRIPT_LOCAL)
+        Log.debug "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
+        
+        content = fetch config.ESSGLOBAL_URI+"vocab/"
+        IO.write File.join(config.GEN_VIRTUOSO_DIR, "essglobal_vocab.rdf"), content
+
+        content = fetch config.ESSGLOBAL_URI+"standard/organisational-structure"
+        IO.write File.join(config.GEN_VIRTUOSO_DIR, "organisational-structure.skos"), content
+        
+        puts "Creating #{config.VIRTUOSO_NAMED_GRAPH_FILE}"
+        IO.write config.VIRTUOSO_NAMED_GRAPH_FILE, config.GRAPH_NAME
+
+        puts "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
+        IO.write config.VIRTUOSO_SCRIPT_LOCAL, <<HERE
+SPARQL CLEAR GRAPH '#{config.GRAPH_NAME}';
+ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.rdf',NULL);
+ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.skos',NULL);
+rdf_loader_run();
+HERE
+        
+        puts "Transfering directory '#{config.GEN_VIRTUOSO_DIR}' to virtuoso server '#{config.DEPLOYMENT_SERVER}':#{config.VIRTUOSO_DATA_DIR}"
+        
+        unless system <<HERE
+ssh #{config.DEPLOYMENT_SERVER} 'mkdir -p #{config.VIRTUOSO_DATA_DIR}' &&
+rsync -avz #{config.GEN_VIRTUOSO_DIR} #{config.DEPLOYMENT_SERVER}:#{config.VIRTUOSO_DATA_DIR}
+HERE
+          raise "rsync failed"
+        end
+        
+        if(config.AUTO_LOAD_TRIPLETS)
+          pass = pass.get config.VIRTUOSO_PASS_FILE
+          puts autoload_cmd "<PASSWORD>", config
+          unless system autoload_cmd pass, config
+            raise "autoload triplets failed"
+          end
+        else
+          puts <<HERE
+****
+**** IMPORTANT! ****
+**** The final step is to load the data into Virtuoso with graph named #{config.GRAPH_NAME}.
+**** Execute the following command, providing the password for the Virtuoso dba user:
+****\t#{autoload_cmd "<PASSWORD>", config}
+HERE
+        end
+      else
+        puts "File exists, nothing to do: #{config.VIRTUOSO_SCRIPT_LOCAL}"
+      end
+    rescue
+      # Delete this output file, and rethrow
+      File.delete config.VIRTUOSO_SCRIPT_LOCAL if File.exist? config.VIRTUOSO_SCRIPT_LOCAL
+      raise
+    end
+
     private
+
+    # generates the autoload command, with the given password
+    def self.autoload_cmd(pass, config)
+      isql = <<-HERE
+isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
+HERE
+      return <<-HERE
+ssh -T "#{esc config.DEPLOYMENT_SERVER}" "#{esc isql.chomp}"
+HERE
+    end
 
     # escape double quotes in a string
     def self.esc(string)
       string.gsub('"', '\\"').gsub('\\', '\\\\')
     end
+
+    # Gets the content of an URL, following redirects
+    #
+    # Also sets the 'Accept: application/rdf+xml' header.
+    #
+    # @return the query content
+    def self.fetch(uri_str, limit = 10)
+      require 'net/http'
+      raise ArgumentError, 'too many HTTP redirects' if limit == 0
+
+      uri = URI(uri_str)
+      request = Net::HTTP::Get.new(uri)
+      request['Accept'] = 'application/rdf+xml'
+
+      puts "fetching #{uri}"
+      response = Net::HTTP.start(
+        uri.hostname, uri.port,
+        :use_ssl => uri.scheme == 'https') do |http|
+        
+        http.request(request)
+      end
+
+      case response
+      when Net::HTTPSuccess then
+        response.body
+      when Net::HTTPRedirection then
+        location = response['location']
+        warn "redirected to #{location}"
+        fetch(location, limit - 1)
+      else
+        response.value
+      end
+    end
+
   end
 end
