@@ -25,7 +25,7 @@ USAGE
 service_url = 'https://solidarityeconomyassociation.limequery.com/index.php/admin/remotecontrol'
 
 user, pass, survey_id = ARGV
-die usage unless user && pass && survey_id
+abort usage unless user && pass && survey_id
 
 exporter = SeOpenData::LimeSurveyExporter.new(service_url, user, pass)
 puts exporter.export_responses(survey_id, 'csv', 'en')
