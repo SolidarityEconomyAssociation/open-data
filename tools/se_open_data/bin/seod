@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+# This manages the data in an open-data project
+#
+# "seod" stands for "Solidarity Economy Open Data"
+#
+# FIXME expand
+
+require_relative '../lib/load_path'
+require 'se_open_data/cli'
+
+usage = <<USAGE
+usage:
+   #{File.basename(__FILE__)} <command>
+
+Where <command> can be:
+
+- convert
+- generate
+- deploy
+- create_w3id
+- triplestore
+- run_all
+
+USAGE
+
+command, *rest = ARGV
+abort usage unless command && rest.size == 0
+
+method = "command_#{command}".to_sym
+abort usage unless SeOpenData::Cli.respond_to? method
+
+puts "invoking command: #{command}"
+SeOpenData::Cli.send method
