@@ -2,14 +2,17 @@
 
 module SeOpenData
   class Cli
+    def self.load_config
+      require "se_open_data/config"
+      config_file = Dir.glob('settings/{config,defaults}.txt').first 
+      SeOpenData::Config.new 'settings/config.txt', Dir.pwd      
+    end
+    
     def self.generate
       require "se_open_data/csv/standard"
-      require "se_open_data/config"
       require "se_open_data/initiative/rdf"
       require "se_open_data/initiative/collection"
-
-      config_file = Dir.glob('settings/{config,defaults}.txt').first 
-      config = SeOpenData::Config.new 'settings/config.txt', Dir.pwd
+      config = load_config
 
 
       if !File.file?(config.ONE_BIG_FILE_BASENAME)
@@ -45,6 +48,7 @@ module SeOpenData
       else
         puts "Work done already"
       end
+
     end
   end
 end
