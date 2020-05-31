@@ -77,6 +77,94 @@ HERE
       end
     end
 
+    # This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
+    # (strictly, on the server config.DEPLOYMENT_SERVER at config.W3ID_REMOTE_LOCATION)
+    def self.create_w3id
+      config = load_config
+
+      # Create w3id config
+      redir = config.REDIRECT_W3ID_TO
+
+      htaccess = <<-HERE
+# Turn off MultiViews
+Options -MultiViews +FollowSymLinks
+
+# Directive to ensure *.rdf files served as appropriate content type,
+# if not present in main apache config
+AddType application/rdf+xml .rdf
+
+# Rewrite engine setup
+RewriteEngine On
+
+# Redirect sparql queries for this dataset.
+# store1 is where the Virtuoso triplestore is served.
+# This is close, but does not work from curl as expected... e.g. with this:
+#bombyx:~/SEA/open-data-and-maps/data/dotcoop/domains2018-04-24$ curl -i -L -H \"Accept: application/json\"  --data-urlencode query@generated-data/experimental/sparql/query.rq http://w3id.solidarityeconomy.coop/ica-youth-network/sparql
+#RewriteRule ^(sparql)$ http://store1.solidarityeconomy.coop:8890/$1?default-graph-uri=https://w3id.solidarityeconomy.coop/ica-youth-network/ [QSA,R=303,L]
+
+# Redirect https://w3id.org/dotcoop to the appropriate index,
+# content negotiation depending on the HTTP Accept header:
+RewriteCond %{HTTP_ACCEPT} !application/rdf\+xml.*(text/html|application/xhtml\+xml)
+RewriteCond %{HTTP_ACCEPT} text/html [OR]
+RewriteCond %{HTTP_ACCEPT} application/xhtml\+xml [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Mozilla/.*
+RewriteRule ^$ #{redir}index.html [R=303,L]
+
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml
+RewriteRule ^$ #{redir}index.rdf [R=303,L]
+
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^$ #{redir}index.ttl [R=303,L]
+
+# Redirect https://w3id.org/ica-youth-network/X to the appropriate file on data1.solidarityeconomy.coop
+# In this case, X will refer to a specific Coop.
+# Content negotiation depending on the HTTP Accept header:
+RewriteCond %{HTTP_ACCEPT} !application/rdf\+xml.*(text/html|application/xhtml\+xml)
+RewriteCond %{HTTP_ACCEPT} text/html [OR]
+RewriteCond %{HTTP_ACCEPT} application/xhtml\+xml [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Mozilla/.*
+RewriteRule ^(.*)$ #{redir}$1.html [R=303,L]
+
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml
+RewriteRule ^(.*)$ #{redir}$1.rdf [R=303,L]
+
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^(.*)$ #{redir}$1.ttl [R=303,L]
+
+# Default rule. Apparently, some older Linked Data applications assume this default (sigh):
+RewriteRule ^(.*)$ #{redir}$1.rdf [R=303,L]
+HERE
+
+      puts "creating htaccess file.."
+      IO.write(config.HTACCESS, htaccess)
+      
+      ssh_cmd = <<-HERE
+cd "#{esc config.W3ID_REMOTE_LOCATION}" &&
+mkdir -p "#{config.URI_PATH_PREFIX}"
+HERE
+      
+      ssh = <<-HERE
+ssh "#{esc config.DEPLOYMENT_SERVER}" "#{ssh_cmd}"
+HERE
+      puts ssh
+      unless system ssh
+        raise "shell command failed"
+      end
+
+      # Ensure these paths have trailing slashes, for rsync these are
+      # significant!
+      src = File.join(config.W3ID_LOCAL_DIR, '')
+      dest = File.join(config.W3ID_REMOTE_SSH, '')
+      
+      rsync = <<-HERE
+rsync -a "#{esc src}" "#{esc dest}"
+HERE
+      puts rsync
+      unless system rsync
+        raise "shell command failed"
+      end
+    end
+
     private
 
     # escape double quotes in a string
