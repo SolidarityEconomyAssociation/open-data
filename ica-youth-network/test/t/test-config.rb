@@ -65,7 +65,7 @@ describe SeOpenData::Config do
       "DATASET_URI_BASE" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "ONE_BIG_FILE_BASENAME" => caller_dir+"/generated-data/virtuoso/all",
-      "CSS_FILES" => "",
+      "CSS_FILES" => caller_dir+"/css/2.css,"+caller_dir+"/css/1.css",
       "SAME_AS_FILE" => "",
       "SAME_AS_HEADERS" => "",
       "DEPLOYMENT_DOC_SUBDIR" => "ica-youth-network/",
@@ -84,6 +84,34 @@ describe SeOpenData::Config do
     
     it "should generate an expected map" do
       value(config_map).must_equal expected_map
+    end
+
+    expected_listing = <<-HERE
+/.
+/csv
+/csv/.
+/sparql
+/sparql/.
+/virtuoso
+/virtuoso/.
+/w3id
+/w3id/.
+/www
+/www/.
+/www/doc
+/www/doc/.
+/www/doc/css
+/www/doc/css/.
+HERE
+    
+    it "should create the expected directories" do
+      # Make recursive directory listing
+      listing = Dir.glob(generated_dir+"/**/*", File::FNM_DOTMATCH)
+                  .map {|it| it.delete_prefix(generated_dir)+"\n" }
+                  .sort
+                  .join
+      #puts listing
+      value(listing).must_equal expected_listing
     end
   end
 end
