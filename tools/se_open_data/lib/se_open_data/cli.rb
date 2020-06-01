@@ -19,6 +19,14 @@ module SeOpenData
       end
     end
 
+    # Removes all the generated files in the directory set by
+    # {SeOpenData::Config} value `TOP_OUTPUT_DIR`
+    def self.command_clean
+      config = load_config
+      puts "Deleting #{config.TOP_OUTPUT_DIR} and any contents."
+      FileUtils.rm_rf config.TOP_OUTPUT_DIR
+    end
+    
     # Runs the converter.rb script in the current directory, if present
     def self.command_convert
       converter_file = File.join(Dir.pwd, 'converter')

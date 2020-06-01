@@ -5,6 +5,8 @@
 # "seod" stands for "Solidarity Economy Open Data"
 #
 # FIXME expand
+#
+# FIXME dynamically generate documentation from SeOpenData::Cli reflection
 
 require_relative '../lib/load_path'
 require 'se_open_data/cli'
@@ -21,6 +23,7 @@ Where <command> can be:
 - create_w3id
 - triplestore
 - run_all
+- clean
 
 USAGE
 
