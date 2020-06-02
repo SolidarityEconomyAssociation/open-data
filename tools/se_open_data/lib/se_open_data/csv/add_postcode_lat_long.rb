@@ -25,7 +25,11 @@ module SeOpenData
       csv_out = ::CSV.new(output_io)
       allHeaders = new_headers.merge!(address_headers)
       postcode_client = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache)
-      global_postcode_client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client.new(global_postcode_cache,geocoder_standard)
+      global_postcode_client = nil
+      if global_postcode_cache!=nil
+        global_postcode_client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client.new(global_postcode_cache,geocoder_standard)
+      end
+
       #add global postcode
       headers = nil
       row_count = csv_in.count
@@ -46,12 +50,13 @@ module SeOpenData
           loc_data = {
             geocontainer: pcunit ? pcunit[:within] : nil,
             geocontainer_lat: pcunit ? pcunit[:lat] : nil,
-            geocontainer_lon: pcunit ? pcunit[:lng] : nil
+            geocontainer_lon: pcunit ? pcunit[:lng] : nil,
+            country_name: "United Kingdom"
           }
           new_headers.each {|k, v|
               row[v] = loc_data[k]
           }
-        else #geocode using global geocoder
+        elsif global_postcode_client #geocode using global geocoder
           
           #standardize the address if indicated
           headersToUse = {}
@@ -80,8 +85,10 @@ module SeOpenData
         end
         csv_out << row
       end
-
-      global_postcode_client.finalize(0)
+      
+      if global_postcode_client
+        global_postcode_client.finalize(0)
+      end
     end
   end
 end

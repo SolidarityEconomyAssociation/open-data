@@ -24,7 +24,6 @@ module SeOpenData
         @graph ||= make_graph
       end
       def make_graph
-        #puts uri.to_s
         g = ::RDF::Graph.new
         populate_graph(g)
         g
@@ -49,6 +48,13 @@ module SeOpenData
       def email_uri
         ::RDF::URI("#{uri}#Email")
       end
+      def twitter_uri
+        ::RDF::URI("#{uri}#twitter")
+      end
+      def facebook_uri
+        ::RDF::URI("#{uri}#facebook")
+      end
+
       def geocontainer_uri
 	
         (initiative.geocontainer && !initiative.geocontainer.empty? &&
@@ -235,19 +241,19 @@ module SeOpenData
 
         # The above is also true of hasAddress/hasTelephone and hasEmail
 
-        # if(initiative.twitter && !initiative.twitter.empty?)
-        #   graph.insert([uri, ::RDF::Vocab::FOAF.account, twitter_uri])
-        #   graph.insert([twitter_uri, ::RDF.type, "http://xmlns.com/foaf/0.1/OnlineAccount"])
-        #   graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountServiceHomepage, "https://twitter.com/"])
-        #   graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountName, initiative.twitter])
-        # end
+        if(initiative.twitter && !initiative.twitter.empty?)
+          graph.insert([uri, ::RDF::Vocab::FOAF.account, twitter_uri])
+          graph.insert([twitter_uri, ::RDF.type, ::RDF::Vocab::FOAF.OnlineAccount])
+          graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountServiceHomepage, "https://twitter.com/"])
+          graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountName, initiative.twitter])
+        end
 
-        # if(initiative.facebook && !initiative.facebook.empty?)
-        #   graph.insert([uri, ::RDF::Vocab::FOAF.account, facebook_uri])
-        #   graph.insert([twitter_uri, ::RDF.type, "http://xmlns.com/foaf/0.1/OnlineAccount"])
-        #   graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountServiceHomepage, "https://facebook.com/"])
-        #   graph.insert([twitter_uri, ::RDF::Vocab::FOAF.accountName, initiative.facebook])
-        # end
+        if(initiative.facebook && !initiative.facebook.empty?)
+          graph.insert([uri, ::RDF::Vocab::FOAF.account, facebook_uri])
+          graph.insert([facebook_uri, ::RDF.type, ::RDF::Vocab::FOAF.OnlineAccount])
+          graph.insert([facebook_uri, ::RDF::Vocab::FOAF.accountServiceHomepage, "https://facebook.com/"])
+          graph.insert([facebook_uri, ::RDF::Vocab::FOAF.accountName, initiative.facebook])
+        end
 
         if config.sameas.has_key? (uri_s)
           config.sameas[uri_s].each do |sameas_uri|
