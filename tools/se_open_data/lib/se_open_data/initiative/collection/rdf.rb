@@ -2,7 +2,7 @@ require 'linkeddata'
 
 module SeOpenData
   class Initiative
-    class Collection
+    class Collection < Array
       class RDF
 	      # This class is needed bacause insert_graph is a protected method of ::RDF::Graph.
 	      # No other reason.
