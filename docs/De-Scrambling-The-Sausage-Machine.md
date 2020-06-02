@@ -62,6 +62,8 @@ The logical sequence of steps is:
     with a column of comments added)... but in practice this varies.
   - The `ica-youth-network` project creates `with_ids.csv` and `cleared_errors.csv`
   - ... and so on (TODO add more detail here?)
+  *dean: The specified processes for conversion are most of the time at the level of a specific project. I.e. ica-youth-network requires specific data clearing procedures, this should not and does not need to be shared with other projects (hence it is kept and used only in the ica-youth-network project and not in the standard library.)*
+  
 - Next, generate RDF/TTL/HTML using `generate.mk` which invokes
   `csv-to-rdf.rb`
 - Deploy the generated static-data files to the web-server using
@@ -135,6 +137,7 @@ folders.
 `converter.rb` takes the values from the input CSV and pipes them into
 the output CSV. The data can either be passed straight through to the
 output or it can be processed before passing it on.
+*dean: converter.rb is not responsible for the pipeline. csv.mk is the script which is responsible for managing the pipeline of execution and `converter.rb` quite literally just creates a mapping {A -> B} (A being a field in the original file and B - the resulting file, Note: the mapping can be both a relational mapping or a function applied to A)*
 
 To pass the data through just assign the header name to the symbol
 from the standard. For instance, if the files that we want to use as
