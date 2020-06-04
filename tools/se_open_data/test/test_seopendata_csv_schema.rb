@@ -1,5 +1,5 @@
 require_relative "../lib/load_path"
-require "se_open_data/csv"
+require "se_open_data/csv/schema"
 require "minitest/autorun"
 
 Minitest::Test::make_my_diffs_pretty!
@@ -101,11 +101,14 @@ HERE
                         'brussels sprouts': 'c',
                         carrots: 'a'})).must_equal %w(b c a)
 
-      # Unknown ids are ignored
-      value(schema.row({apples: 'b',
-                        'brussels sprouts': 'c',
-                        carrots: 'a',
-                        cucumbers: 'a'})).must_equal %w(b c a)
+      # Unknown ids are errors
+      value(assert_raises(ArgumentError) {
+              schema.row({apples: 'b',
+                          'brussels sprouts': 'c',
+                          carrots: 'a',
+                          cucumbers: 'a'})
+            }.message
+           ).must_match "hash keys do not match 'schema1' schema field IDs: cucumbers"
 
       # All fields must be present
       value(assert_raises(ArgumentError) {
