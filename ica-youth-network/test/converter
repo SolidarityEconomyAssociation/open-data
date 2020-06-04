@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 #
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
@@ -222,20 +221,20 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
   TYPE_TO_ORG_STRUCT = {
     "Cooperativa de consumo / usuario final" => "Consumer co-operative",
-    "Coop�rative de consommateur.rice.s"=> "Consumer co-operative",
-    "Final consumer/user cooperative"=> "Consumer co-operative",
-    "Cooperativa de m�ltiples actores"=> "Multi-stakeholder co-operative",
-    "Coop�rative pluri-acteurs"=> "Multi-stakeholder co-operative",
-    "Multi-stakeholder cooperative"=> "Multi-stakeholder co-operative",
-    "Cooperativa de producci�n"=> "Producer co-operative",
-    "Coop�rative de producteur.rice.s (dont agricole)"=> "Producer co-operative",
-    "Producer cooperative"=> "Producer co-operative",
-    "Cooperativa de trabajo y empleo"=> "Self-employed",
-    "Cooperativa di lavoro"=> "Self-employed",
-    "Work and employment cooperative"=> "Self-employed",
-    "Coop�rative de travailleur.se.s"=> "Workers co-operative"
+    "Coop\uFFFDrative de consommateur.rice.s" => "Consumer co-operative",
+    "Final consumer/user cooperative" => "Consumer co-operative",
+    "Cooperativa de m\uFFFDltiples actores" => "Multi-stakeholder co-operative",
+    "Coop\uFFFDrative pluri-acteurs" => "Multi-stakeholder co-operative",
+    "Multi-stakeholder cooperative" => "Multi-stakeholder co-operative",
+    "Cooperativa de producci\uFFFDn" => "Producer co-operative",
+    "Coop\uFFFDrative de producteur.rice.s (dont agricole)" => "Producer co-operative",
+    "Producer cooperative" => "Producer co-operative",
+    "Cooperativa de trabajo y empleo" => "Self-employed",
+    "Cooperativa di lavoro" => "Self-employed",
+    "Work and employment cooperative" => "Self-employed",
+    "Coop\uFFFDrative de travailleur.se.s" => "Workers co-operative",
   }
-  
+
   # These define methods (as keys) to implement as simple hash
   # look-ups using CSV field names (values).
   #
