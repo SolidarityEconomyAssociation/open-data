@@ -7,6 +7,14 @@ module SeOpenData
     #
     # This also defines a DSL for describing CSV translations via {self.converter}
     class Schema
+      DEFAULT_INPUT_CSV_OPTS = {
+        # Headers need to be off or else the logic needs to be changed.
+        headers: false, 
+        skip_blanks: true
+      }
+      DEFAULT_OUTPUT_CSV_OPTS = {
+      }
+      
       attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids, :field_headers
       
       def initialize(id:, name: id, version: 0, description: '', comment: '', fields:)
@@ -128,7 +136,9 @@ module SeOpenData
       end
 
       # This implements the top-level DSL for CSV conversions.
-      def self.converter(from_schema:, to_schema:, input_csv_opts: {}, output_csv_opts: {},
+      def self.converter(from_schema:, to_schema:,
+                         input_csv_opts: DEFAULT_INPUT_CSV_OPTS,
+                         output_csv_opts: DEFAULT_OUTPUT_CSV_OPTS,
                          &block)
 
         return Converter.new(
