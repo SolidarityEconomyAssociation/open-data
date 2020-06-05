@@ -7,12 +7,14 @@ module SeOpenData
     #
     # This also defines a DSL for describing CSV translations via {self.converter}
     class Schema
-      attr_reader :id, :name, :fields, :field_ids, :field_headers
+      attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids, :field_headers
       
-      def initialize(id:, name: id, fields:)
+      def initialize(id:, name: id, version: 0, description: '', comment: '', fields:)
         @id = id.to_sym
         @name = name.to_s
         @fields = normalise_fields(fields)
+        @version = version
+        @description = description
         
         # Pre-compute these. Trust that nothing will get mutated!
         @field_ids = @fields.collect { |field| field.id }
