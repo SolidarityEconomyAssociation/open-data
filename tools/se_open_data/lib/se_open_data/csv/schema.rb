@@ -74,17 +74,27 @@ module SeOpenData
         raise ArgumentError, "invalid header fields #{headers}: #{invalids.join('; ')}"
       end
 
-      # Turns an array of values into a hash keyed by field ID
+      # Turns an array of values into a hash keyed by field ID.
       #
       # The values are validated during this process.
-      
+      #
+      # This is used to creating a hash of input data keyed by our
+      # field IDs, to pass to the row-transform block accepted by the
+      # {Converter} class's constructor, {Converter.new}.
+      #
       # @param row [Array] - an array of data values
       #
-      # @param field_map [Array<Integer, nil>] - an array of schema
-      # field indexes mapping to that row field (or nil when the
-      # schema does not include that row field). 
-      #
+      # @param field_map [Array<Integer, nil>] - an array defining,
+      # for each schema field, the index of the data field that it
+      # refers to. 
       # @return [Hash<Symbol => Object>] the row data hashed by field ID
+      #
+      # @raise ArgumentError if field_map contains duplicates or nils,
+      # or indexes which don't match a schema field index.
+      #
+      # @raise ArgumentError if row or field_map don't have the same
+      # number of elements as there are schema fields.
+      #
       def id_hash(row, field_map)
         hash = {}
         used = []
@@ -152,7 +162,12 @@ module SeOpenData
       # Defines a field in a schema
       class Field
         attr_reader :id, :index, :header, :desc, :comment
-        
+
+        # @param id [Symbol, String] a field ID symbol, unique to this schema
+        # @param index [Integer] an optional field index (may be amended later with {#add_index})
+        # @param header [String] the CSV header to use/expect in files
+        # @param desc [String] an optional human-readable one-line description.
+        # @param comment [String] an optional comment about this field
         def initialize(id:, index: -1, header:, desc: '', comment: '')
           @id = id.to_sym
           @index = index.to_i
@@ -161,19 +176,38 @@ module SeOpenData
           @comment = comment.to_s
         end
 
-        # Creates a new field instance with the same values but the given index
+        # Used to amend the field index (non-mutating)
+        #
+        # @param index [Integer] the index to use
+        # @return a new Field instance with the same values but the given index
         def add_index(index)
           Field.new(id: id, index: index, header: @header, desc: @desc, comment: comment)
         end
       end
 
-      # Defines a number of file conversion styles
+      # Defines a number of file conversion methods.
       #
-      # Most notably {#each_row} which performs schema validation
-      # and tries to facilitate simple mapping of fields
+      # Most notably, the method {#each_row} performs schema
+      # validation and tries to facilitate simple mapping of row
+      # fields, using the block provided to the constructor.
       class Converter
         attr_reader :from_schema, :to_schema, :block
-        
+
+        # Constructs an instance designed for use with the given input
+        # and output CSV schemas.
+        #
+        # Rows are parsed and transformed using {#block}, which is
+        # given a hash whose keys are {#from_schema} field IDs, and
+        # values are the corresponding data fields.
+        #
+        # The block is expected to return another hash, whose keys are
+        # {#to_schema} fields, and values transformed data fields.
+        #
+        # @param from_schema [Schema] defines the input CSV {Schema}.
+        # @param to_schema [Schema] defines the output CSV {Schema}.
+        # @param input_csv_opts [Hash] options to pass to the input {::CSV} stream's constructor
+        # @param output_csv_opts [Hash] options to pass to the output {::CSV} stream's constructor
+        # @param block a block which transforms rows, as described.
         def initialize(from_schema:,
                        to_schema:,
                        input_csv_opts: {},
@@ -186,7 +220,15 @@ module SeOpenData
           @block = block
         end
 
-        # Accepts files or streams
+        # Accepts file paths or streams, but calls the block with streams.
+        #
+        # Opens streams if necessary, and ensures the streams are
+        # closed after being returned.
+        #
+        # @param in_data [String, IO] the file path or stream to read from
+        # @param out_data [String, IO] the file path or stream to write to
+        # @param block a block to invoke with the input and output streams as parameters.
+        # @return the result from the block
         def stream(in_data, out_data, &block)
           in_data = File.open(in_data, 'r') if in_data.is_a? String
           out_data = File.open(out_data, 'w') if out_data.is_a? String
@@ -198,6 +240,27 @@ module SeOpenData
           out_data.close
         end
 
+        # Performs schema validation and tries to facilitate simple
+        # mapping of row fields, using the {#block} provided to the
+        # constructor (See {.new}.)
+        #
+        # The input stream is opened as a CSV stream, using
+        # {#input_csv_opts}, likewise the output stream using
+        # {#output_csv_opts}.
+        #
+        # Headers (assumed present) are read from the input stream
+        # first, validated according to {#from_schema}, and used to
+        # create a field mapping for the ordering in this file (which
+        # is not assumed to match the schema's).
+        #
+        # Output headers are then written to the output stream (in the
+        # order defined by {#to_schema}).
+        #
+        # Then each row is parsed and transformed using {#block}, then
+        # the result written to the output CSV stream.
+        #
+        # @param input [String, IO] the file path or stream to read from
+        # @param output [String, IO] the file path or stream to write to        
         def each_row(input, output)
           stream(input, output) do |inputs, outputs|
             csv_in = ::CSV.new(inputs, **@input_csv_opts)
