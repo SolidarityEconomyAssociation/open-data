@@ -40,18 +40,17 @@ module SeOpenData
       end
 
       # These keys are mandatory, because we use them below
-      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR
-         SE_OPEN_DATA_BIN_DIR STANDARD_CSV URI_SCHEME URI_HOST
-         URI_PATH_PREFIX CSS_SRC_DIR DEPLOYMENT_WEBROOT
-         VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER W3ID_REMOTE_LOCATION
-         SERVER_ALIAS)
+      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR STANDARD_CSV
+      URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
+      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER
+      W3ID_REMOTE_LOCATION SERVER_ALIAS)
         .each do |key| 
           raise "mandatory key '#{key}' is missing" unless @map.has_key? key
         end
 
       
       # Expand these paths relative to base_dir
-      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR SE_OPEN_DATA_LIB_DIR SE_OPEN_DATA_BIN_DIR)
+      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR)
         .each do |key| # expand rel to base_dir, append a slash
           @map[key] = join File.expand_path(@map[key], base_dir), ""
         end
@@ -154,34 +153,6 @@ module SeOpenData
     def map
       @map
     end
-
-    # Generates a ruby script invocation, and invokes it
-    def gen_ruby_command(in_f, script, options, out_f, err_f)
-      #generate ruby commands to execute ruby scripts for pipelined processes
-      rb_template = "ruby -I " + @map["SE_OPEN_DATA_LIB_DIR"]
-
-      command = ""
-
-      command += "#{rb_template} #{script}"
-      if options
-        command += " #{options}"
-      end
-
-      if in_f
-        command += " #{in_f}"
-      end
-
-      if out_f
-        command += " > #{out_f}"
-      end
-      if out_f && err_f
-        command += " > #{err_f}"
-      end
-
-      puts command
-      system(command)
-    end
-
 
     protected
 

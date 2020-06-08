@@ -20,8 +20,6 @@ describe SeOpenData::Config do
   describe "a valid config instance" do
     config_map = nil
     
-    lib_dir = File.absolute_path(__dir__+ "/../../tools/se_open_data")
-
     # TestConfig should recreate this + some contents
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
@@ -60,8 +58,6 @@ describe SeOpenData::Config do
       "TOP_OUTPUT_DIR" => caller_dir+"/generated-data/",
       "STANDARD_CSV" => caller_dir+"/generated-data/standard.csv",
       "AUTO_LOAD_TRIPLETS" => true,
-      "SE_OPEN_DATA_BIN_DIR" => lib_dir+"/bin/",
-      "SE_OPEN_DATA_LIB_DIR" => lib_dir+"/lib/",
       "CSS_SRC_DIR" => caller_dir+"/css/",
       "VIRTUOSO_PASS_FILE" => "deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password",
       "W3ID_REMOTE_LOCATION" => "/var/www/html/w3id.org/",
