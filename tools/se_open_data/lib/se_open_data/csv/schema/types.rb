@@ -41,7 +41,7 @@ module SeOpenData
         # @param quote [String] the sub-field qupte character
         def self.multivalue(val, delim: ';', quote: "'")
           subfields = ::CSV.parse_line(val, quote_char: quote, col_sep: delim)
-          new_subfields = subfields.collect {|field| yield field.strip, subfields }
+          new_subfields = subfields.collect {|field| yield field.strip, subfields }.compact
           ::CSV.generate_line(new_subfields,
                               quote_char: quote, col_sep: delim).chomp
         end
