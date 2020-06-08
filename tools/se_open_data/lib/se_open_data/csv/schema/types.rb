@@ -5,11 +5,11 @@ module SeOpenData
     class Schema
       class Types
 
-        def self.normalise_email(val)
-          val.to_s =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i? val : '' # FIXME report mismatches
+        def self.normalise_email(val, default: '')
+          val.to_s =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i? val : default # FIXME report mismatches
         end
         
-        def self.normalise_url(val) # FIXME use something off the shelf
+        def self.normalise_url(val, default: '') # FIXME use something off the shelf
           val = val.to_s
           
           if val && !val.empty?
@@ -22,11 +22,11 @@ module SeOpenData
             end
 
             add_comment("This doesn't look like a website: #{val} (Maybe it's missing the http:// ?)")
-            return ''
+            return default
           end
         end
 
-        def self.normalise_float(val, default = 0)
+        def self.normalise_float(val, default: 0)
           val =~ /^[+-]?\d+[.]\d+$/? val : default
         end
 
