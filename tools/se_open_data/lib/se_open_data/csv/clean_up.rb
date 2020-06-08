@@ -32,8 +32,13 @@ module SeOpenData
             if error_detected
               line.encode!('UTF-8', 'UTF-8', :invalid => :replace)
               line.delete!("\xEF\xBB\xBF")
-              line = line.sub('"','').sub(/.*\K\"/, '').gsub("'","").
-                       gsub("\"\"","replaceMeWithQuote").gsub("\"","").gsub("replaceMeWithQuote","\"")
+              line = line
+                       .sub('"','')
+                       .sub(/.*\K\"/, '')
+                       .gsub("'","")
+                       .gsub("\"\"","replaceMeWithQuote")
+                       .gsub("\"","")
+                       .gsub("replaceMeWithQuote","\"")
               csv_out.print(line) 
             else
               csv_out.print(line)
