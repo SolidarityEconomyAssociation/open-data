@@ -2,6 +2,26 @@
 #
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
+#
+# We aim to put only logic specific to this project in this file, and
+# keep it brief and clear. Shared logic should go into the {SeOpenData}
+# library.
+#
+# This script can be invoked directly, or as part of the {SeOpenData}
+# library's command-line API {SeOpenData::Cli}. For example, this
+# just runs the conversion step (or specifically: a script in the
+# current directory called `converter`):
+#
+#     seod convert 
+#
+# And this runs the complete chain of commands generating and
+# deploying the linked data for this project, as configured by
+# `settings/config.txt`:
+#
+#     seod run-all
+#
+# See the documentation on [`seod`]({SeOpenData::Cli}) for more
+# information.
 
 require_relative '../../tools/se_open_data/lib/load_path'
 require 'se_open_data'
@@ -9,9 +29,10 @@ require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
 require 'csv'
 
-
+# Code related to the ICA Youth-Network initiative data
 module IcaYouthNetwork
-  
+
+  # This defines the input CSV schema we expect (after clean-up an index generation)
   Schema = SeOpenData::CSV::Schema.new(
     id: :ica_youth_network,
     name: "ICA Youth Network",
@@ -106,13 +127,18 @@ module IcaYouthNetwork
     ]
   )
 
-  # Convenient alias
+  # A convenient alias...
   types = SeOpenData::CSV::Schema::Types
   
-  # Defines a schema mapping for ica-youth-network data.
+  # This defines the schema mapping for ica-youth-network data into the
+  # standard schema.
   #
+  # The logic that maps the input field data is defined in the
+  # do-block. It will be wrapped in a loop which reads the input file
+  # and writes the output file. See the documentation for
+  # {SeOpenData::CSV::Schema.converter}.
   #
-  # See discussion here:
+  # See discussion here for some background on the conversion logic:
   # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
   Converter = SeOpenData::CSV::Schema.converter(
     from_schema: Schema,
@@ -165,10 +191,11 @@ module IcaYouthNetwork
     }
   end
 
-  # Adds a new last column `Id` and inserts in it a numeric index in each row.
+  # CSV file transform - adds a new last column `Id` and inserts in it
+  # a numeric index in each row.
   #
   # @param input - an input stream, or the name of a file to read
-  # @param output - an output stream, or the name of a file to read  
+  # @param output - an output stream, or the name of a file to write
   def self.add_unique_ids(input:, output:)
     input = File.open(input) unless input.is_a? IO
     output = File.open(output, 'w') unless output.is_a? IO
@@ -236,13 +263,22 @@ module IcaYouthNetwork
 
   private
   
+  # This maps strings in the "Type" field in the input data into
+  # values we can use in the SSE standard "Organizational Structure"
+  # field.
+  #
+  # See
+  # https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
+  # And:
+  # https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
+  #
+  # @param val [String] The value to convert
+  # @return [String] A valid "Organizational Structure" value
   def self.normalise_org_struct(val)
     # Strictly this should allow multiple values delimited by ';'
     TYPE_TO_ORG_STRUCT[val] || "Co-operative"
   end
 
-  # See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
-  # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
   TYPE_TO_ORG_STRUCT = {
     "Cooperativa de consumo / usuario final" => "Consumer co-operative",
     "Coop\uFFFDrative de consommateur.rice.s" => "Consumer co-operative",
