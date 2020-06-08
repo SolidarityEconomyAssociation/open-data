@@ -176,8 +176,8 @@ module IcaYouthNetwork
       region: '',
       postcode: '',
       country_name: country,
-      homepage:[nil, '', 'n/a'].include? website.downcase ?
-        '' : types.multivalue(website) {|it| types.normalise_url(it) },
+      homepage: ([nil, '', 'n/a'].include?(website.downcase)?
+        "" : types.multivalue(website) {|it| types.normalise_url(it, default: nil) }),
       phone: '',
       email: email.to_s.empty? ? '' : types.normalise_email(email),
       twitter: '',
