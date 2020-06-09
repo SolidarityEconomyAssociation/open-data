@@ -11,6 +11,20 @@ module SeOpenData
   # FIXME expand
   class Config
     require 'fileutils'
+
+    # Default values for optional key that should not default to nil.
+    # Directories which are relative are typically expanded relative
+    # to the current working directory.
+    DEFAULTS = {
+      'AUTO_LOAD_TRIPLETS' => true,
+      'CSS_SRC_DIR' => 'css',
+      'DEPLOYMENT_RSYNC_FLAGS' => '--delete',
+      'SRC_CSV_DIR' => 'original-data',
+      'STANDARD_CSV' => 'standard.csv',
+      'TOP_OUTPUT_DIR' => 'generated-data',
+      'URI_SCHEME' => 'https',
+      'USE_ENV_PASSWORDS' => false,
+    }
     
     # @param file [String] - the path to the config file to load.
     # @param base_dir [String] - the base directory in which to locate certain paths
@@ -18,6 +32,7 @@ module SeOpenData
       @config_file = file
 
       @map = {}
+      
       File.foreach(@config_file).with_index(1) do |line, num|
         next if line =~ /^\s*$/ # skip blank lines
         next if line =~ /^\s*#/ # skip comments
@@ -39,8 +54,12 @@ module SeOpenData
         @map[key] = val
       end
 
+      # Add defaults here after the loop, which uses the map to spot
+      # duplicates.
+      @map = DEFAULTS.merge(@map)
+      
       # These keys are mandatory, because we use them below
-      %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR STANDARD_CSV
+      %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
       URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
       DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER
       W3ID_REMOTE_LOCATION SERVER_ALIAS)
@@ -48,7 +67,6 @@ module SeOpenData
           raise "mandatory key '#{key}' is missing" unless @map.has_key? key
         end
 
-      
       # Expand these paths relative to base_dir
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR)
         .each do |key| # expand rel to base_dir, append a slash
@@ -123,6 +141,8 @@ module SeOpenData
         'GEN_SPARQL_DIR',
         'W3ID_LOCAL_DIR'
       )
+    rescue => e
+      raise "#{e.message}: #{@config_file}"
     end
 
     # Checks whether key is valid
