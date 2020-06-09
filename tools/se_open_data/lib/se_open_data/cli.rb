@@ -38,53 +38,65 @@ module SeOpenData
         raise "converter command in current directory failed"
       end
     end
-    
+
+    # Generates the static data in WWW_DIR and GEN_SPARQL_DIR
     def self.command_generate
       require "se_open_data/csv/standard"
       require "se_open_data/initiative/rdf"
       require "se_open_data/initiative/collection"
       config = load_config
 
+      # Delete and re-create an empty WWW_DIR directory.  It's
+      # important to start from scratch, to avoid incompletely
+      # reflecting config changes (which would happen if we tried to
+      # regenerate only those missing files). We don't really want to
+      # check timestamps like Make does, because that gets a bit
+      # complicated, ignores changes not reflected in the filesystem,
+      # e.g. dates, and can't spot spurious junk left in the directory
+      # by manual copies etc.
+      Log.info "recreating #{config.WWW_DIR}"
+      FileUtils.rm_rf config.WWW_DIR
+      FileUtils.mkdir_p config.GEN_DOC_DIR # need this subdir
+      
+      Log.info "recreating #{config.GEN_SPARQL_DIR}"
+      FileUtils.rm_rf config.GEN_SPARQL_DIR
+      FileUtils.mkdir_p config.GEN_SPARQL_DIR
 
-      if !File.file?(config.ONE_BIG_FILE_BASENAME)
-        # Copy contents of CSS_SRC_DIR into GEN_CSS_DIR
-        FileUtils.cp_r File.join(config.CSS_SRC_DIR, '.'), config.GEN_CSS_DIR
-
-        # Find the relative path from GEN_DOC_DIR to GEN_CSS_DIR
-        doc_dir = Pathname.new(config.GEN_DOC_DIR)
-        css_dir = Pathname.new(config.GEN_CSS_DIR)
-        css_rel_dir = css_dir.relative_path_from doc_dir
-
-        # Enumerate the CSS files there, relative to GEN_DOC_DIR
-        css_files = Dir.glob(css_rel_dir + '**/*.css', base: config.GEN_DOC_DIR)
-
-        #all
-        IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT+"\n"
-        IO.write config.SPARQL_GRAPH_NAME_FILE, config.GRAPH_NAME+"\n"
-
+      # Copy contents of CSS_SRC_DIR into GEN_CSS_DIR
+      FileUtils.cp_r File.join(config.CSS_SRC_DIR, '.'), config.GEN_CSS_DIR
+      
+      # Find the relative path from GEN_DOC_DIR to GEN_CSS_DIR
+      doc_dir = Pathname.new(config.GEN_DOC_DIR)
+      css_dir = Pathname.new(config.GEN_CSS_DIR)
+      css_rel_dir = css_dir.relative_path_from doc_dir
+      
+      # Enumerate the CSS files there, relative to GEN_DOC_DIR
+      css_files = Dir.glob(css_rel_dir + '**/*.css', base: config.GEN_DOC_DIR)
+      
+      #all
+      IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT+"\n"
+      IO.write config.SPARQL_GRAPH_NAME_FILE, config.GRAPH_NAME+"\n"
+      
+      
+      rdf_config = SeOpenData::Initiative::RDF::Config.new(
+        config.DATASET_URI_BASE,
+        config.ESSGLOBAL_URI,
+        config.ONE_BIG_FILE_BASENAME,
+        config.SPARQL_GET_ALL_FILE,
+        css_files,
+        nil, #    postcodeunit_cache?
+        SeOpenData::CSV::Standard::V1,
+        config.SAME_AS_FILE == ''? nil : config.SAME_AS_FILE,
+        config.SAME_AS_HEADERS == ''? nil : config.SAME_AS_HEADERS
+      )
+      
+      # Load CSV into data structures, for this particular standard
+      File.open(config.STANDARD_CSV) do |input|
+        input.set_encoding(Encoding::UTF_8)
         
-        rdf_config = SeOpenData::Initiative::RDF::Config.new(
-          config.DATASET_URI_BASE,
-          config.ESSGLOBAL_URI,
-          config.ONE_BIG_FILE_BASENAME,
-          config.SPARQL_GET_ALL_FILE,
-          css_files,
-          nil, #    postcodeunit_cache?
-          SeOpenData::CSV::Standard::V1,
-          config.SAME_AS_FILE == ''? nil : config.SAME_AS_FILE,
-          config.SAME_AS_HEADERS == ''? nil : config.SAME_AS_HEADERS
-        )
-        
-        # Load CSV into data structures, for this particular standard
-        File.open(config.STANDARD_CSV) do |input|
-          input.set_encoding(Encoding::UTF_8)
-          
-          collection = SeOpenData::Initiative::Collection.new(rdf_config)
-          collection.add_from_csv(input.read)
-          collection.serialize_everything(config.GEN_DOC_DIR)
-        end
-      else
-        puts "Work done already"
+        collection = SeOpenData::Initiative::Collection.new(rdf_config)
+        collection.add_from_csv(input.read)
+        collection.serialize_everything(config.GEN_DOC_DIR)
       end
 
     end
