@@ -12,12 +12,15 @@ module SeOpenData
   class Config
     require 'fileutils'
 
+    # Where to look for non-code resources
+    RESOURCE_DIR = File.expand_path('../../resources', __dir__)
+    
     # Default values for optional key that should not default to nil.
     # Directories which are relative are typically expanded relative
     # to the current working directory.
     DEFAULTS = {
       'AUTO_LOAD_TRIPLETS' => true,
-      'CSS_SRC_DIR' => 'css',
+      'CSS_SRC_DIR' => File.join(RESOURCE_DIR, 'css'),
       'DEPLOYMENT_RSYNC_FLAGS' => '--delete',
       'SRC_CSV_DIR' => 'original-data',
       'STANDARD_CSV' => 'standard.csv',
