@@ -76,7 +76,6 @@ describe SeOpenData::Config do
       "DATASET_URI_BASE" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "ONE_BIG_FILE_BASENAME" => caller_dir+"/generated-data/virtuoso/all",
-      "CSS_FILES" => caller_dir+"/css/2.css,"+caller_dir+"/css/1.css",
       "SAME_AS_FILE" => "",
       "SAME_AS_HEADERS" => "",
       "DEPLOYMENT_DOC_SUBDIR" => "ica-youth-network/",

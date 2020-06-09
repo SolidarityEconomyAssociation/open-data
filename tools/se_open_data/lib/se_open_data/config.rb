@@ -94,7 +94,6 @@ module SeOpenData
       @map["GRAPH_NAME"] = @map["DATASET_URI_BASE"]
       @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
       
-      @map["CSS_FILES"] =  Dir[join @map["CSS_SRC_DIR"], "*.css"].join(",")
       @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 
       @map["SAME_AS_HEADERS"] = @map.key?("SAMEAS_HEADERS") ? @map["SAMEAS_HEADERS"] : "" 
 

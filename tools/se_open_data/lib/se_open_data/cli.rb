@@ -1,4 +1,5 @@
 require "shellwords"
+require "pathname"
 require "se_open_data/utils/log_factory"
 
 module SeOpenData
@@ -49,6 +50,13 @@ module SeOpenData
         # Copy contents of CSS_SRC_DIR into GEN_CSS_DIR
         FileUtils.cp_r File.join(config.CSS_SRC_DIR, '.'), config.GEN_CSS_DIR
 
+        # Find the relative path from GEN_DOC_DIR to GEN_CSS_DIR
+        doc_dir = Pathname.new(config.GEN_DOC_DIR)
+        css_dir = Pathname.new(config.GEN_CSS_DIR)
+        css_rel_dir = css_dir.relative_path_from doc_dir
+
+        # Enumerate the CSS files there, relative to GEN_DOC_DIR
+        css_files = Dir.glob(css_rel_dir + '**/*.css', base: config.GEN_DOC_DIR)
 
         #all
         IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT+"\n"
@@ -60,7 +68,7 @@ module SeOpenData
           config.ESSGLOBAL_URI,
           config.ONE_BIG_FILE_BASENAME,
           config.SPARQL_GET_ALL_FILE,
-          config.CSS_FILES.split(/\s*,\s*/),
+          css_files,
           nil, #    postcodeunit_cache?
           SeOpenData::CSV::Standard::V1,
           config.SAME_AS_FILE == ''? nil : config.SAME_AS_FILE,
