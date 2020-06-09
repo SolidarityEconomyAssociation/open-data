@@ -22,6 +22,24 @@ module SeOpenData
       @rpc = SeOpenData::LimeSurveyRpc.new(url)
     end
 
+
+    # Creates an instance, passes it to a block, then {#finalize}s the
+    # session.
+    #
+    # @param (See LimeSurveyExporter#initialize)
+    # @yield [LimeSurveyExporter] performs operations in an auto-closed session;
+    # {#finalize} is called automatically on return.
+    def self.session(*args)
+
+      obj = self.new(*args)
+      
+      yield(obj)
+
+      return
+    ensure
+      obj.finalize
+    end
+    
     # Export a single survey response set.
     #
     # Supplemental options correspond to options following the
