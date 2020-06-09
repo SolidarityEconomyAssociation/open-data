@@ -11,6 +11,11 @@ module SeOpenData
     # your credentials.
     #
     # This can then be used to export multiple survey response sets.
+    #
+    # @param url [String] the Lime Survey service URL for your account, e.g.
+    # `https://myaccount.limequery.com/index.php/admin/remotecontrol`
+    # @param username [String] the user to log in as
+    # @param password [String] the user's password
     def initialize(url, username, password)
       @username = username
       @password = password
@@ -23,6 +28,10 @@ module SeOpenData
     # `survey_id` option described here:
     #
     # https://api.limesurvey.org/classes/remotecontrol_handle.html#method_export_responses
+    #
+    # @param survey_id [String] the ID for the survey we should export
+    # @param options [Hash] options to pass to {SeOpenData::LimeSurveyRpc#export_responses}
+    # @return [String] the exported and base-64 decoded data
     def export_responses(survey_id, *options)
       unless @session_key
         @session_key = @rpc.get_session_key(@username, @password)
