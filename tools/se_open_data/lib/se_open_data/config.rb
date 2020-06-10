@@ -23,10 +23,12 @@ module SeOpenData
       'CSS_SRC_DIR' => File.join(RESOURCE_DIR, 'css'),
       'DEPLOYMENT_RSYNC_FLAGS' => '--delete',
       'SRC_CSV_DIR' => 'original-data',
+      'ORIGINAL_CSV' => 'original.csv',
       'STANDARD_CSV' => 'standard.csv',
       'TOP_OUTPUT_DIR' => 'generated-data',
       'URI_SCHEME' => 'https',
       'USE_ENV_PASSWORDS' => false,
+      'ESSGLOBAL_URI' => 'https://w3id.solidarityeconomy.coop/essglobal/V2a/',
     }
     
     # @param file [String] - the path to the config file to load.
