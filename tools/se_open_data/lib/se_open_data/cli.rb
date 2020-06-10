@@ -255,9 +255,9 @@ HERE
         end
         
         if(config.AUTO_LOAD_TRIPLETS)
-          pass = pass.get config.VIRTUOSO_PASS_FILE
+          password = pass.get config.VIRTUOSO_PASS_FILE
           puts autoload_cmd "<PASSWORD>", config
-          unless system autoload_cmd pass, config
+          unless system autoload_cmd password, config
             raise "autoload triplets failed"
           end
         else
