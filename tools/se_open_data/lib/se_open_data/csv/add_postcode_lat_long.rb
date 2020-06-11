@@ -84,7 +84,6 @@ module SeOpenData
               row[v] = loc_data[k]
           }
         elsif global_postcode_client #geocode using global geocoder
-          
           #standardize the address if indicated
           headersToUse = {}
 
@@ -105,6 +104,7 @@ module SeOpenData
           pcunit = global_postcode_client.get(address,country) #assigns both address_headers field
 
           if pcunit == nil
+            csv_out << row
             next
           end
 
@@ -114,9 +114,9 @@ module SeOpenData
 
         end
 
-        
         csv_out << row
       end
+
       
       if global_postcode_client
         global_postcode_client.finalize(0)
