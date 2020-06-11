@@ -43,9 +43,9 @@ module SeOpenData
           csv_opts = {},
           global_postcode_cache = nil,
           address_headers,
-          replace_address = true,
-          geocoder_headers = SeOpenData::CSV::Standard::OpenCageAddressStandard::Headers,
-          geocoder_standard = SeOpenData::CSV::Standard::OpenCageAddressStandard::OpenCageClass.new
+          replace_address,
+          geocoder_headers,
+          geocoder_standard
         )
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, csv_opts)

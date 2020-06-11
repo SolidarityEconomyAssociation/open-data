@@ -5,7 +5,7 @@ require 'optparse'
 require 'ostruct'
 require 'se_open_data'
 require 'opencage/geocoder'
-
+require 'shellwords'
 
 
 OutputStandard = SeOpenData::CSV::Standard::V1
@@ -41,7 +41,6 @@ class OptParse
       :country_name)
 
     options.geocoder_headers = APIStandard::Headers
-    options.geocoder = APIStandard::OpenCageClass.new
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
 
     #should the method replace the current address headers
@@ -68,6 +67,12 @@ class OptParse
         options.postcodeunit_global_cache = filename
       end
 
+      # Optional API key label to obtain from pass
+      opts.on("--pass KEY",
+              "get the OpenCage API key from this password-store key, via `pass show <KEY>`") do |key|
+        options.api_key = `pass show #{Shellwords.shellescape key}`
+      end
+      
       opts.separator ""
       opts.separator "Common options:"
 
@@ -87,6 +92,7 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
+geocoder = APIStandard::OpenCageClass.new($options.api_key || File.read("../../APIs/OpenCageKey.txt"))
 SeOpenData::CSV.add_postcode_lat_long(
   ARGF.read,
   $stdout,
@@ -99,7 +105,7 @@ SeOpenData::CSV.add_postcode_lat_long(
   $options.address_headers,
   $options.replace_address,
   $options.geocoder_headers,
-  $options.geocoder
+  $geocoder
 
 )
 

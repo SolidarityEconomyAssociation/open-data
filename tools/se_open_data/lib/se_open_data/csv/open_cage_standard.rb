@@ -25,12 +25,12 @@ module SeOpenData
           :country_name,
         ]
 
-        Open_Cage_API_Key = File.read("../../APIs/OpenCageKey.txt") #load this securely
 
         class OpenCageClass
-          def initialize
+          # @param api_key [String] the OpenCage API key.
+          def initialize(api_key)
             # Headers here should relate to the headers in standard
-            @geocoder = OpenCage::Geocoder.new(api_key: Open_Cage_API_Key)
+            @geocoder = OpenCage::Geocoder.new(api_key: api_key)
             @requests_made = 0
           end
 
