@@ -99,10 +99,9 @@ module SeOpenData
         hash = {}
         used = []
         # FIXME validate!
-        # check number of fields
-        # check type?
-        raise ArgumentError, "row must have #{@fields.size} elements, not #{row.size}" unless
-          row.size == @fields.size
+        # Check number of fields (Maybe - we should allow rows > fields,
+        # but also fields > rows, if we allow 1:N row to field mapping)
+        # Check type?
         raise ArgumentError, "field_map must have #{@fields.size} elements" unless
           field_map.size == @fields.size
         
