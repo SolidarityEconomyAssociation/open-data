@@ -44,7 +44,7 @@ class OptParse
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
 
     #should the method replace the current address headers
-    options.replace_address = true
+    options.replace_address = false
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: $0 [options]"
@@ -55,7 +55,7 @@ class OptParse
       # Mandatory argument.
       opts.on("--postcodeunit-cache FILENAME",
               "JSON file where OS postcode unit results are cached") do |filename|
-        raise "no such file: #{filename}" unless File.exists?(filename)
+        # raise "no such file: #{filename}" unless File.exists?(filename)
         options.postcodeunit_cache = filename
       end
 
@@ -63,7 +63,7 @@ class OptParse
       opts.on("--postcode-global-cache FILENAME",
               "CSV file where all the postcodes are kept (note that this will be a json in the future
               WIP)") do |filename|
-        raise "no such file: #{filename}" unless File.exists?(filename)
+        # raise "no such file: #{filename}" unless File.exists?(filename)
         options.postcodeunit_global_cache = filename
       end
 
@@ -73,6 +73,11 @@ class OptParse
         options.api_key = `pass show #{Shellwords.shellescape key}`
       end
       
+      opts.on("--replace-address [FLAG]",
+        "replace address when geocoding") do |v|
+        options.replace_address = v.nil? ? true : v
+      end
+
       opts.separator ""
       opts.separator "Common options:"
 

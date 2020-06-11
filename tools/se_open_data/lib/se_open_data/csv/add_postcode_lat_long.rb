@@ -87,11 +87,14 @@ module SeOpenData
           
           #standardize the address if indicated
           headersToUse = {}
-          if replace_address
+
+          if replace_address == true
             headersToUse = allHeaders
           else
             headersToUse = new_headers
           end
+
+
           #need to match standard h
           address = []
 
@@ -110,6 +113,8 @@ module SeOpenData
           }
 
         end
+
+        
         csv_out << row
       end
       

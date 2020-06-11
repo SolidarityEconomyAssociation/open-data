@@ -15,7 +15,15 @@ module SeOpenData
           @geocoder = geocoder_standard
           @csv_cache_file = csv_cache_filename
           #load cache into memory (probably needs to be i/o in the future)
-          csv_cache_f = File.read(csv_cache_file)
+          csv_cache_f = nil
+          
+          if File.exist?(csv_cache_file)
+            csv_cache_f = File.read(csv_cache_file)
+          else
+            # create empty object
+            File.open(csv_cache_file, "w") {|f| f.write("{}")}
+            csv_cache_f = File.read(csv_cache_file)
+          end
 
           @cache = JSON.load csv_cache_f
           @initial_cache = @cache.clone
