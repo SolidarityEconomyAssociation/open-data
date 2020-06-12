@@ -16,7 +16,7 @@
 #
 # And this runs the complete chain of commands generating and
 # deploying the linked data for this project, as configured by
-# `settings/config.txt`:
+# `local.conf`:
 #
 #     seod run-all
 #
@@ -225,10 +225,9 @@ module IcaYouthNetwork
 
   # Entry point if invoked as a script.
   #
-  #
-  # Expects a config file in a directory `./settings` relative to this
-  # script, called either `default.txt` or `config.txt`. The latter is
-  # loaded preferentially, otherwise the former is.
+  # Expects a config file in the same directory as this script, called
+  # either `default.conf` or `local.conf`. The latter is loaded
+  # preferentially, otherwise the former is.
   #
   # See {SeOpenData::Config} for information about this file. It
   # defines the locations of various resources, and sets options on

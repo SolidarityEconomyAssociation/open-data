@@ -216,7 +216,7 @@ module SeOpenData
     # pattern which expands to more than one path, in order of
     # preference. Relative to the current working directoy.
     # @return [SeOpenData::Config]
-    def self.load(path = 'settings/{config,defaults}.txt', base: Dir.pwd)
+    def self.load(path = '{local,default}.conf', base: Dir.pwd)
       config_file = Dir.glob(path, base: base).first # first match
       Log.info "loading config: #{config_file}"
       return SeOpenData::Config.new(config_file, base)
