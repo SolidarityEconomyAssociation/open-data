@@ -235,8 +235,7 @@ module IcaYouthNetwork
   # the conversion process.
   def self.main
     # Find the config file...
-    config_file = Dir.glob(__dir__+'/settings/{config,defaults}.txt').first 
-    config = SeOpenData::Config.new(config_file)
+    config = SeOpenData::Config.load(base: __dir__)
 
     # original src csv files 
     csv_to_standard = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
