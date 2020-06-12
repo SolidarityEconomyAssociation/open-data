@@ -9,8 +9,7 @@ module SeOpenData
  
     def self.load_config
       require "se_open_data/config"
-      config_file = Dir.glob('settings/{config,defaults}.txt').first 
-      SeOpenData::Config.new 'settings/config.txt', Dir.pwd      
+      SeOpenData::Config.load
     end
 
     def self.command_run_all
