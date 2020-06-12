@@ -11,6 +11,10 @@ module SeOpenData
   # FIXME expand
   class Config
     require 'fileutils'
+    require 'se_open_data/utils/log_factory'
+    
+    # Create a log instance
+    Log = SeOpenData::Utils::LogFactory.default
 
     # Where to look for non-code resources
     RESOURCE_DIR = File.expand_path('../../resources', __dir__)
@@ -204,6 +208,18 @@ module SeOpenData
     # Used only in the constructor as a default value for base_dir
     def self.caller_dir
       File.dirname(caller_locations(2, 1).first.absolute_path)
+    end
+
+    # Loads a config file relative to the current working directory
+    #
+    # @param path [String] a path to the config file, or a file-glob
+    # pattern which expands to more than one path, in order of
+    # preference. Relative to the current working directoy.
+    # @return [SeOpenData::Config]
+    def self.load(path = 'settings/{config,defaults}.txt', base: Dir.pwd)
+      config_file = Dir.glob(path, base: base).first # first match
+      Log.info "loading config: #{config_file}"
+      return SeOpenData::Config.new(config_file, base)
     end
     
   end
