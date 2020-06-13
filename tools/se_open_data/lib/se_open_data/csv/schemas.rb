@@ -50,7 +50,13 @@ HERE
             {id: :id,
              header: 'Identifier',
              desc: 'A unique identifier for this initiative',
-             comment: '',
+             comment: <<-HERE
+As a consequence of needing to name generated static files with these 
+identifiers, which will then be published by a web server, they must be
+both a) valid as a portion of a file-name on the (typically, Unix) 
+host's file system, and b) as a URI segment as defined by RFC3986 
+<https://tools.ietf.org/html/rfc3986#section-3.3>
+HERE
             },
             {id: :name,
              header: 'Name',
