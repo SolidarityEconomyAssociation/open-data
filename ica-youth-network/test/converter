@@ -32,7 +32,8 @@ require 'csv'
 # Code related to the ICA Youth-Network initiative data
 module IcaYouthNetwork
 
-  # This defines the input CSV schema we expect (after clean-up an index generation)
+  # This defines the input CSV schema we expect (after clean-up and
+  # index generation, excuted in the main method below.)
   Schema = SeOpenData::CSV::Schema.new(
     id: :ica_youth_network,
     name: "ICA Youth Network",
