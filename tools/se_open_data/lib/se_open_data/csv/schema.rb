@@ -104,6 +104,9 @@ module SeOpenData
         # Check type?
         raise ArgumentError, "field_map must have #{@fields.size} elements" unless
           field_map.size == @fields.size
+        if row.size == 0
+          raise ArgumentError, "incoming data has zero data fields, expecting schema :#{@id}"
+        end
         
         @fields.each.with_index do |field, field_ix|
           datum_ix = field_map[field_ix]
@@ -112,7 +115,8 @@ module SeOpenData
             raise ArgumentError, "nil field index #{datum_ix} for schema :#{@id}"
           end
           if datum_ix < 0 || datum_ix >= row.size
-            raise ArgumentError, "invalid field index #{datum_ix} for schema :#{@id}"
+            raise ArgumentError, "incoming data has #{row.size} fields so does not "+
+                                 "include the field index #{datum_ix}, with schema :#{@id}"
           end
           if used[datum_ix]
             raise ArgumentError, "duplicate field index #{datum_ix} for schema :#{@id}"
