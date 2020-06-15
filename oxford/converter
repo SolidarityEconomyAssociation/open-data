@@ -560,6 +560,8 @@ module Oxford
       add_postcode_lat_long(infile: initial_pass, outfile: output_csv,
                             api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,)
     end
+  rescue => e
+    raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
   end
 
   private
