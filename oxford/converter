@@ -359,7 +359,7 @@ module Oxford
   # A convenient alias...
   types = SeOpenData::CSV::Schema::Types
   
-  # This defines the schema mapping for ica-youth-network data into the
+  # This defines the schema mapping for oxford data into the
   # standard schema.
   #
   # The logic that maps the input field data is defined in the
@@ -367,11 +367,17 @@ module Oxford
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  # See discussion here for some background on the conversion logic:
-  # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
+  # The response data downloaded from limesurvey via the API appears
+  # to be different to that downloaded previously.
+  # - semi-colon delimited, not comma delimited
+  # - 'activities' field contains a identifier, not a human-readable phrase.
+  #
+  # The delimiter appears to be configurable in the web download, but not in the API.
+  # https://bugs.limesurvey.org/view.php?id=13747
   Converter = SeOpenData::CSV::Schema.converter(
     from_schema: Schema,
     to_schema: SeOpenData::CSV::Schemas::Versions[0],
+    input_csv_opts: {col_sep: ';', skip_blanks: true},
 #    output_csv_opts: {quote_empty: false}
   ) do | # These parameters match source schema field ids
          id:,
@@ -473,33 +479,46 @@ module Oxford
         ## Return a list of strings, separated by OutputStandard::SubFieldSeparator.
         ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
         ## See lib/se_open_data/essglobal/legal_form.rb
-        community_group == "Yes" ? "Community group (formal or informal)" : nil,
-        non_profit == "Yes" ? "Not-for-profit organisation" : nil,
-        social_enterprise == "Yes" ? "Social enterprise" : nil,
-        charity == "Yes" ? "Charity" : nil,
-        company == "Yes" ? "Company (Other)" : nil,
-        workers_coop == "Yes" ? "Workers co-operative" : nil,
-        housing_coop == "Yes" ? "Housing co-operative" : nil,
-        consumer_coop == "Yes" ? "Consumer co-operative" : nil,
-        producer_coop == "Yes" ? "Producer co-operative" : nil,
-        stakeholder_coop == "Yes" ? "Multi-stakeholder co-operative" : nil,
-        community_interest_company == "Yes" ? "Community Interest Company (CIC)" : nil,
-        community_benefit_society == "Yes" ? "Community Benefit Society / Industrial and Provident Society (IPS)" : nil
+        community_group == "Y" ? "Community group (formal or informal)" : nil,
+        non_profit == "Y" ? "Not-for-profit organisation" : nil,
+        social_enterprise == "Y" ? "Social enterprise" : nil,
+        charity == "Y" ? "Charity" : nil,
+        company == "Y" ? "Company (Other)" : nil,
+        workers_coop == "Y" ? "Workers co-operative" : nil,
+        housing_coop == "Y" ? "Housing co-operative" : nil,
+        consumer_coop == "Y" ? "Consumer co-operative" : nil,
+        producer_coop == "Y" ? "Producer co-operative" : nil,
+        stakeholder_coop == "Y" ? "Multi-stakeholder co-operative" : nil,
+        community_interest_company == "Y" ? "Community Interest Company (CIC)" : nil,
+        community_benefit_society == "Y" ? "Community Benefit Society / Industrial and Provident Society (IPS)" : nil
       ].compact.join(OutputStandard::SubFieldSeparator),
-      primary_activity: activity,
+      primary_activity: {
+        'SQ001' => 'Arts, Media, Culture & Leisure',
+        'SQ002' => 'Campaigning, Activism & Advocacy',
+        'SQ003' => 'Community & Collective Spaces',
+        'SQ004' => 'Education',
+        'SQ005' => 'Energy',
+        'SQ006' => 'Food',
+        'SQ007' => 'Goods & Services',
+        'SQ008' => 'Health, Social Care & Wellbeing',
+        'SQ009' => 'Housing',
+        'SQ010' => 'Money & Finance',
+        'SQ011' => 'Nature, Conservation & Environment',
+        'SQ012' => 'Reduce, Reuse, Repair & Recycle',
+      }[activity] || '',
       activities:  [
-        arts == "Yes" ? "Arts, Media, Culture & Leisure" : nil,
-        campaigning == "Yes" ? "Campaigning, Activism & Advocacy" : nil,
-        community == "Yes" ? "Community & Collective Spaces" : nil,
-        education == "Yes" ? "Education" : nil,
-        energy == "Yes" ? "Energy" : nil,
-        food == "Yes" ? "Food" : nil,
-        goods_services == "Yes" ? "Goods & Services" : nil,
-        health == "Yes" ? "Health, Social Care & Wellbeing" : nil,
-        housing == "Yes" ? "Housing" : nil,
-        money == "Yes" ? "Money & Finance" : nil,
-        nature == "Yes" ? "Nature, Conservation & Environment" : nil,
-        reuse == "Yes" ? "Reduce, Reuse, Repair & Recycle" : nil
+        arts == "Y" ? "Arts, Media, Culture & Leisure" : nil,
+        campaigning == "Y" ? "Campaigning, Activism & Advocacy" : nil,
+        community == "Y" ? "Community & Collective Spaces" : nil,
+        education == "Y" ? "Education" : nil,
+        energy == "Y" ? "Energy" : nil,
+        food == "Y" ? "Food" : nil,
+        goods_services == "Y" ? "Goods & Services" : nil,
+        health == "Y" ? "Health, Social Care & Wellbeing" : nil,
+        housing == "Y" ? "Housing" : nil,
+        money == "Y" ? "Money & Finance" : nil,
+        nature == "Y" ? "Nature, Conservation & Environment" : nil,
+        reuse == "Y" ? "Reduce, Reuse, Repair & Recycle" : nil
       ].compact.join(OutputStandard::SubFieldSeparator),
       street_address: address_a,
       locality: address_d,
