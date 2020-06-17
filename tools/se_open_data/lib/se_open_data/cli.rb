@@ -26,6 +26,32 @@ module SeOpenData
       puts "Deleting #{config.TOP_OUTPUT_DIR} and any contents."
       FileUtils.rm_rf config.TOP_OUTPUT_DIR
     end
+
+    # Obtains new data from limesurvey.
+    #
+    # Require credentials to be configured.
+    # FIXME document more
+    def self.command_limesurvey_export
+      require 'se_open_data/lime_survey_exporter'
+      require 'se_open_data/utils/password_store'
+      
+      config = load_config
+
+      FileUtils.mkdir_p config.SRC_CSV_DIR
+      src_file = File.join config.SRC_CSV_DIR, config.ORIGINAL_CSV
+      
+      pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+      Log.debug "Checking ENV for passwords" if pass.use_env_vars?
+      password = pass.get config.LIMESURVEY_PASSWORD_PATH
+      
+      SeOpenData::LimeSurveyExporter.session(
+        config.LIMESURVEY_SERVICE_URL,
+        config.LIMESURVEY_USER,
+        password
+      ) do |exporter|
+        IO.write src_file, exporter.export_responses(config.LIMESURVEY_SURVEY_ID, 'csv', 'en')
+      end
+    end
     
     # Runs the converter script in the current directory, if present
     #
