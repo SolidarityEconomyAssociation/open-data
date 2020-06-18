@@ -1,5 +1,7 @@
 require 'linkeddata'
 require 'csv'
+require 'rdf'
+require 'se_open_data/essglobal/standard'
 
 module SeOpenData
   class Initiative
@@ -10,6 +12,19 @@ module SeOpenData
         Geo = ::RDF::Vocabulary.new("http://www.w3.org/2003/01/geo/wgs84_pos#")
         Rov = ::RDF::Vocabulary.new("http://www.w3.org/ns/regorg#")
         attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
+
+        # Constructor
+        #
+        # @param output_directory [String] - directory where RDF serializations are to be created
+        # @param uri_prefix [String] - a string which prefixes every initiative's URI
+        # @param essglobal_uri [String] - base URI for the essglobal vocabulary. e.g. http://purl.org/essglobal
+        # @param one_big_file_basename [String] - filename (except .extension) for files with all generated data concatenated for loading into Virtuoso
+        # @param map_app_sparql_query_filename [String] - name of file where SPARQL query for sea-map app is to be written
+        # css_files [Array<String>] - list of CSS files for linking from generated HTML
+        # @param postcodeunit_cache [String] - JSON file where OS postcode unit results are cached
+        # csv_standard [Class] - FIXME
+        # @param sameas_csv [String] - name of CSV file with OWL sameAs relations. If defined, sameas_headers: must be defined too
+        # @param sameas_headers [String] - CSV file where the equivalent URIs are stored
         def initialize(uri_prefix, essglobal_uri, one_big_file_basename, map_app_sparql_query_filename, css_files, postcodeunit_cache_filename, csv_standard, sameas_csv=nil, sameas_headers=nil)
           @uri_prefix, @essglobal_uri, @postcodeunit_cache = uri_prefix, essglobal_uri, postcodeunit_cache
           @essglobal_vocab = ::RDF::Vocabulary.new(essglobal_uri + "vocab/")

@@ -9,7 +9,9 @@ end
 
 module SeOpenData
   module CSV
-
+    # Transforms a CSV file, adding latitude and longitude fields
+    # obtained by geocoding a postcode field.
+    #
     # - should take in which headers to change with which standard STANDARD_HEADERS from global
     # - should have boolean weather to change addresses
     # - postcode unit cache is legacy?
@@ -17,9 +19,34 @@ module SeOpenData
     # TODO: this is becoming a noodle factory, fix and clean it
     #
     # TODO: abstract away so that you only pass the standard and the io and it does the work for you
-    def CSV.add_postcode_lat_long(input_io, output_io, input_csv_postcode_header, input_country_header,
-      new_headers, postcodeunit_cache, csv_opts = {},
-      global_postcode_cache,address_headers,replace_address,geocoder_headers,geocoder_standard)
+    #
+    # @param input_io [IO, File] file or stream to read CSV data from
+    # @param output_io [IO, File] file or stream to write CSV data to 
+    # @param input_csv_postcode_header [String] header of input CSV field containing postcodes
+    # @param input_country_header [String] header of input CSV field containing country names
+    # @param new_headers [Hash<Symbol,String>] IDs and header names of output CSV fields 
+    # @param postcodeunit_cache [String] JSON file where OS postcode unit results are cached (passed to
+    # {SeOpenData::RDF::OsPostcodeUnit::Client})
+    # @param csv_opts [Hash] options to pass to CSV when parsing input_io (in addition to `headers: true`)
+    # @param global_postcode_cache [String] optional path to a JSON file where all the postcodes are kept (passed to {SeOpenData::RDF::OsPostcodeGlobalUnit::Client})
+    # @param address_headers [Hash<Symbol,String] IDs and header names ...
+    # @param replace_address [Boolean] set to true if we should replace the current address headers
+    # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
+    # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
+    def self.add_postcode_lat_long(
+          input_io,
+          output_io,
+          input_csv_postcode_header,
+          input_country_header,
+          new_headers,
+          postcodeunit_cache,
+          csv_opts = {},
+          global_postcode_cache = nil,
+          address_headers,
+          replace_address,
+          geocoder_headers,
+          geocoder_standard
+        )
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, csv_opts)
       csv_out = ::CSV.new(output_io)

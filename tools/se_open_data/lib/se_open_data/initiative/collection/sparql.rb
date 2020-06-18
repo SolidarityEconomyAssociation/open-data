@@ -2,7 +2,7 @@ require 'linkeddata'
 
 module SeOpenData
   class Initiative
-    class Collection
+    class Collection < Array
       class Sparql
 	      attr_reader :collection, :config
 	      def initialize(collection, config)

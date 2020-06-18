@@ -1,3 +1,6 @@
+require 'se_open_data/initiative/html'
+require 'se_open_data/initiative/rdf'
+
 module SeOpenData
   class Initiative
     attr_reader :config

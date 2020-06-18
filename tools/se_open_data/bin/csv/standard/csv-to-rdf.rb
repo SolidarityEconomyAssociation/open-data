@@ -1,5 +1,3 @@
-$LOAD_PATH.unshift '/Volumes/Extra/SEA-dev/open-data-and-maps/data/tools/se_open_data/lib'
-
 require 'optparse'
 require 'ostruct'
 require 'se_open_data'

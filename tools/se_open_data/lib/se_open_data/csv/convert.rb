@@ -1,5 +1,4 @@
 
-require 'pp'
 require 'csv'
 
 module SeOpenData
@@ -17,6 +16,15 @@ module SeOpenData
     end
 
     # Converts a CSV into a new CSV with diffent columns.
+    #
+    # Note: input_io must be a String, not an IO! This is because of a
+    # workaround for stripping BOMs in input data. Possibly no longer needed.
+    # See:
+    # - https://github.com/SolidarityEconomyAssociation/open-data-and-maps/issues/57
+    # - https://donatstudios.com/CSV-An-Encoding-Nightmare
+    # - https://bugs.ruby-lang.org/issues/15210
+    # - https://estl.tech/of-ruby-and-hidden-csv-characters-ef482c679b35
+    # - https://isaacsloan.com/posts/75-how-to-safely-remove-byte-order-marks-bom-from-files-created-on-windows
     def CSV.convert(output_io, output_headers, input_io, csv_row_reader, csv_opts = {})
       # The way this works is based on having column headings:
       csv_opts.merge!(headers: true, skip_blanks: true)

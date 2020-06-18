@@ -25,12 +25,16 @@ module SeOpenData
   # https://en.bitcoin.it/wiki/API_reference_(JSON-RPC)#Ruby
   class LimeSurveyRpc
     # Initialise an instance, given the API endpoint.
+    #
+    # @param url [String] the Lime Survey service URL for your account, e.g.
+    # `https://myaccount.limequery.com/index.php/admin/remotecontrol`
     def initialize(service_url)
       @uri = URI.parse(service_url)
     end
 
     # Dynamically implements the API by mapping method calls to
     # RPC calls.
+    # @raise JSONRPCError if there is an API error returned
     def method_missing(name, *args)
       post_body = { 'method' => name, 'params' => args, 'id' => 'jsonrpc' }.to_json
       resp = JSON.parse( http_post_request(post_body) )
@@ -38,7 +42,9 @@ module SeOpenData
       resp['result']
     end
 
-    # Post a request to the API
+    # Posts a request to the API
+    # @param post_body [String] the content to post
+    # @return the response body
     def http_post_request(post_body)
       http    = Net::HTTP.new(@uri.host, @uri.port)
       http.use_ssl = @uri.scheme == 'https'
@@ -49,6 +55,7 @@ module SeOpenData
       http.request(request).body
     end
 
+    # An exception thrown if there is an API error
     class JSONRPCError < RuntimeError; end
   end
 end

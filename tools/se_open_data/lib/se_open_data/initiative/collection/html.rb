@@ -1,6 +1,9 @@
+require 'se_open_data/utils/xml'
+require 'se_open_data/utils/html'
+
 module SeOpenData
   class Initiative
-    class Collection
+    class Collection < Array
       class HTML
 	      include SeOpenData::Utils::Xml	# for method xml()
 	      include SeOpenData::Utils::Html
