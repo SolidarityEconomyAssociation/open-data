@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SCRIPT=${BASH_SOURCE[0]}
+REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
+PATH=$REPO_DIR/tools/se_open_data/bin:$PATH
+
+cd $REPO_DIR/oxford &&
+seod limesurvey_export &&
+seod run_all
