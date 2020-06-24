@@ -294,52 +294,48 @@ HERE
       pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
       Log.debug "Checking ENV for passwords" if pass.use_env_vars?
 
-      if !File.file?(config.VIRTUOSO_SCRIPT_LOCAL)
-        Log.debug "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
-        
-        content = fetch config.ESSGLOBAL_URI+"vocab/"
-        IO.write File.join(config.GEN_VIRTUOSO_DIR, "essglobal_vocab.rdf"), content
+      Log.debug "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
+      
+      content = fetch config.ESSGLOBAL_URI+"vocab/"
+      IO.write File.join(config.GEN_VIRTUOSO_DIR, "essglobal_vocab.rdf"), content
 
-        content = fetch config.ESSGLOBAL_URI+"standard/organisational-structure"
-        IO.write File.join(config.GEN_VIRTUOSO_DIR, "organisational-structure.skos"), content
-        
-        puts "Creating #{config.VIRTUOSO_NAMED_GRAPH_FILE}"
-        IO.write config.VIRTUOSO_NAMED_GRAPH_FILE, config.GRAPH_NAME
+      content = fetch config.ESSGLOBAL_URI+"standard/organisational-structure"
+      IO.write File.join(config.GEN_VIRTUOSO_DIR, "organisational-structure.skos"), content
+      
+      puts "Creating #{config.VIRTUOSO_NAMED_GRAPH_FILE}"
+      IO.write config.VIRTUOSO_NAMED_GRAPH_FILE, config.GRAPH_NAME
 
-        puts "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
-        IO.write config.VIRTUOSO_SCRIPT_LOCAL, <<HERE
+      puts "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
+      IO.write config.VIRTUOSO_SCRIPT_LOCAL, <<HERE
 SPARQL CLEAR GRAPH '#{config.GRAPH_NAME}';
 ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.rdf',NULL);
 ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.skos',NULL);
 rdf_loader_run();
 HERE
-        
-        puts "Transfering directory '#{config.GEN_VIRTUOSO_DIR}' to virtuoso server '#{config.DEPLOYMENT_SERVER}':#{config.VIRTUOSO_DATA_DIR}"
-        
-        unless system <<HERE
+      
+      puts "Transfering directory '#{config.GEN_VIRTUOSO_DIR}' to virtuoso server '#{config.DEPLOYMENT_SERVER}':#{config.VIRTUOSO_DATA_DIR}"
+      
+      unless system <<HERE
 ssh #{config.DEPLOYMENT_SERVER} 'mkdir -p #{config.VIRTUOSO_DATA_DIR}' &&
 rsync -avz #{config.GEN_VIRTUOSO_DIR} #{config.DEPLOYMENT_SERVER}:#{config.VIRTUOSO_DATA_DIR}
 HERE
-          raise "rsync failed"
+        raise "rsync failed"
+      end
+      
+      if(config.AUTO_LOAD_TRIPLETS)
+        password = pass.get config.VIRTUOSO_PASS_FILE
+        puts autoload_cmd "<PASSWORD>", config
+        unless system autoload_cmd password, config
+          raise "autoload triplets failed"
         end
-        
-        if(config.AUTO_LOAD_TRIPLETS)
-          password = pass.get config.VIRTUOSO_PASS_FILE
-          puts autoload_cmd "<PASSWORD>", config
-          unless system autoload_cmd password, config
-            raise "autoload triplets failed"
-          end
-        else
-          puts <<HERE
+      else
+        puts <<HERE
 ****
 **** IMPORTANT! ****
 **** The final step is to load the data into Virtuoso with graph named #{config.GRAPH_NAME}.
 **** Execute the following command, providing the password for the Virtuoso dba user:
 ****\t#{autoload_cmd "<PASSWORD>", config}
 HERE
-        end
-      else
-        puts "File exists, nothing to do: #{config.VIRTUOSO_SCRIPT_LOCAL}"
       end
     rescue
       # Delete this output file, and rethrow
