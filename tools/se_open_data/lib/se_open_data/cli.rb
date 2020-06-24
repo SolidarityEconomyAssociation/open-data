@@ -175,7 +175,7 @@ module SeOpenData
       config = load_config
       
       deploy(
-        to_server: config.DEPLOYMENT_SERVER,
+        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
         to_dir: config.DEPLOYMENT_DOC_DIR,
         from_dir: config.GEN_DOC_DIR,
         ensure_present: config.DEPLOYMENT_WEBROOT,
@@ -247,7 +247,7 @@ HERE
       IO.write(config.HTACCESS, htaccess)
       
       deploy(
-        to_server: config.DEPLOYMENT_SERVER,
+        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
         to_dir: File.join(config.W3ID_REMOTE_LOCATION, config.URI_PATH_PREFIX),
         from_dir: config.W3ID_LOCAL_DIR,
         ensure_present: config.W3ID_REMOTE_LOCATION,
@@ -285,10 +285,8 @@ ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.skos',NULL);
 rdf_loader_run();
 HERE
       
-      puts "Transfering directory '#{config.GEN_VIRTUOSO_DIR}' to virtuoso server '#{config.DEPLOYMENT_SERVER}':#{config.VIRTUOSO_DATA_DIR}"
-
       deploy(
-        to_server: config.DEPLOYMENT_SERVER,
+        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
         to_dir: config.VIRTUOSO_DATA_DIR,
         from_dir: config.GEN_VIRTUOSO_DIR,
         ensure_present: config.VIRTUOSO_ROOT_DATA_DIR,
@@ -324,6 +322,10 @@ HERE
       isql = <<-HERE
 isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
 HERE
+      if !config.has_key? :DEPLOYMENT_SERVER
+        return isql
+      end
+      
       return <<-HERE
 ssh -T "#{esc config.DEPLOYMENT_SERVER}" "#{esc isql.chomp}"
 HERE
