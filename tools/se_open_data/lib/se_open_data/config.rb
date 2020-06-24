@@ -32,6 +32,10 @@ module SeOpenData
       'URI_SCHEME' => 'https',
       'USE_ENV_PASSWORDS' => false,
       'ESSGLOBAL_URI' => 'https://w3id.solidarityeconomy.coop/essglobal/V2a/',
+      'DEPLOYMENT_WEB_USER' => 'www-data',
+      'DEPLOYMENT_WEB_GROUP' => 'www-data',
+      'VIRTUOSO_USER' => 'root',
+      'VIRTUOSO_GROUP' => 'root',
     }
     
     # @param file [String] - the path to the config file to load.

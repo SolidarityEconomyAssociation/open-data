@@ -179,8 +179,8 @@ module SeOpenData
         to_dir: config.DEPLOYMENT_DOC_DIR,
         from_dir: config.GEN_DOC_DIR,
         ensure_present: config.DEPLOYMENT_WEBROOT,
-        owner: 'www-data',
-        group: 'www-data',
+        owner: config.DEPLOYMENT_WEB_USER,
+        group: config.DEPLOYMENT_WEB_GROUP,
         verbose: true,
       )
     end
@@ -251,8 +251,8 @@ HERE
         to_dir: File.join(config.W3ID_REMOTE_LOCATION, config.URI_PATH_PREFIX),
         from_dir: config.W3ID_LOCAL_DIR,
         ensure_present: config.W3ID_REMOTE_LOCATION,
-        owner: 'www-data',
-        group: 'www-data',
+        owner: config.DEPLOYMENT_WEB_USER,
+        group: config.DEPLOYMENT_WEB_GROUP,
       )
     end
 
@@ -290,8 +290,8 @@ HERE
         to_dir: config.VIRTUOSO_DATA_DIR,
         from_dir: config.GEN_VIRTUOSO_DIR,
         ensure_present: config.VIRTUOSO_ROOT_DATA_DIR,
-        owner: 'root',
-        group: 'root',
+        owner: config.VIRTUOSO_USER,
+        group: config.VIRTUOSO_GROUP,
       )
       
       if(config.AUTO_LOAD_TRIPLETS)
