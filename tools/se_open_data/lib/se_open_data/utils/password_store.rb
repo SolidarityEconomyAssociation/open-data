@@ -89,7 +89,7 @@ module SeOpenData
           # Fall back to using pass
         end
         
-        stdout, stderr, status = Open3.capture3('pass', 'show', path)
+        stdout, stderr, status = capture3('pass', 'show', path)
         if status != 0
           raise "failed to get password for #{path}: #{stderr}"
         end
