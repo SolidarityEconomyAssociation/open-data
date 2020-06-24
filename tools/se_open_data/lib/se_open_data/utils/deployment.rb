@@ -83,6 +83,7 @@ module SeOpenData
             # Local filesystem. Set the ownership on parent dirs too
             Pathname.new(to_dir).descend do |path|
               if !Dir.exist? path
+                Log.debug "creating #{path} #{owner}:#{group}"
                 Dir.mkdir path
                 FileUtils.chown owner, group, path
               end
