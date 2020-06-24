@@ -38,7 +38,6 @@ describe SeOpenData::Config do
     expected_map = {
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => resource_dir + "/css/",
-      "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
       "SRC_CSV_DIR" => caller_dir + "/original-data/",
       "STANDARD_CSV" => caller_dir + "/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir + "/generated-data/",
@@ -130,7 +129,6 @@ HERE
     expected_map = {
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => caller_dir+"/css/",
-      "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
       "STANDARD_CSV" => caller_dir+"/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir+"/generated-data/",

@@ -25,7 +25,6 @@ module SeOpenData
     DEFAULTS = {
       'AUTO_LOAD_TRIPLETS' => true,
       'CSS_SRC_DIR' => File.join(RESOURCE_DIR, 'css'),
-      'DEPLOYMENT_RSYNC_FLAGS' => '--delete',
       'SRC_CSV_DIR' => 'original-data',
       'ORIGINAL_CSV' => 'original.csv',
       'STANDARD_CSV' => 'standard.csv',
