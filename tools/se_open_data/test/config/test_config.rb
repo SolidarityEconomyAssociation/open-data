@@ -80,7 +80,6 @@ describe SeOpenData::Config do
       "VIRTUOSO_SCRIPT_REMOTE" => "/home/admin/Virtuoso/BulkLoading/Data/2020526214656/loaddata.sql",
       "W3ID_LOCAL_DIR" => caller_dir + "/generated-data/w3id/",
       "HTACCESS" => caller_dir + "/generated-data/w3id/.htaccess",
-      "W3ID_REMOTE_SSH" => "sea-0-admin:/var/www/html/w3id.org/ica-youth-network",
       "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network",
     }
     it "should generate an expected map" do
@@ -181,7 +180,6 @@ HERE
       "VIRTUOSO_SCRIPT_REMOTE" => "/home/admin/Virtuoso/BulkLoading/Data/2020526214656/loaddata.sql",
       "W3ID_LOCAL_DIR" => caller_dir+"/generated-data/w3id/",
       "HTACCESS" => caller_dir+"/generated-data/w3id/.htaccess",
-      "W3ID_REMOTE_SSH" => "sea-0-admin:/var/www/html/w3id.org/ica-youth-network/",
       "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network/"
     }
     

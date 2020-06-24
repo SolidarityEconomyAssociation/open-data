@@ -70,7 +70,7 @@ module SeOpenData
       # These keys are mandatory, because we use them below, or elsewhere
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
       URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
-      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER
+      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
       W3ID_REMOTE_LOCATION SERVER_ALIAS ESSGLOBAL_URI
       SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
         .each do |key| 
@@ -123,7 +123,6 @@ module SeOpenData
       # Used to define w3ids
       @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
       @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
-      @map["W3ID_REMOTE_SSH"] = @map["DEPLOYMENT_SERVER"]+':'+unixjoin(@map["W3ID_REMOTE_LOCATION"], @map["URI_PATH_PREFIX"])
       @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["SERVER_ALIAS"],@map["URI_PATH_PREFIX"])
 
       # Preserve booleans in these cases
