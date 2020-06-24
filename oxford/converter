@@ -567,18 +567,14 @@ module Oxford
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
     
-    if(File.file?(output_csv))
-      puts "Refusing to overwrite existing output file: #{output_csv}"
-    else
-      # generate the cleared error file # FIXME remove if not needed
-      # SeOpenData::CSV.clean_up in_f: csv_to_standard, out_f: cleared_errors
-      
-      # Transforms the rows from Co-ops UK schema to our standard
-      # Note the BOM and encoding flags, which avoid a MalformedCSVError
-      Converter.convert File.open(original_csv, "r:bom|utf-8"), initial_pass
-      add_postcode_lat_long(infile: initial_pass, outfile: output_csv,
-                            api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,)
-    end
+    # generate the cleared error file # FIXME remove if not needed
+    # SeOpenData::CSV.clean_up in_f: csv_to_standard, out_f: cleared_errors
+    
+    # Transforms the rows from Co-ops UK schema to our standard
+    # Note the BOM and encoding flags, which avoid a MalformedCSVError
+    Converter.convert File.open(original_csv, "r:bom|utf-8"), initial_pass
+    add_postcode_lat_long(infile: initial_pass, outfile: output_csv,
+                          api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,)
   rescue => e
     raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
   end
