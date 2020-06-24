@@ -1,6 +1,7 @@
 require "shellwords"
 require "pathname"
 require "se_open_data/utils/log_factory"
+require "se_open_data/utils/deployment"
 
 module SeOpenData
   class Cli
@@ -173,27 +174,15 @@ module SeOpenData
     def self.command_deploy
       config = load_config
       
-      # create the remote target directory and rsync the data to it
-      ssh_cmd = <<-HERE
-cd "#{esc config.DEPLOYMENT_WEBROOT}" &&
-mkdir -p "#{esc config.DEPLOYMENT_DOC_SUBDIR}"
-HERE
-
-      flags = "-avz --no-perms --omit-dir-times #{config.DEPLOYMENT_RSYNC_FLAGS}"
-      
-      # Make sure there's a trailing slash on these, for rsync,
-      # they're significant!
-      src = File.join(config.GEN_DOC_DIR, '')
-      dest = config.DEPLOYMENT_SERVER+':'+File.join(config.DEPLOYMENT_DOC_DIR, '')
-      
-      cmd = <<-HERE
-ssh "#{esc config.DEPLOYMENT_SERVER}" "#{esc ssh_cmd}" &&
-rsync #{flags} "#{esc src}" "#{esc dest}"
-HERE
-      puts cmd
-      unless system cmd
-        raise "shell command failed"
-      end
+      deploy(
+        to_server: config.DEPLOYMENT_SERVER,
+        to_dir: config.DEPLOYMENT_DOC_DIR,
+        from_dir: config.GEN_DOC_DIR,
+        ensure_present: config.DEPLOYMENT_WEBROOT,
+        owner: 'www-data',
+        group: 'www-data',
+        verbose: true,
+      )
     end
 
     # This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
@@ -257,31 +246,14 @@ HERE
       puts "creating htaccess file.."
       IO.write(config.HTACCESS, htaccess)
       
-      ssh_cmd = <<-HERE
-cd "#{esc config.W3ID_REMOTE_LOCATION}" &&
-mkdir -p "#{config.URI_PATH_PREFIX}"
-HERE
-      
-      ssh = <<-HERE
-ssh "#{esc config.DEPLOYMENT_SERVER}" "#{ssh_cmd}"
-HERE
-      puts ssh
-      unless system ssh
-        raise "shell command failed"
-      end
-
-      # Ensure these paths have trailing slashes, for rsync these are
-      # significant!
-      src = File.join(config.W3ID_LOCAL_DIR, '')
-      dest = File.join(config.W3ID_REMOTE_SSH, '')
-      
-      rsync = <<-HERE
-rsync -a "#{esc src}" "#{esc dest}"
-HERE
-      puts rsync
-      unless system rsync
-        raise "shell command failed"
-      end
+      deploy(
+        to_server: config.DEPLOYMENT_SERVER,
+        to_dir: File.join(config.W3ID_REMOTE_LOCATION, config.URI_PATH_PREFIX),
+        from_dir: config.W3ID_LOCAL_DIR,
+        ensure_present: config.W3ID_REMOTE_LOCATION,
+        owner: 'www-data',
+        group: 'www-data',
+      )
     end
 
     # Uploads the linked-data graph to the Virtuoso triplestore server
@@ -314,13 +286,15 @@ rdf_loader_run();
 HERE
       
       puts "Transfering directory '#{config.GEN_VIRTUOSO_DIR}' to virtuoso server '#{config.DEPLOYMENT_SERVER}':#{config.VIRTUOSO_DATA_DIR}"
-      
-      unless system <<HERE
-ssh #{config.DEPLOYMENT_SERVER} 'mkdir -p #{config.VIRTUOSO_DATA_DIR}' &&
-rsync -avz #{config.GEN_VIRTUOSO_DIR} #{config.DEPLOYMENT_SERVER}:#{config.VIRTUOSO_DATA_DIR}
-HERE
-        raise "rsync failed"
-      end
+
+      deploy(
+        to_server: config.DEPLOYMENT_SERVER,
+        to_dir: config.VIRTUOSO_DATA_DIR,
+        from_dir: config.GEN_VIRTUOSO_DIR,
+        ensure_present: config.VIRTUOSO_ROOT_DATA_DIR,
+        owner: 'root',
+        group: 'root',
+      )
       
       if(config.AUTO_LOAD_TRIPLETS)
         password = pass.get config.VIRTUOSO_PASS_FILE
@@ -360,6 +334,11 @@ HERE
       string.gsub('"', '\\"').gsub('\\', '\\\\')
     end
 
+    # Delegates to Deployment#deploy
+    def self.deploy(*args)
+      SeOpenData::Utils::Deployment.new.deploy(*args)
+    end
+    
     # Gets the content of an URL, following redirects
     #
     # Also sets the 'Accept: application/rdf+xml' header.
