@@ -286,7 +286,7 @@ rdf_loader_run();
 HERE
       
       deploy(
-        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
+        to_server: config.fetch(:VIRTUOSO_SERVER, nil),
         to_dir: config.VIRTUOSO_DATA_DIR,
         from_dir: config.GEN_VIRTUOSO_DIR,
         ensure_present: config.VIRTUOSO_ROOT_DATA_DIR,
@@ -322,12 +322,12 @@ HERE
       isql = <<-HERE
 isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
 HERE
-      if !config.has_key? :DEPLOYMENT_SERVER
+      if !config.has_key? :VIRTUOSO_SERVER
         return isql
       end
       
       return <<-HERE
-ssh -T "#{esc config.DEPLOYMENT_SERVER}" "#{esc isql.chomp}"
+ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
 HERE
     end
 
