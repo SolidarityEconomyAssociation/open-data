@@ -103,8 +103,8 @@ module SeOpenData
       @map["SPARQL_LIST_GRAPHS_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "list-graphs.rq"
       @map["SPARQL_ENDPOINT_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "endpoint.txt"
       @map["SPARQL_GRAPH_NAME_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "default-graph-uri.txt"
-      @map["DATASET_URI_BASE"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
-      @map["GRAPH_NAME"] = @map["DATASET_URI_BASE"]
+      @map["GRAPH_NAME"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
+
       @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
       
       @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 

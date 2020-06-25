@@ -147,7 +147,7 @@ module SeOpenData
       
       
       rdf_config = SeOpenData::Initiative::RDF::Config.new(
-        config.DATASET_URI_BASE,
+        config.GRAPH_NAME,
         config.ESSGLOBAL_URI,
         config.ONE_BIG_FILE_BASENAME,
         config.SPARQL_GET_ALL_FILE,
