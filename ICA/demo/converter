@@ -109,7 +109,11 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   end
 
   def primary_activity
-    ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity]? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
+    if _struct_type == "Coop Promoter/Supporter"
+      "Campaigning, Activism & Advocacy"
+    else
+      ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity]? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
+    end
   end
 
   def activities
