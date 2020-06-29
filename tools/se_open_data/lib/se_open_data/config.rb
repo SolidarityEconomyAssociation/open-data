@@ -220,6 +220,9 @@ module SeOpenData
     # @return [SeOpenData::Config]
     def self.load(path = '{local,default}.conf', base: Dir.pwd)
       config_file = Dir.glob(path, base: base).first # first match
+      if config_file.nil?
+        raise RuntimeError, "No config file found matching: #{path}"
+      end
       Log.info "loading config: #{config_file}"
       return SeOpenData::Config.new(config_file, base)
     end
