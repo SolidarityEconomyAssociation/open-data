@@ -517,6 +517,9 @@ module Oxford
          |
          # A mapping to the target schema field ids
 
+         # Don't import this initiative if it isn't approved
+         next unless approved&.downcase == 'yes'
+
          # Define some aliases
          arts = secondaryActivities_SQ002
          campaigning = secondaryActivities_SQ003
