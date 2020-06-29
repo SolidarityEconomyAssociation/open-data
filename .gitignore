@@ -38,3 +38,6 @@ dotcoop/domains2019-10-03/geodata_cache.json
 APIs
 # Mac OS/X cruft:
 .DS_Store
+
+# Ignore local configs
+local.conf
