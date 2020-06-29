@@ -203,8 +203,19 @@ module SeOpenData
         # given a hash whose keys are {#from_schema} field IDs, and
         # values are the corresponding data fields.
         #
-        # The block is expected to return another hash, whose keys are
-        # {#to_schema} fields, and values transformed data fields.
+        # The block is normally expected to return another Hash, whose
+        # keys are {#to_schema} fields, and values transformed data
+        # fields.
+        #
+        # Additionally, it can return nil (if the input row should be
+        # dropped), or an instance (like an array) implementing the
+        # #each method which iterates over zero or more hash instances
+        # (when each instances results in an output row).
+        #
+        # Note, the block can use the `next` keyword to skip a row, as
+        # an equivalent to returning nil, or `last` to skip all
+        # subsequent rows. (And in principle, the `redo` keyword to
+        # re-process the same row, although this seems less useful.)
         #
         # @param from_schema [Schema] defines the input CSV {Schema}.
         # @param to_schema [Schema] defines the output CSV {Schema}.
@@ -280,7 +291,7 @@ module SeOpenData
               # This may throw if validation fails
               id_hash = @from_schema.id_hash(row, field_map)
 
-              new_id_hash =
+              new_id_hashes =
                 begin
                   block_given? ? yield(id_hash) : @block.call(id_hash)
                 rescue ArgumentError => e
@@ -295,9 +306,18 @@ module SeOpenData
                     raise
                   end
                 end
-              
-              # this may throw
-              csv_out << @to_schema.row(new_id_hash)              
+
+              # Normalise to an iterable:
+              if new_id_hashes.nil?
+                new_id_hashes = []
+              elsif new_id_hashes.is_a? Hash
+                new_id_hashes = [new_id_hashes]
+              end
+
+              new_id_hashes.each do |new_id_hash|
+                # this may throw
+                csv_out << @to_schema.row(new_id_hash)
+              end
             end
           end
         end

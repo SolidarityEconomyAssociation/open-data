@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SCRIPT=${BASH_SOURCE[0]}
+REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
+SEOD=$REPO_DIR/tools/se_open_data/bin/seod
+cd $REPO_DIR/oxford &&
+$SEOD limesurvey_export &&
+$SEOD convert &&
+$SEOD generate &&
+sudo -nE $SEOD deploy &&
+sudo -nE $SEOD create_w3id &&
+sudo -nE $SEOD triplestore
+
+

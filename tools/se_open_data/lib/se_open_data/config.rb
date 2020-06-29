@@ -25,7 +25,6 @@ module SeOpenData
     DEFAULTS = {
       'AUTO_LOAD_TRIPLETS' => true,
       'CSS_SRC_DIR' => File.join(RESOURCE_DIR, 'css'),
-      'DEPLOYMENT_RSYNC_FLAGS' => '--delete',
       'SRC_CSV_DIR' => 'original-data',
       'ORIGINAL_CSV' => 'original.csv',
       'STANDARD_CSV' => 'standard.csv',
@@ -33,6 +32,10 @@ module SeOpenData
       'URI_SCHEME' => 'https',
       'USE_ENV_PASSWORDS' => false,
       'ESSGLOBAL_URI' => 'https://w3id.solidarityeconomy.coop/essglobal/V2a/',
+      'DEPLOYMENT_WEB_USER' => 'www-data',
+      'DEPLOYMENT_WEB_GROUP' => 'www-data',
+      'VIRTUOSO_USER' => 'root',
+      'VIRTUOSO_GROUP' => 'root',
     }
     
     # @param file [String] - the path to the config file to load.
@@ -70,7 +73,7 @@ module SeOpenData
       # These keys are mandatory, because we use them below, or elsewhere
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
       URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
-      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR DEPLOYMENT_SERVER
+      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
       W3ID_REMOTE_LOCATION SERVER_ALIAS ESSGLOBAL_URI
       SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
         .each do |key| 
@@ -100,8 +103,8 @@ module SeOpenData
       @map["SPARQL_LIST_GRAPHS_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "list-graphs.rq"
       @map["SPARQL_ENDPOINT_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "endpoint.txt"
       @map["SPARQL_GRAPH_NAME_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "default-graph-uri.txt"
-      @map["DATASET_URI_BASE"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
-      @map["GRAPH_NAME"] = @map["DATASET_URI_BASE"]
+      @map["GRAPH_NAME"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
+
       @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
       
       @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 
@@ -123,7 +126,6 @@ module SeOpenData
       # Used to define w3ids
       @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
       @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
-      @map["W3ID_REMOTE_SSH"] = @map["DEPLOYMENT_SERVER"]+':'+unixjoin(@map["W3ID_REMOTE_LOCATION"], @map["URI_PATH_PREFIX"])
       @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["SERVER_ALIAS"],@map["URI_PATH_PREFIX"])
 
       # Preserve booleans in these cases

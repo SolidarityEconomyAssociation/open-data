@@ -38,7 +38,6 @@ describe SeOpenData::Config do
     expected_map = {
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => resource_dir + "/css/",
-      "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
       "SRC_CSV_DIR" => caller_dir + "/original-data/",
       "STANDARD_CSV" => caller_dir + "/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir + "/generated-data/",
@@ -64,7 +63,6 @@ describe SeOpenData::Config do
       "SPARQL_LIST_GRAPHS_FILE" => caller_dir + "/generated-data/sparql/list-graphs.rq",
       "SPARQL_ENDPOINT_FILE" => caller_dir + "/generated-data/sparql/endpoint.txt",
       "SPARQL_GRAPH_NAME_FILE" => caller_dir + "/generated-data/sparql/default-graph-uri.txt",
-      "DATASET_URI_BASE" => "https://w3id.solidarityeconomy.coop/ica-youth-network",
       "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network",
       "ONE_BIG_FILE_BASENAME" => caller_dir + "/generated-data/virtuoso/all",
       "CSS_FILES" => resource_dir + "/css/links.css,"+resource_dir+"/css/style.css",
@@ -80,7 +78,6 @@ describe SeOpenData::Config do
       "VIRTUOSO_SCRIPT_REMOTE" => "/home/admin/Virtuoso/BulkLoading/Data/2020526214656/loaddata.sql",
       "W3ID_LOCAL_DIR" => caller_dir + "/generated-data/w3id/",
       "HTACCESS" => caller_dir + "/generated-data/w3id/.htaccess",
-      "W3ID_REMOTE_SSH" => "sea-0-admin:/var/www/html/w3id.org/ica-youth-network",
       "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network",
     }
     it "should generate an expected map" do
@@ -131,7 +128,6 @@ HERE
     expected_map = {
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => caller_dir+"/css/",
-      "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
       "STANDARD_CSV" => caller_dir+"/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir+"/generated-data/",
@@ -166,7 +162,6 @@ HERE
       "SPARQL_LIST_GRAPHS_FILE" => caller_dir+"/generated-data/sparql/list-graphs.rq",
       "SPARQL_ENDPOINT_FILE" => caller_dir+"/generated-data/sparql/endpoint.txt",
       "SPARQL_GRAPH_NAME_FILE" => caller_dir+"/generated-data/sparql/default-graph-uri.txt",
-      "DATASET_URI_BASE" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
       "ONE_BIG_FILE_BASENAME" => caller_dir+"/generated-data/virtuoso/all",
       "SAME_AS_FILE" => "",
@@ -181,7 +176,6 @@ HERE
       "VIRTUOSO_SCRIPT_REMOTE" => "/home/admin/Virtuoso/BulkLoading/Data/2020526214656/loaddata.sql",
       "W3ID_LOCAL_DIR" => caller_dir+"/generated-data/w3id/",
       "HTACCESS" => caller_dir+"/generated-data/w3id/.htaccess",
-      "W3ID_REMOTE_SSH" => "sea-0-admin:/var/www/html/w3id.org/ica-youth-network/",
       "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network/"
     }
     
