@@ -603,7 +603,7 @@ module Oxford
       locality: address_d,
       region: '',
       postcode: address_e,
-      country_name: '', #FIXME
+      country_name: '',
       homepage: normalise_url(website),
       phone: normalise_phone_number(phone),
       email: email,
@@ -612,9 +612,9 @@ module Oxford
       companies_house_number: '',
       latitude: '',
       longitude: '',
-      geocontainer: '',#FIXME
-      geocontainer_lat: '',#FIXME
-      geocontainer_lon: '',#FIXME
+      geocontainer: '',
+      geocontainer_lat: '',
+      geocontainer_lon: '',
     }
   end
 
