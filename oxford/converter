@@ -672,6 +672,7 @@ module Oxford
 
   def self.normalise_phone_number(val)
     val
+      .to_s
       .delete("() ")
       .sub(/^\+?44/, "0")
       .sub(/^00/, "0")
