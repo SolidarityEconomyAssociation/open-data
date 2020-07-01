@@ -602,7 +602,7 @@ module Oxford
       ].compact.join(OutputStandard::SubFieldSeparator),
       locality: address_d,
       region: '',
-      postcode: address_e,
+      postcode: address_e.to_s.upcase,
       country_name: '',
       homepage: normalise_url(website),
       phone: normalise_phone_number(phone),
