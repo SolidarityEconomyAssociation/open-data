@@ -7,10 +7,33 @@ module SeOpenData
   class Cli
     # Create a log instance
     Log = SeOpenData::Utils::LogFactory.default
- 
+
+    # Loads the configuration settings, using {SeOpenData::Config#load}.
+    # By default no parameters are supplied, so the defaults apply.
+    #
+    # However, if an environment variable `SEOD_CONFIG` is set, that
+    # is used to set the path of the config file.
+    #
+    # This facility exists is so we can define the variable in cron
+    # jobs, to specify different build environments (or "editions" in
+    # the old open-data-and-maps terminology).
+    #    
+    # Suggested usage is to use the defaults and allow the
+    # `default.conf` (or `local.conf`, if present) to be picked up in
+    # development mode (i.e. when `SEOD_CONFIG` is unset), and set
+    # `SEOD_CONFIG=prod.conf` for production environments. This allows
+    # both of these to be checked in, and for the default case to be
+    # development; it also allows developers to have their own
+    # environments defined in `local.conf` if they need it (and this
+    # won't get checked in if `.gitignore`'ed)
     def self.load_config
       require "se_open_data/config"
-      SeOpenData::Config.load
+      if ENV.has_key? 'SEOD_CONFIG'
+        # Use this environment variable to define where the config is
+        SeOpenData::Config.load ENV['SEOD_CONFIG']
+      else
+        SeOpenData::Config.load
+      end
     end
 
     def self.command_run_all
