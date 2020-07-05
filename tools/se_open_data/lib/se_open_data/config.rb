@@ -216,7 +216,7 @@ module SeOpenData
     #
     # @param path [String] a path to the config file, or a file-glob
     # pattern which expands to more than one path, in order of
-    # preference. Relative to the current working directoy.
+    # preference. Relative to the current working directory.
     # @return [SeOpenData::Config]
     def self.load(path = '{local,default}.conf', base: Dir.pwd)
       config_file = Dir.glob(path, base: base).first # first match
