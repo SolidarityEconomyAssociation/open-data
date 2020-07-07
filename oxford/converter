@@ -595,11 +595,15 @@ module Oxford
         nature == "Y" ? "Nature, Conservation & Environment" : nil,
         reuse == "Y" ? "Reduce, Reuse, Repair & Recycle" : nil
       ].compact.join(OutputStandard::SubFieldSeparator),
-      street_address: address_a,
+      street_address: [
+        !address_a.empty? ? address_a : nil,
+        !address_b.empty? ? address_b : nil,
+        !address_c.empty? ? address_c : nil
+      ].compact.join(OutputStandard::SubFieldSeparator),
       locality: address_d,
       region: '',
-      postcode: address_e,
-      country_name: '', #FIXME
+      postcode: address_e.to_s.upcase,
+      country_name: '',
       homepage: normalise_url(website),
       phone: normalise_phone_number(phone),
       email: email,
@@ -608,9 +612,9 @@ module Oxford
       companies_house_number: '',
       latitude: '',
       longitude: '',
-      geocontainer: '',#FIXME
-      geocontainer_lat: '',#FIXME
-      geocontainer_lon: '',#FIXME
+      geocontainer: '',
+      geocontainer_lat: '',
+      geocontainer_lon: '',
     }
   end
 
@@ -662,16 +666,9 @@ module Oxford
     Hash[keys.zip(hash.values_at(*keys))]
   end
 
-  def self.street_address
-    [
-      !address1.empty? ? address1 : nil,
-      !address2.empty? ? address2 : nil,
-      !address3.empty? ? address3 : nil
-    ].compact.join(OutputStandard::SubFieldSeparator)
-  end
-
   def self.normalise_phone_number(val)
     val
+      .to_s
       .delete("() ")
       .sub(/^\+?44/, "0")
       .sub(/^00/, "0")
