@@ -1,11 +1,12 @@
 module SeOpenData
   module CSV
     module Standard
-      module OpenCageAddressStandard
+      module LocationIQStandard
         require "opencage/geocoder"
 
         Limit = 11000
 
+        #map standard headers to geocoder headers
         Headers = {
           street_address: "road",
           locality: "city",
@@ -16,19 +17,12 @@ module SeOpenData
           geocontainer_lon: "lng",
           geocontainer: "geo_uri",
         }
-        StandardInputHeaderHeaderss = [
-          :street_address,
-          :locality,
-          :region,
-          :postcode,
-          :country_name,
-        ]
+
+        API_Key = File.read("../../APIs/locationIQAPI.txt") #load this securely
 
         class Geocoder
-          # @param api_key [String] the OpenCage API key.
-          def initialize(api_key)
+          def initialize
             # Headers here should relate to the headers in standard
-            @geocoder = OpenCage::Geocoder.new(api_key: api_key)
             @requests_made = 0
           end
 
@@ -36,7 +30,7 @@ module SeOpenData
             "https://www.openstreetmap.org/?mlat=#{lat}&mlon=#{long}"
           end
 
-          #open cage standard way of getting new data
+          #standard way of getting new data
           def get_new_data(search_key, country)
             #make sure we are within limits
             if @requests_made > Limit
@@ -60,19 +54,19 @@ module SeOpenData
             #include country
             #remove unneeded characters '/< etc..
             #remove unneeded address info
-            results = @geocoder.geocode(search_key, country_code: country, no_annotations: 1, limit: 1)
+            url = "https://eu1.locationiq.com/v1/search.php?key=#{API_Key}&q=#{search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
+            results = HTTParty.get(url)
 
             #if no results
             if results.length < 1
               return {}
             end
 
-            res_raw = results.first.raw
+            res_raw = JSON.parse(results[0].to_s)
 
             #for those that don't replace with empty
-            res = res_raw["components"]
-              .merge(res_raw["geometry"])
-              .merge({ "formatted" => res_raw["formatted"] })
+            res = res_raw
+              .merge(res_raw["address"])
 
             #check if address headers exist + house number which is used below but not in the headers list
             all_headers = Headers.merge("k" => "house_number")
@@ -85,7 +79,7 @@ module SeOpenData
             #add road and house number (save to road) to make a sensible address
             res["road"] = res["road"] + " " + res["house_number"].to_s
             res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lng"]) })
-
+            $stderr.puts res
             @requests_made += 1
 
             return res

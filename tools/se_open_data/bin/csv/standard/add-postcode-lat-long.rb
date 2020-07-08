@@ -9,7 +9,7 @@ require 'shellwords'
 
 
 OutputStandard = SeOpenData::CSV::Standard::V1
-APIStandard = SeOpenData::CSV::Standard::OpenCageAddressStandard
+APIStandard = SeOpenData::CSV::Standard::LocationIQStandard
 
 module HashExtensions
   def subhash(*keys)
@@ -35,12 +35,13 @@ class OptParse
     options.input_csv_postcode_header = OutputStandard::Headers[:postcode]
     options.input_csv_country_header = OutputStandard::Headers[:country_name]
     options.address_headers = OutputStandard::Headers.subhash(:street_address,
-      :locality,
-      :region,
-      :postcode,
-      :country_name)
+                                                              :locality,
+                                                              :region,
+                                                              :postcode,
+                                                              :country_name)
 
     options.geocoder_headers = APIStandard::Headers
+    options.geocoder = APIStandard::Geocoder.new
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
 
     #should the method replace the current address headers
@@ -74,7 +75,7 @@ class OptParse
       end
       
       opts.on("--replace-address [FLAG]",
-        "replace address when geocoding") do |v|
+              "replace address when geocoding") do |v|
         options.replace_address = v.nil? ? true : v
       end
 
@@ -114,7 +115,7 @@ SeOpenData::CSV.add_postcode_lat_long(
 
 )
 
-# For debugging 
+# For debugging
 
 # input = File.open("/Volumes/Extra/SEA-dev/open-data-and-maps/data/dotcoop/domains2018-04-24/generated-data/experimental-new-server/csv/de-duplicated.csv", "r:utf-8")
 # inputContent = input.read;
