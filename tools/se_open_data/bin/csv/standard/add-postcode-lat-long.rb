@@ -9,7 +9,7 @@ require 'shellwords'
 
 
 OutputStandard = SeOpenData::CSV::Standard::V1
-APIStandard = SeOpenData::CSV::Standard::LocationIQStandard
+APIStandard = SeOpenData::CSV::Standard::GeoapifyStandard
 
 module HashExtensions
   def subhash(*keys)
