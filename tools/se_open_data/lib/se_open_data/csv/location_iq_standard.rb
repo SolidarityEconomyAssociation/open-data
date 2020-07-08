@@ -2,7 +2,9 @@ module SeOpenData
   module CSV
     module Standard
       module LocationIQStandard
-        require "opencage/geocoder"
+        require "httparty"
+        require "json"
+        require "cgi"
 
         Limit = 11000
 
@@ -14,7 +16,7 @@ module SeOpenData
           postcode: "postcode",
           country_name: "country",
           geocontainer_lat: "lat",
-          geocontainer_lon: "lng",
+          geocontainer_lon: "lon",
           geocontainer: "geo_uri",
         }
 
@@ -47,22 +49,22 @@ module SeOpenData
             if search_key.length < 5
               return {}
             end
-
             #requests requirements
             #comma-separated
             #no names
             #include country
             #remove unneeded characters '/< etc..
             #remove unneeded address info
-            url = "https://eu1.locationiq.com/v1/search.php?key=#{API_Key}&q=#{search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
+            uri_search_key = CGI.escape(search_key)
+            url = "https://eu1.locationiq.com/v1/search.php?key=#{API_Key}&q=#{uri_search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
             results = HTTParty.get(url)
+            res_raw_json = JSON.parse(results.to_s)
+            res_raw = res_raw_json == nil ? {} : res_raw_json[0]
 
             #if no results
-            if results.length < 1
+            if res_raw == nil
               return {}
             end
-
-            res_raw = JSON.parse(results[0].to_s)
 
             #for those that don't replace with empty
             res = res_raw
@@ -77,11 +79,9 @@ module SeOpenData
               end
             }
             #add road and house number (save to road) to make a sensible address
-            res["road"] = res["road"] + " " + res["house_number"].to_s
-            res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lng"]) })
-            $stderr.puts res
+            res["road"] = res["road"] + " " + res["house_number"].to_s unless res["house_number"].to_s == ""
+            res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lon"]) })
             @requests_made += 1
-
             return res
           end
         end

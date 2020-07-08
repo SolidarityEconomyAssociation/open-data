@@ -73,10 +73,10 @@ class OptParse
               "get the OpenCage API key from this password-store key, via `pass show <KEY>`") do |key|
         options.api_key = `pass show #{Shellwords.shellescape key}`
       end
-      
-      opts.on("--replace-address [FLAG]",
+
+      opts.on("--replace-address",
               "replace address when geocoding") do |v|
-        options.replace_address = v.nil? ? true : v
+        options.replace_address = true
       end
 
       opts.separator ""

@@ -1,12 +1,10 @@
-
-require 'csv'
+require "csv"
 
 module SeOpenData
-  
   module CSV
     @@report_csv = nil
     @@report_csv_filename = nil
-    
+
     # Generates a CSV file with the same content as the input CSV, but
     # with an extra column of comments added.  Comments can be added
     # using the {SeOpenData::CSV::RowReader#add_comment} method (grep for it for examples!)
@@ -30,10 +28,9 @@ module SeOpenData
       csv_opts.merge!(headers: true, skip_blanks: true)
 
       # If it's there, strip BOM from utf8
-      input_io.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+      input_io.encode!("UTF-8", "UTF-8", :invalid => :replace)
       input_io.delete!("\xEF\xBB\xBF")
 
-      
       csv_in = ::CSV.new(input_io, csv_opts)
       csv_out = ::CSV.new(output_io)
       csv_out << output_headers.values
@@ -46,7 +43,8 @@ module SeOpenData
       end
 
       csv_in.reject {
-        |row| row.to_hash.values.all?(&:nil?)
+        |row|
+        row.to_hash.values.all?(&:nil?)
       }.each do |row|
         begin
           # An empty column in the first row of the CSV (the headers row) will
@@ -74,23 +72,21 @@ module SeOpenData
             r.pre_flight_checks
           end
           csv_out << output_headers.keys.map {
-            |h| r.send(h)
+            |h|
+            r.send(h)
           }
-
         rescue SeOpenData::Exception::IgnoreCsvRow => e
           $stderr.puts "Ignoring row: #{e.message}:\n#{row}\n"
           r.add_comment("Ignoring row: #{e.message}")
-
         rescue StandardError => e # includes ArgumentError, RuntimeError, and many others.
           warning(["Could not create Initiative from CSV: #{e.message}", "The following row from the CSV data will be ignored:", row.to_s])
           raise
         ensure
           if @@report_csv
             # Add a row to the report CSV that includes any comments (see add_comment).
-            # Note: comments can be added in the methods of the csv_row_reader. 
+            # Note: comments can be added in the methods of the csv_row_reader.
             @@report_csv << r.row_with_comments
           end
-
         end
       end
       if @@report_csv_filename
@@ -99,7 +95,7 @@ module SeOpenData
     end
     def CSV.warning(msgs)
       msgs = msgs.kind_of?(Array) ? msgs : [msgs]
-      $stderr.puts msgs.map{|m| "\nWARNING! #{m}"}.join 
+      $stderr.puts msgs.map { |m| "\nWARNING! #{m}" }.join
     end
   end
 end
