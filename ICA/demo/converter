@@ -235,7 +235,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
       convert input: cleared_errors, output: converted
       # add locations TODO this should be making direct calls to the bin, instead of calling the system
       latlngcmd = "ruby -I #{config.SE_OPEN_DATA_LIB_DIR} #{config.SE_OPEN_DATA_BIN_DIR}csv/standard/add-postcode-lat-long.rb " +
-                  "--postcodeunit-cache #{UK_POSTCODES_CACHE} --postcode-global-cache #{GLOBAL_POSTCODES_CACHE} --replace-address false" +
+                  "--postcodeunit-cache #{UK_POSTCODES_CACHE} --postcode-global-cache #{GLOBAL_POSTCODES_CACHE}" +
                   " #{converted} > #{output_csv}"
       puts latlngcmd
       system latlngcmd
