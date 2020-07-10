@@ -366,7 +366,7 @@ module SeOpenData
             client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client
             addr_headers = Headers.keys.map { |a| SeOpenData::CSV::Standard::V1::Headers[a] }
 
-            ::CSV.foreach(generated_standard_file, { headers: true }) do |row|
+            ::CSV.foreach(generated_standard_file, headers: true) do |row|
               # make this with row
               addr_array = []
               addr_headers.each { |header| addr_array.push(row[header]) if row.has_key? header }

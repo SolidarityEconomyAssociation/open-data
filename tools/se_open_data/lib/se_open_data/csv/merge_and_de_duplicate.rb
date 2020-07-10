@@ -64,7 +64,7 @@ module SeOpenData
 
       csv_opts = {}
       csv_opts.merge!(headers: true)
-      csv_in = ::CSV.new(input_io, csv_opts)
+      csv_in = ::CSV.new(input_io, **csv_opts)
       csv_out = ::CSV.new(output_io)
       csv_err = ::CSV.new(error_io)
       used_keys = {}
@@ -89,7 +89,7 @@ module SeOpenData
       addr_csv_original = {}
       headers = nil
       csvorig = nil
-      csvorig = ::CSV.read(original_csv, csv_opts) if original_csv != nil
+      csvorig = ::CSV.read(original_csv, **csv_opts) if original_csv != nil
 
       if csvorig
         csvorig.each do |row|
@@ -268,7 +268,7 @@ module SeOpenData
       original_csv_in = nil
       headers = nil
       if original_csv != nil
-        original_csv_in = ::CSV.read(original_csv, csv_opts)
+        original_csv_in = ::CSV.read(original_csv, **csv_opts)
       else
         original_csv_in = csv_in
         original_csv_in.rewind
