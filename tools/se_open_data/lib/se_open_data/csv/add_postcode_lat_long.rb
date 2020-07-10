@@ -47,7 +47,7 @@ module SeOpenData
       geocoder_standard
     )
       csv_opts.merge!(headers: true)
-      csv_in = ::CSV.new(input_io, csv_opts)
+      csv_in = ::CSV.new(input_io, **csv_opts)
       csv_out = ::CSV.new(output_io)
       allHeaders = new_headers.merge(address_headers)
       postcode_client = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache)
