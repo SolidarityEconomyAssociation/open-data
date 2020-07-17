@@ -272,10 +272,10 @@ module SeOpenData
                           "Zimbabwe" => "ZW",
                           "Åland Islands" => "AX" }
 
-        API_Key = File.read("../../APIs/geoapifyAPI.txt") #load this securely
-
         class Geocoder
-          def initialize
+          # @param api_key [String] the OpenCage API key.
+          def initialize(api_key)
+            @api_key = api_key
             # Headers here should relate to the headers in standard
             @requests_made = 0
           end
@@ -308,12 +308,10 @@ module SeOpenData
             #remove unneeded characters '/< etc..
             #remove unneeded address info
             uri_search_key = CGI.escape(search_key)
-            url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&limit=1&apiKey=#{API_Key}"
+            url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&limit=1&apiKey=#{@api_key}"
             if (Country_Codes.has_key? country)
               cn = Country_Codes[country].downcase
-              url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&&filter=countrycode:#{cn}&limit=1&apiKey=#{API_Key}"
-              $stderr.puts url
-              $stderr.puts search_key
+              url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&&filter=countrycode:#{cn}&limit=1&apiKey=#{@api_key}"
             end
             results = HTTParty.get(url)
             res_raw_json = JSON.parse(results.to_s)["features"]

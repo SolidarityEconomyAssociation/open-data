@@ -20,10 +20,10 @@ module SeOpenData
           geocontainer: "geo_uri",
         }
 
-        API_Key = File.read("../../APIs/locationIQAPI.txt") #load this securely
-
         class Geocoder
-          def initialize
+          # @param api_key [String] the OpenCage API key.
+          def initialize(api_key)
+            @api_key = api_key
             # Headers here should relate to the headers in standard
             @requests_made = 0
           end
@@ -56,7 +56,7 @@ module SeOpenData
             #remove unneeded characters '/< etc..
             #remove unneeded address info
             uri_search_key = CGI.escape(search_key)
-            url = "https://eu1.locationiq.com/v1/search.php?key=#{API_Key}&q=#{uri_search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
+            url = "https://eu1.locationiq.com/v1/search.php?key=#{@api_key}&q=#{uri_search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
             results = HTTParty.get(url)
             res_raw_json = JSON.parse(results.to_s)
             res_raw = res_raw_json == nil ? {} : res_raw_json[0]

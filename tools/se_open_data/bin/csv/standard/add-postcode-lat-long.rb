@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 #
 # $LOAD_PATH.unshift '/Volumes/Extra/SEA-dev/open-data-and-maps/data/tools/se_open_data/lib'
-require 'optparse'
-require 'ostruct'
-require 'se_open_data'
-require 'opencage/geocoder'
-require 'shellwords'
-
+require "optparse"
+require "ostruct"
+require "se_open_data"
+require "opencage/geocoder"
+require "shellwords"
 
 OutputStandard = SeOpenData::CSV::Standard::V1
 APIStandard = SeOpenData::CSV::Standard::GeoapifyStandard
@@ -41,7 +40,6 @@ class OptParse
                                                               :country_name)
 
     options.geocoder_headers = APIStandard::Headers
-    options.geocoder = APIStandard::Geocoder.new
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
 
     #should the method replace the current address headers
@@ -98,7 +96,7 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
-geocoder = APIStandard::OpenCageClass.new($options.api_key || File.read("../../APIs/OpenCageKey.txt"))
+$geocoder = APIStandard::Geocoder.new($options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
 SeOpenData::CSV.add_postcode_lat_long(
   ARGF.read,
   $stdout,

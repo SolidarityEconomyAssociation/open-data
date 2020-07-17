@@ -335,39 +335,6 @@
     "geo_uri": "https://www.openstreetmap.org/?mlat=14.086015&mlon=-87.190079",
     "house_number": ""
   },
-  "Col. Palmira, Av. Juan Lindo N° 121 AP No. 653 C.A.,Francisco Morazan,Honduras": {
-    "datasource": {
-      "sourcename": "openstreetmap",
-      "surface": "concrete",
-      "osm_type": "W",
-      "osm_id": 645801369,
-      "display_name": "Avenida Juan Lindo, Las Palomas, Tegucigalpa, Francisco Morazán, 12101, Honduras",
-      "category": "highway",
-      "type": "tertiary"
-    },
-    "name": "Avenida Juan Lindo",
-    "street": "Avenida Juan Lindo",
-    "suburb": "Las Palomas",
-    "city": "Tegucigalpa",
-    "state": "Francisco Morazán",
-    "postcode": "12101",
-    "country": "Honduras",
-    "country_code": "hn",
-    "lon": -87.1912538,
-    "lat": 14.1007032,
-    "formatted": "Avenida Juan Lindo, 12101 Tegucigalpa, Honduras",
-    "address_line1": "Avenida Juan Lindo",
-    "address_line2": "12101 Tegucigalpa, Honduras",
-    "result_type": "street",
-    "rank": {
-      "importance": 0.5,
-      "popularity": 4.369992857638207,
-      "confidence": 1,
-      "match_type": "full_match"
-    },
-    "geo_uri": "https://www.openstreetmap.org/?mlat=14.1007032&mlon=-87.1912538",
-    "house_number": ""
-  },
   "Blvd. Milenio No. 902, Esq. Blvd. Cañaveral, Colonia San Juan de Otates  Guanajuato,León,C.P. 37670,Mexico": {
     "name": "Otates",
     "country": "Mexico",
@@ -9171,6 +9138,39 @@
     "lat": "",
     "lon": "",
     "geo_uri": "https://www.openstreetmap.org/?mlat=&mlon=",
+    "house_number": ""
+  },
+  "Col. Palmira, Av. Juan Lindo N° 121 AP No. 653 C.A.,Francisco Morazan,Honduras": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "surface": "concrete",
+      "osm_type": "W",
+      "osm_id": 645801369,
+      "display_name": "Avenida Juan Lindo, Las Palomas, Tegucigalpa, Francisco Morazán, 12101, Honduras",
+      "category": "highway",
+      "type": "tertiary"
+    },
+    "name": "Avenida Juan Lindo",
+    "street": "Avenida Juan Lindo",
+    "suburb": "Las Palomas",
+    "city": "Tegucigalpa",
+    "state": "Francisco Morazán",
+    "postcode": "12101",
+    "country": "Honduras",
+    "country_code": "hn",
+    "lon": -87.1912538,
+    "lat": 14.1007032,
+    "formatted": "Avenida Juan Lindo, 12101 Tegucigalpa, Honduras",
+    "address_line1": "Avenida Juan Lindo",
+    "address_line2": "12101 Tegucigalpa, Honduras",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.5,
+      "popularity": 4.369992857638207,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=14.1007032&mlon=-87.1912538",
     "house_number": ""
   }
 }
