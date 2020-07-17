@@ -312,6 +312,8 @@ module SeOpenData
             if (Country_Codes.has_key? country)
               cn = Country_Codes[country].downcase
               url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&&filter=countrycode:#{cn}&limit=1&apiKey=#{API_Key}"
+              $stderr.puts url
+              $stderr.puts search_key
             end
             results = HTTParty.get(url)
             res_raw_json = JSON.parse(results.to_s)["features"]

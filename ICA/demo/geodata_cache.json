@@ -4954,17 +4954,6 @@
     "geo_uri": "https://www.openstreetmap.org/?mlat=-31.9486588&mlon=115.841571",
     "house_number": ""
   },
-  "Federal Department of Co-operatives, 4th Floor Nigerian Agricultural Insurance Corporation (NAIC) Building, Central Business District,Abuja,Nigeria": {
-    "street": "",
-    "city": "",
-    "state": "",
-    "postcode": "",
-    "country": "",
-    "lat": "",
-    "lon": "",
-    "geo_uri": "https://www.openstreetmap.org/?mlat=&mlon=",
-    "house_number": ""
-  },
   "Calle 20 norte, Avenidas 5 y 7,San José,Costa Rica": {
     "name": "Calle Norte",
     "street": "Calle Norte",
@@ -9098,6 +9087,82 @@
     "house_number": ""
   },
   "West Bank / PO Box 350,Al-Bireh City / Al-Balou',Palestine, State of": {
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "country": "",
+    "lat": "",
+    "lon": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=&mlon=",
+    "house_number": ""
+  },
+  "Holyoake House Hanover Street,Manchester,M60 0AS,United Kingdom": {
+    "country": "United Kingdom",
+    "city": "Manchester",
+    "postcode": "M60 0AS",
+    "name": "Hanover Street",
+    "state": "England",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 156339717,
+      "osm_type": "W",
+      "category": "highway",
+      "type": "residential"
+    },
+    "country_code": "gb",
+    "street": "Hanover Street",
+    "lon": -2.2399275,
+    "lat": 53.4864928,
+    "formatted": "Hanover Street, Manchester M60 0AS, United Kingdom",
+    "address_line1": "Hanover Street",
+    "address_line2": "Manchester M60 0AS, United Kingdom",
+    "distance": 30.557170639417574,
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.859312591620764,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=53.4864928&mlon=-2.2399275",
+    "house_number": ""
+  },
+  "Co-operative House Warwick Technology Park,Warwick,CV34 6DA,United Kingdom": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 56869520,
+      "display_name": "Warwick Technology Park, Warwick, Warwickshire, West Midlands, England, United Kingdom",
+      "category": "landuse",
+      "type": "commercial"
+    },
+    "commercial": "Warwick Technology Park",
+    "suburb": "Warwick",
+    "city": "Warwick",
+    "county": "Warwickshire",
+    "state_district": "West Midlands",
+    "state": "England",
+    "country": "United Kingdom",
+    "country_code": "gb",
+    "street": "Warwick Technology Park",
+    "lon": -1.5676196316970168,
+    "lat": 52.27469925,
+    "postcode": "CV34 6DA",
+    "formatted": "Warwick Technology Park, Warwick CV34 6DA, United Kingdom",
+    "address_line1": "Warwick Technology Park",
+    "address_line2": "Warwick CV34 6DA, United Kingdom",
+    "distance": 97.55765161609628,
+    "result_type": "street",
+    "rank": {
+      "importance": 0.7,
+      "popularity": 5.961420592565931,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.27469925&mlon=-1.5676196316970168",
+    "house_number": ""
+  },
+  "Federal Department of Co-operatives, 4th Floor Nigerian Agricultural Insurance Corporation (NAIC) Building, Central Business District,Abuja,Nigeria": {
     "street": "",
     "city": "",
     "state": "",

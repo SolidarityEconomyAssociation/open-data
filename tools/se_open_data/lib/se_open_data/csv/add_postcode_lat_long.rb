@@ -71,7 +71,7 @@ module SeOpenData
         postcode = row[input_csv_postcode_header]
         country = row[input_country_header]
         #if uk_postcode?(postcode)
-        if uk_postcode?(postcode) #TODO NEED TO REMOVE FOR GLOBAL GEO LOCATOR
+        if false #uk_postcode?(postcode) # UCOMMENT TO USE ORDINANCE SURVEY FOR UK POSTCODE GEOLOCATION
           pcunit = postcode_client.get(postcode)
           loc_data = {
             geocontainer: pcunit ? pcunit[:within] : nil,
