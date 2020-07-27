@@ -1,16 +1,13 @@
 # Description of Standard 
+One of the early phases of the data processing pipeline involves converting the source data into an intermediary flat format, serialised as the Standard_Format.csv file.  
 
-This file describes the standard information needed to translate a dataset into linked data using the SSE open-data repository.
+Once in this format the process of converting the data to rdf requires minimal further information from the user.
 
-Here we describe the fields in the intermediary step before the data is transformed into RDF format (using definitions from [the SSE vocabulary](https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H4)). The translation of datasets (csv format) to linked data is a two step process: 
+Here we describe the supported fields in this intermediary step before the data is transformed into RDF format.
 
-1. Transform the original format to a standard format (defined below)
-2. Transform the standard format to linked data and upload it to a triple-store
+Original_Data.csv/json/??? --(step 1)--> Standard_Format.csv --(step 2)--> RDF 
 
-The resulting data files look something like: 
-
-Original_Data.csv --(step 1)--> Standard_Format.csv --(step 2)--> RDF 
-
+We also reference the rdf schemas to which we are converting the data.????
 
 It is important to note that in the original data file fields do not have to map directly to the standard fields (although it is recommended). They can be composed by multiple fields, one field could describe two other fields, etc...
 
@@ -53,7 +50,7 @@ In this section the fields which we currently populate are defined in the follow
 ## Identifier
 
     Required: Yes
-    Description: A unique identifier used to identify organizations (initiatives*) within a dataset. The uniqueness must be guaranteed within the passed dataset! (i.e. one must guarantee uniqueness within the passed Original_Data.csv file and the Standard.csv file). The identifier will be used to create a URL address for the organization. (e.g. if Company XYZ passes an initiative with an id of IDENTITY, the resulting URL could be: data.solidarityeconomy.coop/XYZ/IDENTITY). These IDs must remain constant within the passed Original_Dataset.csv files
+    Description: A unique identifier used to identify each organization (initiative*) within a dataset. The uniqueness must be guaranteed within the passed dataset! (i.e. one must guarantee uniqueness within the passed Original_Data.csv file and the Standard_Format.csv file). The identifier will be used to create a URI address for the organization. (e.g. if Company XYZ passes an initiative with an id of IDENTITY, the resulting URI could be: data.solidarityeconomy.coop/XYZ/IDENTITY). These IDs must remain constant within the passed Original_Dataset.csv files
     Type: Text
     Validation: There must be no white spaces or special characters (only english alpha-numerals) and the ID must be shorter than 15 characters
 <hr/>
@@ -61,7 +58,7 @@ In this section the fields which we currently populate are defined in the follow
 ## Name
     
     Required: No
-    Description: The name of the organization. It is recommended that names are bellow 10 words (or 90) so that they fit more neatly into text boxes
+    Description: The name of the organization. It is recommended that names are below 10 words (or 90 characters) so that they fit more neatly into text boxes
     Type: Text
     Validation: (Non strict) below 90 characters
 
@@ -81,7 +78,7 @@ In this section the fields which we currently populate are defined in the follow
     Required: No
     Description: The structure of the organization in the context of the SSE vocabulary. Valid values for this field can be found at https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1 . One should use the Definition instead of the Label for an organisational structure (i.e. for https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#organisational-structure-OS100 one should use Multi-stakeholder co-operative instead of OS100)
     Type: Enumerated
-    Validation: only definition values at https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1 . IMPORTANT! Make sure you remove the . at the end. i.e do not use "Multi-stakeholder co-operative." but instead use "Multi-stakeholder co-operative" 
+    Validation: only values defined at https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1 . IMPORTANT! Make sure you remove the . at the end. i.e do not use "Multi-stakeholder co-operative." but instead use "Multi-stakeholder co-operative" 
     
 <hr/>
 
