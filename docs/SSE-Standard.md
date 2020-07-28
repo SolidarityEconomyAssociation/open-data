@@ -5,9 +5,9 @@ Once in this format the process of converting the data to rdf requires minimal f
 
 Here we describe the supported fields in this intermediary step before the data is transformed into RDF format.
 
-Original_Data.csv/json/??? --(step 1)--> Standard_Format.csv --(step 2)--> RDF 
+Original_Data.csv/json --(step 1)--> Standard_Format.csv --(step 2)--> RDF 
 
-We also reference the rdf schemas to which we are converting the data.????
+We also reference the rdf schemas to which we are converting the data.
 
 It is important to note that in the original data file fields do not have to map directly to the standard fields (although it is recommended). They can be composed by multiple fields, one field could describe two other fields, etc...
 
@@ -24,7 +24,7 @@ In this section the fields which we currently populate are defined in the follow
     Description: short explanation and description of the field
     Type: the type of the field (e.g. boolean, text, numbers or enumerated values)
     Validation: what is deemed as valid data to be passed to the field
-    Translated: describes what term the csv field is maps to after the translation
+    Translated: describes what term the csv field maps to after the translation
 
 <hr/>
 
