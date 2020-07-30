@@ -178,7 +178,8 @@ module SeOpenData
         nil, #    postcodeunit_cache?
         SeOpenData::CSV::Standard::V1,
         config.SAME_AS_FILE == ''? nil : config.SAME_AS_FILE,
-        config.SAME_AS_HEADERS == ''? nil : config.SAME_AS_HEADERS
+        config.SAME_AS_HEADERS == ''? nil : config.SAME_AS_HEADERS,
+        config.USING_ICA_ACTIVITIES
       )
       
       # Load CSV into data structures, for this particular standard

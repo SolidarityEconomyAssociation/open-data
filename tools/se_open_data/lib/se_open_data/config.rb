@@ -10,41 +10,41 @@ module SeOpenData
   # i.e. Variables here are independant from names in the config file.
   # FIXME expand
   class Config
-    require 'fileutils'
-    require 'se_open_data/utils/log_factory'
-    
+    require "fileutils"
+    require "se_open_data/utils/log_factory"
+
     # Create a log instance
     Log = SeOpenData::Utils::LogFactory.default
 
     # Where to look for non-code resources
-    RESOURCE_DIR = File.expand_path('../../resources', __dir__)
-    
+    RESOURCE_DIR = File.expand_path("../../resources", __dir__)
+
     # Default values for optional key that should not default to nil.
     # Directories which are relative are typically expanded relative
     # to the current working directory.
     DEFAULTS = {
-      'AUTO_LOAD_TRIPLETS' => true,
-      'CSS_SRC_DIR' => File.join(RESOURCE_DIR, 'css'),
-      'SRC_CSV_DIR' => 'original-data',
-      'ORIGINAL_CSV' => 'original.csv',
-      'STANDARD_CSV' => 'standard.csv',
-      'TOP_OUTPUT_DIR' => 'generated-data',
-      'URI_SCHEME' => 'https',
-      'USE_ENV_PASSWORDS' => false,
-      'ESSGLOBAL_URI' => 'https://w3id.solidarityeconomy.coop/essglobal/V2a/',
-      'DEPLOYMENT_WEB_USER' => 'www-data',
-      'DEPLOYMENT_WEB_GROUP' => 'www-data',
-      'VIRTUOSO_USER' => 'root',
-      'VIRTUOSO_GROUP' => 'root',
+      "AUTO_LOAD_TRIPLETS" => true,
+      "CSS_SRC_DIR" => File.join(RESOURCE_DIR, "css"),
+      "SRC_CSV_DIR" => "original-data",
+      "ORIGINAL_CSV" => "original.csv",
+      "STANDARD_CSV" => "standard.csv",
+      "TOP_OUTPUT_DIR" => "generated-data",
+      "URI_SCHEME" => "https",
+      "USE_ENV_PASSWORDS" => false,
+      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
+      "DEPLOYMENT_WEB_USER" => "www-data",
+      "DEPLOYMENT_WEB_GROUP" => "www-data",
+      "VIRTUOSO_USER" => "root",
+      "VIRTUOSO_GROUP" => "root",
     }
-    
+
     # @param file [String] - the path to the config file to load.
     # @param base_dir [String] - the base directory in which to locate certain paths
     def initialize(file, base_dir = Config.caller_dir)
       @config_file = file
 
       @map = {}
-      
+
       File.foreach(@config_file).with_index(1) do |line, num|
         next if line =~ /^\s*$/ # skip blank lines
         next if line =~ /^\s*#/ # skip comments
@@ -55,10 +55,10 @@ module SeOpenData
 
         # Guard against invalid key characters. This is almost certainly a mistake
         raise "invalid config key '#{key}' at line #{num}" unless valid_key? key
-        
+
         # Guard against no '='. Likewise a mistake.
         raise "config line with no '=' delimiter on line #{num}" if val.nil?
-        
+
         # Guard against duplicates. Likewise a mistake.
         raise "config key '#{key}' duplicated on line #{num}" if @map.has_key? key
 
@@ -69,22 +69,22 @@ module SeOpenData
       # Add defaults here after the loop, which uses the map to spot
       # duplicates.
       @map = DEFAULTS.merge(@map)
-      
+
       # These keys are mandatory, because we use them below, or elsewhere
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
-      URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
-      DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
-      W3ID_REMOTE_LOCATION SERVER_ALIAS ESSGLOBAL_URI
-      SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
-        .each do |key| 
-          raise "mandatory key '#{key}' is missing" unless @map.has_key? key
-        end
+         URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
+         DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
+         W3ID_REMOTE_LOCATION SERVER_ALIAS ESSGLOBAL_URI
+         SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
+        .each do |key|
+        raise "mandatory key '#{key}' is missing" unless @map.has_key? key
+      end
 
       # Expand these paths relative to base_dir
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR CSS_SRC_DIR)
         .each do |key| # expand rel to base_dir, append a slash
-          @map[key] = join File.expand_path(@map[key], base_dir), ""
-        end
+        @map[key] = join File.expand_path(@map[key], base_dir), ""
+      end
 
       # This is the directory where we generate intermediate csv files
       @map["GEN_CSV_DIR"] = join @map["TOP_OUTPUT_DIR"], "csv", ""
@@ -92,7 +92,7 @@ module SeOpenData
       # Final output file (usually "standard.csv")
       @map["STANDARD_CSV"] = join @map["TOP_OUTPUT_DIR"], @map["STANDARD_CSV"]
       #csv.rb end
-      
+
       # Used by static data generation
       @map["WWW_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "www", ""
       @map["GEN_DOC_DIR"] = unixjoin @map["WWW_DIR"], "doc", ""
@@ -103,12 +103,12 @@ module SeOpenData
       @map["SPARQL_LIST_GRAPHS_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "list-graphs.rq"
       @map["SPARQL_ENDPOINT_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "endpoint.txt"
       @map["SPARQL_GRAPH_NAME_FILE"] = unixjoin @map["GEN_SPARQL_DIR"], "default-graph-uri.txt"
-      @map["GRAPH_NAME"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["URI_HOST"],@map["URI_PATH_PREFIX"])
+      @map["GRAPH_NAME"] = @map["URI_SCHEME"] + "://" + unixjoin(@map["URI_HOST"], @map["URI_PATH_PREFIX"])
 
       @map["ONE_BIG_FILE_BASENAME"] = unixjoin @map["GEN_VIRTUOSO_DIR"], "all"
-      
-      @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : "" 
-      @map["SAME_AS_HEADERS"] = @map.key?("SAMEAS_HEADERS") ? @map["SAMEAS_HEADERS"] : "" 
+
+      @map["SAME_AS_FILE"] = @map.key?("SAMEAS_CSV") ? @map["SAMEAS_CSV"] : ""
+      @map["SAME_AS_HEADERS"] = @map.key?("SAMEAS_HEADERS") ? @map["SAMEAS_HEADERS"] : ""
 
       # Used by static data deployment
       @map["DEPLOYMENT_DOC_SUBDIR"] = @map["URI_PATH_PREFIX"]
@@ -126,7 +126,7 @@ module SeOpenData
       # Used to define w3ids
       @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
       @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
-      @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"]+'://'+unixjoin(@map["SERVER_ALIAS"],@map["URI_PATH_PREFIX"])
+      @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"] + "://" + unixjoin(@map["SERVER_ALIAS"], @map["URI_PATH_PREFIX"])
 
       # Preserve booleans in these cases
       %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
@@ -146,11 +146,11 @@ module SeOpenData
 
       # Make sure these dirs exist
       FileUtils.mkdir_p @map.fetch_values(
-        'GEN_CSV_DIR',
-        'GEN_CSS_DIR',
-        'GEN_VIRTUOSO_DIR',
-        'GEN_SPARQL_DIR',
-        'W3ID_LOCAL_DIR'
+        "GEN_CSV_DIR",
+        "GEN_CSS_DIR",
+        "GEN_VIRTUOSO_DIR",
+        "GEN_SPARQL_DIR",
+        "W3ID_LOCAL_DIR"
       )
     rescue => e
       raise "#{e.message}: #{@config_file}"
@@ -192,21 +192,21 @@ module SeOpenData
       t = Time.now
       "#{t.year}#{t.month}#{t.day}#{t.hour}#{t.min}#{t.sec}"
     end
-    
+
     private
 
     # Joins directory fragments using local path delimiter
-    def join(*args)  
+    def join(*args)
       File.join(*args)
     end
 
     # Joins directory fragments using the unix '/' delimiter
-    def unixjoin(first, *rest) 
+    def unixjoin(first, *rest)
       #First part must have trailing slash removed only, rest must
       # have (a single) leading slash.
-      first.gsub(%r{/+$},'')+rest.map {|it| it.gsub(%r{^/*},"/") }.join
+      first.gsub(%r{/+$}, "") + rest.map { |it| it.gsub(%r{^/*}, "/") }.join
     end
-    
+
     # Used only in the constructor as a default value for base_dir
     def self.caller_dir
       File.dirname(caller_locations(2, 1).first.absolute_path)
@@ -218,7 +218,7 @@ module SeOpenData
     # pattern which expands to more than one path, in order of
     # preference. Relative to the current working directory.
     # @return [SeOpenData::Config]
-    def self.load(path = '{local,default}.conf', base: Dir.pwd)
+    def self.load(path = "{local,default}.conf", base: Dir.pwd)
       config_file = Dir.glob(path, base: base).first # first match
       if config_file.nil?
         raise RuntimeError, "No config file found matching: #{path}"
@@ -226,6 +226,5 @@ module SeOpenData
       Log.info "loading config: #{config_file}"
       return SeOpenData::Config.new(config_file, base)
     end
-    
   end
 end

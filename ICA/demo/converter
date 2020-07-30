@@ -275,12 +275,12 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
   ECONOMIC_ACTIVITY_TO_ACTIVITY = {
     "Education / health / social work" => "Education",
-    "Financial services" => "Money & Finance",
-    "Fishing" => "Food",
+    "Financial services" => "Financial services",
+    "Fishing" => "Fishing",
     "Housing" => "Housing",
-    "Insurance" => "Money & Finance",
-    "Other services" => "Goods & Services",
-    "Wholesale and retail trade" => "Goods & Services",
+    "Insurance" => "Insurance",
+    "Other services" => "Other services",
+    "Wholesale and retail trade" => "Wholesale and retail trade",
     "Agriculture" => "Agriculture",
     "Utilities" => "Utilities",
     "Industry" => "Industry",
