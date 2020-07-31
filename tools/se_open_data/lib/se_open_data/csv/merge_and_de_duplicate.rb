@@ -7,6 +7,26 @@ module SeOpenData
     MAX_DIST = 4
     NAME_FIELD = "Name"
 
+    # @param array - array to find the matches for
+    # @param dist - the levenshtein distance to check for
+    # @returns - an array of matches (in the form of [[match,match],[match,match],[match]])
+    # go through the array for each element and make a matched array, after that remove all matched from array and repeat
+    def self.get_all_levinshtein_matches(keys, dist)
+      kcopy = keys
+      kmatches = []
+      keys.each { |k|
+        kmatch = []
+        kcopy.each { |kc|
+          kmatch += [kc] if Levenshtein.distance(k, kc) < dist
+        }
+        next if kmatch == []
+        kcopy -= kmatch
+        kmatches.push(kmatch)
+        break if kcopy.length == 0
+      }
+      return kmatches
+    end
+
     # Merge domains and de-duplicate rows of CSV (primarily for dotcoop).
     #
     # A duplicate is defined as having the same keys as a previous row
@@ -35,7 +55,7 @@ module SeOpenData
       domainHeader,
       nameHeader,
       original_csv = nil
-   )
+    )
 
       #tidy me
       small_words = %w(on the and ltd limited llp community SCCL)
@@ -70,17 +90,15 @@ module SeOpenData
       headers = nil
       csvorig = nil
       csvorig = ::CSV.read(original_csv, csv_opts) if original_csv != nil
-        
+
       if csvorig
-
-      csvorig.each do |row|
-        unless headers
-          headers = row.headers
+        csvorig.each do |row|
+          unless headers
+            headers = row.headers
+          end
+          key = keys.map { |k| row[k] }
+          addr_csv_original[key] = row.to_h
         end
-        key = keys.map { |k| row[k] }
-        addr_csv_original[key] = row.to_h
-      end
-
       end
       # CHANGE THIS
 
@@ -156,25 +174,22 @@ module SeOpenData
       #merge entries (in csv_map) that have the same name, and a leivenstein distance of < 2
       name_map.each { |name, val|
         #for each mapping check the distance between the keys
-        matched_keys = name_map[name].keys.select { |nmkey|
-          match_exists = false
-          name_map[name].keys { |key|
-            match_exists = Levenshtein.distance(nmkey, key) < MAX_DIST
-          }
-          match_exists
-        }
+        # returns [[match,match],[match,match],[match]] structure
+        matched_keys = get_all_levinshtein_matches(name_map[name].keys, MAX_DIST)
         # buiname_mapld up field_map
         #if there are matched keys that means we have to merge them
         #i.e. add all of the entries to one of them
         if !matched_keys.empty?
-          first_key = matched_keys.first
-          matched_keys.each { |key|
-            unless key == first_key
-              # merge
-              nm[name][first_key] = nm[name][first_key] + nm[name][key]
-              # remove
-              nm[name].reject! { |k, v| k == key }
-            end
+          matched_keys.each { |matched|
+            first_key = matched.first
+            matched.each { |key|
+              unless key == first_key
+                # merge
+                nm[name][first_key] = nm[name][first_key] + nm[name][key]
+                # remove
+                nm[name].reject! { |k, v| k == key }
+              end
+            }
           }
         end
       }
@@ -211,7 +226,6 @@ module SeOpenData
         }
       end
 
-
       csv_map.each do |key, row|
         unless headersOutput
           csv_out << headers
@@ -229,7 +243,7 @@ module SeOpenData
           row["Street Address"] = orig_addr_entry["Street Address"]
           row["Locality"] = orig_addr_entry["Locality"]
           row["Region"] = orig_addr_entry["Region"]
-          if row["Postcode"] == '' || !row["Postcode"]
+          if row["Postcode"] == "" || !row["Postcode"]
             row["Postcode"] = orig_addr_entry["Postcode"]
           end
         end
@@ -240,15 +254,9 @@ module SeOpenData
         csv_out << row.values
       end
 
-
-
       dup_ids = duplicate_by_ids.values.select { |a| a.length > 1 }
 
-
-
-
-
-      #print documents 
+      #print documents
       #duplicate_by_fields currently holds an array of arrays. [[key,key],[key,key]]
       #replace each key with it's corresponding row
       #TODO probably could be done better
@@ -256,7 +264,7 @@ module SeOpenData
       flat_dups = duplicate_by_fields.clone
       flat_dups.flatten!(1)
 
-      #csv_in should be the original document before geo uniformication
+      #csv_in should be the original document before geo unifornication
       original_csv_in = nil
       headers = nil
       if original_csv != nil
@@ -271,7 +279,7 @@ module SeOpenData
           headers = row.headers
         end
         key = keys.map { |k| row[k] }
-        
+
         next unless flat_dups.include?(key)
 
         #replace all
@@ -285,17 +293,13 @@ module SeOpenData
         break unless flat_dups.length > 0
       end
 
-      
-
-
       err_doc_client = SeOpenData::Utils::ErrorDocumentGenerator.new("Duplicates DotCoop Title Page", "The process of importing data from DotCoop requires us to undergo several stages of data cleanup, fixing and rejecting some incompatible data that we cannot interpret.
 
         The following documents describe the 3 stages of processing and lists the corrections and decisions made.
         
         These documents make it clear how SEA is interpreting the DotCoop data and can be used by DotCoop to suggest corrections they can make to the source data.
         
-        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]",nameHeader,domainHeader,headers)
-
+        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]", nameHeader, domainHeader, headers)
 
       if original_csv != nil
         err_doc_client.add_similar_entries_fields_after_geo_uniform("Duplicates by Field after address cleaning with Geocoding service", "There are still some potential duplicates to find.
@@ -308,7 +312,6 @@ module SeOpenData
           
           geodups will list 
             - groups with different RegistrantIDs but identical or very similar names and addresses, noting that they will be considered the same co-op. Only one RegistrantID will be chosen to represent all the domains in this group from here on. A chosen name and corrected address will identified.", duplicate_by_fields)
-
       else
         err_doc_client.add_similar_entries_fields("Duplicates by Field before Geocoding", "The next stage is to organise domains into groups which have very similar names and addresses but different RegistrantIDs. This is done by using a fuzzy string comparison on the names and addresses.  
 
@@ -316,11 +319,8 @@ module SeOpenData
           fielddups will list 
             - the groups with different RegistrantIDs but identical or very similar names and addresses, noting that they will be considered the same co-op. Only one RegistrantID and one name and address will be chosen to represent all the domains in this group from here on. 
            ", duplicate_by_fields)
-
       end
-
-
-
+      # will not overwrite the second time since dup ids should be empty
       err_doc_client.add_similar_entries_id("Identical by RegistrantIDs", "All domains registered with the same RegistrantID are considered the same organisation.
 
         If there are small differences in the names or addresses registered with the same ID, we pick one of them and that is used for all the others.

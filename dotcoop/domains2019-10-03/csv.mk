@@ -27,7 +27,7 @@ CSV_target := csv
 
 # Source files:
 #CLEAN_UK_CSV := $(SRC_CSV_DIR)2019-10-03_DotCoop_Merged.csv
-CLEAN_UK_CSV := $(SRC_CSV_DIR)SolidarityEconomyExport.20200119.csv
+CLEAN_UK_CSV := $(SRC_CSV_DIR)export20200730.csv
 
 # Here's the directory where we generate intermediate csv files
 GEN_CSV_DIR := $(TOP_OUTPUT_DIR)csv/
@@ -94,7 +94,7 @@ $(STD_DE_DUPED_CSV) : $(STD_CLEAN_UK_CSV)  | $(GEN_CSV_DIR)
 # `OpenCageKey.txt` is passed to `pass`, change this if the password is stored with a different name
 $(STD_CORRECTED_GEO) : $(STD_DE_DUPED_CSV) | $(GEN_CSV_DIR)
 #$(STANDARD_CSV) : $(STD_CLEAN_UK_CSV) | $(GEN_CSV_DIR)
-	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) $< > $@
+	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --replace-address --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) $< > $@
 
 # Create 'clean' derivative of standard
 $(STANDARD_CSV) : $(STD_CORRECTED_GEO)  | $(GEN_CSV_DIR)

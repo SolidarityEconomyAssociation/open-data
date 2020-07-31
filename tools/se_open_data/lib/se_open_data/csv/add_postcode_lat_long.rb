@@ -107,6 +107,7 @@ module SeOpenData
           end
           headersToUse.each { |k, v|
             #only replace information about address, do not delete information
+            #or maybe you should delete it when you want to compare locations?
             if (pcunit[geocoder_headers[k]] != nil && pcunit[geocoder_headers[k]] != "")
               row[v] = pcunit[geocoder_headers[k]]
             end
