@@ -77,6 +77,11 @@ class OptParse
         options.replace_address = true
       end
 
+      opts.on("--force-replace-headers",
+              "replace address when geocoding even if empty") do |v|
+        options.replace_address = "force"
+      end
+
       opts.separator ""
       opts.separator "Common options:"
 
@@ -110,7 +115,6 @@ SeOpenData::CSV.add_postcode_lat_long(
   $options.replace_address,
   $options.geocoder_headers,
   $geocoder
-
 )
 
 # For debugging

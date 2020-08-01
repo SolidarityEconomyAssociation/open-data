@@ -282,7 +282,7 @@ class DotCoopV1Reader < SeOpenData::CSV::RowReader
     name: "",
     postcode: "PostCode",
     country_name: "",
-    organisational_structure: "",
+    # organisational_structure: "",
 
     # These symbols don't match symbols in OutputStandard::Headers.
     # But CSV::RowReader creates method using these symbol names to read that column from the row:
@@ -342,14 +342,14 @@ class DotCoopV1Reader < SeOpenData::CSV::RowReader
     ].compact.join(OutputStandard::SubFieldSeparator)
   end
 
-  def organisational_structure
-    ## Return a list of strings, separated by OutputStandard::SubFieldSeparator.
-    ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-    ## See lib/se_open_data/essglobal/legal_form.rb
-    [
-      "Co-operative"
-    ].compact.join(OutputStandard::SubFieldSeparator)
-  end
+  # def organisational_structure
+  #   ## Return a list of strings, separated by OutputStandard::SubFieldSeparator.
+  #   ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
+  #   ## See lib/se_open_data/essglobal/legal_form.rb
+  #   [
+  #     "Co-operative"
+  #   ].compact.join(OutputStandard::SubFieldSeparator)
+  # end
   
 end
 

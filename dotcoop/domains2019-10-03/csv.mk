@@ -43,6 +43,7 @@ STD_FIXED_DUPS_CSV := $(GEN_CSV_DIR)fixed-dups.csv
 STD_DE_DUPED_CSV := $(GEN_CSV_DIR)de-duplicated.csv
 STD_DUPS_CSV := $(GEN_CSV_DIR)ignored-duplicates.csv
 STD_CORRECTED_GEO := $(GEN_CSV_DIR)corrected-geo-data.csv
+CSV_DEDUP_AFTER_GEO := $(GEN_CSV_DIR)de-duplicated-after-geo.csv
 
 STD_URI_NAME_POSTCODE_CSV := $(GEN_CSV_DIR)uri-name-postcode.csv
 
@@ -56,6 +57,7 @@ CSV_DE_DUPER := $(SE_OPEN_DATA_BIN_DIR)csv/standard/remove-duplicates.rb
 CSV_MERGE_AND_DE_DUPE := $(SE_OPEN_DATA_BIN_DIR)csv/standard/merge-domains-and-remove-duplicates.rb
 CSV_POSTCODEUNIT_ADDER := $(SE_OPEN_DATA_BIN_DIR)csv/standard/add-postcode-lat-long.rb
 URI_NAME_POSTCODE_RUBY := $(SE_OPEN_DATA_BIN_DIR)csv/standard/make-uri-name-postcode.rb
+CSV_DEDUP_LAT_LON := $(SE_OPEN_DATA_BIN_DIR)csv/standard/merge-domains-dedup-lonlat.rb
 
 # The CSV_POSTCODEUNIT_ADDER script will convert postcodes into lat/long by 
 # getting linked data over the web. This is (currently) a slow process (plenty of room for speed ups!)
@@ -94,12 +96,15 @@ $(STD_DE_DUPED_CSV) : $(STD_CLEAN_UK_CSV)  | $(GEN_CSV_DIR)
 # `OpenCageKey.txt` is passed to `pass`, change this if the password is stored with a different name
 $(STD_CORRECTED_GEO) : $(STD_DE_DUPED_CSV) | $(GEN_CSV_DIR)
 #$(STANDARD_CSV) : $(STD_CLEAN_UK_CSV) | $(GEN_CSV_DIR)
-	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --replace-address --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) $< > $@
+	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --replace-address --force-replace-headers --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) $< > $@
 
 # Create 'clean' derivative of standard
-$(STANDARD_CSV) : $(STD_CORRECTED_GEO)  | $(GEN_CSV_DIR)
+$(CSV_DEDUP_AFTER_GEO) : $(STD_CORRECTED_GEO)  | $(GEN_CSV_DIR)
 	$(RUBY) $(CSV_MERGE_AND_DE_DUPE) --original-csv $(STD_DE_DUPED_CSV) $(STD_CORRECTED_GEO) > $@ 2> $(STD_DUPS_CSV)
 
+# Final cleaning for lat lon
+$(STANDARD_CSV) : $(CSV_DEDUP_AFTER_GEO) | $(GEN_CSV_DIR)
+	$(RUBY) $(CSV_DEDUP_LAT_LON) $< > $@
 
 # Create a CSV file from the STANDARD one with just a few columns: URI, Name and Normalized postcode
 $(STD_URI_NAME_POSTCODE_CSV): $(STANDARD_CSV) | $(GEN_CSV_DIR)

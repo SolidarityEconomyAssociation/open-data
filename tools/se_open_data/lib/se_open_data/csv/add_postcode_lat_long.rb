@@ -29,7 +29,7 @@ module SeOpenData
     # @param csv_opts [Hash] options to pass to CSV when parsing input_io (in addition to `headers: true`)
     # @param global_postcode_cache [String] optional path to a JSON file where all the postcodes are kept (passed to {SeOpenData::RDF::OsPostcodeGlobalUnit::Client})
     # @param address_headers [Hash<Symbol,String] IDs and header names ...
-    # @param replace_address [Boolean] set to true if we should replace the current address headers
+    # @param replace_address [Boolean] set to true if we should replace the current address headers && set to "force" if we should replace the headers with whatever the geocoder finds (i.e.replace the field even if the geocoder finds nothing)
     # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
     # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
     def self.add_postcode_lat_long(
@@ -86,7 +86,7 @@ module SeOpenData
           #standardize the address if indicated
           headersToUse = {}
 
-          if replace_address == true
+          if replace_address != nil || replace_address != false || replace_address != "force"
             headersToUse = allHeaders
           else
             headersToUse = new_headers
@@ -108,7 +108,9 @@ module SeOpenData
           headersToUse.each { |k, v|
             #only replace information about address, do not delete information
             #or maybe you should delete it when you want to compare locations?
-            if (pcunit[geocoder_headers[k]] != nil && pcunit[geocoder_headers[k]] != "")
+            if replace_address == "force"
+              row[v] = pcunit[geocoder_headers[k]]
+            elsif (pcunit[geocoder_headers[k]] != nil && pcunit[geocoder_headers[k]] != "")
               row[v] = pcunit[geocoder_headers[k]]
             end
           }

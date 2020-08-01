@@ -14,6 +14,7 @@ module SeOpenData
         @ids_pdf = "docs/idsdups.pdf"
         @fields_pdf = "docs/fieldups.pdf"
         @geo_pdf = "docs/geodups.pdf"
+        @lat_lon_pdf = "docs/latlngdups.pdf"
         @name_header = name_header
         @domain_header = domain_header
         @headers = headers
@@ -39,9 +40,9 @@ module SeOpenData
         
         pdf.text description, :size => 12  # sum
         first = nil
-
         similar_entries.each { |subarr|
           #subbarr :: [row,row,row]
+          # $stderr.puts subarr
           name = subarr.first[@name_header].encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
           pdf.pad_top(30) { pdf.text name, :size => 15 } # mini heading name
           pdf.text "We think these are the same", :size => 10
@@ -84,6 +85,10 @@ module SeOpenData
       #similar_entries::
       def add_similar_entries_fields_after_geo_uniform(title, description, similar_entries)
         create_doc(title, description, similar_entries, @geo_pdf)
+      end
+
+      def add_similar_entries_latlon(title,description,similar_entries)
+        create_doc(title, description, similar_entries, @lat_lon_pdf)
       end
 
  

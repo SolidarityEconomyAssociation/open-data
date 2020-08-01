@@ -318,7 +318,7 @@ module SeOpenData
             res_raw = (res_raw_json == nil || res_raw_json.length < 1) ? {} : res_raw_json[0]["properties"]
 
             #if no results
-            if res_raw == nil
+            if res_raw == nil || res_raw == {}
               return {}
             end
             res = res_raw
