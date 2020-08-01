@@ -49,6 +49,7 @@ module SeOpenData
           twitter: "Twitter",
           facebook: "Facebook",
           companies_house_number: "Companies House Number",
+          qualifiers: "Qualifiers",
 
           # latitude and longitude are for the exact geolocation of the SSE initiative,
           # if it is known. 
