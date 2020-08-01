@@ -9172,5 +9172,144 @@
     },
     "geo_uri": "https://www.openstreetmap.org/?mlat=14.1007032&mlon=-87.1912538",
     "house_number": ""
+  },
+  "Building E, 121 Lushan Road  Jiangsu Province,Nanjing City,China": {
+    "name": "Nanjing",
+    "country": "China",
+    "county": "Nanjing",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "cn",
+    "state": "Jiangsu",
+    "city": "Nanjing",
+    "lon": 118.773596,
+    "lat": 32.044972,
+    "formatted": "Nanjing, Jiangsu, China",
+    "address_line1": "Nanjing",
+    "address_line2": "Jiangsu, China",
+    "result_type": "city",
+    "rank": {
+      "popularity": 1.7184590865502902,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=32.044972&mlon=118.773596",
+    "house_number": ""
+  },
+  "28 BP339,Abidjan 28,Côte d’Ivoire": {
+    "housenumber": "28",
+    "street": "Abidjan Street",
+    "country": "South Africa",
+    "county": "Ekurhuleni",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Africa"
+    },
+    "country_code": "za",
+    "state": "Gauteng",
+    "city": "Tembisa",
+    "lon": 28.214543,
+    "lat": -26.029761,
+    "formatted": "28 Abidjan Street, Tembisa, South Africa",
+    "address_line1": "28 Abidjan Street",
+    "address_line2": "Tembisa, South Africa",
+    "result_type": "building",
+    "rank": {
+      "popularity": 2.390551988945888,
+      "confidence": 0.125,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-26.029761&mlon=28.214543",
+    "house_number": ""
+  },
+  "PO Box 551,Manzini,M100,Eswatini": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "amenity": "Manzini Police Station",
+      "osm_type": "N",
+      "osm_id": 2640804079,
+      "display_name": "Manzini Police Station, Mancishane Street, Manzini, Inkhundla Manzini, Manzini, M100, Swaziland",
+      "category": "amenity",
+      "type": "police"
+    },
+    "name": "Manzini Police Station",
+    "street": "Mancishane Street",
+    "city": "Manzini",
+    "county": "Inkhundla Manzini",
+    "state": "Manzini",
+    "postcode": "M100",
+    "country": "Swaziland",
+    "country_code": "sz",
+    "lon": 31.3796619,
+    "lat": -26.4978422,
+    "formatted": "Manzini Police Station, Mancishane Street, Manzini, M100, Swaziland",
+    "address_line1": "Manzini Police Station",
+    "address_line2": "Mancishane Street, Manzini, M100, Swaziland",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 0.4872712174721849,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-26.4978422&mlon=31.3796619",
+    "house_number": ""
+  },
+  "No. 23 Zhongshan Road,Fuzhou, Fujian,China": {
+    "name": "Fuzhou",
+    "country": "China",
+    "county": "Fuzhou",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "cn",
+    "state": "Fujian",
+    "city": "Fuzhou",
+    "lon": 119.302849,
+    "lat": 26.083184,
+    "formatted": "Fuzhou, Fujian, China",
+    "address_line1": "Fuzhou",
+    "address_line2": "Fujian, China",
+    "result_type": "city",
+    "rank": {
+      "popularity": 0.942035481259694,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=26.083184&mlon=119.302849",
+    "house_number": ""
+  },
+  "87, St. Ursula Street,Valetta,VLT1234,Malta": {
+    "name": "Malta",
+    "country": "Malta",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Europe"
+    },
+    "country_code": "mt",
+    "lon": 14.431432,
+    "lat": 35.888972,
+    "formatted": "Malta",
+    "address_line1": "Malta",
+    "address_line2": "",
+    "result_type": "country",
+    "rank": {
+      "popularity": 4.290936252563021,
+      "confidence": 0,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.888972&mlon=14.431432",
+    "house_number": ""
   }
 }

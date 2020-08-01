@@ -109,8 +109,8 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   end
 
   def primary_activity
-    if _struct_type == "Coop Promoter/Supporter"
-      "Campaigning, Activism & Advocacy"
+    if _struct_type == "Coop Promoter/Supporter" ### FIXME
+      "Coop Promoter/Supporter"
     else
       ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] ? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
     end
@@ -270,19 +270,21 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
     "Regional, state or provincial level federation or union" => "Regional, state or provincial level federation or union",
     "Supranational" => "Supranational",
     "Cooperative Group" => "Cooperative group",
-    "Cooperative of cooperatives / mutuals" => "Government agency/body",
+    "Government" => "Government agency/body",
+    "Cooperative of cooperatives / mutuals" => "Cooperative of cooperatives / mutuals",
   }
 
   ECONOMIC_ACTIVITY_TO_ACTIVITY = {
-    "Education / health / social work" => "Education",
-    "Financial services" => "Financial services",
-    "Fishing" => "Fishing",
+    "Education / health / social work" => "Education / Health / Social Work",
+    "All" => "All",
+    "Financial services" => "Financial Services",
+    "Fishing" => "Fishery",
     "Housing" => "Housing",
     "Insurance" => "Insurance",
     "Other services" => "Other services",
-    "Wholesale and retail trade" => "Wholesale and retail trade",
+    "Wholesale and retail trade" => "Wholesale and Retail",
     "Agriculture" => "Agriculture",
-    "Utilities" => "Utilities",
+    "Utilities" => "Utility",
     "Industry" => "Industry",
   }
 
@@ -294,8 +296,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
     postcode: "Main-Postal Code",
     country_name: "Country",
     locality: "Main-City",
-    phone: "Main-Phone-Phone",
-
+    description: "Description for publications",
     _street_address: "Main-Street Address",
     _sup_street_address_1: "Main-Supplemental Address 1",
     _sup_street_address_2: "Main-Supplemental Address 2",
