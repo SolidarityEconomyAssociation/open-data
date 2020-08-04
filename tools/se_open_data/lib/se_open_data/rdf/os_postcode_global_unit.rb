@@ -48,7 +48,7 @@ module SeOpenData
             return nil unless address_array
 
             address_array.reject! { |addr| addr == "" || addr == nil }
-            # address_array.map! { |addr| addr.gsub(/[^0-9a-z ]/i, "") }
+            address_array.map! { |addr| addr.gsub(/[!@#$%^&*()_+-.,`]/, "") } # remove special characters
             search_key = address_array.join(",")
             return nil unless search_key
 
