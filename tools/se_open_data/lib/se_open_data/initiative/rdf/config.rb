@@ -11,7 +11,7 @@ module SeOpenData
         Osspatialrelations = ::RDF::Vocabulary.new("http://data.ordnancesurvey.co.uk/ontology/spatialrelations/")
         Geo = ::RDF::Vocabulary.new("http://www.w3.org/2003/01/geo/wgs84_pos#")
         Rov = ::RDF::Vocabulary.new("http://www.w3.org/ns/regorg#")
-        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
+        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :qualifiers_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
 
         # Constructor
         #
@@ -38,6 +38,7 @@ module SeOpenData
           # second param is a string that matches one of the filenames (but without `.skos`) in:
           # https://github.com/essglobal-linked-open-data/map-sse/tree/develop/vocabs/standard
           @organisational_structure_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "organisational-structure")
+          @qualifiers_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "qualifiers")
           if using_ica_activities
             @activities_mod_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-ica")
           else

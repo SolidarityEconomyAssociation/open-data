@@ -100,7 +100,7 @@ module SeOpenData
                 existingDomain = first.field(domainHeader)
                 domain = row.field(domainHeader)
                 if !existingDomain.include?(domain)
-                  first[domainHeader] += ";" + domain #SeOpenData::CSV::Standard::V1::SubFieldSeparator + domain
+                  first[domainHeader] += SeOpenData::CSV::Standard::V1::SubFieldSeparator + domain
                 end
               end
             }

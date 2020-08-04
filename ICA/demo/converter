@@ -109,11 +109,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   end
 
   def primary_activity
-    if _struct_type == "Coop Promoter/Supporter" ### FIXME
-      "Coop Promoter/Supporter"
-    else
-      ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] ? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
-    end
+    ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] ? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
   end
 
   def activities
@@ -124,6 +120,14 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
         .compact.join(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
     else
       ""
+    end
+  end
+
+  def qualifiers
+    if _struct_type == "Coop Promoter/Supporter"
+      "Coop Promoter/Supporter"
+    elsif _sup_activities && _sup_activities.include?("Coop Promoter/Supporter")
+      "Coop Promoter/Supporter"
     end
   end
 
@@ -319,6 +323,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   # geocontainer
   # geocontainer_lat
   # geocontainer_lon
+  # qualifiers
 
 end
 

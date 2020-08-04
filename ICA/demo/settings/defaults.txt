@@ -4,6 +4,7 @@ ORIGINAL_CSV_1=31_07_2020.csv
 URI_SCHEME=https
 URI_HOST=w3id.solidarityeconomy.coop
 URI_PATH_PREFIX=ICA/
+VIRTUOSO_SERVER=dev-0
 DEPLOYMENT_SERVER=dev-0
 DEPLOYMENT_WEBROOT=/var/www/vhosts/data.solidarityeconomy.coop/www/
 DEPLOYMENT_RSYNC_FLAGS=--delete

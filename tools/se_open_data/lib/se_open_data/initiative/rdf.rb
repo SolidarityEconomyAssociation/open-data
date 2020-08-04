@@ -139,6 +139,22 @@ module SeOpenData
         end
       end
 
+      def qualifier_uris
+        # @returns array of URIs
+        if initiative.qualifiers.nil?
+          []
+        else
+          initiative.qualifiers.split(config.csv_standard::SubFieldSeparator).map { |qualifier|
+            if config.qualifiers_lookup.has_label?(qualifier)
+              ::RDF::URI(config.qualifiers_lookup.concept_uri(qualifier))
+            else
+              $stderr.puts "Could not find qualifier: #{qualifier}"
+              nil
+            end
+          }.compact       # To remove any nil elements added above.
+        end
+      end
+
       def primary_activity_uris
         # @returns array of URIs
         if initiative.primary_activity.nil?
@@ -174,6 +190,9 @@ module SeOpenData
         }
         organisational_structure_uris.each { |organisational_structure_uri|
           graph.insert([uri, config.essglobal_vocab.organisationalStructure, organisational_structure_uri])
+        }
+        qualifier_uris.each { |qualifier_uri|
+          graph.insert([uri, config.essglobal_vocab.qualifier, qualifier_uri]) #might cause error? qualifier should be applied to input
         }
         primary_activity_uris.each { |activities_mod_uri| # There should only be one
           graph.insert([uri, config.essglobal_vocab.primarySector, activities_mod_uri])
