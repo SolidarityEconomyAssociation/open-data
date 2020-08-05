@@ -68,5 +68,6 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
-geoapify = APIStandard::Geocoder.new($options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
+pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
+geoapify = APIStandard::Geocoder.new(pass.get $options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
 geoapify.gen_geo_report($options.postcodeunit_global_cache, 0.25, $options.docs_folder, $options.converted, ["Website"])

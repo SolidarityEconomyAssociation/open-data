@@ -38,6 +38,7 @@ class OptParse
                                                               :region,
                                                               :postcode,
                                                               :country_name)
+    options.api_key = "geoapifyAPI.txt"
 
     options.geocoder_headers = APIStandard::Headers
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
@@ -101,7 +102,8 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
-$geocoder = APIStandard::Geocoder.new($options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
+pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
+$geocoder = APIStandard::Geocoder.new(pass.get $options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
 SeOpenData::CSV.add_postcode_lat_long(
   ARGF.read,
   $stdout,
