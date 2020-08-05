@@ -58,6 +58,7 @@ CSV_MERGE_AND_DE_DUPE := $(SE_OPEN_DATA_BIN_DIR)csv/standard/merge-domains-and-r
 CSV_POSTCODEUNIT_ADDER := $(SE_OPEN_DATA_BIN_DIR)csv/standard/add-postcode-lat-long.rb
 URI_NAME_POSTCODE_RUBY := $(SE_OPEN_DATA_BIN_DIR)csv/standard/make-uri-name-postcode.rb
 CSV_DEDUP_LAT_LON := $(SE_OPEN_DATA_BIN_DIR)csv/standard/merge-domains-dedup-lonlat.rb
+DOCUMENT_GEO := $(SE_OPEN_DATA_BIN_DIR)csv/standard/document-geocoder.rb
 
 # The CSV_POSTCODEUNIT_ADDER script will convert postcodes into lat/long by 
 # getting linked data over the web. This is (currently) a slow process (plenty of room for speed ups!)
@@ -109,6 +110,9 @@ $(STANDARD_CSV) : $(CSV_DEDUP_AFTER_GEO) | $(GEN_CSV_DIR)
 # Create a CSV file from the STANDARD one with just a few columns: URI, Name and Normalized postcode
 $(STD_URI_NAME_POSTCODE_CSV): $(STANDARD_CSV) | $(GEN_CSV_DIR)
 	$(RUBY) $(URI_NAME_POSTCODE_RUBY) --uri-prefix $(URI_SCHEME)://$(URI_HOST)/$(URI_PATH_PREFIX) $< > $@
+
+# Create docs for geocoding
+	$(RUBY) $(DOCUMENT_GEO) --converted $(STD_DE_DUPED_CSV) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) 
 
 ####################
 # Directories
