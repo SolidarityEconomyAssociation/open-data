@@ -11,6 +11,7 @@ gem 'prawn'
 gem 'prawn-table'
 gem 'levenshtein'
 gem 'opencage-geocoder'
+gem 'httparty'
 group :development do
   gem 'minitest'
 end
