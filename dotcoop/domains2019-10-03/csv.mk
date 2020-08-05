@@ -27,7 +27,7 @@ CSV_target := csv
 
 # Source files:
 #CLEAN_UK_CSV := $(SRC_CSV_DIR)2019-10-03_DotCoop_Merged.csv
-CLEAN_UK_CSV := $(SRC_CSV_DIR)export20200730.csv
+CLEAN_UK_CSV := $(SRC_CSV_DIR)export.csv
 
 # Here's the directory where we generate intermediate csv files
 GEN_CSV_DIR := $(TOP_OUTPUT_DIR)csv/

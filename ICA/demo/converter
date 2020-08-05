@@ -227,6 +227,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
     # Output csv file
     output_csv = config.STANDARD_CSV
+    generated_reports_folder = config.GEN_CSV_DIR + "docs/"
 
     if (File.file?(output_csv))
       puts "Refusing to overwrite existing output file: #{output_csv}"
@@ -237,12 +238,16 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
       # generate the cleared error file
       clean_headers input: csv_to_standard_1, output: cleared_errors
       convert input: cleared_errors, output: converted
-      # add locations TODO this should be making direct calls to the bin, instead of calling the system
+      # # add locations TODO this should be making direct calls to the bin, instead of calling the system
       latlngcmd = "ruby -I #{config.SE_OPEN_DATA_LIB_DIR} #{config.SE_OPEN_DATA_BIN_DIR}csv/standard/add-postcode-lat-long.rb " +
                   "--postcodeunit-cache #{UK_POSTCODES_CACHE} --postcode-global-cache #{GLOBAL_POSTCODES_CACHE}" +
                   " #{converted} > #{output_csv}"
       puts latlngcmd
       system latlngcmd
+
+      # generate the report files (no need to pass a key)
+      geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
+      geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.25, generated_reports_folder, converted, ["Description"])
       # ruby -I /home/dean/Documents/sea/open-data/tools/se_open_data/lib  ../../tools/se_open_data/bin/csv/standard/add-postcode-lat-long.rb --postcodeunit-cache postcode_lat_lng.json --postcode-global-cache geodata_cache.json generated-data/experimental/csv/de-duplicated.csv > generated-data/experimental/csv/corrected-geo-data.csv
 
     end

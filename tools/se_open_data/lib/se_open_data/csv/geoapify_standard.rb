@@ -2,9 +2,11 @@ module SeOpenData
   module CSV
     module Standard
       module GeoapifyStandard
+        require "csv"
         require "httparty"
         require "json"
         require "cgi"
+        require "se_open_data"
 
         Limit = 11000
 
@@ -335,6 +337,69 @@ module SeOpenData
             res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lon"]) })
             @requests_made += 1
             return res
+          end
+
+          def gen_geo_report(cached_entries_file, confidence_level = 0.25, gen_dir, generated_standard_file, headers_to_not_print)
+            return unless File.exist?(cached_entries_file)
+
+            title_doc_title = "Title"
+            title_intro = ""
+
+            no_location_file = gen_dir + "EntriesWithoutALocation.pdf"
+            no_location_title = "ICA entries that could not be geocoded"
+            no_location_intro = "ICA entries that could not be geocoded"
+
+            bad_location_file = gen_dir + "LowConfidenceEntries.pdf"
+            bad_location_title = "ICA entries that are geocoded with low confidence"
+            bad_location_intro = "ICA entries that are geocoded with low confidence (below #{confidence_level})"
+
+            # read in entries
+            entries_raw = File.read(cached_entries_file)
+            # is a map {key: properties}
+            entries_json = JSON.load entries_raw
+
+            # document initiatives that cannot be located (identified by)
+            # does not have rank key
+            no_entries_map = entries_json.select { |e, v| !v.has_key?("rank") }
+            no_entries_array = []
+            no_entries_headers = nil
+
+            # then document the initiatives where the confidence level is below the passed confidence_level
+            # identified by rank: {...,confidence:x,...} if rank exists
+            low_confidence_map = entries_json.reject { |e, v| !v.has_key?("rank") }
+              .select { |e, v| v["rank"]["confidence"] < confidence_level }
+            low_confidence_array = []
+            low_confidence_headers = nil
+
+            # load standard file entries into map
+            # match both maps to their entries
+            client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client
+            addr_headers = Headers.keys.map { |a| SeOpenData::CSV::Standard::V1::Headers[a] }
+
+            ::CSV.foreach(generated_standard_file, { headers: true }) do |row|
+              # make this with row
+              addr_array = []
+              addr_headers.each { |header| addr_array.push(row[header]) if row.has_key? header }
+              address = client.clean_and_build_address(addr_array)
+              if no_entries_map.has_key? address
+                no_entries_array.push row
+                no_entries_headers = row.headers.reject { |h| headers_to_not_print.include?(h) } unless no_entries_headers
+              elsif low_confidence_map.has_key? address
+                row["confidence"] = low_confidence_map[address]["rank"]["confidence"]
+                row["geocontainer_lat"] = low_confidence_map[address][Headers[:geocontainer_lat]]
+                row["geocontainer_lon"] = low_confidence_map[address][Headers[:geocontainer_lon]]
+                low_confidence_array.push row
+                low_confidence_headers = row.headers.reject { |h| headers_to_not_print.include?(h) } unless low_confidence_headers
+              end
+            end
+
+            # print documents
+            verbose_fields = ["geocontainer_lat", "geocontainer_lon", "confidence"]
+            doc = SeOpenData::Utils::ErrorDocumentGenerator.new(title_doc_title, title_intro, "", "", [], false)
+            doc.generate_document_from_row_array(no_location_title, no_location_intro,
+                                                 no_location_file, no_entries_array, no_entries_headers, verbose_fields)
+            doc.generate_document_from_row_array(bad_location_title, bad_location_intro,
+                                                 bad_location_file, low_confidence_array, low_confidence_headers)
           end
         end
       end
