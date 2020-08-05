@@ -46,7 +46,7 @@ module SeOpenData
         def self.clean_and_build_address(address_array)
           return nil unless address_array
           address_array.reject! { |addr| addr == "" || addr == nil }
-          address_array.map! { |addr| addr.gsub(/[!@#$%^&*()-]/, "") } # remove special characters
+          address_array.map! { |addr| addr.gsub(/[!@#$%^&*()-]/, " ") } # remove special characters
           search_key = address_array.join(", ")
           return nil unless search_key
           return search_key
