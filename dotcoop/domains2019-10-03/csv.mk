@@ -94,7 +94,7 @@ $(STD_DE_DUPED_CSV) : $(STD_CLEAN_UK_CSV)  | $(GEN_CSV_DIR)
 	@echo "gets here"
 
 # Populate the container lat/long fields, where the postcodeunit is the container:
-# `OpenCageKey.txt` is passed to `pass`, change this if the password is stored with a different name
+# `geoapifyAPI.txt` is passed to `pass`, change this if the password is stored with a different name
 $(STD_CORRECTED_GEO) : $(STD_DE_DUPED_CSV) | $(GEN_CSV_DIR)
 #$(STANDARD_CSV) : $(STD_CLEAN_UK_CSV) | $(GEN_CSV_DIR)
 	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --replace-address --force-replace-headers --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE) --postcode-global-cache $(POSTCODE_LAT_LNG_GLOBAL_CACHE) $< > $@
