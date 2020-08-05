@@ -195,9 +195,10 @@ module SeOpenData
     #
     def self.command_deploy
       config = load_config
+      to_serv = config.respond_to?(:DEPLOYMENT_SERVER) ? config.DEPLOYMENT_SERVER : nil
 
       deploy(
-        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
+        to_server: to_serv,
         to_dir: config.DEPLOYMENT_DOC_DIR,
         from_dir: config.GEN_DOC_DIR,
         ensure_present: config.DEPLOYMENT_WEBROOT,
@@ -267,9 +268,10 @@ HERE
 
       puts "creating htaccess file.."
       IO.write(config.HTACCESS, htaccess)
+      to_serv = config.respond_to?(:DEPLOYMENT_SERVER) ? config.DEPLOYMENT_SERVER : nil
 
       deploy(
-        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
+        to_server: to_serv,
         to_dir: File.join(config.W3ID_REMOTE_LOCATION, config.URI_PATH_PREFIX),
         from_dir: config.W3ID_LOCAL_DIR,
         ensure_present: config.W3ID_REMOTE_LOCATION,
