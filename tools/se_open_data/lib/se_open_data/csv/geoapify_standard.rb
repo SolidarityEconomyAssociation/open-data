@@ -342,17 +342,6 @@ module SeOpenData
           def gen_geo_report(cached_entries_file, confidence_level = 0.25, gen_dir, generated_standard_file, headers_to_not_print)
             return unless File.exist?(cached_entries_file)
 
-            title_doc_title = "Title"
-            title_intro = ""
-
-            no_location_file = gen_dir + "EntriesWithoutALocation.pdf"
-            no_location_title = "ICA entries that could not be geocoded"
-            no_location_intro = "ICA entries that could not be geocoded"
-
-            bad_location_file = gen_dir + "LowConfidenceEntries.pdf"
-            bad_location_title = "ICA entries that are geocoded with low confidence"
-            bad_location_intro = "ICA entries that are geocoded with low confidence (below #{confidence_level})"
-
             # read in entries
             entries_raw = File.read(cached_entries_file)
             # is a map {key: properties}
@@ -393,13 +382,27 @@ module SeOpenData
               end
             end
 
+            # sort bad location
+            low_confidence_array.sort! { |x, y| -(y["confidence"] <=> x["confidence"]) }
+
+            no_location_file = gen_dir + "EntriesWithoutALocation.pdf"
+            no_location_title = "Entries That Could Not be Geocoded"
+            no_location_intro = "In this file we present the entries that could not be geocoded using the details described in each row.
+            In total there are #{no_entries_array.length} entries without a location."
+
+            bad_location_file = gen_dir + "LowConfidenceEntries.pdf"
+            bad_location_title = "Entries That Are Geocoded With Low Confidence"
+            bad_location_intro = "In this file we present the entries that are geocoded, but with a low confidence factor (below #{confidence_level}).
+            In total there are #{low_confidence_array.length} entries which were geocoded with low confidence."
+
             # print documents
             verbose_fields = ["geocontainer_lat", "geocontainer_lon", "confidence"]
-            doc = SeOpenData::Utils::ErrorDocumentGenerator.new(title_doc_title, title_intro, "", "", [], false)
+            doc = SeOpenData::Utils::ErrorDocumentGenerator.new("", "", "", "", [], false)
             doc.generate_document_from_row_array(no_location_title, no_location_intro,
-                                                 no_location_file, no_entries_array, no_entries_headers, verbose_fields)
+                                                 no_location_file, no_entries_array, no_entries_headers)
+
             doc.generate_document_from_row_array(bad_location_title, bad_location_intro,
-                                                 bad_location_file, low_confidence_array, low_confidence_headers)
+                                                 bad_location_file, low_confidence_array, low_confidence_headers, verbose_fields)
           end
         end
       end

@@ -105,9 +105,9 @@ module SeOpenData
           #use only rows that have something in them
           headers.reject { |h| verbose_fields.include?(h) }.each { |h| rowarr.push(row[h]) if (row[h] != nil && row[h] != "") }
           verbose_fields.each { |h| rowarr.push("#{h}: #{row[h]}") if (row[h] != nil && row[h] != "") }
-
           strrow = rowarr.join(",").encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
           [strrow]
+          
         }
         pdf.table(data) do
           rows(0).width = 72
