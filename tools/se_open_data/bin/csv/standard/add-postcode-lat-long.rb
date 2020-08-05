@@ -18,7 +18,7 @@ module HashExtensions
 end
 
 Hash.send(:include, HashExtensions)
-
+# TODO: need to pass the geocoding standard as well
 class OptParse
   #
   # Return a structure describing the options.
@@ -68,7 +68,7 @@ class OptParse
 
       # Optional API key label to obtain from pass
       opts.on("--pass KEY",
-              "get the OpenCage API key from this password-store key, via `pass show <KEY>`") do |key|
+              "get the geocoder API key from this password-store key, via `pass show <KEY>`") do |key|
         options.api_key = `pass show #{Shellwords.shellescape key}`
       end
 

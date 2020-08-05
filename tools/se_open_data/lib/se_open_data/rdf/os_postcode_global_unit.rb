@@ -41,15 +41,23 @@ module SeOpenData
           end
         end
 
+        # @param address_array - an array that contains the address
+        # @returns - a query for looking up the address
+        def self.clean_and_build_address(address_array)
+          return nil unless address_array
+          address_array.reject! { |addr| addr == "" || addr == nil }
+          address_array.map! { |addr| addr.gsub(/[!@#$%^&*()-]/, "") } # remove special characters
+          search_key = address_array.join(", ")
+          return nil unless search_key
+          return search_key
+        end
+
         # Has to include standard cache headers or returns nil
         def get(address_array, country)
           begin
             #clean entry
-            return nil unless address_array
 
-            address_array.reject! { |addr| addr == "" || addr == nil }
-            address_array.map! { |addr| addr.gsub(/[!@#$%^&*()_+-.,`]/, "") } # remove special characters
-            search_key = address_array.join(",")
+            search_key = Client.clean_and_build_address(address_array)
             return nil unless search_key
 
             cached_entry = {}
