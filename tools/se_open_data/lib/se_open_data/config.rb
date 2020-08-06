@@ -36,6 +36,7 @@ module SeOpenData
       "DEPLOYMENT_WEB_GROUP" => "www-data",
       "VIRTUOSO_USER" => "root",
       "VIRTUOSO_GROUP" => "root",
+      "USING_ICA_ACTIVITIES" => false,
     }
 
     # @param file [String] - the path to the config file to load.
@@ -129,7 +130,7 @@ module SeOpenData
       @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"] + "://" + unixjoin(@map["SERVER_ALIAS"], @map["URI_PATH_PREFIX"])
 
       # Preserve booleans in these cases
-      %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS).each do |key|
+      %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS USING_ICA_ACTIVITIES).each do |key|
         @map[key] = @map.key?(key) && @map[key].to_s.downcase == "true"
       end
 
