@@ -642,7 +642,7 @@ module Oxford
     # Output csv file
     output_csv = config.STANDARD_CSV
 
-    # Get the OpenCage API key
+    # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
     
@@ -714,10 +714,10 @@ module Oxford
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
     
-    # OpenCage API key required
+    # Geoapify API key required
     
-    geocoder = SeOpenData::CSV::Standard::OpenCageAddressStandard::OpenCageClass.new(api_key)
-    geocoder_headers = SeOpenData::CSV::Standard::OpenCageAddressStandard::Headers
+    geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
+    geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
       SeOpenData::CSV.add_postcode_lat_long(
         input,
         output,
