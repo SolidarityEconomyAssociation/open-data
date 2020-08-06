@@ -1,0 +1,26 @@
+{
+  "http://data.ordnancesurvey.co.uk/id/postcodeunit/M600AS": {
+    "lat": {
+      "value": "53.486430",
+      "type": "literal",
+      "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "lng": {
+      "value": "-2.239353",
+      "type": "literal",
+      "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+    }
+  },
+  "http://data.ordnancesurvey.co.uk/id/postcodeunit/CV346DA": {
+    "lat": {
+      "value": "52.274097",
+      "type": "literal",
+      "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "lng": {
+      "value": "-1.567345",
+      "type": "literal",
+      "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+    }
+  }
+}

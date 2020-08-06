@@ -1,11 +1,14 @@
 module SeOpenData
   module CSV
     module Standard
-      module OpenCageAddressStandard
-        require "opencage/geocoder"
+      module LocationIQStandard
+        require "httparty"
+        require "json"
+        require "cgi"
 
         Limit = 11000
 
+        #map standard headers to geocoder headers
         Headers = {
           street_address: "road",
           locality: "city",
@@ -13,22 +16,15 @@ module SeOpenData
           postcode: "postcode",
           country_name: "country",
           geocontainer_lat: "lat",
-          geocontainer_lon: "lng",
+          geocontainer_lon: "lon",
           geocontainer: "geo_uri",
         }
-        StandardInputHeaderHeaderss = [
-          :street_address,
-          :locality,
-          :region,
-          :postcode,
-          :country_name,
-        ]
 
         class Geocoder
-          # @param api_key [String] the OpenCage API key.
+          # @param api_key [String] the API key.
           def initialize(api_key)
+            @api_key = api_key
             # Headers here should relate to the headers in standard
-            @geocoder = OpenCage::Geocoder.new(api_key: api_key)
             @requests_made = 0
           end
 
@@ -36,7 +32,7 @@ module SeOpenData
             "https://www.openstreetmap.org/?mlat=#{lat}&mlon=#{long}"
           end
 
-          #open cage standard way of getting new data
+          #standard way of getting new data
           def get_new_data(search_key, country)
             #make sure we are within limits
             if @requests_made > Limit
@@ -53,26 +49,26 @@ module SeOpenData
             if search_key.length < 5
               return {}
             end
-
             #requests requirements
             #comma-separated
             #no names
             #include country
             #remove unneeded characters '/< etc..
             #remove unneeded address info
-            results = @geocoder.geocode(search_key, country_code: country, no_annotations: 1, limit: 1)
+            uri_search_key = CGI.escape(search_key)
+            url = "https://eu1.locationiq.com/v1/search.php?key=#{@api_key}&q=#{uri_search_key}&format=json&addressdetails=1&matchquality=1&limit=1"
+            results = HTTParty.get(url)
+            res_raw_json = JSON.parse(results.to_s)
+            res_raw = res_raw_json == nil ? {} : res_raw_json[0]
 
             #if no results
-            if results.length < 1
+            if res_raw == nil
               return {}
             end
 
-            res_raw = results.first.raw
-
             #for those that don't replace with empty
-            res = res_raw["components"]
-              .merge(res_raw["geometry"])
-              .merge({ "formatted" => res_raw["formatted"] })
+            res = res_raw
+              .merge(res_raw["address"])
 
             #check if address headers exist + house number which is used below but not in the headers list
             all_headers = Headers.merge("k" => "house_number")
@@ -83,11 +79,9 @@ module SeOpenData
               end
             }
             #add road and house number (save to road) to make a sensible address
-            res["road"] = res["road"] + " " + res["house_number"].to_s
-            res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lng"]) })
-
+            res["road"] = res["road"] + " " + res["house_number"].to_s unless res["house_number"].to_s == ""
+            res.merge!({ "geo_uri" => make_geo_container(res["lat"], res["lon"]) })
             @requests_made += 1
-
             return res
           end
         end

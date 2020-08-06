@@ -1,15 +1,14 @@
 #!/usr/bin/env ruby
 #
 # $LOAD_PATH.unshift '/Volumes/Extra/SEA-dev/open-data-and-maps/data/tools/se_open_data/lib'
-require 'optparse'
-require 'ostruct'
-require 'se_open_data'
-require 'opencage/geocoder'
-require 'shellwords'
-
+require "optparse"
+require "ostruct"
+require "se_open_data"
+require "opencage/geocoder"
+require "shellwords"
 
 OutputStandard = SeOpenData::CSV::Standard::V1
-APIStandard = SeOpenData::CSV::Standard::OpenCageAddressStandard
+APIStandard = SeOpenData::CSV::Standard::GeoapifyStandard
 
 module HashExtensions
   def subhash(*keys)
@@ -19,7 +18,7 @@ module HashExtensions
 end
 
 Hash.send(:include, HashExtensions)
-
+# TODO: need to pass the geocoding standard as well
 class OptParse
   #
   # Return a structure describing the options.
@@ -35,16 +34,17 @@ class OptParse
     options.input_csv_postcode_header = OutputStandard::Headers[:postcode]
     options.input_csv_country_header = OutputStandard::Headers[:country_name]
     options.address_headers = OutputStandard::Headers.subhash(:street_address,
-      :locality,
-      :region,
-      :postcode,
-      :country_name)
+                                                              :locality,
+                                                              :region,
+                                                              :postcode,
+                                                              :country_name)
+    options.api_key = "geoapifyAPI.txt"
 
     options.geocoder_headers = APIStandard::Headers
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
 
     #should the method replace the current address headers
-    options.replace_address = true
+    options.replace_address = false
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: $0 [options]"
@@ -55,7 +55,7 @@ class OptParse
       # Mandatory argument.
       opts.on("--postcodeunit-cache FILENAME",
               "JSON file where OS postcode unit results are cached") do |filename|
-        raise "no such file: #{filename}" unless File.exists?(filename)
+        # raise "no such file: #{filename}" unless File.exists?(filename)
         options.postcodeunit_cache = filename
       end
 
@@ -63,16 +63,26 @@ class OptParse
       opts.on("--postcode-global-cache FILENAME",
               "CSV file where all the postcodes are kept (note that this will be a json in the future
               WIP)") do |filename|
-        raise "no such file: #{filename}" unless File.exists?(filename)
+        # raise "no such file: #{filename}" unless File.exists?(filename)
         options.postcodeunit_global_cache = filename
       end
 
       # Optional API key label to obtain from pass
       opts.on("--pass KEY",
-              "get the OpenCage API key from this password-store key, via `pass show <KEY>`") do |key|
+              "get the geocoder API key from this password-store key, via `pass show <KEY>`") do |key|
         options.api_key = `pass show #{Shellwords.shellescape key}`
       end
-      
+
+      opts.on("--replace-address",
+              "replace address when geocoding") do |v|
+        options.replace_address = true
+      end
+
+      opts.on("--force-replace-headers",
+              "replace address when geocoding even if empty") do |v|
+        options.replace_address = "force"
+      end
+
       opts.separator ""
       opts.separator "Common options:"
 
@@ -92,7 +102,8 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
-geocoder = APIStandard::OpenCageClass.new($options.api_key || File.read("../../APIs/OpenCageKey.txt"))
+pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
+$geocoder = APIStandard::Geocoder.new(pass.get $options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
 SeOpenData::CSV.add_postcode_lat_long(
   ARGF.read,
   $stdout,
@@ -106,10 +117,9 @@ SeOpenData::CSV.add_postcode_lat_long(
   $options.replace_address,
   $options.geocoder_headers,
   $geocoder
-
 )
 
-# For debugging 
+# For debugging
 
 # input = File.open("/Volumes/Extra/SEA-dev/open-data-and-maps/data/dotcoop/domains2018-04-24/generated-data/experimental-new-server/csv/de-duplicated.csv", "r:utf-8")
 # inputContent = input.read;

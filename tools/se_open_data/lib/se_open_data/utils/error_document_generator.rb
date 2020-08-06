@@ -9,14 +9,17 @@ module SeOpenData
     #
     # It uses prawn to generate a formatted PDF
     class ErrorDocumentGenerator
-      def initialize(title, introduction, name_header, domain_header, headers)
+      def initialize(title, introduction, name_header, domain_header, headers, create_title = true)
         @title_pdf = "docs/titledoc.pdf"
         @ids_pdf = "docs/idsdups.pdf"
         @fields_pdf = "docs/fieldups.pdf"
         @geo_pdf = "docs/geodups.pdf"
+        @lat_lon_pdf = "docs/latlngdups.pdf"
         @name_header = name_header
         @domain_header = domain_header
         @headers = headers
+
+        return unless create_title
 
         pdf = Prawn::Document.new
         pdf.text title, :align => :center, :size => 25 # heading
@@ -36,12 +39,12 @@ module SeOpenData
         pdf = Prawn::Document.new
         pdf.text title, :align => :center, :size => 25 # heading
         pdf.pad(10) { } #padding
-        
+
         pdf.text description, :size => 12  # sum
         first = nil
-
         similar_entries.each { |subarr|
           #subbarr :: [row,row,row]
+          # $stderr.puts subarr
           name = subarr.first[@name_header].encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
           pdf.pad_top(30) { pdf.text name, :size => 15 } # mini heading name
           pdf.text "We think these are the same", :size => 10
@@ -64,8 +67,6 @@ module SeOpenData
           pdf.text "This is the entry we have kept", :size => 10 # heading
           pdf.text first.join
           first = nil
-
-
         }
 
         pdf.render_file filename
@@ -86,7 +87,36 @@ module SeOpenData
         create_doc(title, description, similar_entries, @geo_pdf)
       end
 
- 
+      def add_similar_entries_latlon(title, description, similar_entries)
+        create_doc(title, description, similar_entries, @lat_lon_pdf)
+      end
+
+      def generate_document_from_row_array(title, description, file_name, rows_array, headers, verbose_fields = [])
+        pdf = Prawn::Document.new
+        pdf.text title, :align => :center, :size => 25 # heading
+        pdf.pad(10) { } #padding
+
+        pdf.text description, :size => 12  # sum
+        pdf.pad(10) { } #padding
+
+        data = rows_array.map { |row|
+          #Remove empties
+          rowarr = []
+          #use only rows that have something in them
+          headers.reject { |h| verbose_fields.include?(h) }.each { |h| rowarr.push(row[h]) if (row[h] != nil && row[h] != "") }
+          verbose_fields.each { |h| rowarr.push("#{h}: #{row[h]}") if (row[h] != nil && row[h] != "") }
+          strrow = rowarr.join(",").encode("Windows-1252", invalid: :replace, undef: :replace, replace: "")
+          [strrow]
+          
+        }
+        pdf.table(data) do
+          rows(0).width = 72
+        end
+
+        # Create the directory before rendering
+        FileUtils.mkdir_p File.dirname(file_name)
+        pdf.render_file file_name
+      end
     end
   end
 end

@@ -11,7 +11,7 @@ module SeOpenData
         Osspatialrelations = ::RDF::Vocabulary.new("http://data.ordnancesurvey.co.uk/ontology/spatialrelations/")
         Geo = ::RDF::Vocabulary.new("http://www.w3.org/2003/01/geo/wgs84_pos#")
         Rov = ::RDF::Vocabulary.new("http://www.w3.org/ns/regorg#")
-        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
+        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :qualifiers_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
 
         # Constructor
         #
@@ -25,7 +25,7 @@ module SeOpenData
         # csv_standard [Class] - FIXME
         # @param sameas_csv [String] - name of CSV file with OWL sameAs relations. If defined, sameas_headers: must be defined too
         # @param sameas_headers [String] - CSV file where the equivalent URIs are stored
-        def initialize(uri_prefix, essglobal_uri, one_big_file_basename, map_app_sparql_query_filename, css_files, postcodeunit_cache_filename, csv_standard, sameas_csv=nil, sameas_headers=nil)
+        def initialize(uri_prefix, essglobal_uri, one_big_file_basename, map_app_sparql_query_filename, css_files, postcodeunit_cache_filename, csv_standard, sameas_csv=nil, sameas_headers=nil, using_ica_activities=false)
           @uri_prefix, @essglobal_uri, @postcodeunit_cache = uri_prefix, essglobal_uri, postcodeunit_cache
           @essglobal_vocab = ::RDF::Vocabulary.new(essglobal_uri + "vocab/")
           @essglobal_standard = ::RDF::Vocabulary.new(essglobal_uri + "standard/")
@@ -38,7 +38,12 @@ module SeOpenData
           # second param is a string that matches one of the filenames (but without `.skos`) in:
           # https://github.com/essglobal-linked-open-data/map-sse/tree/develop/vocabs/standard
           @organisational_structure_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "organisational-structure")
-          @activities_mod_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
+          @qualifiers_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "qualifiers")
+          if using_ica_activities
+            @activities_mod_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-ica")
+          else
+            @activities_mod_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
+          end
           # @legal_form_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "legal-form")
           # @activities_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
 

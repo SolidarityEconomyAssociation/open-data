@@ -15,7 +15,15 @@ module SeOpenData
           @geocoder = geocoder_standard
           @csv_cache_file = csv_cache_filename
           #load cache into memory (probably needs to be i/o in the future)
-          csv_cache_f = File.read(csv_cache_file)
+          csv_cache_f = nil
+
+          if File.exist?(csv_cache_file)
+            csv_cache_f = File.read(csv_cache_file)
+          else
+            # create empty object
+            File.open(csv_cache_file, "w") { |f| f.write("{}") }
+            csv_cache_f = File.read(csv_cache_file)
+          end
 
           @cache = JSON.load csv_cache_f
           @initial_cache = @cache.clone
@@ -33,15 +41,23 @@ module SeOpenData
           end
         end
 
+        # @param address_array - an array that contains the address
+        # @returns - a query for looking up the address
+        def self.clean_and_build_address(address_array)
+          return nil unless address_array
+          address_array.reject! { |addr| addr == "" || addr == nil }
+          address_array.map! { |addr| addr.gsub(/[!@#$%^&*-]/, " ") } # remove special characters
+          search_key = address_array.join(", ")
+          return nil unless search_key
+          return search_key
+        end
+
         # Has to include standard cache headers or returns nil
         def get(address_array, country)
           begin
             #clean entry
-            return nil unless address_array
 
-            address_array.reject! { |addr| addr == "" || addr == nil }
-            address_array.map! { |addr| addr.gsub(/[^0-9a-z ]/i, "") }
-            search_key = address_array.join(",")
+            search_key = Client.clean_and_build_address(address_array)
             return nil unless search_key
 
             cached_entry = {}
@@ -51,7 +67,7 @@ module SeOpenData
             else
               #else get address using client and append to cache
               cached_entry = @geocoder.get_new_data(search_key, country)
-              @cache.merge!({ search_key => cached_entry }) 
+              @cache.merge!({ search_key => cached_entry })
             end
 
             return nil if cached_entry.empty?

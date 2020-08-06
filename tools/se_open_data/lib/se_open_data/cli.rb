@@ -17,7 +17,7 @@ module SeOpenData
     # This facility exists is so we can define the variable in cron
     # jobs, to specify different build environments (or "editions" in
     # the old open-data-and-maps terminology).
-    #    
+    #
     # Suggested usage is to use the defaults and allow the
     # `default.conf` (or `local.conf`, if present) to be picked up in
     # development mode (i.e. when `SEOD_CONFIG` is unset), and set
@@ -28,9 +28,9 @@ module SeOpenData
     # won't get checked in if `.gitignore`'ed)
     def self.load_config
       require "se_open_data/config"
-      if ENV.has_key? 'SEOD_CONFIG'
+      if ENV.has_key? "SEOD_CONFIG"
         # Use this environment variable to define where the config is
-        SeOpenData::Config.load ENV['SEOD_CONFIG']
+        SeOpenData::Config.load ENV["SEOD_CONFIG"]
       else
         SeOpenData::Config.load
       end
@@ -56,27 +56,27 @@ module SeOpenData
     # Require credentials to be configured.
     # FIXME document more
     def self.command_limesurvey_export
-      require 'se_open_data/lime_survey_exporter'
-      require 'se_open_data/utils/password_store'
-      
+      require "se_open_data/lime_survey_exporter"
+      require "se_open_data/utils/password_store"
+
       config = load_config
 
       FileUtils.mkdir_p config.SRC_CSV_DIR
       src_file = File.join config.SRC_CSV_DIR, config.ORIGINAL_CSV
-      
+
       pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
       Log.debug "Checking ENV for passwords" if pass.use_env_vars?
       password = pass.get config.LIMESURVEY_PASSWORD_PATH
-      
+
       SeOpenData::LimeSurveyExporter.session(
         config.LIMESURVEY_SERVICE_URL,
         config.LIMESURVEY_USER,
         password
       ) do |exporter|
-        IO.write src_file, exporter.export_responses(config.LIMESURVEY_SURVEY_ID, 'csv', 'en')
+        IO.write src_file, exporter.export_responses(config.LIMESURVEY_SURVEY_ID, "csv", "en")
       end
     end
-    
+
     # Runs the converter script in the current directory, if present
     #
     # Note, although typically we expect the script to be written in
@@ -101,7 +101,7 @@ module SeOpenData
     # transform the data from here.
     #
     def self.command_convert
-      converter_file = File.join(Dir.pwd, 'converter')
+      converter_file = File.join(Dir.pwd, "converter")
       unless File.exist? converter_file
         raise ArgumentError, "no 'converter' file found in current directory"
       end
@@ -148,27 +148,26 @@ module SeOpenData
       Log.info "recreating #{config.WWW_DIR}"
       FileUtils.rm_rf config.WWW_DIR
       FileUtils.mkdir_p config.GEN_DOC_DIR # need this subdir
-      
+
       Log.info "recreating #{config.GEN_SPARQL_DIR}"
       FileUtils.rm_rf config.GEN_SPARQL_DIR
       FileUtils.mkdir_p config.GEN_SPARQL_DIR
 
       # Copy contents of CSS_SRC_DIR into GEN_CSS_DIR
-      FileUtils.cp_r File.join(config.CSS_SRC_DIR, '.'), config.GEN_CSS_DIR
-      
+      FileUtils.cp_r File.join(config.CSS_SRC_DIR, "."), config.GEN_CSS_DIR
+
       # Find the relative path from GEN_DOC_DIR to GEN_CSS_DIR
       doc_dir = Pathname.new(config.GEN_DOC_DIR)
       css_dir = Pathname.new(config.GEN_CSS_DIR)
       css_rel_dir = css_dir.relative_path_from doc_dir
-      
+
       # Enumerate the CSS files there, relative to GEN_DOC_DIR
-      css_files = Dir.glob(css_rel_dir + '**/*.css', base: config.GEN_DOC_DIR)
-      
+      css_files = Dir.glob(css_rel_dir + "**/*.css", base: config.GEN_DOC_DIR)
+
       #all
-      IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT+"\n"
-      IO.write config.SPARQL_GRAPH_NAME_FILE, config.GRAPH_NAME+"\n"
-      
-      
+      IO.write config.SPARQL_ENDPOINT_FILE, config.SPARQL_ENDPOINT + "\n"
+      IO.write config.SPARQL_GRAPH_NAME_FILE, config.GRAPH_NAME + "\n"
+
       rdf_config = SeOpenData::Initiative::RDF::Config.new(
         config.GRAPH_NAME,
         config.ESSGLOBAL_URI,
@@ -177,28 +176,29 @@ module SeOpenData
         css_files,
         nil, #    postcodeunit_cache?
         SeOpenData::CSV::Standard::V1,
-        config.SAME_AS_FILE == ''? nil : config.SAME_AS_FILE,
-        config.SAME_AS_HEADERS == ''? nil : config.SAME_AS_HEADERS
+        config.SAME_AS_FILE == "" ? nil : config.SAME_AS_FILE,
+        config.SAME_AS_HEADERS == "" ? nil : config.SAME_AS_HEADERS,
+        config.USING_ICA_ACTIVITIES
       )
-      
+
       # Load CSV into data structures, for this particular standard
       File.open(config.STANDARD_CSV) do |input|
         input.set_encoding(Encoding::UTF_8)
-        
+
         collection = SeOpenData::Initiative::Collection.new(rdf_config)
         collection.add_from_csv(input.read)
         collection.serialize_everything(config.GEN_DOC_DIR)
       end
-
     end
 
     # Deploys the generated data on a web server.
     #
     def self.command_deploy
       config = load_config
-      
+      to_serv = config.respond_to?(:DEPLOYMENT_SERVER) ? config.DEPLOYMENT_SERVER : nil
+
       deploy(
-        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
+        to_server: to_serv,
         to_dir: config.DEPLOYMENT_DOC_DIR,
         from_dir: config.GEN_DOC_DIR,
         ensure_present: config.DEPLOYMENT_WEBROOT,
@@ -268,9 +268,10 @@ HERE
 
       puts "creating htaccess file.."
       IO.write(config.HTACCESS, htaccess)
-      
+      to_serv = config.respond_to?(:DEPLOYMENT_SERVER) ? config.DEPLOYMENT_SERVER : nil
+
       deploy(
-        to_server: config.fetch(:DEPLOYMENT_SERVER, nil),
+        to_server: to_serv,
         to_dir: File.join(config.W3ID_REMOTE_LOCATION, config.URI_PATH_PREFIX),
         from_dir: config.W3ID_LOCAL_DIR,
         ensure_present: config.W3ID_REMOTE_LOCATION,
@@ -290,13 +291,13 @@ HERE
       Log.debug "Checking ENV for passwords" if pass.use_env_vars?
 
       Log.debug "Creating #{config.VIRTUOSO_SCRIPT_LOCAL}"
-      
-      content = fetch config.ESSGLOBAL_URI+"vocab/"
+
+      content = fetch config.ESSGLOBAL_URI + "vocab/"
       IO.write File.join(config.GEN_VIRTUOSO_DIR, "essglobal_vocab.rdf"), content
 
-      content = fetch config.ESSGLOBAL_URI+"standard/organisational-structure"
+      content = fetch config.ESSGLOBAL_URI + "standard/organisational-structure"
       IO.write File.join(config.GEN_VIRTUOSO_DIR, "organisational-structure.skos"), content
-      
+
       puts "Creating #{config.VIRTUOSO_NAMED_GRAPH_FILE}"
       IO.write config.VIRTUOSO_NAMED_GRAPH_FILE, config.GRAPH_NAME
 
@@ -307,17 +308,18 @@ ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.rdf',NULL);
 ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.skos',NULL);
 rdf_loader_run();
 HERE
-      
+
+      to_serv = config.respond_to?(:VIRTUOSO_SERVER) ? config.VIRTUOSO_SERVER : nil
       deploy(
-        to_server: config.fetch(:VIRTUOSO_SERVER, nil),
+        to_server: to_serv,
         to_dir: config.VIRTUOSO_DATA_DIR,
         from_dir: config.GEN_VIRTUOSO_DIR,
         ensure_present: config.VIRTUOSO_ROOT_DATA_DIR,
         owner: config.VIRTUOSO_USER,
         group: config.VIRTUOSO_GROUP,
       )
-      
-      if(config.AUTO_LOAD_TRIPLETS)
+
+      if (config.AUTO_LOAD_TRIPLETS)
         password = pass.get config.VIRTUOSO_PASS_FILE
         puts autoload_cmd "<PASSWORD>", config
         unless system autoload_cmd password, config
@@ -348,7 +350,7 @@ HERE
       if !config.has_key? :VIRTUOSO_SERVER
         return isql
       end
-      
+
       return <<-HERE
 ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
 HERE
@@ -363,39 +365,38 @@ HERE
     def self.deploy(*args)
       SeOpenData::Utils::Deployment.new.deploy(*args)
     end
-    
+
     # Gets the content of an URL, following redirects
     #
     # Also sets the 'Accept: application/rdf+xml' header.
     #
     # @return the query content
     def self.fetch(uri_str, limit = 10)
-      require 'net/http'
-      raise ArgumentError, 'too many HTTP redirects' if limit == 0
+      require "net/http"
+      raise ArgumentError, "too many HTTP redirects" if limit == 0
 
       uri = URI(uri_str)
       request = Net::HTTP::Get.new(uri)
-      request['Accept'] = 'application/rdf+xml'
+      request["Accept"] = "application/rdf+xml"
 
       puts "fetching #{uri}"
       response = Net::HTTP.start(
         uri.hostname, uri.port,
-        :use_ssl => uri.scheme == 'https') do |http|
-        
+        :use_ssl => uri.scheme == "https",
+      ) do |http|
         http.request(request)
       end
 
       case response
-      when Net::HTTPSuccess then
+      when Net::HTTPSuccess
         response.body
-      when Net::HTTPRedirection then
-        location = response['location']
+      when Net::HTTPRedirection
+        location = response["location"]
         warn "redirected to #{location}"
         fetch(location, limit - 1)
       else
         response.value
       end
     end
-
   end
 end
