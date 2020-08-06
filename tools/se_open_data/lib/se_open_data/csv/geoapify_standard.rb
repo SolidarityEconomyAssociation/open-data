@@ -403,6 +403,26 @@ module SeOpenData
 
             doc.generate_document_from_row_array(bad_location_title, bad_location_intro,
                                                  bad_location_file, low_confidence_array, low_confidence_headers, verbose_fields)
+
+            # write bad-location entries to csv
+            ::CSV.open(gen_dir + "bad_location.csv", "w") do |csv|
+              csv << low_confidence_headers.reject { |h| headers_to_not_print.include?(h) }
+              low_confidence_array.each { |r|
+                rowarr = []
+                low_confidence_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
+                csv << rowarr
+              }
+            end
+
+            # write no-location entries to csv
+            ::CSV.open(gen_dir + "no_location.csv", "w") do |csv|
+              csv << no_entries_headers.reject { |h| headers_to_not_print.include?(h) }
+              no_entries_array.each { |r|
+                rowarr = []
+                no_entries_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
+                csv << rowarr
+              }
+            end
           end
         end
       end

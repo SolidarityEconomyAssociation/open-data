@@ -8695,5 +8695,3267 @@
     "postcode": "",
     "geo_uri": "https://www.openstreetmap.org/?mlat=35.888972&mlon=14.431432",
     "house_number": ""
+  },
+  "Co operative Bank House, Haile Selassie Avenue P.O. Box 48231, Nairobi, 00100, Kenya": {
+    "country": "Kenya",
+    "city": "Nairobi",
+    "street": "Haile Selassie Avenue",
+    "postcode": "PO BOX 30074-00100 NAIROBI",
+    "name": "Cooperative Bank House",
+    "state": "Nairobi",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 123243331,
+      "osm_type": "W",
+      "category": "building",
+      "type": "yes"
+    },
+    "country_code": "ke",
+    "lon": 36.8266148,
+    "lat": -1.28939205,
+    "formatted": "Cooperative Bank House, Haile Selassie Avenue, Nairobi, Kenya",
+    "address_line1": "Cooperative Bank House",
+    "address_line2": "Haile Selassie Avenue, Nairobi, Kenya",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 6.247948832756888,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-1.28939205&mlon=36.8266148",
+    "house_number": ""
+  },
+  "23, Av. Norte y 25 Calle  Poniente   1301 A.P. 06 1, San Salvador, El Salvador": {
+    "name": "23",
+    "country": "El Salvador",
+    "county": "Mejicanos",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 562057188,
+      "continent": "North America"
+    },
+    "street": "23",
+    "country_code": "sv",
+    "state": "San Salvador",
+    "lon": -89.198778,
+    "lat": 13.724944,
+    "formatted": "23, -, San Salvador, El Salvador",
+    "address_line1": "23",
+    "address_line2": "-, San Salvador, El Salvador",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 5.687895269189052,
+      "confidence": 0.5,
+      "match_type": "match_by_building"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=13.724944&mlon=-89.198778",
+    "house_number": ""
+  },
+  "Av. Corrientes 1543 (C1042AAB), Buenos Aires, 1084, Argentina": {
+    "housenumber": "1543",
+    "street": "Avenida Corrientes",
+    "country": "Argentina",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "website": "https://www.centrocultural.coop/",
+      "phone": "+54 11 5077-8000",
+      "osm_type": "W",
+      "osm_id": 155457106,
+      "continent": "South America"
+    },
+    "country_code": "ar",
+    "postcode": "C1042AAB",
+    "state": "Autonomous City of Buenos Aires",
+    "city": "Buenos Aires",
+    "district": "Comuna 1",
+    "suburb": "San Nicolás",
+    "lon": -58.388671,
+    "lat": -34.603774,
+    "formatted": "Avenida Corrientes 1543, C1042 AAB Buenos Aires, Argentina",
+    "address_line1": "Avenida Corrientes 1543",
+    "address_line2": "C1042 AAB Buenos Aires, Argentina",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.953640848669934,
+      "confidence": 0.7272727272727273,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-34.603774&mlon=-58.388671",
+    "house_number": ""
+  },
+  "SAUS Setor de Autarquias Sul, Qd 04, Bloco I, Brasilia DF, 70070 936, Brazil": {
+    "country": "Brazil",
+    "city": "Brasília",
+    "name": "Jardins da Universidade de Brasília",
+    "state": "Federal District",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 470421825,
+      "osm_type": "W",
+      "category": "leisure",
+      "type": "park"
+    },
+    "country_code": "br",
+    "lon": -47.868293836516145,
+    "lat": -15.7623096,
+    "formatted": "Jardins da Universidade de Brasília, Brasília, Federal District, Brazil",
+    "address_line1": "Jardins da Universidade de Brasília",
+    "address_line2": "Brasília, Federal District, Brazil",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 6.916785142823721,
+      "confidence": 0.5,
+      "match_type": "inner_part"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-15.7623096&mlon=-47.868293836516145",
+    "house_number": ""
+  },
+  "Alameda Santos, 1827   15° andar Cerqueira Cesar, Sao Paulo SP, 01419 909, Brazil": {
+    "housenumber": "1827",
+    "street": "Alameda Santos",
+    "country": "Brazil",
+    "county": "Sao Paulo",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "Southeast",
+      "continent": "South America"
+    },
+    "country_code": "br",
+    "state": "Sao Paulo",
+    "district": "Jardim Paulista",
+    "city": "São Paulo",
+    "suburb": "Liberdade District",
+    "lon": -46.6584695,
+    "lat": -23.5614095,
+    "formatted": "Alameda Santos 1827, São Paulo - Sao Paulo, Brazil",
+    "address_line1": "Alameda Santos 1827",
+    "address_line2": "São Paulo - Sao Paulo, Brazil",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.422950522646222,
+      "confidence": 0.934931506849315,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-23.5614095&mlon=-46.6584695",
+    "house_number": ""
+  },
+  "Transversal 29 N° 36   29, Bogotá D.C., A.P. 11575, Colombia": {
+    "name": "Transversal 29",
+    "street": "Transversal 29",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20079545,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.079156,
+    "lat": 4.625816,
+    "formatted": "Transversal 29, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Transversal 29",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.09374338806604,
+      "confidence": 0.475,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.625816&mlon=-74.079156",
+    "house_number": ""
+  },
+  "Carrera 15 N° 97 40, Oficina 601  D.C., Bogotà, Colombia": {
+    "name": "Bogotá",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.08768,
+    "lat": 4.635456,
+    "formatted": "Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Bogotá",
+    "address_line2": "Bogota D.C., Colombia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 7.465997799733551,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.635456&mlon=-74.08768",
+    "house_number": ""
+  },
+  "Cra 9a N° 99   07 Piso 15  D.C., Bogotà, Colombia": {
+    "name": "Bogotá",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.08768,
+    "lat": 4.635456,
+    "formatted": "Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Bogotá",
+    "address_line2": "Bogota D.C., Colombia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 7.465997799733551,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.635456&mlon=-74.08768",
+    "house_number": ""
+  },
+  "1 3 1 Otemachi Chiyodaku, Tokyo, 100 6837, Japan": {
+    "name": "Tokyo",
+    "street": "Tokyo",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15220580,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Marunochi 1 Chome",
+    "lon": 139.762424,
+    "lat": 35.682339,
+    "formatted": "Tokyo, Japan",
+    "address_line1": "Tokyo",
+    "address_line2": "Japan",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.324841920721903,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.682339&mlon=139.762424",
+    "house_number": ""
+  },
+  "11, Funagawara cho, Ichigaya Shinjuku ku, Tokyo, 162 8448, Japan": {
+  },
+  "Co op Plaza, 3 29 8 Shibuya Shibuya ku, Tokyo, 150 8913, Japan": {
+    "name": "co-op",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 2467227346,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Akatsuka 4 Chome",
+    "lon": 139.645103,
+    "lat": 35.779032,
+    "formatted": "co-op, Tokyo, Japan",
+    "address_line1": "co-op",
+    "address_line2": "Tokyo, Japan",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 4.85538779126067,
+      "confidence": 0.6,
+      "match_type": "match_by_building"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.779032&mlon=139.645103",
+    "house_number": ""
+  },
+  "3 1, Otemachi, 1 chome Chiyoda ku, Tokyo, 100 6832, Japan": {
+    "name": "Otemachi-Nakadori Avenue",
+    "street": "Otemachi-Nakadori Avenue",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15220461,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Otemachi 2 Chome",
+    "lon": 139.765369,
+    "lat": 35.688107,
+    "postcode": "100-0004",
+    "formatted": "Otemachi-Nakadori Avenue, Tokyo, Tokyo 100-0004, Japan",
+    "address_line1": "Otemachi-Nakadori Avenue",
+    "address_line2": "Tokyo, Tokyo 100-0004, Japan",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.007994968682953,
+      "confidence": 0.020833333333333332,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.688107&mlon=139.765369",
+    "house_number": ""
+  },
+  "Co op Building, 7th floor 1 1 12 Uchikanda Chiyoda ku, Tokyo, 101 8503, Japan": {
+  },
+  "Co operative Building, 8th floor 1 1 12 Uchikanda Chiyoda ku, Tokyo, 101, Japan": {
+    "name": "Tokyo Metropolitan Government Building 1",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Nishishinjuku 2 Chome",
+    "lon": 139.69168,
+    "lat": 35.68951,
+    "formatted": "Tokyo Metropolitan Government Building 1, Tokyo, Japan",
+    "address_line1": "Tokyo Metropolitan Government Building 1",
+    "address_line2": "Tokyo, Japan",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 7.733491212431714,
+      "confidence": 0.125,
+      "match_type": "inner_part"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.68951&mlon=139.69168",
+    "house_number": ""
+  },
+  "2 12 10 Yoyogi, Shibuya ku, Tokyo, 1512685, Japan": {
+    "name": "Yoyogi Pkwy.",
+    "street": "Yoyogi Pkwy.",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 25295178,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Jinnan 2 Chome",
+    "lon": 139.697114,
+    "lat": 35.668286,
+    "formatted": "Yoyogi Pkwy., Tokyo, Japan",
+    "address_line1": "Yoyogi Pkwy.",
+    "address_line2": "Tokyo, Japan",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.733491212431714,
+      "confidence": 0.0625,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.668286&mlon=139.697114",
+    "house_number": ""
+  },
+  "JA Kyosai Building 2 7 9 Hirakawa cho Chiyoda ku, Tokyo, 102 8630, Japan": {
+    "name": "Tokyo",
+    "street": "Tokyo",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15220580,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Marunochi 1 Chome",
+    "lon": 139.762424,
+    "lat": 35.682339,
+    "formatted": "Tokyo, Japan",
+    "address_line1": "Tokyo",
+    "address_line2": "Japan",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.324841920721903,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.682339&mlon=139.762424",
+    "house_number": ""
+  },
+  "23 3 Ichibancho,Chiyoda ku, Tokyo, 102 8409, Japan": {
+    "name": "Ichibancho",
+    "country": "Japan",
+    "county": "Sendai",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Miyagi Prefecture",
+    "city": "Sendai-shi",
+    "lon": 140.87304,
+    "lat": 38.2602,
+    "formatted": "Ichibancho, Sendai-shi, Miyagi Prefecture, Japan",
+    "address_line1": "Ichibancho",
+    "address_line2": "Sendai-shi, Miyagi Prefecture, Japan",
+    "result_type": "suburb",
+    "rank": {
+      "popularity": 4.011449521591349,
+      "confidence": 0.4418604651162791,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=38.2602&mlon=140.87304",
+    "house_number": ""
+  },
+  "1 44 3, 7th Floor Higashi Ikebukuro, Toshima ku, Tokyo, 170 0013, Japan": {
+  },
+  "1 13 2 Yurakucyo Chiyoda ku, Tokyo, 100 8420, Japan": {
+    "name": "Chiyoda",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "lon": 139.752422,
+    "lat": 35.686235,
+    "formatted": "Chiyoda, Tokyo, Japan",
+    "address_line1": "Chiyoda",
+    "address_line2": "Tokyo, Japan",
+    "result_type": "county",
+    "rank": {
+      "popularity": 7.078735878732371,
+      "confidence": 0.03125,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.686235&mlon=139.752422",
+    "house_number": ""
+  },
+  "20, Bongeunsaro 114 gil Gangnam Gu, Seoul, 06172, Korea, Republic of": {
+    "housenumber": "20",
+    "street": "Bongeunsa-ro 114-gil",
+    "country": "South Korea",
+    "county": "Yongsan",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "kr",
+    "state": "Seoul",
+    "city": "Seoul",
+    "suburb": "삼성동",
+    "lon": 127.0655755,
+    "lat": 37.5138036,
+    "formatted": "20 Bongeunsa-ro 114-gil, Seoul, South Korea",
+    "address_line1": "20 Bongeunsa-ro 114-gil",
+    "address_line2": "Seoul, South Korea",
+    "result_type": "building",
+    "rank": {
+      "popularity": 4.304642086520587,
+      "confidence": 0.44224137931034485,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=37.5138036&mlon=127.0655755",
+    "house_number": ""
+  },
+  "16 Saemunanro, Jung Gu, Seoul, 04516, Korea, Republic of": {
+  },
+  "62 Ogeum ro Songpa Ku, Seoul, 138 730, Korea, Republic of": {
+    "housenumber": "62",
+    "street": "Ogeum-ro",
+    "country": "South Korea",
+    "county": "Yongsan",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "kr",
+    "state": "Seoul",
+    "city": "Seoul",
+    "suburb": "잠실동",
+    "lon": 127.1057792,
+    "lat": 37.5165111,
+    "formatted": "62 Ogeum-ro, Seoul, South Korea",
+    "address_line1": "62 Ogeum-ro",
+    "address_line2": "Seoul, South Korea",
+    "result_type": "building",
+    "rank": {
+      "popularity": 3.912526169613862,
+      "confidence": 0.30612244897959184,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=37.5165111&mlon=127.1057792",
+    "house_number": ""
+  },
+  "166 Seokchonhosu Gil Songpa Gu, Seoul, 138 880, Korea, Republic of": {
+    "name": "South Korea",
+    "country": "South Korea",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "kr",
+    "lon": 128.123986,
+    "lat": 36.382192,
+    "formatted": "South Korea",
+    "address_line1": "South Korea",
+    "address_line2": "",
+    "result_type": "country",
+    "rank": {
+      "popularity": 0.7985697411924952,
+      "confidence": 0,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=36.382192&mlon=128.123986",
+    "house_number": ""
+  },
+  "No.1813, Vali e Asr Ave. Po.Box: 141556569, Tehran, 1594811169, Iran, Islamic Republic of": {
+    "name": "Vali Asr",
+    "street": "Vali Asr",
+    "country": "Iran",
+    "county": "Tehran",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15242541,
+      "continent": "Asia"
+    },
+    "country_code": "ir",
+    "state": "Tehran",
+    "city": "Tehran",
+    "lon": 51.357368,
+    "lat": 35.703092,
+    "formatted": "Tehran, Vali Asr, Iran",
+    "address_line1": "Tehran",
+    "address_line2": "Vali Asr, Iran",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.96024716473332,
+      "confidence": 0.22784810126582278,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.703092&mlon=51.357368",
+    "house_number": ""
+  },
+  "Al Shareef Al Radi Street Jabal Al Waibdeh Area  P.O. Box 1343   6240, Amman Aloun, Jordan": {
+    "name": "Radisson Blu",
+    "country": "Jordan",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "jo",
+    "state": "Amman",
+    "city": "Amman",
+    "lon": 35.9329,
+    "lat": 31.94931,
+    "formatted": "Radisson Blu, Amman, Jordan",
+    "address_line1": "Radisson Blu",
+    "address_line2": "Amman, Jordan",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 4.897808085392486,
+      "confidence": 0.125,
+      "match_type": "full_match"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=31.94931&mlon=35.9329",
+    "house_number": ""
+  },
+  "Al Bireh, Nablus Street Across the Netherlands Embassy, Palestine, State of": {
+    "name": "Nablus",
+    "street": "Nablus",
+    "country": "Palestine",
+    "county": "Qalqilya",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 17201353,
+      "continent": "Asia"
+    },
+    "country_code": "ps",
+    "state": "West Bank",
+    "city": "Qalqilya",
+    "lon": 34.9675,
+    "lat": 32.190776,
+    "formatted": "Nablus, Qalqilya, Palestine",
+    "address_line1": "Nablus",
+    "address_line2": "Qalqilya, Palestine",
+    "result_type": "street",
+    "rank": {
+      "popularity": 4.504051654863239,
+      "confidence": 0.25,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=32.190776&mlon=34.9675",
+    "house_number": ""
+  },
+  "Samabaya Bank Bhavan (7th Floor) 9/D Motijheel Commercial Area, Dhaka, 1000, Bangladesh": {
+    "name": "Dhaka",
+    "country": "Bangladesh",
+    "county": "Dhaka",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "bd",
+    "state": "Dhaka",
+    "city": "Dhaka",
+    "lon": 90.40744,
+    "lat": 23.7104,
+    "formatted": "Dhaka, Bangladesh",
+    "address_line1": "Dhaka",
+    "address_line2": "Bangladesh",
+    "result_type": "city",
+    "rank": {
+      "popularity": 4.98340929063936,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=23.7104&mlon=90.40744",
+    "house_number": ""
+  },
+  "IFFCO Sadan, C 1, District Centre, Saket Place, New Delhi, 110 017, India": {
+    "name": "New delhi",
+    "housenumber": "110010",
+    "street": "h/no 1/55 sadar bazar delhi cantt 10",
+    "country": "India",
+    "county": "South West",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 610885935,
+      "continent": "Asia"
+    },
+    "country_code": "in",
+    "state": "Delhi",
+    "city": "Delhi",
+    "lon": 77.122304,
+    "lat": 28.592593,
+    "formatted": "New delhi, 110010, h/no 1/55 sadar bazar delhi cantt 10, Delhi -, Delhi, India",
+    "address_line1": "New delhi",
+    "address_line2": "110010, h/no 1/55 sadar bazar delhi cantt 10, Delhi -, Delhi, India",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 3.553961133386007,
+      "confidence": 0.03214285714285714,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=28.592593&mlon=77.122304",
+    "house_number": ""
+  },
+  "KRIBHCO Bhawan, A 10, Sector 1  UP, Noida, 201 301, India": {
+    "name": "Noida Authority Flats",
+    "country": "India",
+    "county": "Gautam Buddha Nagar",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 474660955,
+      "continent": "Asia"
+    },
+    "street": "Noida Authority Flats",
+    "country_code": "in",
+    "state": "Uttar Pradesh",
+    "city": "Noida",
+    "lon": 77.398484,
+    "lat": 28.497537,
+    "formatted": "Noida Authority Flats, Noida -, Uttar Pradesh, India",
+    "address_line1": "Noida Authority Flats",
+    "address_line2": "Noida -, Uttar Pradesh, India",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 2.54338874610992,
+      "confidence": 0.08333333333333333,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=28.497537&mlon=77.398484",
+    "house_number": ""
+  },
+  "701, 7th floor, A Wing BSEL Tech Park, Opp. Vashi Railway Station, Vashi, Navi Mumbai, 400 703, India": {
+    "name": "Jewel of Navi Mumbai",
+    "housenumber": "Seawoods",
+    "street": "Jewel of Navi Mumbai",
+    "country": "India",
+    "county": "Thane",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "operator": "NMMC",
+      "osm_type": "N",
+      "osm_id": 5360967180,
+      "continent": "Asia"
+    },
+    "country_code": "in",
+    "postcode": "400706",
+    "state": "Maharashtra",
+    "city": "Navi Mumbai",
+    "lon": 73.01001,
+    "lat": 19.026018,
+    "formatted": "Seawoods, Jewel of Navi Mumbai, Navi Mumbai - 400706, Maharashtra, India",
+    "address_line1": "Seawoods, Jewel of Navi Mumbai",
+    "address_line2": "Navi Mumbai - 400706, Maharashtra, India",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 2.406338808911989,
+      "confidence": 0.125,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=19.026018&mlon=73.01001",
+    "house_number": ""
+  },
+  "J. K. Chambers, 5th Floor, Plot No. 76 Sector 17, Vashi, Navi Mumbai, 400 703, India": {
+    "housenumber": "Ayyappa Nagar, Degalapalem(Donka)",
+    "street": "Plot No. 22",
+    "country": "India",
+    "county": "Nellore",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 712977486,
+      "continent": "Asia"
+    },
+    "country_code": "in",
+    "postcode": "524121",
+    "state": "Andhra Pradesh",
+    "lon": 80.029838,
+    "lat": 13.700769,
+    "formatted": "Ayyappa Nagar, Degalapalem(Donka), Plot No. 22, - 524121, Andhra Pradesh, India",
+    "address_line1": "Ayyappa Nagar, Degalapalem(Donka), Plot No. 22",
+    "address_line2": "- 524121, Andhra Pradesh, India",
+    "result_type": "building",
+    "rank": {
+      "popularity": 0.683293197688778,
+      "confidence": 0.07407407407407407,
+      "match_type": "match_by_building"
+    },
+    "city": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=13.700769&mlon=80.029838",
+    "house_number": ""
+  },
+  "\"Co operative  House\", 455 Galle Road P.O. Box 1469, Colombo, 00300, Sri Lanka": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "lanes": "5",
+      "oneway": "yes",
+      "maxspeed": "70",
+      "osm_type": "W",
+      "osm_id": 356319069,
+      "display_name": "Galle Road, Liberty Circle, Kollupitiya, Bambalapitiya, Colombo, 00300, Sri Lanka",
+      "category": "highway",
+      "type": "trunk"
+    },
+    "name": "Galle Road",
+    "street": "Galle Road",
+    "neighbourhood": "Liberty Circle",
+    "suburb": "Kollupitiya",
+    "city": "Colombo",
+    "postcode": "00300",
+    "country": "Sri Lanka",
+    "country_code": "lk",
+    "lon": 79.850928,
+    "lat": 6.9075211,
+    "formatted": "Galle Road, Colombo 00300, Sri Lanka",
+    "address_line1": "Galle Road",
+    "address_line2": "Colombo 00300, Sri Lanka",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.61,
+      "popularity": 2.9546114676101185,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "state": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=6.9075211&mlon=79.850928",
+    "house_number": ""
+  },
+  "Cooperative Business Centre, 4th Floor Junction of Sayasan Road   New University Avenue Road Yangon, Bahan Township, Myanmar": {
+    "name": "Myanmar",
+    "country": "Myanmar",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "mm",
+    "lon": 96.06596,
+    "lat": 21.576814,
+    "formatted": "Myanmar",
+    "address_line1": "Myanmar",
+    "address_line2": "",
+    "result_type": "country",
+    "rank": {
+      "popularity": 0.4062753284017273,
+      "confidence": 0,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=21.576814&mlon=96.06596",
+    "house_number": ""
+  },
+  "  227 J.P. Rizal Street, Project 4, Quezon City, 1109, Philippines": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "lanes": "4",
+      "surface": "asphalt",
+      "osm_type": "W",
+      "osm_id": 4948207,
+      "display_name": "J.P. Rizal, Duyan-duyan, Marilag, Quezon City, 3rd District, NCR, Second District, Metro Manila, 1109, Philippines",
+      "category": "highway",
+      "type": "secondary"
+    },
+    "name": "J.P. Rizal",
+    "street": "J.P. Rizal",
+    "neighbourhood": "Duyan-duyan",
+    "suburb": "Marilag",
+    "city": "Quezon City",
+    "municipality": "3rd District",
+    "county": "NCR, Second District",
+    "state": "Metro Manila",
+    "postcode": "1109",
+    "country": "Philippines",
+    "country_code": "ph",
+    "lon": 121.0700669,
+    "lat": 14.6273058,
+    "formatted": "J.P. Rizal, Quezon City, 1109 Metro Manila, Philippines",
+    "address_line1": "J.P. Rizal",
+    "address_line2": "Quezon City, 1109 Metro Manila, Philippines",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.7000000000000001,
+      "popularity": 4.975634572498326,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=14.6273058&mlon=121.0700669",
+    "house_number": ""
+  },
+  "510 Thomson Road  12 02 SLF Building, 298 135, Singapore": {
+    "housenumber": "510",
+    "street": "Thomson Road",
+    "country": "Singapore",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 775233862,
+      "continent": "Asia"
+    },
+    "country_code": "sg",
+    "postcode": "298135",
+    "state": "Central Singapore",
+    "city": "Singapore",
+    "lon": 103.83901,
+    "lat": 1.333023,
+    "formatted": "510 Thomson Road, Singapore 298135, Singapore",
+    "address_line1": "510 Thomson Road",
+    "address_line2": "Singapore 298135, Singapore",
+    "result_type": "building",
+    "rank": {
+      "popularity": 5.490298652042991,
+      "confidence": 0.37692307692307686,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=1.333023&mlon=103.83901",
+    "house_number": ""
+  },
+  "5th Floor FSCT Building No. 199, Nakornin Rd. (Rama V), Bangsrithong, Sub District, Bangkruay District, Nonthaburi Province, 11130, International": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "amenity": "Nonthaburi Ferry Pier",
+      "wikidata": "Q64746744",
+      "wikipedia": "en:Nonthaburi Pier",
+      "description": "ท่าเรือข้ามฟาก ท่าน้ำนนทบุรี (ferry boat)\nFerry fee 3.50 Baht. Pay at Bangsrimuang Pier.",
+      "osm_type": "N",
+      "osm_id": 6158344590,
+      "display_name": "Nonthaburi Ferry Pier, Soi Pracharat 21, Nonthaburi Pier, Suan Yai Subdistrict, Mueang Nonthaburi District, Nonthaburi Province, 11000, Thailand",
+      "category": "amenity",
+      "type": "ferry_terminal"
+    },
+    "name": "Nonthaburi Ferry Pier",
+    "street": "Soi Pracharat 21",
+    "suburb": "Nonthaburi Pier",
+    "city": "Suan Yai Subdistrict",
+    "county": "Mueang Nonthaburi District",
+    "state": "Nonthaburi Province",
+    "postcode": "11000",
+    "country": "Thailand",
+    "country_code": "th",
+    "lon": 100.4910036,
+    "lat": 13.8421696,
+    "formatted": "Nonthaburi Ferry Pier, Soi Pracharat 21, Suan Yai Subdistrict, Nonthaburi Province 11000, Thailand",
+    "address_line1": "Nonthaburi Ferry Pier",
+    "address_line2": "Soi Pracharat 21, Suan Yai Subdistrict, Nonthaburi Province 11000, Thailand",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.17814054651760589,
+      "popularity": 4.102398143199043,
+      "confidence": 0.35,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=13.8421696&mlon=100.4910036",
+    "house_number": ""
+  },
+  "49 Mahmut Pasa Street Lefkosa (Nicosia), Via Mersin 10, Cyprus": {
+    "housenumber": "10",
+    "street": "Mersin",
+    "country": "Cyprus",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "website": "https://www.rose-gardens.com/",
+      "phone": "+903928218927",
+      "osm_type": "N",
+      "osm_id": 4580634192,
+      "continent": "Asia"
+    },
+    "country_code": "cy",
+    "state": "Kyrenia",
+    "city": "Karava",
+    "lon": 33.185429,
+    "lat": 35.343726,
+    "formatted": "Mersin 10, Karava, Cyprus",
+    "address_line1": "Mersin 10",
+    "address_line2": "Karava, Cyprus",
+    "result_type": "building",
+    "rank": {
+      "popularity": 1.9169645517225307,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.343726&mlon=33.185429",
+    "house_number": ""
+  },
+  "88 90, rue Cardinet, Paris Cedex 17, 75847, France": {
+    "housenumber": "88",
+    "street": "Rue Cardinet",
+    "country": "France",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "Ile-of-France",
+      "continent": "Europe"
+    },
+    "country_code": "fr",
+    "state": "Paris",
+    "district": "Paris",
+    "city": "Paris",
+    "lon": 2.309985,
+    "lat": 48.884547,
+    "formatted": "88 Rue Cardinet, Paris, France",
+    "address_line1": "88 Rue Cardinet",
+    "address_line2": "Paris, France",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.995467104553104,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=48.884547&mlon=2.309985",
+    "house_number": ""
+  },
+  "76 rue Saint Lazare, Paris, 75009, France": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 1234174923,
+      "display_name": "76, Rue Saint-Lazare, Quartier de la Madeleine, Paris, Ile-de-France, Metropolitan France, 75008, France",
+      "category": "place",
+      "type": "house"
+    },
+    "housenumber": "76",
+    "street": "Rue Saint-Lazare",
+    "suburb": "Quartier de la Madeleine",
+    "city": "Paris",
+    "municipality": "Paris",
+    "county": "Paris",
+    "state": "Ile-de-France",
+    "country": "France",
+    "postcode": "75008",
+    "country_code": "fr",
+    "lon": 2.3300633,
+    "lat": 48.876073,
+    "formatted": "76 Rue Saint-Lazare, 75008 Paris, France",
+    "address_line1": "76 Rue Saint-Lazare",
+    "address_line2": "75008 Paris, France",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.511,
+      "popularity": 8.995467104553104,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=48.876073&mlon=2.3300633",
+    "house_number": ""
+  },
+  "Ul. Wladyslawa IV 22, Sopot, 81 743, Poland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 123806259,
+      "display_name": "22, Władysława IV, Wyścigi, Sopot, Pomeranian Voivodeship, 81-743, Poland",
+      "category": "building",
+      "type": "yes"
+    },
+    "housenumber": "22",
+    "street": "Władysława IV",
+    "suburb": "Wyścigi",
+    "city": "Sopot",
+    "state": "Pomeranian Voivodeship",
+    "postcode": "81-743",
+    "country": "Poland",
+    "country_code": "pl",
+    "lon": 18.56850920318151,
+    "lat": 54.43559965,
+    "formatted": "Władysława IV 22, 81-743 Sopot, Poland",
+    "address_line1": "Władysława IV 22",
+    "address_line2": "81-743 Sopot, Poland",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.511,
+      "popularity": 8.800858041082371,
+      "confidence": 0.3333333333333333,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=54.43559965&mlon=18.56850920318151",
+    "house_number": ""
+  },
+  "Ul. Zurawia 47, Warsaw, 00 680, Poland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 118254286,
+      "display_name": "47/49, Żurawia, Śródmieście Południowe, Śródmieście, Warsaw, Masovian Voivodeship, 00-680, Poland",
+      "category": "building",
+      "type": "residential"
+    },
+    "housenumber": "47/49",
+    "street": "Żurawia",
+    "quarter": "Śródmieście Południowe",
+    "suburb": "Śródmieście",
+    "city": "Warsaw",
+    "state": "Masovian Voivodeship",
+    "postcode": "00-680",
+    "country": "Poland",
+    "country_code": "pl",
+    "lon": 21.0112708275992,
+    "lat": 52.22716665,
+    "formatted": "Żurawia 47/49, 00-680 Warsaw, Poland",
+    "address_line1": "Żurawia 47/49",
+    "address_line2": "00-680 Warsaw, Poland",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.401,
+      "popularity": 9.995467104553104,
+      "confidence": 0.225,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.22716665&mlon=21.0112708275992",
+    "house_number": ""
+  },
+  "ul. Grazyny 13/15, Warsaw, 02 548, Poland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 2342990377,
+      "display_name": "13, Grażyny, Stary Mokotów, Mokotów, Warsaw, Masovian Voivodeship, 02-548, Poland",
+      "category": "place",
+      "type": "house"
+    },
+    "housenumber": "13",
+    "street": "Grażyny",
+    "quarter": "Stary Mokotów",
+    "suburb": "Mokotów",
+    "city": "Warsaw",
+    "state": "Masovian Voivodeship",
+    "postcode": "02-548",
+    "country": "Poland",
+    "country_code": "pl",
+    "lon": 21.0200964,
+    "lat": 52.203591,
+    "formatted": "Grażyny 13, 02-548 Warsaw, Poland",
+    "address_line1": "Grażyny 13",
+    "address_line2": "02-548 Warsaw, Poland",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.411,
+      "popularity": 8.995467104553104,
+      "confidence": 0.25,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.203591&mlon=21.0200964",
+    "house_number": ""
+  },
+  "Ul. Jasna 1 Skrytka Poczt. 16, Warsaw, 00 013, Poland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "tourism": "Muzeum Historii Spółdzielczości w Polsce",
+      "wikidata": "Q11787002",
+      "wikipedia": "pl:Muzeum Historii Spółdzielczości w Polsce",
+      "osm_type": "N",
+      "osm_id": 2976422240,
+      "display_name": "Muzeum Historii Spółdzielczości w Polsce, 1, Jasna, Śródmieście Północne, Śródmieście, Warsaw, Masovian Voivodeship, 00-013, Poland",
+      "category": "tourism",
+      "type": "museum"
+    },
+    "name": "Muzeum Historii Spółdzielczości w Polsce",
+    "housenumber": "1",
+    "street": "Jasna",
+    "quarter": "Śródmieście Północne",
+    "suburb": "Śródmieście",
+    "city": "Warsaw",
+    "state": "Masovian Voivodeship",
+    "postcode": "00-013",
+    "country": "Poland",
+    "country_code": "pl",
+    "lon": 21.0120363,
+    "lat": 52.2337326,
+    "formatted": "Muzeum Historii Spółdzielczości w Polsce, Jasna 1, 00-013 Warsaw, Poland",
+    "address_line1": "Muzeum Historii Spółdzielczości w Polsce",
+    "address_line2": "Jasna 1, 00-013 Warsaw, Poland",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.6454202226614238,
+      "popularity": 8.995467104553104,
+      "confidence": 1,
+      "match_type": "inner_part"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.2337326&mlon=21.0120363",
+    "house_number": ""
+  },
+  "Calea Plevnei 46 48, Et.2, Corp.H, Sector 1, Bucharest, 010233, Romania": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "residential": "București",
+      "osm_type": "W",
+      "osm_id": 39255042,
+      "display_name": "46-48, Calea Plevnei, București, Sector 1, Bucharest, 014910, Romania",
+      "category": "building",
+      "type": "yes"
+    },
+    "housenumber": "46-48",
+    "street": "Calea Plevnei",
+    "district": "Sector 1",
+    "city": "Bucharest",
+    "postcode": "014910",
+    "country": "Romania",
+    "country_code": "ro",
+    "lon": 26.08180055,
+    "lat": 44.43716535,
+    "formatted": "Calea Plevnei 46-48, 014910 Bucharest, Romania",
+    "address_line1": "Calea Plevnei 46-48",
+    "address_line2": "014910 Bucharest, Romania",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.501,
+      "popularity": 8.453872955933333,
+      "confidence": 0.45,
+      "match_type": "match_by_building"
+    },
+    "state": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=44.43716535&mlon=26.08180055",
+    "house_number": ""
+  },
+  "73 Unirii Blvd. Block G3, section 3, Bucharest   3, 030831, Romania": {
+    "housenumber": "73",
+    "street": "Bulevardul Unirii",
+    "country": "Romania",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 2209738188,
+      "continent": "Europe"
+    },
+    "country_code": "ro",
+    "postcode": "030831",
+    "state": "Bucharest",
+    "city": "Bucharest",
+    "suburb": "Cioplea",
+    "lon": 26.126871,
+    "lat": 44.425993,
+    "formatted": "Bulevardul Unirii 73, 030831 Bucharest, Romania",
+    "address_line1": "Bulevardul Unirii 73",
+    "address_line2": "030831 Bucharest, Romania",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.666128689448787,
+      "confidence": 0.1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=44.425993&mlon=26.126871",
+    "house_number": ""
+  },
+  "Reyes de Navarra 49, Vitoria Gasteiz, 01013, Spain": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "province": "Álava",
+      "osm_type": "W",
+      "osm_id": 738053136,
+      "display_name": "49, Nafarroako Errege-Erreginen kalea/Calle Reyes de Navarra, Zaramaga, Vitoria-Gasteiz, Gasteizko kuadrilla/Cuadrilla de Vitoria, Álava, Autonomous Community of the Basque Country, 01013, Spain",
+      "category": "building",
+      "type": "yes",
+      "macroregion": "Basque Country",
+      "continent": "Europe"
+    },
+    "housenumber": "49",
+    "street": "Nafarroako Errege-Erreginen kalea/Calle Reyes de Navarra",
+    "suburb": "Zaramaga",
+    "city": "Vitoria-Gasteiz",
+    "municipality": "Gasteizko kuadrilla/Cuadrilla de Vitoria",
+    "state": "Autonomous Community of the Basque Country",
+    "postcode": "01013",
+    "country": "Spain",
+    "country_code": "es",
+    "lon": -2.66989315293937,
+    "lat": 42.86072865,
+    "district": "Vitoria-Gasteiz",
+    "formatted": "Nafarroako Errege-Erreginen kalea/Calle Reyes de Navarra, 49, 01013 Vitoria-Gasteiz, Spain",
+    "address_line1": "Nafarroako Errege-Erreginen kalea/Calle Reyes de Navarra, 49",
+    "address_line2": "01013 Vitoria-Gasteiz, Spain",
+    "result_type": "building",
+    "rank": {
+      "popularity": 6.258642259199143,
+      "confidence": 0.21428571428571427,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=42.86072865&mlon=-2.66989315293937",
+    "house_number": ""
+  },
+  "Co operative Building – New Ushirika Tower, 16th  floor Lumumba Street P.O. Box 2567, Dar es Salaam, Tanzania, United Republic of": {
+    "name": "Lumumba Street",
+    "street": "Lumumba Street",
+    "country": "Tanzania",
+    "county": "Ilala",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 26078240,
+      "continent": "Africa"
+    },
+    "country_code": "tz",
+    "state": "Dar es Salaam",
+    "lon": 39.277656,
+    "lat": -6.81474,
+    "formatted": "Lumumba Street, Dar es Salaam, Tanzania",
+    "address_line1": "Lumumba Street",
+    "address_line2": "Dar es Salaam, Tanzania",
+    "result_type": "street",
+    "rank": {
+      "popularity": 2.500195650270169,
+      "confidence": 0.13333333333333333,
+      "match_type": "match_by_street"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-6.81474&mlon=39.277656",
+    "house_number": ""
+  },
+  "Rue de l'Industrie 26 38, Bruxelles, BE   1040, International": {
+    "housenumber": "26",
+    "street": "Rue de l'Industrie - Nijverheidsstraat",
+    "country": "Belgium",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 4231241,
+      "continent": "Europe"
+    },
+    "country_code": "be",
+    "state": "Brussels",
+    "suburb": "Sint-Joost-ten-Noode",
+    "lon": 4.3698754,
+    "lat": 50.8428392,
+    "postcode": "1000",
+    "city": "Brussels",
+    "formatted": "Rue de l'Industrie - Nijverheidsstraat 26, 1000 Brussels, Belgium",
+    "address_line1": "Rue de l'Industrie - Nijverheidsstraat 26",
+    "address_line2": "1000 Brussels, Belgium",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.531597615006717,
+      "confidence": 0.0625,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=50.8428392&mlon=4.3698754",
+    "house_number": ""
+  },
+  "11 12 Warrington Place, Dublin 2, D02 E221, Ireland": {
+    "name": "Warrington Place",
+    "street": "Warrington Place",
+    "country": "Ireland",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 23445626,
+      "continent": "Europe"
+    },
+    "country_code": "ie",
+    "state": "Dublin City",
+    "city": "Dublin",
+    "suburb": "Ballsbridge",
+    "lon": -6.241574,
+    "lat": 53.337025,
+    "formatted": "Warrington Place, Dublin, Ireland",
+    "address_line1": "Warrington Place",
+    "address_line2": "Dublin, Ireland",
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.14732101979534,
+      "confidence": 0.25,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=53.337025&mlon=-6.241574",
+    "house_number": ""
+  },
+  "Ul. Jasna 1, Warsaw, 00 013, Poland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "tourism": "Muzeum Historii Spółdzielczości w Polsce",
+      "wikidata": "Q11787002",
+      "wikipedia": "pl:Muzeum Historii Spółdzielczości w Polsce",
+      "osm_type": "N",
+      "osm_id": 2976422240,
+      "display_name": "Muzeum Historii Spółdzielczości w Polsce, 1, Jasna, Śródmieście Północne, Śródmieście, Warsaw, Masovian Voivodeship, 00-013, Poland",
+      "category": "tourism",
+      "type": "museum"
+    },
+    "name": "Muzeum Historii Spółdzielczości w Polsce",
+    "housenumber": "1",
+    "street": "Jasna",
+    "quarter": "Śródmieście Północne",
+    "suburb": "Śródmieście",
+    "city": "Warsaw",
+    "state": "Masovian Voivodeship",
+    "postcode": "00-013",
+    "country": "Poland",
+    "country_code": "pl",
+    "lon": 21.0120363,
+    "lat": 52.2337326,
+    "formatted": "Muzeum Historii Spółdzielczości w Polsce, Jasna 1, 00-013 Warsaw, Poland",
+    "address_line1": "Muzeum Historii Spółdzielczości w Polsce",
+    "address_line2": "Jasna 1, 00-013 Warsaw, Poland",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.6454202226614238,
+      "popularity": 8.995467104553104,
+      "confidence": 1,
+      "match_type": "inner_part"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.2337326&mlon=21.0120363",
+    "house_number": ""
+  },
+  "Ministry of Agriculture, Water   Forestry Division of Co operative Development and Regulation, Private Bag 13184, Windhoek, 9000, Namibia": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "tourism": "Windhoek Pension",
+      "osm_type": "N",
+      "osm_id": 2680252527,
+      "display_name": "Windhoek Pension, Chrysler St, Khomasdal, Windhoek, Khomas, 9000, Namibia",
+      "category": "tourism",
+      "type": "hotel"
+    },
+    "name": "Windhoek Pension",
+    "street": "Chrysler St",
+    "suburb": "Khomasdal",
+    "city": "Windhoek",
+    "state": "Khomas",
+    "postcode": "9000",
+    "country": "Namibia",
+    "country_code": "na",
+    "lon": 17.0534085,
+    "lat": -22.5427899,
+    "formatted": "Windhoek Pension, Chrysler St, Windhoek 9000, Namibia",
+    "address_line1": "Windhoek Pension",
+    "address_line2": "Chrysler St, Windhoek 9000, Namibia",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 0.7898612731504827,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-22.5427899&mlon=17.0534085",
+    "house_number": ""
+  },
+  "Sanken Building. 4F 3 25 1 Hyakunin cho Shinjuku ku, Tokyo, 169 0073, Japan": {
+  },
+  "Avenida Pasoancho No. 57 50 Piso 3   Puerta 6 / Presidencia Ejecutiva, Cali, Colombia": {
+    "name": "Santiago de Cali",
+    "country": "Colombia",
+    "county": "Cali",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Valle del Cauca",
+    "city": "Santiago de Cali",
+    "lon": -76.5225,
+    "lat": 3.43722,
+    "formatted": "Santiago de Cali, Valle del Cauca, Colombia",
+    "address_line1": "Santiago de Cali",
+    "address_line2": "Valle del Cauca, Colombia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 7.273523362958833,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=3.43722&mlon=-76.5225",
+    "house_number": ""
+  },
+  "Torres Adalid N° 517 5to. Piso Colonia del Valle , Delegacion Benito Juarez, Mexico, DF, 03100, Mexico": {
+  },
+  "Daigaku Seikyo Kaikan Bldg. 3 30 22, Wada, Suginami ku, Tokyo, 166 8532, Japan": {
+  },
+  "Calle 63 N° 24 58, Bogotá, Colombia": {
+    "name": "Calle 63",
+    "street": "Calle 63",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20080839,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.056959,
+    "lat": 4.64574,
+    "formatted": "Calle 63, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Calle 63",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.031186934143456,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.64574&mlon=-74.056959",
+    "house_number": ""
+  },
+  "Jl. Raya Pasar Minggu No. 97 B, Jakarta Selatan, 12520, Indonesia": {
+    "name": "South Jakarta",
+    "country": "Indonesia",
+    "county": "Jakarta Selatan",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "id",
+    "state": "DKI Jakarta",
+    "city": "South Jakarta",
+    "lon": 106.782542,
+    "lat": -6.282174,
+    "formatted": "South Jakarta, DKI Jakarta, Indonesia",
+    "address_line1": "South Jakarta",
+    "address_line2": "DKI Jakarta, Indonesia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 5.538784304042556,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-6.282174&mlon=106.782542",
+    "house_number": ""
+  },
+  "Av. Santos Dumont, 57, 2º Esq., Lisboa, 1050 202, Portugal": {
+    "housenumber": "55",
+    "street": "Av Santos Dumont",
+    "country": "Portugal",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Europe"
+    },
+    "country_code": "pt",
+    "postcode": "1050-202",
+    "state": "Lisbon",
+    "district": "Alvalade",
+    "city": "Lisbon",
+    "suburb": "Rego",
+    "lon": -9.155969,
+    "lat": 38.739323,
+    "formatted": "Av Santos Dumont 55, 1050-202 Lisbon, Portugal",
+    "address_line1": "Av Santos Dumont 55",
+    "address_line2": "1050-202 Lisbon, Portugal",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.963053245812098,
+      "confidence": 0.6649999999999999,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=38.739323&mlon=-9.155969",
+    "house_number": ""
+  },
+  "4301 Wilson Boulevard CEO11 103 VA, Arlington, 22203, United States": {
+    "housenumber": "4301",
+    "street": "Wilson Blvd",
+    "country": "United States",
+    "county": "Arlington County",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "us",
+    "postcode": "22203",
+    "state": "Virginia",
+    "city": "Arlington",
+    "suburb": "Ballston",
+    "lon": -77.113057,
+    "lat": 38.880442,
+    "formatted": "4301 Wilson Blvd, Arlington, VA 22203, United States of America",
+    "address_line1": "4301 Wilson Blvd",
+    "address_line2": "Arlington, VA 22203, United States of America",
+    "result_type": "building",
+    "rank": {
+      "popularity": 6.483346334543505,
+      "confidence": 0.7704918032786885,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=38.880442&mlon=-77.113057",
+    "house_number": ""
+  },
+  "Tranversal 21 N° 98   55 Piso, 5 Bogotá D.C., Colombia": {
+    "name": "Bogota D.C.",
+    "country": "Colombia",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "lon": -74.102589,
+    "lat": 4.602053,
+    "county": "Bogotá, D.C.",
+    "formatted": "Bogota D.C., Colombia",
+    "address_line1": "Bogota D.C.",
+    "address_line2": "Colombia",
+    "result_type": "state",
+    "rank": {
+      "popularity": 8.09374338806604,
+      "confidence": 0.11875,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.602053&mlon=-74.102589",
+    "house_number": ""
+  },
+  "5, rue Masseran, Paris, FR   75007, France": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 1215523465,
+      "display_name": "5, Rue Masseran, Quartier de l'École Militaire, Paris, Ile-de-France, Metropolitan France, 75007, France",
+      "category": "place",
+      "type": "house"
+    },
+    "housenumber": "5",
+    "street": "Rue Masseran",
+    "suburb": "Quartier de l'École Militaire",
+    "city": "Paris",
+    "municipality": "Paris",
+    "county": "Paris",
+    "state": "Ile-de-France",
+    "country": "France",
+    "postcode": "75007",
+    "country_code": "fr",
+    "lon": 2.3142805,
+    "lat": 48.8485618,
+    "formatted": "5 Rue Masseran, 75007 Paris, France",
+    "address_line1": "5 Rue Masseran",
+    "address_line2": "75007 Paris, France",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.5209999999999999,
+      "popularity": 8.639658684381704,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=48.8485618&mlon=2.3142805",
+    "house_number": ""
+  },
+  "Calle 39 B   19 15 P.O. Box 323 7505 D.C., Bogotá, Colombia": {
+    "name": "Calle 39 Bis B",
+    "street": "Calle 39 Bis B",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20080173,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.079625,
+    "lat": 4.628392,
+    "postcode": "11311",
+    "formatted": "Calle 39 Bis B, 11311 Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Calle 39 Bis B",
+    "address_line2": "11311 Bogotá, Bogota D.C., Colombia",
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.09374338806604,
+      "confidence": 0.1875,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.628392&mlon=-74.079625",
+    "house_number": ""
+  },
+  "PO Box 1213 Corner Wilkin Street   St. Johnson Avenue St. Kitts, Basseterre, International": {
+    "name": "Johnson Street",
+    "street": "Johnson Street",
+    "country": "Saint Kitts and Nevis",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 19600859,
+      "continent": "North America"
+    },
+    "country_code": "kn",
+    "state": "Trinity Palmetto Point",
+    "city": "Basseterre",
+    "lon": -62.720896,
+    "lat": 17.297253,
+    "formatted": "Johnson Street, Basseterre, Trinity Palmetto Point, Saint Kitts and Nevis",
+    "address_line1": "Johnson Street",
+    "address_line2": "Basseterre, Trinity Palmetto Point, Saint Kitts and Nevis",
+    "result_type": "street",
+    "rank": {
+      "popularity": 1.6400043089925411,
+      "confidence": 0.08333333333333333,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=17.297253&mlon=-62.720896",
+    "house_number": ""
+  },
+  "4 Siri Institutional Area, Hauz Khas, New Delhi, 110 016, India": {
+    "name": "India",
+    "country": "India",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "in",
+    "lon": 79.029432,
+    "lat": 22.364293,
+    "formatted": "India",
+    "address_line1": "India",
+    "address_line2": "",
+    "result_type": "country",
+    "rank": {
+      "popularity": 0.5698359629605959,
+      "confidence": 0,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=22.364293&mlon=79.029432",
+    "house_number": ""
+  },
+  "Calzada de los Héroes   201, Zona  Centro  Guanajuato, GTO, León, 37000, Mexico": {
+    "housenumber": "201",
+    "street": "Prolongación Calzada De Los Niños Héroes",
+    "country": "Mexico",
+    "county": "León",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "mx",
+    "state": "Guanajuato",
+    "city": "León",
+    "lon": -101.66516,
+    "lat": 21.11758,
+    "formatted": "Prolongación Calzada De Los Niños Héroes 201, León, GUA, Mexico",
+    "address_line1": "Prolongación Calzada De Los Niños Héroes 201",
+    "address_line2": "León, GUA, Mexico",
+    "result_type": "building",
+    "rank": {
+      "popularity": 5.743208808595312,
+      "confidence": 0.16666666666666666,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=21.11758&mlon=-101.66516",
+    "house_number": ""
+  },
+  "Federal Department of Co operatives, 4th Floor Nigerian Agricultural Insurance Corporation (NAIC) Building, Central Business District, Abuja, Nigeria": {
+  },
+  "Co operative House Warwick Technology Park, Warwick, CV34 6DA, United Kingdom": {
+    "name": "Warwick Technology Park",
+    "street": "Warwick Technology Park",
+    "country": "United Kingdom",
+    "county": "Warwickshire",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 2710737,
+      "macroregion": "England",
+      "continent": "Europe"
+    },
+    "country_code": "gb",
+    "state": "Warwickshire",
+    "district": "Warwick",
+    "city": "Warwick",
+    "lon": -1.565873,
+    "lat": 52.27575,
+    "formatted": "Warwick Technology Park, Warwick, United Kingdom",
+    "address_line1": "Warwick Technology Park",
+    "address_line2": "Warwick, United Kingdom",
+    "result_type": "street",
+    "rank": {
+      "popularity": 6.233933061467664,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=52.27575&mlon=-1.565873",
+    "house_number": ""
+  },
+  "Urb. Los Angeles, el Paical Aprado 87 1988, Zona 7, Panamá, Panama": {
+    "name": "Panama City",
+    "country": "Panama",
+    "county": "Panamá",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "pa",
+    "state": "Panama",
+    "city": "Panama City",
+    "lon": -79.51973,
+    "lat": 8.9936,
+    "formatted": "Panama City, Panama",
+    "address_line1": "Panama City",
+    "address_line2": "Panama",
+    "result_type": "city",
+    "rank": {
+      "popularity": 6.779736740765563,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=8.9936&mlon=-79.51973",
+    "house_number": ""
+  },
+  "Lilac Sanei Bldg. 1F, 12 5 Yotsuyasanei cho Shinjuku ku  Shinjuku ku, Tokyo, 160 0008, Japan": {
+  },
+  "SNPA 15 Shaheed E Millat Road, Karachi, 74800, Pakistan": {
+    "housenumber": "15",
+    "street": "Shaheed-e-Millat Road",
+    "country": "Pakistan",
+    "county": "Karachi",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "pk",
+    "state": "Sindh",
+    "city": "Karachi",
+    "lon": 67.0780952,
+    "lat": 24.8727907,
+    "formatted": "15 Shaheed-e-Millat Road, Karachi, Pakistan",
+    "address_line1": "15 Shaheed-e-Millat Road",
+    "address_line2": "Karachi, Pakistan",
+    "result_type": "building",
+    "rank": {
+      "popularity": 3.8239465637052916,
+      "confidence": 0.95,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=24.8727907&mlon=67.0780952",
+    "house_number": ""
+  },
+  "24 calle 3 08 Zona 1, Guatemala, 01001, Guatemala": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "lanes": "2",
+      "oneway": "yes",
+      "surface": "asphalt",
+      "osm_type": "W",
+      "osm_id": 761388515,
+      "display_name": "24 Calle, Zona 1, Guatemala, 50201, Guatemala",
+      "category": "highway",
+      "type": "primary"
+    },
+    "name": "24 Calle",
+    "street": "24 Calle",
+    "city": "Zona 1",
+    "state": "Guatemala",
+    "postcode": "50201",
+    "country": "Guatemala",
+    "country_code": "gt",
+    "lon": -90.5182217,
+    "lat": 14.6251192,
+    "formatted": "24 Calle, 50201-Zona 1, Guatemala",
+    "address_line1": "24 Calle",
+    "address_line2": "50201-Zona 1, Guatemala",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.72,
+      "popularity": 6.847447101246576,
+      "confidence": 0.813953488372093,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=14.6251192&mlon=-90.5182217",
+    "house_number": ""
+  },
+  "PO Box 5435 Yarmukh Street (Al Wahda Road), near to Labour Office, Sharjah, United Arab Emirates": {
+    "name": "Sharjah",
+    "country": "United Arab Emirates",
+    "county": "Sharjah",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "ae",
+    "state": "Sharjah",
+    "city": "Sharjah",
+    "lon": 55.570011,
+    "lat": 25.297908,
+    "formatted": "Sharjah, United Arab Emirates",
+    "address_line1": "Sharjah",
+    "address_line2": "United Arab Emirates",
+    "result_type": "city",
+    "rank": {
+      "popularity": 2.260792371975348,
+      "confidence": 0.5,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=25.297908&mlon=55.570011",
+    "house_number": ""
+  },
+  "1, Yeongdeungpo ro 62 gil, Yeongdeungpo gu, Seoul, 150840, Korea, Republic of": {
+    "name": "Yeongdeungpo",
+    "country": "South Korea",
+    "county": "Yeongdeungpo",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "kr",
+    "state": "Seoul",
+    "lon": 126.908304,
+    "lat": 37.522484,
+    "formatted": "Yeongdeungpo, Seoul, South Korea",
+    "address_line1": "Yeongdeungpo",
+    "address_line2": "Seoul, South Korea",
+    "result_type": "county",
+    "rank": {
+      "popularity": 4.208740969181925,
+      "confidence": 0.11923076923076922,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=37.522484&mlon=126.908304",
+    "house_number": ""
+  },
+  "Travessa Monteiro Lobato, 95, Centro, São Bernardo do Campo/SP, 09721 140, Brazil": {
+    "housenumber": "95",
+    "street": "Travessa Monteiro Lobato",
+    "country": "Brazil",
+    "county": "Santa Maria",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "South",
+      "continent": "South America"
+    },
+    "country_code": "br",
+    "postcode": "97015-420",
+    "state": "Rio Grande Do Sul",
+    "district": "Santa Maria",
+    "city": "Santa Maria",
+    "lon": -53.811909,
+    "lat": -29.689363,
+    "formatted": "Travessa Monteiro Lobato 95, Santa Maria - RS, 97015-420, Brazil",
+    "address_line1": "Travessa Monteiro Lobato 95",
+    "address_line2": "Santa Maria - RS, 97015-420, Brazil",
+    "result_type": "building",
+    "rank": {
+      "popularity": 4.151581482078138,
+      "confidence": 0.45,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-29.689363&mlon=-53.811909",
+    "house_number": ""
+  },
+  "Rua Correia Dias  nº 185 Bairro Paraíso, São Paolo, SP   CEP, 04104 000, Brazil": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "linked_place": "suburb",
+      "osm_type": "R",
+      "osm_id": 6787927,
+      "display_name": "Bairro Paraiso, Anápolis, Microrregião de Anápolis, Região Geográfica Intermediária de Goiânia, Goiás, Central-West Region, Brazil",
+      "category": "boundary",
+      "type": "administrative"
+    },
+    "suburb": "Bairro Paraiso",
+    "city": "Anápolis",
+    "municipality": "Microrregião de Anápolis",
+    "county": "Região Geográfica Intermediária de Goiânia",
+    "state": "Goiás",
+    "region": "Central-West Region",
+    "country": "Brazil",
+    "country_code": "br",
+    "lon": -48.9829968,
+    "lat": -16.357953,
+    "formatted": "Anápolis, Goiás, Brazil",
+    "address_line1": "Anápolis",
+    "address_line2": "Goiás, Brazil",
+    "result_type": "suburb",
+    "rank": {
+      "importance": 0.25,
+      "popularity": 2.842505004343836,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-16.357953&mlon=-48.9829968",
+    "house_number": ""
+  },
+  "Fleminginkatu 34 PO Box 1, S Group, FI 00088, Finland": {
+    "housenumber": "34",
+    "street": "Fleminginkatu",
+    "country": "Finland",
+    "county": "Helsinki",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "Southern Finland Province",
+      "continent": "Europe"
+    },
+    "country_code": "fi",
+    "postcode": "00510",
+    "state": "Uusimaa",
+    "city": "Helsinki",
+    "district": "Keskinen",
+    "suburb": "Vallila",
+    "lon": 24.951469,
+    "lat": 60.190659,
+    "formatted": "Fleminginkatu 34, 00510 Helsinki, Finland",
+    "address_line1": "Fleminginkatu 34",
+    "address_line2": "00510 Helsinki, Finland",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.411492156144295,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=60.190659&mlon=24.951469",
+    "house_number": ""
+  },
+  "Kra. 13 No. 37 43 piso 8, Bogota, Colombia": {
+    "name": "Bogotá",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.08768,
+    "lat": 4.635456,
+    "formatted": "Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Bogotá",
+    "address_line2": "Bogota D.C., Colombia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 7.465997799733551,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.635456&mlon=-74.08768",
+    "house_number": ""
+  },
+  "25 Golriz St. (Unit 5) Gha'em Magham e Farahani Ave., Tehran, 1588643117, Iran, Islamic Republic of": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "oneway": "yes",
+      "surface": "asphalt",
+      "maxspeed": "30",
+      "osm_type": "W",
+      "osm_id": 312665930,
+      "display_name": "golriz, asanjan, Bostan, Isfahan, بخش مرکزی شهرستان اصفهان, Isfahan County, Isfahan Province, 8199874941, Iran",
+      "category": "highway",
+      "type": "residential"
+    },
+    "name": "golriz",
+    "street": "golriz",
+    "neighbourhood": "asanjan",
+    "suburb": "Bostan",
+    "city": "Isfahan",
+    "district": "بخش مرکزی شهرستان اصفهان",
+    "county": "Isfahan County",
+    "state": "Isfahan Province",
+    "postcode": "8199874941",
+    "country": "Iran",
+    "country_code": "ir",
+    "lon": 51.7124077,
+    "lat": 32.6658592,
+    "formatted": "Isfahan, golriz, Isfahan Province, 8199874941, Iran",
+    "address_line1": "Isfahan",
+    "address_line2": "golriz, Isfahan Province, 8199874941, Iran",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.31,
+      "popularity": 6.810901558621878,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=32.6658592&mlon=51.7124077",
+    "house_number": ""
+  },
+  "Rua Américo Durão 12 A, Lisbon, 1900 064, Portugal": {
+    "housenumber": "12",
+    "street": "Rua Américo Durão",
+    "country": "Portugal",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Europe"
+    },
+    "country_code": "pt",
+    "state": "Lisbon",
+    "district": "Alvalade",
+    "city": "Lisbon",
+    "suburb": "Alto do Pina",
+    "lon": -9.1247825,
+    "lat": 38.7396822,
+    "formatted": "Rua Américo Durão 12, Lisbon, Portugal",
+    "address_line1": "Rua Américo Durão 12",
+    "address_line2": "Lisbon, Portugal",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.822548531567915,
+      "confidence": 0.7727272727272727,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=38.7396822&mlon=-9.1247825",
+    "house_number": ""
+  },
+  "2 5 15, Kanda Surugadai 2 chome Chiyoda Ku, Tokyo, 101 0062, Japan": {
+    "name": "Kanda-surugadai",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Kanda-surugadai",
+    "lon": 139.76139,
+    "lat": 35.69913,
+    "formatted": "Kanda-surugadai, Tokyo, Japan",
+    "address_line1": "Kanda-surugadai",
+    "address_line2": "Tokyo, Japan",
+    "result_type": "city",
+    "rank": {
+      "popularity": 6.67434735688552,
+      "confidence": 0.17672413793103448,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.69913&mlon=139.76139",
+    "house_number": ""
+  },
+  "KUSCCO Centre  Regional Office PO Box 43278, Nairobi, 00100, International": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "office": "Symbion International",
+      "osm_type": "N",
+      "osm_id": 5360931827,
+      "display_name": "Symbion International, P. O. Box 24002, Nairobi, Karen Road, Karen, Nairobi, P.O.BOX 1920 00100, Kenya",
+      "category": "office",
+      "type": "yes",
+      "continent": "Africa"
+    },
+    "name": "Symbion International",
+    "housenumber": "P. O. Box 24002, Nairobi",
+    "street": "Karen Road",
+    "suburb": "Karen",
+    "city": "Nairobi",
+    "state": "Nairobi",
+    "region": "Nairobi",
+    "postcode": "P.O.BOX 1920 00100",
+    "country": "Kenya",
+    "country_code": "ke",
+    "lon": 36.7136315,
+    "lat": -1.3477964,
+    "formatted": "Symbion International, P. O. Box 24002, Nairobi Karen Road, Nairobi, P.O.BOX 1920 00100, Kenya",
+    "address_line1": "Symbion International",
+    "address_line2": "P. O. Box 24002, Nairobi Karen Road, Nairobi, P.O.BOX 1920 00100, Kenya",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 2.1610840586011517,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-1.3477964&mlon=36.7136315",
+    "house_number": ""
+  },
+  "9 D, Motijheel Commercial Area, Dhaka, 1000, Bangladesh": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "wikidata": "Q6917695",
+      "wikipedia": "bn:মতিঝিল",
+      "osm_type": "N",
+      "osm_id": 4896907580,
+      "display_name": "Motijheel, Komlapur, Dhaka, Chanpara Bazar, Dhaka District, Dhaka Division, 1230, Bangladesh",
+      "category": "place",
+      "type": "neighbourhood"
+    },
+    "name": "Motijheel",
+    "neighbourhood": "Motijheel",
+    "suburb": "Komlapur",
+    "city": "Dhaka",
+    "municipality": "Chanpara Bazar",
+    "county": "Dhaka District",
+    "state": "Dhaka Division",
+    "postcode": "1230",
+    "country": "Bangladesh",
+    "country_code": "bd",
+    "lon": 90.4216076,
+    "lat": 23.7265973,
+    "formatted": "Motijheel, Dhaka - 1230, Bangladesh",
+    "address_line1": "Motijheel",
+    "address_line2": "Dhaka - 1230, Bangladesh",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.5723437491030712,
+      "popularity": 5.411880698937326,
+      "confidence": 0.5,
+      "match_type": "inner_part"
+    },
+    "street": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=23.7265973&mlon=90.4216076",
+    "house_number": ""
+  },
+  "Cesar Nicolas Penson  12 GAZCUE, Santo Domingo, Dominican Republic": {
+    "housenumber": "12",
+    "street": "César Nicolás Penson",
+    "country": "Dominican Republic",
+    "county": "Santo Domingo Norte",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "do",
+    "state": "Santo Domingo",
+    "lon": -69.8976555,
+    "lat": 18.5300705,
+    "formatted": "César Nicolás Penson 12, Santo Domingo, Dominican Republic",
+    "address_line1": "César Nicolás Penson 12",
+    "address_line2": "Santo Domingo, Dominican Republic",
+    "result_type": "building",
+    "rank": {
+      "popularity": 3.1514276154208636,
+      "confidence": 0.3333333333333333,
+      "match_type": "full_match"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=18.5300705&mlon=-69.8976555",
+    "house_number": ""
+  },
+  "Alameda Santos 1827 5 andar Cerqueira Cesar   Sao Paulo S.P., Sao Paulo, 01419 909, Brazil": {
+    "housenumber": "1827",
+    "street": "Alameda Santos",
+    "country": "Brazil",
+    "county": "Sao Paulo",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "Southeast",
+      "continent": "South America"
+    },
+    "country_code": "br",
+    "postcode": "01418-000",
+    "state": "Sao Paulo",
+    "district": "Jardim Paulista",
+    "city": "São Paulo",
+    "suburb": "Jardim Paulista",
+    "lon": -46.65847,
+    "lat": -23.561409,
+    "formatted": "Alameda Santos 1827, São Paulo - Sao Paulo, 01418-000, Brazil",
+    "address_line1": "Alameda Santos 1827",
+    "address_line2": "São Paulo - Sao Paulo, 01418-000, Brazil",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.422950522646222,
+      "confidence": 0.04537037037037036,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-23.561409&mlon=-46.65847",
+    "house_number": ""
+  },
+  "N Tower Building door number 904, 8th Khoroo, Sukhbaatar district, Unaanbaatar POB 14193, Ulaanbaatar city, Mongolia": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "railway": "Ulan Bator",
+      "wikidata": "Q800161",
+      "osm_type": "N",
+      "osm_id": 566997277,
+      "display_name": "Ulan Bator, Нарны зам, Богд ар хороолол, Ulaanbaatar, 16051, Mongolia",
+      "category": "railway",
+      "type": "station"
+    },
+    "name": "Ulan Bator",
+    "street": "Нарны зам",
+    "suburb": "Богд ар хороолол",
+    "city": "Ulaanbaatar",
+    "postcode": "16051",
+    "country": "Mongolia",
+    "country_code": "mn",
+    "lon": 106.8841356,
+    "lat": 47.908056,
+    "formatted": "Ulan Bator, Нарны зам, 16051, Ulaanbaatar, Mongolia",
+    "address_line1": "Ulan Bator",
+    "address_line2": "Нарны зам, 16051, Ulaanbaatar, Mongolia",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.49952189898097166,
+      "popularity": 3.162324217799365,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "state": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=47.908056&mlon=106.8841356",
+    "house_number": ""
+  },
+  "Rua 7 de Setembro, 374 Nova Petrópolis RS, Rio Grande do Sul, 95.150 000, Brazil": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "amenity": "Sicredi Pioneira RS",
+      "website": "http://sicredipioneira.coop.br",
+      "opening_hours": "Mo-Fr 10:00-15:00",
+      "osm_type": "N",
+      "osm_id": 4403534489,
+      "display_name": "Sicredi Pioneira RS, 374, Rua 7 de Setembro, Centro, Nova Petrópolis, Região Geográfica Imediata de Caxias do Sul, Região Geográfica Intermediária de Caxias do Sul, Rio Grande do Sul, South Region, 95150-000, Brazil",
+      "category": "amenity",
+      "type": "bank",
+      "macroregion": "South",
+      "continent": "South America"
+    },
+    "name": "Sicredi Pioneira RS",
+    "housenumber": "374",
+    "street": "Rua 7 de Setembro",
+    "suburb": "Centro",
+    "district": "Nova Petrópolis",
+    "city": "Nova Petrópolis",
+    "municipality": "Região Geográfica Imediata de Caxias do Sul",
+    "county": "Região Geográfica Intermediária de Caxias do Sul",
+    "state": "Rio Grande do Sul",
+    "region": "South Region",
+    "postcode": "95150-000",
+    "country": "Brazil",
+    "country_code": "br",
+    "lon": -51.1126119,
+    "lat": -29.3755486,
+    "formatted": "Sicredi Pioneira RS, Rua 7 de Setembro 374, Nova Petrópolis - RS, 95150-000, Brazil",
+    "address_line1": "Sicredi Pioneira RS",
+    "address_line2": "Rua 7 de Setembro 374, Nova Petrópolis - RS, 95150-000, Brazil",
+    "result_type": "amenity",
+    "rank": {
+      "importance": 0.811,
+      "popularity": 2.633492147387408,
+      "confidence": 0.3333333333333333,
+      "match_type": "inner_part"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-29.3755486&mlon=-51.1126119",
+    "house_number": ""
+  },
+  "Calle 64 No. 7 39  D.C., Bogotá, Colombia": {
+    "housenumber": "39",
+    "street": "Calle 64",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.0783552,
+    "lat": 4.6601225,
+    "formatted": "Calle 64 39, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Calle 64 39",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.8118923603292645,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.6601225&mlon=-74.0783552",
+    "house_number": ""
+  },
+  "Via Torre Verde 7, Trento (TN), 38122, Italy": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 1293893684,
+      "display_name": "7, Via Torre Verde, Centro storico Trento, Trento, Territorio Val d'Adige, Provincia di Trento, Trentino-Alto Adige/Südtirol, 38122, Italy",
+      "category": "place",
+      "type": "house"
+    },
+    "housenumber": "7",
+    "street": "Via Torre Verde",
+    "suburb": "Centro storico Trento",
+    "city": "Trento",
+    "municipality": "Territorio Val d'Adige",
+    "county": "Provincia di Trento",
+    "state": "Trentino-Alto Adige/Südtirol",
+    "postcode": "38122",
+    "country": "Italy",
+    "country_code": "it",
+    "lon": 11.1218054,
+    "lat": 46.070533,
+    "formatted": "Via Torre Verde, 7, 38122 Trento, Italy",
+    "address_line1": "Via Torre Verde, 7",
+    "address_line2": "38122 Trento, Italy",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.621,
+      "popularity": 8.995467104553104,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=46.070533&mlon=11.1218054",
+    "house_number": ""
+  },
+  " 18 Khajaznuni Str.  RA, Yerevan, 0018, Armenia": {
+    "name": "Yerevan",
+    "country": "Armenia",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "am",
+    "state": "Erevan",
+    "city": "Yerevan",
+    "lon": 44.520721,
+    "lat": 40.185693,
+    "formatted": "Yerevan, Erevan, Armenia",
+    "address_line1": "Yerevan",
+    "address_line2": "Erevan, Armenia",
+    "result_type": "city",
+    "rank": {
+      "popularity": 7.200244276229742,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=40.185693&mlon=44.520721",
+    "house_number": ""
+  },
+  "Alameda Ministro Rocha Azevedo, 366, Sao Paulo, 01410 901, Brazil": {
+    "housenumber": "366",
+    "street": "Alameda Ministro Rocha Azevedo",
+    "country": "Brazil",
+    "county": "Sao Paulo",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "Southeast",
+      "continent": "South America"
+    },
+    "country_code": "br",
+    "postcode": "01410-000",
+    "state": "Sao Paulo",
+    "district": "Jardim Paulista",
+    "city": "São Paulo",
+    "suburb": "Jardim Paulista",
+    "lon": -46.659397,
+    "lat": -23.56137,
+    "formatted": "Alameda Ministro Rocha Azevedo 366, São Paulo - Sao Paulo, 01410-000, Brazil",
+    "address_line1": "Alameda Ministro Rocha Azevedo 366",
+    "address_line2": "São Paulo - Sao Paulo, 01410-000, Brazil",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.422950522646222,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-23.56137&mlon=-46.659397",
+    "house_number": ""
+  },
+  "Gertrudstrasse 103, Zürich, CH 8003, Switzerland": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "description": "ABZ-Siedlung Wiedikon, Geschäftsstelle ABZ",
+      "osm_type": "W",
+      "osm_id": 544791806,
+      "display_name": "103, Gertrudstrasse, Sihlfeld, Wiedikon, Zurich, District Zurich, Zurich, 8003, Switzerland",
+      "category": "building",
+      "type": "commercial"
+    },
+    "housenumber": "103",
+    "street": "Gertrudstrasse",
+    "quarter": "Sihlfeld",
+    "suburb": "Wiedikon",
+    "city": "Zurich",
+    "county": "District Zurich",
+    "state": "Zurich",
+    "postcode": "8003",
+    "country": "Switzerland",
+    "country_code": "ch",
+    "lon": 8.51154944717231,
+    "lat": 47.3708132,
+    "formatted": "Gertrudstrasse 103, 8003 Zurich, Switzerland",
+    "address_line1": "Gertrudstrasse 103",
+    "address_line2": "8003 Zurich, Switzerland",
+    "result_type": "building",
+    "rank": {
+      "importance": 0.42100000000000004,
+      "popularity": 7.612731000975144,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=47.3708132&mlon=8.51154944717231",
+    "house_number": ""
+  },
+  "PO Box 4518 Opposite Ministry of Women's Affairs Ramallah, Al Balou, Al Bireh, Palestine, State of": {
+    "name": "Al Balou",
+    "country": "Palestine",
+    "county": "Salfit",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 432352453,
+      "continent": "Asia"
+    },
+    "country_code": "ps",
+    "state": "West Bank",
+    "city": "Deir Ballut",
+    "lon": 35.029615,
+    "lat": 32.065121,
+    "formatted": "Al Balou, Deir Ballut, West Bank, Palestine",
+    "address_line1": "Al Balou",
+    "address_line2": "Deir Ballut, West Bank, Palestine",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 3.6701489516178474,
+      "confidence": 0.4,
+      "match_type": "match_by_building"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=32.065121&mlon=35.029615",
+    "house_number": ""
+  },
+  "BP : 1470 (office de la poste guineenne) Siege social, Dixinn Mosquee, Conakry, Guinea": {
+    "country": "Guinea",
+    "city": "Conakry",
+    "name": "Île Kassa",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 4153278,
+      "osm_type": "W",
+      "category": "place",
+      "type": "island"
+    },
+    "country_code": "gn",
+    "lon": -13.748907855786111,
+    "lat": 9.4743532,
+    "formatted": "Île Kassa, Conakry, Guinea",
+    "address_line1": "Île Kassa",
+    "address_line2": "Conakry, Guinea",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 0.7519278432963943,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "street": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=9.4743532&mlon=-13.748907855786111",
+    "house_number": ""
+  },
+  "Av. Calle 116 No. 23 06/28 Piso 6 Edificio Business Center, Colombia": {
+    "housenumber": "28-69",
+    "street": "Avenida Calle 34",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 528481091,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.076981,
+    "lat": 4.624181,
+    "formatted": "Avenida Calle 34 28-69, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Avenida Calle 34 28-69",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "building",
+    "rank": {
+      "popularity": 8.09374338806604,
+      "confidence": 0.075,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.624181&mlon=-74.076981",
+    "house_number": ""
+  },
+  "Boulevard Benito Juarez  109 Colonia las Encinas Nuevo Leon, General Escobedo, 66050, Mexico": {
+    "name": "General Escobedo",
+    "country": "Mexico",
+    "county": "General Escobedo",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "mx",
+    "state": "Nuevo León",
+    "city": "General Escobedo",
+    "lon": -100.312695,
+    "lat": 25.790156,
+    "formatted": "General Escobedo, Nuevo León, Mexico",
+    "address_line1": "General Escobedo",
+    "address_line2": "Nuevo León, Mexico",
+    "result_type": "city",
+    "rank": {
+      "popularity": 6.05770187967583,
+      "confidence": 0.5,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=25.790156&mlon=-100.312695",
+    "house_number": ""
+  },
+  "400 275 Bank Street, Ottawa, ON, K2P 2L6, Canada": {
+    "housenumber": "400",
+    "street": "Bank Street",
+    "country": "Canada",
+    "county": "Ottawa",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "ca",
+    "state": "Ontario",
+    "city": "Ottawa",
+    "suburb": "Centretown",
+    "lon": -75.6946191,
+    "lat": 45.4129077,
+    "formatted": "400 Bank Street, Ottawa, ON, Canada",
+    "address_line1": "400 Bank Street",
+    "address_line2": "Ottawa, ON, Canada",
+    "result_type": "building",
+    "rank": {
+      "popularity": 7.1143158650432845,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=45.4129077&mlon=-75.6946191",
+    "house_number": ""
+  },
+  "A 25/19A, 1st Floor, Sujan Singh Building, Middle Circle, Connaught Place, New Delhi, 110001, India": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "wikidata": "Q2341950",
+      "osm_type": "N",
+      "osm_id": 561299050,
+      "display_name": "Connaught Place, New Delhi, Chanakya Puri Tehsil, Delhi, 110001, India",
+      "category": "place",
+      "type": "quarter",
+      "continent": "Asia"
+    },
+    "name": "Connaught Place",
+    "suburb": "Connaught Place",
+    "city": "New Delhi",
+    "county": "Chanakya Puri Tehsil",
+    "state": "Delhi",
+    "postcode": "110001",
+    "country": "India",
+    "country_code": "in",
+    "lon": 77.2197924,
+    "lat": 28.6313827,
+    "formatted": "Connaught Place, New Delhi - 110001, Delhi, India",
+    "address_line1": "Connaught Place",
+    "address_line2": "New Delhi - 110001, Delhi, India",
+    "result_type": "postcode",
+    "rank": {
+      "importance": 1.0295069696850592,
+      "popularity": 6.037235457178893,
+      "confidence": 0.25,
+      "match_type": "match_by_postcode"
+    },
+    "street": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=28.6313827&mlon=77.2197924",
+    "house_number": ""
+  },
+  "6Th,Floor  Former Co operative Bank, No. 40 Kwame Nkrumah Avenue, Adabraka  Accra PO Box GP 22483, Accra, Ghana": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "highway": "Adabraka",
+      "osm_type": "N",
+      "osm_id": 5040075675,
+      "display_name": "Adabraka, Kwame Nkrumah Avenue, Adabraka, Accra, Greater Accra Region, GA-183-8164, Ghana",
+      "category": "highway",
+      "type": "bus_stop"
+    },
+    "name": "Adabraka",
+    "street": "Kwame Nkrumah Avenue",
+    "suburb": "Adabraka",
+    "city": "Accra",
+    "state": "Greater Accra Region",
+    "postcode": "GA-183-8164",
+    "country": "Ghana",
+    "country_code": "gh",
+    "lon": -0.2144044,
+    "lat": 5.5649038,
+    "formatted": "Adabraka, Kwame Nkrumah Avenue, Accra, Ghana",
+    "address_line1": "Adabraka",
+    "address_line2": "Kwame Nkrumah Avenue, Accra, Ghana",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 2.398423024911796,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=5.5649038&mlon=-0.2144044",
+    "house_number": ""
+  },
+  "4 1 3 Sendagaya Shibuya, Tokyo, 151 0051, Japan": {
+    "name": "Tokyo",
+    "street": "Tokyo",
+    "country": "Japan",
+    "county": "Chiyoda",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15220580,
+      "continent": "Asia"
+    },
+    "country_code": "jp",
+    "state": "Tokyo",
+    "city": "Tokyo",
+    "suburb": "Marunochi 1 Chome",
+    "lon": 139.762424,
+    "lat": 35.682339,
+    "formatted": "Tokyo, Japan",
+    "address_line1": "Tokyo",
+    "address_line2": "Japan",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.324841920721903,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.682339&mlon=139.762424",
+    "house_number": ""
+  },
+  "Ave. Pasteur Esq. Calle Santiago Plaza Jardines de Gazcue   Local 222, Santo Domingo, Distrito Nacional, Dominican Republic": {
+    "name": "Santo Domingo",
+    "country": "Dominican Republic",
+    "county": "Santo Domingo De Guzmán",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "North America"
+    },
+    "country_code": "do",
+    "state": "Distrito Nacional",
+    "city": "Santo Domingo",
+    "lon": -69.89213,
+    "lat": 18.471621,
+    "formatted": "Santo Domingo, Distrito Nacional, Dominican Republic",
+    "address_line1": "Santo Domingo",
+    "address_line2": "Distrito Nacional, Dominican Republic",
+    "result_type": "city",
+    "rank": {
+      "popularity": 5.4677180082407295,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=18.471621&mlon=-69.89213",
+    "house_number": ""
+  },
+  "Rue du Quai, Nord Est  Delmas, Fort Liberté, 33, Haiti": {
+    "name": "Rue du Quai",
+    "street": "Rue du Quai",
+    "country": "Haiti",
+    "county": "Fort-Liberté",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 19269120,
+      "continent": "North America"
+    },
+    "country_code": "ht",
+    "state": "Nord-Est",
+    "lon": -71.83524,
+    "lat": 19.662902,
+    "formatted": "Rue du Quai, Nord-Est, Haiti",
+    "address_line1": "Rue du Quai",
+    "address_line2": "Nord-Est, Haiti",
+    "result_type": "street",
+    "rank": {
+      "popularity": 0.7220539596408811,
+      "confidence": 0.26159420289855073,
+      "match_type": "match_by_street"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=19.662902&mlon=-71.83524",
+    "house_number": ""
+  },
+  "Rue Marconi, Fatuhada, Dili, 670, Timor Leste": {
+    "country": "East Timor",
+    "city": "Dili",
+    "postcode": "157",
+    "name": "Rua De Masin Molik II",
+    "state": "Dili",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 569243632,
+      "osm_type": "W",
+      "category": "highway",
+      "type": "residential"
+    },
+    "street": "Rua De Masin Molik II",
+    "lon": 125.5564827,
+    "lat": -8.5551257,
+    "country_code": "tl",
+    "formatted": "Rua De Masin Molik II, Dili, East Timor",
+    "address_line1": "Rua De Masin Molik II",
+    "address_line2": "Dili, East Timor",
+    "result_type": "street",
+    "rank": {
+      "popularity": 0.48771227886005725,
+      "confidence": 0,
+      "match_type": "full_match"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-8.5551257&mlon=125.5564827",
+    "house_number": ""
+  },
+  "181 Av. P.E. Lumumba/ Bukavu, Sud kivu, Congo, The Democratic Republic of the": {
+    "name": "Avenue Lumumba",
+    "street": "Avenue Lumumba",
+    "country": "Democratic Republic of Congo",
+    "county": "Kasai",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20521753,
+      "continent": "Africa"
+    },
+    "country_code": "cd",
+    "state": "Kasaï-Occidental Province",
+    "lon": 20.789762,
+    "lat": -6.427084,
+    "formatted": "Avenue Lumumba, Kasaï-Occidental Province, Democratic Republic of Congo",
+    "address_line1": "Avenue Lumumba",
+    "address_line2": "Kasaï-Occidental Province, Democratic Republic of Congo",
+    "result_type": "street",
+    "rank": {
+      "popularity": 0.38146407066213345,
+      "confidence": 0.1346153846153846,
+      "match_type": "match_by_street"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-6.427084&mlon=20.789762",
+    "house_number": ""
+  },
+  "11, Funagawara machi, Shinjuku ku, Tokyo, 162 0826, Japan": {
+  },
+  "Rua São Paulo n° 284, Ribeirão Preto   SP, 14.085 010, Brazil": {
+    "housenumber": "284",
+    "street": "Rua Sao Paulo",
+    "country": "Brazil",
+    "county": "Manaus",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "macroregion": "North",
+      "continent": "South America"
+    },
+    "country_code": "br",
+    "postcode": "69099-265",
+    "state": "Amazonas",
+    "city": "Manaus",
+    "lon": -59.939974,
+    "lat": -3.013977,
+    "formatted": "Rua Sao Paulo 284, Manaus - AM, 69099-265, Brazil",
+    "address_line1": "Rua Sao Paulo 284",
+    "address_line2": "Manaus - AM, 69099-265, Brazil",
+    "result_type": "building",
+    "rank": {
+      "popularity": 3.2221528081232638,
+      "confidence": 0.5,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-3.013977&mlon=-59.939974",
+    "house_number": ""
+  },
+  "21 mahestan street  Iran zamin ave.  Ghods shahrak, Tehran, 1465834411, Iran, Islamic Republic of": {
+    "name": "Mahestan Street",
+    "street": "Mahestan Street",
+    "country": "Iran",
+    "county": "Damavand",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 15233550,
+      "continent": "Asia"
+    },
+    "country_code": "ir",
+    "state": "Tehran",
+    "lon": 52.158747,
+    "lat": 35.6306,
+    "formatted": "Mahestan Street, Tehran, Iran",
+    "address_line1": "Mahestan Street",
+    "address_line2": "Tehran, Iran",
+    "result_type": "street",
+    "rank": {
+      "popularity": 3.1462783893702357,
+      "confidence": 0.08333333333333333,
+      "match_type": "match_by_street"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.6306&mlon=52.158747",
+    "house_number": ""
+  },
+  "96 98 Bedrettin Demirel Street, Nicosia, Yenisehir, 99280, Cyprus": {
+    "name": "Nicosia",
+    "country": "Cyprus",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "cy",
+    "state": "Nicosia",
+    "city": "Nicosia",
+    "lon": 33.368885,
+    "lat": 35.178646,
+    "formatted": "Nicosia, Cyprus",
+    "address_line1": "Nicosia",
+    "address_line2": "Cyprus",
+    "result_type": "city",
+    "rank": {
+      "popularity": 3.8707429383695233,
+      "confidence": 0.25,
+      "match_type": "match_by_city_or_disrict"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=35.178646&mlon=33.368885",
+    "house_number": ""
+  },
+  "Al Balo'   Al Bireh, Ministry of Interior Street, Al Boraq Bldg (2nd floor), Ramallah, Palestine, State of": {
+    "country": "Palestinian Territory",
+    "city": "Ramallah",
+    "name": "Ramallah Minicipality Park",
+    "state": "Judea and Samaria",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 546141565,
+      "osm_type": "W",
+      "category": "leisure",
+      "type": "park"
+    },
+    "lon": 35.199855983812405,
+    "lat": 31.901595899999997,
+    "country_code": "ps",
+    "formatted": "Ramallah Minicipality Park, Ramallah, Judea and Samaria, Palestinian Territory",
+    "address_line1": "Ramallah Minicipality Park",
+    "address_line2": "Ramallah, Judea and Samaria, Palestinian Territory",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 6.083241587620919,
+      "confidence": 0.5,
+      "match_type": "full_match"
+    },
+    "street": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=31.901595899999997&mlon=35.199855983812405",
+    "house_number": ""
+  },
+  "N.8,Sarbedarn Ave, After Zartosht Cross,Vali e Asr Ave, Sadr Ave, Tehran, 1594963611, Iran, Islamic Republic of": {
+  },
+  "Siège social : Korhogo, quartier 14 RDC immeuble, BAMBA KELETIGUI Représentation Abidjan : 17 BP 998 Abidjan 17 (COCODY II plateaux, 7e tranche, rue Café de Versailles), Côte d’Ivoire": {
+    "name": "Siège social Carglass",
+    "housenumber": "107",
+    "country": "France",
+    "county": "Courbevoie",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 81358410,
+      "macroregion": "Ile-of-France",
+      "macrocounty": "Nanterre",
+      "continent": "Europe"
+    },
+    "street": "Siège social Carglass",
+    "country_code": "fr",
+    "state": "Hauts-de-Seine",
+    "district": "Courbevoie",
+    "city": "Courbevoie",
+    "lon": 2.239068,
+    "lat": 48.901519,
+    "formatted": "107 Siège social Carglass, Courbevoie, France",
+    "address_line1": "107 Siège social Carglass",
+    "address_line2": "Courbevoie, France",
+    "result_type": "amenity",
+    "rank": {
+      "popularity": 7.731754088884919,
+      "confidence": 0,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=48.901519&mlon=2.239068",
+    "house_number": ""
+  },
+  "Calle Jacinto Mañon  1 Ens. Serralles, Santo Domingo, Dominican Republic": {
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "postal_code": "10107",
+      "osm_type": "W",
+      "osm_id": 28176243,
+      "display_name": "Calle Jacinto I. Mañon, El Vergel, Don Bosco, Santo Domingo, Santo Domingo de Guzmán, Distrito Nacional, 10107, Dominican Republic",
+      "category": "highway",
+      "type": "residential",
+      "continent": "North America"
+    },
+    "name": "Calle Jacinto I. Mañon",
+    "street": "Calle Jacinto I. Mañon",
+    "neighbourhood": "El Vergel",
+    "suburb": "Don Bosco",
+    "city": "Santo Domingo",
+    "county": "Santo Domingo de Guzmán",
+    "state": "Distrito Nacional",
+    "country": "Dominican Republic",
+    "country_code": "do",
+    "lon": -69.9171985,
+    "lat": 18.4731563,
+    "postcode": "10107",
+    "formatted": "Calle Jacinto I. Mañon, Santo Domingo, DN, 10107, Dominican Republic",
+    "address_line1": "Calle Jacinto I. Mañon",
+    "address_line2": "Santo Domingo, DN, 10107, Dominican Republic",
+    "result_type": "street",
+    "rank": {
+      "importance": 0.09999999999999998,
+      "popularity": 5.5012611585719675,
+      "confidence": 0.1875,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=18.4731563&mlon=-69.9171985",
+    "house_number": ""
+  },
+  "Induk Koperasi Usaha Rakyat (INKUR), MTH Square Lantai 3A No. 5, Jalan Otista Raya No. 390 Kampung Melayu, Jakarta Timur, 13120, Indonesia": {
+    "housenumber": "No. 390, Kav. 10",
+    "street": "Jalan Otista Raya",
+    "country": "Indonesia",
+    "county": "Jakarta Timur",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 4152520589,
+      "continent": "Asia"
+    },
+    "country_code": "id",
+    "postcode": "13330",
+    "state": "DKI Jakarta",
+    "city": "Cawang",
+    "suburb": "Bidaracina",
+    "lon": 106.868833,
+    "lat": -6.244067,
+    "formatted": "Jalan Otista Raya No. 390, Kav. 10, Cawang 13330, DKI Jakarta, Indonesia",
+    "address_line1": "Jalan Otista Raya No. 390, Kav. 10",
+    "address_line2": "Cawang 13330, DKI Jakarta, Indonesia",
+    "result_type": "building",
+    "rank": {
+      "popularity": 6.400337124334426,
+      "confidence": 0.252,
+      "match_type": "match_by_building"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=-6.244067&mlon=106.868833",
+    "house_number": ""
+  },
+  "UDHIS Building Next Peace Garden, Wabari District, SYL Street PO Box 48 BN, Mogadishu, 09010, Somalia": {
+    "name": "Somalia",
+    "country": "Somalia",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Africa"
+    },
+    "country_code": "so",
+    "lon": 45.19238,
+    "lat": 3.568925,
+    "formatted": "Somalia",
+    "address_line1": "Somalia",
+    "address_line2": "",
+    "result_type": "country",
+    "rank": {
+      "popularity": 0.40410357766497246,
+      "confidence": 0,
+      "match_type": "match_by_country_or_state"
+    },
+    "street": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=3.568925&mlon=45.19238",
+    "house_number": ""
+  },
+  "Calle 16 No 6   66 Piso 24, Bogota, 24, Colombia": {
+    "name": "Calle 16",
+    "street": "Calle 16",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20093681,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.121178,
+    "lat": 4.642764,
+    "formatted": "Calle 16, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Calle 16",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "street",
+    "rank": {
+      "popularity": 8.09374338806604,
+      "confidence": 0.5,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.642764&mlon=-74.121178",
+    "house_number": ""
+  },
+  "office 5, social economy hub, 1 dong 1st floor, Tongirlo 684, Enpyeonggu, Seoul, Korea, Republic of": {
+    "housenumber": "684",
+    "street": "방학로2가길",
+    "country": "South Korea",
+    "county": "Yongsan",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "continent": "Asia"
+    },
+    "country_code": "kr",
+    "state": "Seoul",
+    "city": "Seoul",
+    "suburb": "Banghak-dong",
+    "lon": 127.04034,
+    "lat": 37.665862,
+    "formatted": "684 방학로2가길, Seoul, South Korea",
+    "address_line1": "684 방학로2가길",
+    "address_line2": "Seoul, South Korea",
+    "result_type": "building",
+    "rank": {
+      "popularity": 2.785128806681188,
+      "confidence": 0,
+      "match_type": "match_by_building"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=37.665862&mlon=127.04034",
+    "house_number": ""
+  },
+  "402, Indira Bhavan, 4th Road, Near Hotel Regal Enclave, Khar Station, Khar (West), Mumbai, 400052, India": {
+    "country": "India",
+    "city": "Mumbai",
+    "postcode": "400052",
+    "name": "16th Road",
+    "state": "Maharashtra",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_id": 22860629,
+      "osm_type": "W",
+      "category": "highway",
+      "type": "residential"
+    },
+    "country_code": "in",
+    "street": "16th Road",
+    "lon": 72.831002,
+    "lat": 19.0752231,
+    "formatted": "16th Road, Mumbai - 400052, Maharashtra, India",
+    "address_line1": "16th Road",
+    "address_line2": "Mumbai - 400052, Maharashtra, India",
+    "result_type": "street",
+    "rank": {
+      "popularity": 3.528453550181989,
+      "confidence": 0.125,
+      "match_type": "match_by_street"
+    },
+    "geo_uri": "https://www.openstreetmap.org/?mlat=19.0752231&mlon=72.831002",
+    "house_number": ""
+  },
+  "No. 22, 6th St., Qaem Maqam e Farahani District 6, Tehran, 15868 43911, Iran, Islamic Republic of": {
+  },
+  "Calle 24 D   44 A 77, Quinta Paredes, Bogotá, Colombia": {
+    "name": "Calle 24",
+    "street": "Calle 24",
+    "country": "Colombia",
+    "county": "Bogotá, D.C.",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 20080277,
+      "continent": "South America"
+    },
+    "country_code": "co",
+    "state": "Bogota D.C.",
+    "city": "Bogotá",
+    "lon": -74.079212,
+    "lat": 4.619941,
+    "formatted": "Calle 24, Bogotá, Bogota D.C., Colombia",
+    "address_line1": "Calle 24",
+    "address_line2": "Bogotá, Bogota D.C., Colombia",
+    "result_type": "street",
+    "rank": {
+      "popularity": 7.818832062032245,
+      "confidence": 1,
+      "match_type": "full_match"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=4.619941&mlon=-74.079212",
+    "house_number": ""
+  },
+  "Residencial El Trapiche, Bloque C 1, frente al Polideportivo de la UNAH, Bulevar Suyapa, egucigalpa, Francisco Morazán, Honduras": {
+    "name": "Bulevar Suyapa",
+    "street": "Bulevar Suyapa",
+    "country": "Honduras",
+    "county": "Distrito Central",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "N",
+      "osm_id": 27454921,
+      "continent": "North America"
+    },
+    "country_code": "hn",
+    "state": "Francisco Morazán",
+    "city": "Tegucigalpa",
+    "lon": -87.195257,
+    "lat": 14.087988,
+    "formatted": "Bulevar Suyapa, Tegucigalpa, Honduras",
+    "address_line1": "Bulevar Suyapa",
+    "address_line2": "Tegucigalpa, Honduras",
+    "result_type": "street",
+    "rank": {
+      "popularity": 4.488376698802612,
+      "confidence": 0.40909090909090906,
+      "match_type": "match_by_street"
+    },
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=14.087988&mlon=-87.195257",
+    "house_number": ""
+  },
+  "West Bank / PO Box 350, Al Bireh City / Al Balou', Palestine, State of": {
+    "housenumber": "350",
+    "street": "דבש וחלב",
+    "country": "Palestine",
+    "county": "Jerusalem",
+    "datasource": {
+      "sourcename": "openstreetmap",
+      "osm_type": "W",
+      "osm_id": 441381979,
+      "continent": "Asia"
+    },
+    "country_code": "ps",
+    "state": "West Bank",
+    "lon": 35.2462,
+    "lat": 31.882025,
+    "formatted": "דבש וחלב 350, West Bank, Palestine",
+    "address_line1": "דבש וחלב 350",
+    "address_line2": "West Bank, Palestine",
+    "result_type": "building",
+    "rank": {
+      "popularity": 3.8706706253812198,
+      "confidence": 0,
+      "match_type": "match_by_building"
+    },
+    "city": "",
+    "postcode": "",
+    "geo_uri": "https://www.openstreetmap.org/?mlat=31.882025&mlon=35.2462",
+    "house_number": ""
   }
 }

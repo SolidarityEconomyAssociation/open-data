@@ -247,7 +247,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
       # generate the report files (no need to pass a key)
       geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
-      geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.25, generated_reports_folder, converted, ["Description"])
+      geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
       # ruby -I /home/dean/Documents/sea/open-data/tools/se_open_data/lib  ../../tools/se_open_data/bin/csv/standard/add-postcode-lat-long.rb --postcodeunit-cache postcode_lat_lng.json --postcode-global-cache geodata_cache.json generated-data/experimental/csv/de-duplicated.csv > generated-data/experimental/csv/corrected-geo-data.csv
 
     end
