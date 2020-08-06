@@ -1,3 +1,4 @@
+# coding: utf-8
 module SeOpenData
   module CSV
     module Standard
@@ -275,7 +276,7 @@ module SeOpenData
                           "Åland Islands" => "AX" }
 
         class Geocoder
-          # @param api_key [String] the OpenCage API key.
+          # @param api_key [String] the API key.
           def initialize(api_key)
             @api_key = api_key
             # Headers here should relate to the headers in standard
