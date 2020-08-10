@@ -54,7 +54,7 @@ module SeOpenData
 
       csv_opts = {}
       csv_opts.merge!(headers: true)
-      csv_in = ::CSV.new(input_io, csv_opts)
+      csv_in = ::CSV.new(input_io, **csv_opts)
       csv_out = ::CSV.new(output_io)
       #make a map of name => [{lat,lon,row}]
       name_map = {}
