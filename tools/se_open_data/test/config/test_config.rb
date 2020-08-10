@@ -157,7 +157,6 @@ HERE
       "DEPLOYMENT_SERVER" => "sea-0-admin",
       "DEPLOYMENT_WEBROOT" => "/var/www/html/data1.solidarityeconomy.coop/",
       "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
-      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
       "VIRTUOSO_ROOT_DATA_DIR" => "/home/admin/Virtuoso/BulkLoading/Data/",
       "SPARQL_ENDPOINT" => "http://store1.solidarityeconomy.coop:8890/sparql",
       "VIRTUOSO_PASS_FILE" => "deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password",
