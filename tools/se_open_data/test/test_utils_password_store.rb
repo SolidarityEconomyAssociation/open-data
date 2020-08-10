@@ -23,7 +23,7 @@ describe SeOpenData::Utils::PasswordStore do
     end
     
     it "must assert the presence of an argument" do
-      proc { pws.get() }.must_raise ArgumentError
+      value(proc { pws.get() }).must_raise ArgumentError
     end
     
     it "must get the correct password for a path" do
@@ -31,7 +31,7 @@ describe SeOpenData::Utils::PasswordStore do
     end
     
     it "must fail if the password is unknown" do
-      proc { pws.get('some/pass') }.must_raise RuntimeError
+     value(proc { pws.get('some/pass') }).must_raise RuntimeError
     end
 
   end
@@ -45,7 +45,7 @@ describe SeOpenData::Utils::PasswordStore do
     end
     
     it "must assert the presence of an argument" do
-      proc { pws.get() }.must_raise ArgumentError
+      value(proc { pws.get() }).must_raise ArgumentError
     end
     
     it "must get the correct password, ENV overriding `pass`" do
@@ -61,7 +61,7 @@ describe SeOpenData::Utils::PasswordStore do
     end
     
     it "must fail if the password is unknown in both `pass` and ENV" do
-      proc { pws.get('some/other/pass') }.must_raise RuntimeError
+      value(proc { pws.get('some/other/pass') }).must_raise RuntimeError
     end
 
     # This is probably Good Enough For Now... but,

@@ -248,12 +248,12 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-dupes.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "config key 'SOMETHING' duplicated on line 3"
+      value(err.message).must_match "config key 'SOMETHING' duplicated on line 3"
     end
   end
 
@@ -263,21 +263,21 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "(space) should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-keys-1.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "invalid config key 'SOMETHING ELSE' at line 2"
+      value(err.message).must_match "invalid config key 'SOMETHING ELSE' at line 2"
     end
     
     it "(colon) should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-keys-2.txt")
-      end
+        end)
               .must_raise RuntimeError
       
-      err.message.must_match "invalid config key 'SOMETHING:ELSE' at line 2"
+      value(err.message).must_match "invalid config key 'SOMETHING:ELSE' at line 2"
     end
   end
   
@@ -287,12 +287,12 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-delims.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "config line with no '=' delimiter on line 2"
+      value(err.message).must_match "config line with no '=' delimiter on line 2"
     end
   end
   # FIXME test missing mandatory values
