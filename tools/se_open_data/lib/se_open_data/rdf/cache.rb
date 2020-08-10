@@ -36,7 +36,7 @@ module SeOpenData
         @query_hash = Hash[ query_hash.map {|k,v| [k, ::RDF::URI(v)] } ]
 
         # invert swaps keys and values:
-        @rdf_query = ::RDF::Query.new({stuff: @query_hash.invert})
+        @rdf_query = ::RDF::Query.new(stuff: @query_hash.invert)
 
         begin
           File.open(cache_file, "rb") {|f|

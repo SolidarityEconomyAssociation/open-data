@@ -71,7 +71,7 @@ HERE
       # Test the block directly
       in_data = {foo: 1, bar: 2, barBaz: 3}
       expected_out = {foo: 2, barNbaz: 1}
-      value(converter.block.call(in_data)).must_equal expected_out
+      value(converter.block.call(**in_data)).must_equal expected_out
 
       # A TSV in schema_a with a blank line to skip
       in_tsv = <<-HERE
@@ -124,7 +124,7 @@ HERE
                   converter.convert(in_str, out_str)
                 end
               end
-            }.message).must_match(/block keyword parameters do not match .* spuriousId/)
+            }.message).must_match(/block keyword parameters do not match .* :spuriousId/)
     end
   end
 

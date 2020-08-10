@@ -293,7 +293,7 @@ module SeOpenData
 
               new_id_hashes =
                 begin
-                  block_given? ? yield(id_hash) : @block.call(id_hash)
+                  block_given? ? yield(**id_hash) : @block.call(**id_hash)
                 rescue ArgumentError => e
                   # Try to reword the error helpfully from:
                   match = e.message.match(/missing keywords?: (.*)/)
