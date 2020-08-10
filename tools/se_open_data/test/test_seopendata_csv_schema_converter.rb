@@ -124,7 +124,7 @@ HERE
                   converter.convert(in_str, out_str)
                 end
               end
-            }.message).must_match(/block keyword parameters do not match .* spuriousId/)
+            }.message).must_match(/block keyword parameters do not match .* :spuriousId/)
     end
   end
 
