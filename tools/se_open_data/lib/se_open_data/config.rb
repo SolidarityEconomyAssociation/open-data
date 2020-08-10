@@ -75,7 +75,7 @@ module SeOpenData
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
          URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
          DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
-         W3ID_REMOTE_LOCATION SERVER_ALIAS ESSGLOBAL_URI
+         ESSGLOBAL_URI
          SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
         .each do |key|
         raise "mandatory key '#{key}' is missing" unless @map.has_key? key
@@ -125,10 +125,14 @@ module SeOpenData
       @map["VIRTUOSO_SCRIPT_REMOTE"] = unixjoin @map["VIRTUOSO_DATA_DIR"], @map["VIRTUOSO_SQL_SCRIPT"]
 
       # Used to define w3ids
-      @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
-      @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
-      @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"] + "://" + unixjoin(@map["SERVER_ALIAS"], @map["URI_PATH_PREFIX"])
-
+      if @map.has_key? "W3ID_REMOTE_LOCATION"
+        @map["W3ID_LOCAL_DIR"] = join @map["TOP_OUTPUT_DIR"], "w3id", ""
+        @map["HTACCESS"] = join @map["W3ID_LOCAL_DIR"], ".htaccess"
+        @map["REDIRECT_W3ID_TO"] = @map["URI_SCHEME"] + "://" + unixjoin(@map["SERVER_ALIAS"], @map["URI_PATH_PREFIX"])
+        # Make sure this dir exists
+        FileUtils.mkdir_p @map["W3ID_LOCAL_DIR"]
+      end
+      
       # Preserve booleans in these cases
       %w(AUTO_LOAD_TRIPLETS USE_ENV_PASSWORDS USING_ICA_ACTIVITIES).each do |key|
         @map[key] = @map.key?(key) && @map[key].to_s.downcase == "true"
@@ -150,8 +154,7 @@ module SeOpenData
         "GEN_CSV_DIR",
         "GEN_CSS_DIR",
         "GEN_VIRTUOSO_DIR",
-        "GEN_SPARQL_DIR",
-        "W3ID_LOCAL_DIR"
+        "GEN_SPARQL_DIR"
       )
     rescue => e
       raise "#{e.message}: #{@config_file}"
