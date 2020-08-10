@@ -213,6 +213,11 @@ module SeOpenData
     def self.command_create_w3id
       config = load_config
 
+      if !config.has_key? 'W3ID_REMOTE_LOCATION'
+        log.info "No W3ID_REMOTE_LOCATION configured, skipping"
+        return
+      end
+      
       # Create w3id config
       redir = config.REDIRECT_W3ID_TO
 
