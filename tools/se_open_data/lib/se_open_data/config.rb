@@ -75,7 +75,7 @@ module SeOpenData
       %w(TOP_OUTPUT_DIR SRC_CSV_DIR STANDARD_CSV
          URI_SCHEME URI_HOST URI_PATH_PREFIX CSS_SRC_DIR
          DEPLOYMENT_WEBROOT VIRTUOSO_ROOT_DATA_DIR
-         SERVER_ALIAS ESSGLOBAL_URI
+         ESSGLOBAL_URI
          SPARQL_ENDPOINT VIRTUOSO_PASS_FILE)
         .each do |key|
         raise "mandatory key '#{key}' is missing" unless @map.has_key? key
