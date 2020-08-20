@@ -44,8 +44,8 @@ module SeOpenData
     # @param output_io         CSV with duplicates removed
     # @param error_io          CSV containing duplicates (no headers)
     # @param keys              Array of column headings that make up the unique key
-    # @param domainHeader      Array of column heading for the domain
-    # @param nameHeader        Array of column heading for the name
+    # @param domainHeader      Header name for the domain
+    # @param nameHeader        Header name for the name
     # @param original_csv      Original csv before geocoding
     def CSV.merge_and_de_duplicate(
       input_io,
