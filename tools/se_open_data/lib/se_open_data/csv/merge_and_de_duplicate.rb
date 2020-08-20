@@ -124,7 +124,7 @@ module SeOpenData
         fields_key.tr!("^A-Za-z0-9", "")
         fields_key.upcase!
 
-        name = name.
+        name = name.to_s.
           gsub(/\s/, "").
           upcase.
           gsub(small_word_regex, "").
