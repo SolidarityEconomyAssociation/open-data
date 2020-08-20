@@ -304,7 +304,6 @@ module DotCoop
     keys = SeOpenData::CSV::Standard::V1::UniqueKeys.map { |sym| SeOpenData::CSV::Standard::V1::Headers[sym] }
     domain_header = SeOpenData::CSV::Standard::V1::Headers[:homepage]
     name_header = SeOpenData::CSV::Standard::V1::Headers[:name]
-errstr.puts "hello"
     SeOpenData::CSV.merge_and_de_duplicate(
       input,
       output,
