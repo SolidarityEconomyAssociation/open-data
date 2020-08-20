@@ -16,7 +16,7 @@ module SeOpenData
         SeOpenData::CSV::Schema.new(
           id: :sse_initiatives,
           name: "Solidarity Economy Initiatives",
-          version: 1, # FIXME think about this
+          version: 2,
           description: <<-HERE,
 
 ## Geographic coordinates
@@ -138,6 +138,11 @@ HERE
             },
             {id: :companies_house_number,
              header: 'Companies House Number',
+             desc: '',
+             comment: '',
+            },
+            {id: :qualifiers,
+             header: 'Qualifiers',
              desc: '',
              comment: '',
             },
