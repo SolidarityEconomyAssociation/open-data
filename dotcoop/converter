@@ -188,6 +188,7 @@ module DotCoop
            twitter: '',
            facebook: '',
            companies_house_number: '',
+           qualifiers: '',
            latitude: '',
            longitude: '',
            geocontainer: '',
