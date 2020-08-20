@@ -169,7 +169,7 @@ module SeOpenData
       end
 
       nm = name_map
-      $stderr.puts(name_map.keys)
+#      $stderr.puts(name_map.keys)
       #name_map groups them by name
       #merge entries (in csv_map) that have the same name, and a leivenstein distance of < 2
       name_map.each { |name, val|
