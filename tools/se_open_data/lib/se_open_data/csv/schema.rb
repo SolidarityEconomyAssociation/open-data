@@ -15,14 +15,24 @@ module SeOpenData
       DEFAULT_OUTPUT_CSV_OPTS = {
       }
       
-      attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids, :field_headers
+      attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids,
+                  :field_headers, :primary_key
       
-      def initialize(id:, name: id, version: 0, description: '', comment: '', fields:)
+      def initialize(id:, name: id, version: 0, description: '', comment: '', fields:,
+                     primary_key: [])
         @id = id.to_sym
         @name = name.to_s
         @fields = normalise_fields(fields)
         @version = version
         @description = description
+        invalids = []
+        @primary_key = primary_key.to_a.collect do |id|
+          invalids << id unless @fields.find(id) # validate
+          id # copy
+        end
+        unless invalids.empty?
+          raise "primary_key parameter contains these invalid field IDs #{invalids}"
+        end
         
         # Pre-compute these. Trust that nothing will get mutated!
         @field_ids = @fields.collect { |field| field.id }
