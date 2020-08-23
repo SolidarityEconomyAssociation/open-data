@@ -368,7 +368,8 @@ module DotCoop
     ) do | # These parameters match source schema field ids
            id:,
            name:,
-           postcode:
+           postcode:,
+           **rest
            |
            # A mapping to the target schema field ids
            {
