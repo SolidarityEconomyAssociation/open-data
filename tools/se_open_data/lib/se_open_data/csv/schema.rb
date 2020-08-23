@@ -75,7 +75,7 @@ module SeOpenData
 
         return map if invalids.empty?
 
-        raise ArgumentError, "invalid header fields #{headers}: #{invalids.join('; ')}"
+        raise ArgumentError, "these header fields are invalid for this schema :#{@id}, #{headers}, because #{invalids.join('; ')}"
       end
 
       # Turns an array of values into a hash keyed by field ID.
@@ -327,7 +327,7 @@ module SeOpenData
             end
           end
         rescue => e
-          raise "error when converting row #{index} of schema :#{@from_schema.id} to :#{@to_schema.id} : #{e.message}"
+          raise "error when converting row #{index} of CSV data, exected to have schema :#{@from_schema.id}, to schema :#{@to_schema.id} : #{e.message}"
         end
 
         alias convert each_row
