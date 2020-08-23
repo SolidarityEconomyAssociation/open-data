@@ -171,6 +171,12 @@ module SeOpenData
         @fields.find {|field| field.id == id }
       end
 
+      # Converts the schema into a hash mapping field IDs to field headers
+      # @return {Hash<Symbol,String>} the hash of field IDs to field headers
+      def to_h
+        @fields.map {|field| [field.id, field.header] }.to_h
+      end
+
       # This implements the top-level DSL for CSV conversions.
       def self.converter(from_schema:, to_schema:,
                          input_csv_opts: DEFAULT_INPUT_CSV_OPTS,

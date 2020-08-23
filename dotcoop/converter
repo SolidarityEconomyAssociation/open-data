@@ -266,26 +266,26 @@ module DotCoop
                                  replace_address: false, csv_opts: {})
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
-    output_standard = SeOpenData::CSV::Standard::V1
     geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
     geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
     subhash = lambda do |hash, *keys|
       keys = keys.select { |k| hash.key?(k) }
       Hash[keys.zip(hash.values_at(*keys))]
     end
+    headers = StdSchema.to_h
     SeOpenData::CSV.add_postcode_lat_long(
         input,
         output,
-        output_standard::Headers[:postcode],
-        output_standard::Headers[:country_name],
-        subhash.call(output_standard::Headers,
+        StdSchema.field(:postcode).header,
+        StdSchema.field(:country_name).header,
+        subhash.call(headers,
                 :geocontainer,
                 :geocontainer_lat,
                 :geocontainer_lon),
         lat_lng_cache,
         csv_opts,
         postcode_global_cache,
-        subhash.call(output_standard::Headers,
+        subhash.call(headers,
                 :street_address,
                 :locality,
                 :region,
@@ -304,10 +304,14 @@ module DotCoop
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
     errstr = File.open(errfile, "w")
+
+    # primary key of the outgoing schema
+    keys = StdSchema.primary_key.map { |id| StdSchema.field(id).header } 
+
+    # These fields of the outgoing schema
+    domain_header = StdSchema.field(:homepage).header
+    name_header = StdSchema.field(:name).header
     
-    keys = SeOpenData::CSV::Standard::V1::UniqueKeys.map { |sym| SeOpenData::CSV::Standard::V1::Headers[sym] }
-    domain_header = SeOpenData::CSV::Standard::V1::Headers[:homepage]
-    name_header = SeOpenData::CSV::Standard::V1::Headers[:name]
     SeOpenData::CSV.merge_and_de_duplicate(
       input,
       output,
@@ -331,10 +335,10 @@ module DotCoop
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
 
-    domain_header = SeOpenData::CSV::Standard::V1::Headers[:homepage]
-    name_header = SeOpenData::CSV::Standard::V1::Headers[:name]
-    lat = SeOpenData::CSV::Standard::V1::Headers[:geocontainer_lat]
-    lon = SeOpenData::CSV::Standard::V1::Headers[:geocontainer_lon]
+    domain_header = StdSchema.field(:homepage).header
+    name_header = StdSchema.field(:name).header
+    lat = StdSchema.field(:geocontainer_lat).header
+    lon = StdSchema.field(:geocontainer_lon).header
 
 
     SeOpenData::CSV.merge_and_remove_latlon_dups(
@@ -387,13 +391,10 @@ module DotCoop
   # documentation folder
   def self.document_geocoder(converted: nil, docs_folder: 'docs/',
                              postcode_global_cache:, api_key:)
-    require "opencage/geocoder"
-
-    output_standard = SeOpenData::CSV::Standard::V1
-    api_standard = SeOpenData::CSV::Standard::GeoapifyStandard
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
-    geoapify = APIStandard::Geocoder.new(api_key)
-    geoapify.gen_geo_report(postcode_global_cache, 0.25, docs_folder, converted, ["Website"])
+    geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
+    header = StdSchema.field(:homepage).header
+    geoapify.gen_geo_report(postcode_global_cache, 0.05, docs_folder, converted, [header])
   end
 
   class CsvFilter < SeOpenData::CSV::RowReader
