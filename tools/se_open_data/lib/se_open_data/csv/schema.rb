@@ -152,6 +152,15 @@ module SeOpenData
               "these hash keys do not match any field IDs of schema '#{@id}': #{id_hash.keys.join(', ')}"
       end
 
+      # Looks up a field by ID
+      #
+      # @param id {Symbol|#to_sym}
+      # @return {Field} the matching field, or nil if none found.
+      def field(id)
+        id = id.to_sym
+        @fields.find {|field| field.id == id }
+      end
+
       # This implements the top-level DSL for CSV conversions.
       def self.converter(from_schema:, to_schema:,
                          input_csv_opts: DEFAULT_INPUT_CSV_OPTS,
