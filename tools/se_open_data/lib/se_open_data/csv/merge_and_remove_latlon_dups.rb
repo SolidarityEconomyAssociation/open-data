@@ -48,7 +48,6 @@ module SeOpenData
       lat,
       lon
     )
-      domainHeader = "Website"
       small_words = %w(on the and ltd limited llp community SCCL)
       small_word_regex = /\b#{small_words.map { |w| w.upcase }.join("|")}\b/
 
