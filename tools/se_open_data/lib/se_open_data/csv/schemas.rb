@@ -46,6 +46,7 @@ the value "Cooperative;Company"
 
 HERE
           comment: 'Initial version',
+          primary_key: [:id],
           fields: [
             {id: :id,
              header: 'Identifier',
@@ -201,6 +202,7 @@ the value "Cooperative;Company"
 
 HERE
           comment: 'Added "Qualifiers" field',
+          primary_key: [:id],
           fields: [
             {id: :id,
              header: 'Identifier',
