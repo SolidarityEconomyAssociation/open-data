@@ -44,12 +44,16 @@ module SeOpenData
         raise ArgumentError, "Field with index #{last_ix} cannot be normalised, #{error.message}"
       end
 
+      
+      # Validates an array of header names
+      #
       # Assumes that:
       # - Header names match the schema exactly
       # - There is one header which matches each field in the schema
       # - But there are no duplicate headers
       # - There may be unused headers
       #
+      # @param {Array<String>} an array of header names
       # @raise ArgumentError if any schema fields can't be matched or are duplicated
       # @return an array of row field indexes for schema field, or nil if that row field
       # is not included
