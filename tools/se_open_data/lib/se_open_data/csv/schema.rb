@@ -327,12 +327,19 @@ module SeOpenData
                   block_given? ? yield(**id_hash) : @block.call(**id_hash)
                 rescue ArgumentError => e
                   # Try to reword the error helpfully from:
-                  match = e.message.match(/missing keywords?: (.*)/)
+                  match = e.message.match(/(missing|unknown) keywords?: (.*)/)
                   if match
-                    # To this:
-                    raise ArgumentError,
-                          "block keyword parameters do not match '#{@from_schema.id}'"+
-                          " CSV schema field ids: #{match[1]}"
+                    if match[1] == 'unknown'
+                      # missing keywords
+                      raise ArgumentError,
+                            "block must consume remaining keyword parameters for these "+
+                            "'#{@from_schema.id}' CSV schema field ids: #{match[2]}"
+                    elsif match[1] == 'missing'
+                      # unknown keywords
+                      raise ArgumentError,
+                            "block keyword parameters do not match '#{@from_schema.id}'"+
+                            " CSV schema field ids: #{match[2]}"
+                    end
                   else
                     raise
                   end
