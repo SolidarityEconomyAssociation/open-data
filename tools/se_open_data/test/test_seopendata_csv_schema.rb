@@ -108,7 +108,7 @@ HERE
                           carrots: 'a',
                           cucumbers: 'a'})
             }.message
-           ).must_match "hash keys do not match 'schema1' schema field IDs: cucumbers"
+           ).must_match "these hash keys do not match any field IDs of 'schema1': cucumbers"
 
       # All fields must be present
       value(assert_raises(ArgumentError) {

@@ -145,7 +145,7 @@ module SeOpenData
         return row if id_hash.empty?
         
         raise ArgumentError,
-              "hash keys do not match '#{@id}' schema field IDs: #{id_hash.keys.join(', ')}"
+              "these hash keys do not match any field IDs of schema '#{@id}': #{id_hash.keys.join(', ')}"
       end
 
       # This implements the top-level DSL for CSV conversions.
@@ -276,7 +276,9 @@ module SeOpenData
         # @param input [String, IO] the file path or stream to read from
         # @param output [String, IO] the file path or stream to write to        
         def each_row(input, output)
+          index = 0
           stream(input, output) do |inputs, outputs|
+            index += 1
             csv_in = ::CSV.new(inputs, **@input_csv_opts)
             csv_out = ::CSV.new(outputs, **@output_csv_opts)
             
@@ -320,6 +322,8 @@ module SeOpenData
               end
             end
           end
+        rescue => e
+          raise "error when converting row #{index} of schema :#{@from_schema.id} to :#{@to_schema.id} : #{e.message}"
         end
 
         alias convert each_row
