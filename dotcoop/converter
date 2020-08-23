@@ -131,6 +131,9 @@ module DotCoop
       },
     ]
   )
+
+  # The output schema
+  StdSchema = SeOpenData::CSV::Schemas::Versions[1]
   
   # A convenient alias...
   types = SeOpenData::CSV::Schema::Types
@@ -152,7 +155,7 @@ module DotCoop
   # https://bugs.limesurvey.org/view.php?id=13747
   Converter = SeOpenData::CSV::Schema.converter(
     from_schema: Schema,
-    to_schema: SeOpenData::CSV::Schemas::Versions[1],
+    to_schema: StdSchema,
     input_csv_opts: {skip_blanks: true}
 #    output_csv_opts: {quote_empty: false}
   ) do | # These parameters match source schema field ids
@@ -356,7 +359,7 @@ module DotCoop
     output = File.open(outfile, "w")
 
     converter = SeOpenData::CSV::Schema.converter(
-      from_schema: SeOpenData::CSV::Schemas::Versions[1],
+      from_schema: StdSchema,
       to_schema: PostcodeIndexSchema,
     ) do | # These parameters match source schema field ids
            id:,
