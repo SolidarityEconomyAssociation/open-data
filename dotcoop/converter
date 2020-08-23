@@ -42,7 +42,7 @@ module DotCoop
     name: "DotCoop",
     version: 20200810, 
     comment: 'Initial version, may require amendment',
-
+    primary_key: [:registrant_id],
     fields: [
       {id: :domain,
        header: 'Domain',
