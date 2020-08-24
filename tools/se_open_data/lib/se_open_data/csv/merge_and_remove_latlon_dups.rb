@@ -36,10 +36,10 @@ module SeOpenData
     #
     # @param input_io          Input CSV (must have headers)
     # @param output_io         CSV with duplicates removed
-    # @param domainHeader      Array of column heading for the domain
-    # @param nameHeader        Array of column heading for the name
-    # @param lat      the latitude header
-    # @param lon      the longitude header
+    # @param domainHeader      column heading for the domain field
+    # @param nameHeader        column heading for the name field
+    # @param lat      column heading for the latitude field
+    # @param lon      column heading for the longitude field
     def CSV.merge_and_remove_latlon_dups(
       input_io,
       output_io,
