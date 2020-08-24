@@ -223,10 +223,6 @@ module DotCoop
     output_csv = config.STANDARD_CSV
     uri_name_postcode_csv = File.join(config.GEN_CSV_DIR, "uri-name-postcode.csv")
 
-    # Cache files
-    geodata_cache = File.join(__dir__, "..", "geodata_cache.json")
-    postcode_cache = File.join(__dir__, "..", "postcode_lat_lng.json")
-    
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
@@ -242,7 +238,7 @@ module DotCoop
                           outfile: corrected_geo_data_csv,
                           api_key: api_key,
                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                          postcode_global_cache: geodata_cache,
+                          postcode_global_cache: config.GEODATA_CACHE,
                           replace_address: "force")
     merge_doms_remove_dups(infile: corrected_geo_data_csv,
                            outfile: dedup_after_geo_csv,
@@ -252,7 +248,7 @@ module DotCoop
 
     make_uri_name_postcode(infile: output_csv, outfile: uri_name_postcode_csv,
                            uri_prefix: config.GRAPH_NAME)
-    document_geocoder(converted: deduplicated_csv, postcode_global_cache: geodata_cache,
+    document_geocoder(converted: deduplicated_csv, postcode_global_cache: config.GEODATA_CACHE,
                       api_key: api_key)
 
   rescue => e
