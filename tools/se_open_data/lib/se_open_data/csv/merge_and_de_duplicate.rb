@@ -91,6 +91,8 @@ module SeOpenData
       csvorig = nil
       csvorig = ::CSV.read(original_csv, **csv_opts) if original_csv != nil
 
+       # This seems to build a copy of the original csv in a hash addr_csv_original
+       # keyed by the unique identifiers of the original data
       if csvorig
         csvorig.each do |row|
           unless headers
