@@ -46,7 +46,7 @@ module SeOpenData
     # @param keys              Array of column headings that make up the unique key
     # @param domainHeader      Header name for the domain
     # @param nameHeader        Header name for the name
-    # @param original_csv      Original csv before geocoding
+    # @param original_csv      Original csv before geocoding. Must have the same schema!
     def CSV.merge_and_de_duplicate(
       input_io,
       output_io,
