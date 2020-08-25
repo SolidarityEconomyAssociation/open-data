@@ -249,7 +249,7 @@ module DotCoop
     make_uri_name_postcode(infile: output_csv, outfile: uri_name_postcode_csv,
                            uri_prefix: config.GRAPH_NAME)
     document_geocoder(converted: deduplicated_csv, postcode_global_cache: config.GEODATA_CACHE,
-                      api_key: api_key)
+                      docs_folder: File.join(config.TOP_OUTPUT_DIR, 'reports'), api_key: api_key)
 
   rescue => e
     raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
@@ -387,7 +387,7 @@ module DotCoop
   # kept (note that this will be a json in the future @param converted
   # the file used for geocoding @param docs_folder generated
   # documentation folder
-  def self.document_geocoder(converted: nil, docs_folder: 'docs/',
+  def self.document_geocoder(converted: nil, docs_folder:,
                              postcode_global_cache:, api_key:)
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
     geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
