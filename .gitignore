@@ -27,17 +27,10 @@ data/co-ops-uk/2016-06/websites.html
 
 # data/co-ops-uk/2016-06/generate-triples.rb creates JSON of initiatives, as temporary measure until SPARQL is in place to return these results:
 data/co-ops-uk/2016-06/initiatives.json
-dotcoop/domains2018-04-24/original-data
-dotcoop/domains2019-10-03/original-data
-dotcoop/domains2018-04-24/generated-data
-dotcoop/domains2019-10-03/generated-data
-dotcoop/domains2019-10-03/docs
-dotcoop/domains2018-04-24/docs
-dotcoop/domains2019-10-03/csv2geo.20191003_Results.csv
-dotcoop/domains2019-10-03/geodata_cache.json
 ICA/demo/generated-data/
 APIs
 tests
+
 # Mac OS/X cruft:
 .DS_Store
 
