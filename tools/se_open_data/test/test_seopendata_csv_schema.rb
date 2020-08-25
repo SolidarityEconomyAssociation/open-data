@@ -82,10 +82,10 @@ HERE
       # Invalid fields not allowed
       value(assert_raises(ArgumentError) {
               schema.id_hash(%w(a b c), [2,0,3])
-            }.message).must_match 'invalid field index 3'
+            }.message).must_match 'does not include the field index 3'
       value(assert_raises(ArgumentError) {
               schema.id_hash(%w(a b c), [2,0,-1])
-            }.message).must_match 'invalid field index -1'
+            }.message).must_match 'does not include the field index -1'
       
       # Duplicate fields not allowed
       value(assert_raises(ArgumentError) {

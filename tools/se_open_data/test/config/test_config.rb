@@ -39,15 +39,21 @@ describe SeOpenData::Config do
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => resource_dir + "/css/",
       "SRC_CSV_DIR" => caller_dir + "/original-data/",
+      "ORIGINAL_CSV" => "original.csv",
       "STANDARD_CSV" => caller_dir + "/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir + "/generated-data/",
       "URI_SCHEME" => "https",
       "USE_ENV_PASSWORDS" => false,
+      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
+      "DEPLOYMENT_WEB_USER" => "www-data",
+      "DEPLOYMENT_WEB_GROUP" => "www-data",
+      "VIRTUOSO_USER" => "root",
+      "VIRTUOSO_GROUP" => "root",
+      "USING_ICA_ACTIVITIES" => false,
       "URI_HOST" => "w3id.solidarityeconomy.coop",
       "URI_PATH_PREFIX" => "ica-youth-network",
       "DEPLOYMENT_SERVER" => "sea-0-admin",
       "DEPLOYMENT_WEBROOT" => "/var/www/html/data1.solidarityeconomy.coop/",
-      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
       "VIRTUOSO_ROOT_DATA_DIR" => "/home/admin/Virtuoso/BulkLoading/Data/",
       "SPARQL_ENDPOINT" => "http://store1.solidarityeconomy.coop:8890/sparql",
       "VIRTUOSO_PASS_FILE" => "deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password",
@@ -65,7 +71,6 @@ describe SeOpenData::Config do
       "SPARQL_GRAPH_NAME_FILE" => caller_dir + "/generated-data/sparql/default-graph-uri.txt",
       "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network",
       "ONE_BIG_FILE_BASENAME" => caller_dir + "/generated-data/virtuoso/all",
-      "CSS_FILES" => resource_dir + "/css/links.css,"+resource_dir+"/css/style.css",
       "SAME_AS_FILE" => "",
       "SAME_AS_HEADERS" => "",
       "DEPLOYMENT_DOC_SUBDIR" => "ica-youth-network",
@@ -129,10 +134,17 @@ HERE
       "AUTO_LOAD_TRIPLETS" => true,
       "CSS_SRC_DIR" => caller_dir+"/css/",
       "SRC_CSV_DIR" => caller_dir+"/original-data/",
+      "ORIGINAL_CSV" => "Youth-ledCoops.csv",
       "STANDARD_CSV" => caller_dir+"/generated-data/standard.csv",
       "TOP_OUTPUT_DIR" => caller_dir+"/generated-data/",
       "URI_SCHEME" => "https",
       "USE_ENV_PASSWORDS" => false,
+      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
+      "DEPLOYMENT_WEB_USER" => "www-data",
+      "DEPLOYMENT_WEB_GROUP" => "www-data",
+      "VIRTUOSO_USER" => "root",
+      "VIRTUOSO_GROUP" => "root",
+      "USING_ICA_ACTIVITIES" => false,
       "MULTI_EQUAL" => "foo=bar=baz",
       "EMPTY_EQUAL" => "",
       "withLowercase0123456789" => "# this is not a comment #",
@@ -140,12 +152,11 @@ HERE
       "unique1" => "unique1",
       "SHARED" => "shared",
       "map" => "hello",
-      "ORIGINAL_CSV" => "Youth-ledCoops.csv",
       "URI_HOST" => "w3id.solidarityeconomy.coop",
       "URI_PATH_PREFIX" => "ica-youth-network/",
       "DEPLOYMENT_SERVER" => "sea-0-admin",
       "DEPLOYMENT_WEBROOT" => "/var/www/html/data1.solidarityeconomy.coop/",
-      "ESSGLOBAL_URI" => "https://w3id.solidarityeconomy.coop/essglobal/V2a/",
+      "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
       "VIRTUOSO_ROOT_DATA_DIR" => "/home/admin/Virtuoso/BulkLoading/Data/",
       "SPARQL_ENDPOINT" => "http://store1.solidarityeconomy.coop:8890/sparql",
       "VIRTUOSO_PASS_FILE" => "deployments/dev-0.solidarityeconomy.coop/virtuoso/dba.password",
@@ -248,12 +259,12 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-dupes.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "config key 'SOMETHING' duplicated on line 3"
+      value(err.message).must_match "config key 'SOMETHING' duplicated on line 3"
     end
   end
 
@@ -263,21 +274,21 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "(space) should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-keys-1.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "invalid config key 'SOMETHING ELSE' at line 2"
+      value(err.message).must_match "invalid config key 'SOMETHING ELSE' at line 2"
     end
     
     it "(colon) should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-keys-2.txt")
-      end
+        end)
               .must_raise RuntimeError
       
-      err.message.must_match "invalid config key 'SOMETHING:ELSE' at line 2"
+      value(err.message).must_match "invalid config key 'SOMETHING:ELSE' at line 2"
     end
   end
   
@@ -287,12 +298,12 @@ HERE
     FileUtils.rm_r generated_dir if File.exist? generated_dir
 
     it "should raise an exception" do
-      err = proc do
+      err = value(proc do
         TestConfig.new(caller_dir+"/config/invalid-delims.txt")
-      end
+      end)
               .must_raise RuntimeError
       
-      err.message.must_match "config line with no '=' delimiter on line 2"
+      value(err.message).must_match "config line with no '=' delimiter on line 2"
     end
   end
   # FIXME test missing mandatory values
