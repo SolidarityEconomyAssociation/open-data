@@ -82,7 +82,7 @@ module SeOpenData
                           "Curaçao" => "CW",
                           "Cyprus" => "CY",
                           "Czech Republic" => "CZ",
-                          "Côte d'Ivoire": "CI",
+                          "Côte d’Ivoire": "CI",
                           "Denmark" => "DK",
                           "Djibouti" => "DJ",
                           "Dominica" => "DM",
@@ -238,6 +238,7 @@ module SeOpenData
                           "Suriname" => "SR",
                           "Svalbard and Jan Mayen" => "SJ",
                           "Swaziland" => "SZ",
+                          "Eswatini" => "SZ",
                           "Sweden" => "SE",
                           "Switzerland" => "CH",
                           "Syrian Arab Republic" => "SY",
@@ -295,11 +296,11 @@ module SeOpenData
             end
             #check search key length
             #remove elements to cut it down to size
-            while search_key.length > 130
-              temp = search_key.split(",")
-              temp.pop
-              search_key = temp.join(",")
-            end
+            # while search_key.length > 130
+            #   temp = search_key.split(",")
+            #   temp.pop
+            #   search_key = temp.join(",")
+            # end
             #return empty for unsensible key
             if search_key.length < 5
               return {}

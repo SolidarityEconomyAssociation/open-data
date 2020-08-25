@@ -86,7 +86,7 @@ module SeOpenData
           #standardize the address if indicated
           headersToUse = {}
 
-          if replace_address != nil || replace_address != false || replace_address != "force"
+          if replace_address != false
             headersToUse = allHeaders
           else
             headersToUse = new_headers

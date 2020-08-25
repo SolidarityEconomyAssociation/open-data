@@ -41,12 +41,17 @@ module SeOpenData
           end
         end
 
+        def self.uk_postcode?(s)
+          uk_postcode_regex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/
+          uk_postcode_regex.match(s)
+        end
+
         # @param address_array - an array that contains the address
         # @returns - a query for looking up the address
         def self.clean_and_build_address(address_array)
           return nil unless address_array
           address_array.reject! { |addr| addr == "" || addr == nil }
-          address_array.map! { |addr| addr.gsub(/[!@#$%^&*-]/, " ") } # remove special characters
+          address_array.map! { |addr| uk_postcode?(addr) ? addr.gsub(/[!@#$%^&*-]/, " ") : addr } # remove special characters
           search_key = address_array.join(", ")
           return nil unless search_key
           return search_key
