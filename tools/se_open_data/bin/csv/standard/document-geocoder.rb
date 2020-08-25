@@ -22,6 +22,7 @@ class OptParse
     options.postcodeunit_cache = nil
     options.converted = nil
     options.docs_folder = "docs/"
+    options.api_key = "geoapifyAPI.txt"
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: $0 [options]"
