@@ -8,11 +8,10 @@ function process {
     local dir="${1:?directory argument required}"
     (
 	cd $REPO_DIR/$dir &&
-	    $SEOD limesurvey_export &&
+	    $SEOD download &&
 	    $SEOD convert &&
 	    $SEOD generate &&
 	    sudo -nE $SEOD deploy &&
-	    sudo -nE $SEOD create_w3id &&
 	    sudo -nE $SEOD triplestore
     )
 }
