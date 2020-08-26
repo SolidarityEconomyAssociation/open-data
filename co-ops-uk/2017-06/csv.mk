@@ -59,7 +59,8 @@ URI_NAME_POSTCODE_RUBY := $(SE_OPEN_DATA_BIN_DIR)csv/standard/make-uri-name-post
 # The CSV_POSTCODEUNIT_ADDER script will convert postcodes into lat/long by 
 # getting linked data over the web. This is (currently) a slow process (plenty of room for speed ups!)
 # The POSTCODE_LAT_LNG_CACHE is a file for cacheing the results of these slow lookups.
-POSTCODE_LAT_LNG_CACHE := postcode_lat_lng.json
+POSTCODE_LAT_LNG_CACHE := ../../postcode_lat_lng.json
+POSTCODE_LAT_LNG_GLOBAL_CACHE := ../../geodata_cache.json
 
 RUBY := ruby -I $(SE_OPEN_DATA_LIB_DIR) 
 
