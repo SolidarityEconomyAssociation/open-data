@@ -60,12 +60,12 @@ HERE
       # Duplicate fields not allowed
       value(assert_raises(ArgumentError) {
               schema.validate_headers(%w(Apples Carrots Brussels\ Sprouts Apples))
-            }.message).must_match 'invalid header fields'
+            }.message).must_match 'header fields are invalid'
       
       # Missing fields not allowed
       value(assert_raises(ArgumentError) {
               schema.validate_headers(%w(Apples Carrots))
-            }.message).must_match 'invalid header fields'
+            }.message).must_match 'header fields are invalid'
     end
 
     it "should implement #id_hash" do
