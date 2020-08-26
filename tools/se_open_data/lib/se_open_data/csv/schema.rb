@@ -15,14 +15,24 @@ module SeOpenData
       DEFAULT_OUTPUT_CSV_OPTS = {
       }
       
-      attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids, :field_headers
+      attr_reader :id, :name, :version, :description, :comment, :fields, :field_ids,
+                  :field_headers, :primary_key
       
-      def initialize(id:, name: id, version: 0, description: '', comment: '', fields:)
+      def initialize(id:, name: id, version: 0, description: '', comment: '', fields:,
+                     primary_key: [])
         @id = id.to_sym
         @name = name.to_s
         @fields = normalise_fields(fields)
         @version = version
         @description = description
+        invalids = []
+        @primary_key = primary_key.to_a.collect do |id|
+          invalids << id unless @fields.find(id) # validate
+          id # copy
+        end
+        unless invalids.empty?
+          raise "primary_key parameter contains these invalid field IDs #{invalids}"
+        end
         
         # Pre-compute these. Trust that nothing will get mutated!
         @field_ids = @fields.collect { |field| field.id }
@@ -44,12 +54,16 @@ module SeOpenData
         raise ArgumentError, "Field with index #{last_ix} cannot be normalised, #{error.message}"
       end
 
+      
+      # Validates an array of header names
+      #
       # Assumes that:
       # - Header names match the schema exactly
       # - There is one header which matches each field in the schema
       # - But there are no duplicate headers
       # - There may be unused headers
       #
+      # @param {Array<String>} an array of header names
       # @raise ArgumentError if any schema fields can't be matched or are duplicated
       # @return an array of row field indexes for schema field, or nil if that row field
       # is not included
@@ -71,7 +85,7 @@ module SeOpenData
 
         return map if invalids.empty?
 
-        raise ArgumentError, "invalid header fields #{headers}: #{invalids.join('; ')}"
+        raise ArgumentError, "these header fields are invalid for this schema :#{@id}, #{headers}, because #{invalids.join('; ')}"
       end
 
       # Turns an array of values into a hash keyed by field ID.
@@ -145,7 +159,22 @@ module SeOpenData
         return row if id_hash.empty?
         
         raise ArgumentError,
-              "hash keys do not match '#{@id}' schema field IDs: #{id_hash.keys.join(', ')}"
+              "these hash keys do not match any field IDs of schema '#{@id}': #{id_hash.keys.join(', ')}"
+      end
+
+      # Looks up a field by ID
+      #
+      # @param id {Symbol|#to_sym}
+      # @return {Field} the matching field, or nil if none found.
+      def field(id)
+        id = id.to_sym
+        @fields.find {|field| field.id == id }
+      end
+
+      # Converts the schema into a hash mapping field IDs to field headers
+      # @return {Hash<Symbol,String>} the hash of field IDs to field headers
+      def to_h
+        @fields.map {|field| [field.id, field.header] }.to_h
       end
 
       # This implements the top-level DSL for CSV conversions.
@@ -276,7 +305,9 @@ module SeOpenData
         # @param input [String, IO] the file path or stream to read from
         # @param output [String, IO] the file path or stream to write to        
         def each_row(input, output)
+          index = 0
           stream(input, output) do |inputs, outputs|
+            index += 1
             csv_in = ::CSV.new(inputs, **@input_csv_opts)
             csv_out = ::CSV.new(outputs, **@output_csv_opts)
             
@@ -296,12 +327,19 @@ module SeOpenData
                   block_given? ? yield(**id_hash) : @block.call(**id_hash)
                 rescue ArgumentError => e
                   # Try to reword the error helpfully from:
-                  match = e.message.match(/missing keywords?: (.*)/)
+                  match = e.message.match(/(missing|unknown) keywords?: (.*)/)
                   if match
-                    # To this:
-                    raise ArgumentError,
-                          "block keyword parameters do not match '#{@from_schema.id}'"+
-                          " CSV schema field ids: #{match[1]}"
+                    if match[1] == 'unknown'
+                      # missing keywords
+                      raise ArgumentError,
+                            "block must consume remaining keyword parameters for these "+
+                            "'#{@from_schema.id}' CSV schema field ids: #{match[2]}"
+                    elsif match[1] == 'missing'
+                      # unknown keywords
+                      raise ArgumentError,
+                            "block keyword parameters do not match '#{@from_schema.id}'"+
+                            " CSV schema field ids: #{match[2]}"
+                    end
                   else
                     raise
                   end
@@ -320,6 +358,8 @@ module SeOpenData
               end
             end
           end
+        rescue => e
+          raise ArgumentError, "error when converting row #{index} of CSV data, exected to have schema :#{@from_schema.id}, to schema :#{@to_schema.id} : #{e.message}"
         end
 
         alias convert each_row

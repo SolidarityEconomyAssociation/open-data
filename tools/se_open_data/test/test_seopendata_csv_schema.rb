@@ -60,12 +60,12 @@ HERE
       # Duplicate fields not allowed
       value(assert_raises(ArgumentError) {
               schema.validate_headers(%w(Apples Carrots Brussels\ Sprouts Apples))
-            }.message).must_match 'invalid header fields'
+            }.message).must_match 'header fields are invalid'
       
       # Missing fields not allowed
       value(assert_raises(ArgumentError) {
               schema.validate_headers(%w(Apples Carrots))
-            }.message).must_match 'invalid header fields'
+            }.message).must_match 'header fields are invalid'
     end
 
     it "should implement #id_hash" do
@@ -108,7 +108,7 @@ HERE
                           carrots: 'a',
                           cucumbers: 'a'})
             }.message
-           ).must_match "hash keys do not match 'schema1' schema field IDs: cucumbers"
+           ).must_match "these hash keys do not match any field IDs of schema 'schema1': cucumbers"
 
       # All fields must be present
       value(assert_raises(ArgumentError) {

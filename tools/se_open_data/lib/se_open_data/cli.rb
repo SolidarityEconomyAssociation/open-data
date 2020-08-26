@@ -213,6 +213,11 @@ module SeOpenData
     def self.command_create_w3id
       config = load_config
 
+      if !config.respond_to? :W3ID_REMOTE_LOCATION
+        Log.info "No W3ID_REMOTE_LOCATION configured, skipping"
+        return
+      end
+      
       # Create w3id config
       redir = config.REDIRECT_W3ID_TO
 
@@ -347,7 +352,7 @@ HERE
       isql = <<-HERE
 isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
 HERE
-      if !config.has_key? :VIRTUOSO_SERVER
+      if !config.respond_to? :VIRTUOSO_SERVER
         return isql
       end
 

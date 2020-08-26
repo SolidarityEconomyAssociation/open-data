@@ -44,9 +44,9 @@ module SeOpenData
     # @param output_io         CSV with duplicates removed
     # @param error_io          CSV containing duplicates (no headers)
     # @param keys              Array of column headings that make up the unique key
-    # @param domainHeader      Array of column heading for the domain
-    # @param nameHeader        Array of column heading for the name
-    # @param original_csv      Original csv before geocoding
+    # @param domainHeader      Header name for the domain
+    # @param nameHeader        Header name for the name
+    # @param original_csv      Original csv before geocoding. Must have the same schema!
     def CSV.merge_and_de_duplicate(
       input_io,
       output_io,
@@ -91,6 +91,8 @@ module SeOpenData
       csvorig = nil
       csvorig = ::CSV.read(original_csv, **csv_opts) if original_csv != nil
 
+       # This seems to build a copy of the original csv in a hash addr_csv_original
+       # keyed by the unique identifiers of the original data
       if csvorig
         csvorig.each do |row|
           unless headers
@@ -124,7 +126,7 @@ module SeOpenData
         fields_key.tr!("^A-Za-z0-9", "")
         fields_key.upcase!
 
-        name = name.
+        name = name.to_s.
           gsub(/\s/, "").
           upcase.
           gsub(small_word_regex, "").
@@ -169,7 +171,7 @@ module SeOpenData
       end
 
       nm = name_map
-      $stderr.puts(name_map.keys)
+#      $stderr.puts(name_map.keys)
       #name_map groups them by name
       #merge entries (in csv_map) that have the same name, and a leivenstein distance of < 2
       name_map.each { |name, val|
