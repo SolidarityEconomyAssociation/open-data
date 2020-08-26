@@ -37,7 +37,7 @@ module SeOpenData
     end
 
     def self.command_run_all
-      %w(convert generate deploy create_w3id triplestore).each do |name|
+      %w(download convert generate deploy create_w3id triplestore).each do |name|
         puts "Running command #{name}"
         send "command_#{name}".to_sym
       end

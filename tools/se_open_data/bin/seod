@@ -17,7 +17,7 @@ usage:
 
 Where <command> can be:
 
-- limesurvey_export
+- download
 - convert
 - generate
 - deploy
