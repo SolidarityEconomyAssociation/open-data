@@ -77,7 +77,7 @@ module SeOpenData
       end
     end
 
-    # Runs the converter script in the current directory, if present
+    # Runs the `converter` script in the current directory, if present
     #
     # Note, although typically we expect the script to be written in
     # Ruby and use the SeOpenData library, we don't assume that and
@@ -106,7 +106,7 @@ module SeOpenData
         raise ArgumentError, "no 'converter' file found in current directory"
       end
       unless system converter_file
-        raise "converter command in current directory failed"
+        raise "'converter' command in current directory failed"
       end
     end
 
