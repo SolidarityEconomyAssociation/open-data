@@ -379,32 +379,6 @@ HERE
       raise
     end
 
-    private
-
-    # generates the autoload command, with the given password
-    def self.autoload_cmd(pass, config)
-      isql = <<-HERE
-isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
-HERE
-      if !config.respond_to? :VIRTUOSO_SERVER
-        return isql
-      end
-
-      return <<-HERE
-ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
-HERE
-    end
-
-    # escape double quotes in a string
-    def self.esc(string)
-      string.gsub('"', '\\"').gsub('\\', '\\\\')
-    end
-
-    # Delegates to Deployment#deploy
-    def self.deploy(*args)
-      SeOpenData::Utils::Deployment.new.deploy(*args)
-    end
-
     # Gets the content of an URL, following redirects
     #
     # Also sets the 'Accept: application/rdf+xml' header.
@@ -437,5 +411,32 @@ HERE
         response.value
       end
     end
+    
+    private
+
+    # generates the autoload command, with the given password
+    def self.autoload_cmd(pass, config)
+      isql = <<-HERE
+isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
+HERE
+      if !config.respond_to? :VIRTUOSO_SERVER
+        return isql
+      end
+
+      return <<-HERE
+ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
+HERE
+    end
+
+    # escape double quotes in a string
+    def self.esc(string)
+      string.gsub('"', '\\"').gsub('\\', '\\\\')
+    end
+
+    # Delegates to Deployment#deploy
+    def self.deploy(*args)
+      SeOpenData::Utils::Deployment.new.deploy(*args)
+    end
+
   end
 end
