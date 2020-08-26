@@ -466,7 +466,9 @@ module NewBridgeProject
          producer_coop = structure_SQ009
          stakeholder_coop = structure_SQ010
          community_interest_company = structure_SQ011
-         community_benefit_society = structure_SQ012         
+         community_benefit_society = structure_SQ012
+
+         (latitude, longitude) = [*location.to_s.split(';'), '', ''].collect &:strip
          {
       id: id,
       name: name,
@@ -531,11 +533,11 @@ module NewBridgeProject
       twitter: normalise_twitter_handle(twitter),
       facebook: normalise_facebook_account(facebook),
       companies_house_number: '',
-      latitude: '',
-      longitude: '',
-      geocontainer: '',#FIXME
-      geocontainer_lat: '',#FIXME
-      geocontainer_lon: '',#FIXME
+      latitude: latitude,
+      longitude: longitude,
+      geocontainer: '',
+      geocontainer_lat: '',
+      geocontainer_lon: '',
     }
   end
 

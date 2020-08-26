@@ -2,8 +2,7 @@
 source 'https://rubygems.org'
 
 # Ubuntu prereqs
-# sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev git
-# sudo apt-get install libzip ruby ruby-bundler
+# sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev git dev-libzip ruby ruby-bundler
 
 gem 'nokogiri'
 gem 'linkeddata'
