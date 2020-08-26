@@ -37,7 +37,7 @@ module SeOpenData
     end
 
     def self.command_run_all
-      %w(convert generate deploy create_w3id triplestore).each do |name|
+      %w(download convert generate deploy create_w3id triplestore).each do |name|
         puts "Running command #{name}"
         send "command_#{name}".to_sym
       end
@@ -77,7 +77,60 @@ module SeOpenData
       end
     end
 
-    # Runs the converter script in the current directory, if present
+    # Obtains new data from an HTTP URL
+    #
+    # The url needs to be configured as DOWNLOAD_URL
+    #
+    # FIXME document more
+    def self.command_http_download
+      # Find the config file...
+      config = load_config
+
+      # Make the target directory if needed
+      FileUtils.mkdir_p config.SRC_CSV_DIR
+
+      # Original src csv file
+      original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+
+      # Download the data
+      IO.write original_csv, fetch(config.DOWNLOAD_URL)
+    end
+ 
+    # Obtains new data by running the `downloader` script in the
+    # current directory, if present
+    #
+    # Does nothing if absent.
+    #
+    # May require credentials to be configured.
+    #
+    # Note, although typically we expect the script to be written in
+    # Ruby and use the SeOpenData library, we don't assume that and
+    # invoke it as a separate process, to allow other languages and
+    # tools to be used.
+    #
+    # The requirements are that:
+    #
+    # 1. Data is written, in whatever format, to the location named in
+    #    the configuration by the value of `ORIGINAL_CSV` in the
+    #    directory, relative to the script's directory, named by
+    #    `SRC_CSV_DIR`. (It doesn't actually have to be CSV format.)
+    #
+    # This allows the `converter` script and the rest of the
+    # conversion process can then continue to transform the data from
+    # here.
+    #
+    def self.command_download
+      downloader_file = File.join(Dir.pwd, "downloader")
+      unless File.exist? downloader_file
+        Log.warn "no 'downloader' file found in current directory, skipping"
+        return
+      end
+      unless system downloader_file
+        raise "'downloader' command in current directory failed"
+      end
+    end
+
+    # Runs the `converter` script in the current directory, if present
     #
     # Note, although typically we expect the script to be written in
     # Ruby and use the SeOpenData library, we don't assume that and
@@ -106,7 +159,7 @@ module SeOpenData
         raise ArgumentError, "no 'converter' file found in current directory"
       end
       unless system converter_file
-        raise "converter command in current directory failed"
+        raise "'converter' command in current directory failed"
       end
     end
 
@@ -345,32 +398,6 @@ HERE
       raise
     end
 
-    private
-
-    # generates the autoload command, with the given password
-    def self.autoload_cmd(pass, config)
-      isql = <<-HERE
-isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
-HERE
-      if !config.respond_to? :VIRTUOSO_SERVER
-        return isql
-      end
-
-      return <<-HERE
-ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
-HERE
-    end
-
-    # escape double quotes in a string
-    def self.esc(string)
-      string.gsub('"', '\\"').gsub('\\', '\\\\')
-    end
-
-    # Delegates to Deployment#deploy
-    def self.deploy(*args)
-      SeOpenData::Utils::Deployment.new.deploy(*args)
-    end
-
     # Gets the content of an URL, following redirects
     #
     # Also sets the 'Accept: application/rdf+xml' header.
@@ -403,5 +430,32 @@ HERE
         response.value
       end
     end
+    
+    private
+
+    # generates the autoload command, with the given password
+    def self.autoload_cmd(pass, config)
+      isql = <<-HERE
+isql-vt localhost dba "#{esc pass}" "#{esc config.VIRTUOSO_SCRIPT_REMOTE}"
+HERE
+      if !config.respond_to? :VIRTUOSO_SERVER
+        return isql
+      end
+
+      return <<-HERE
+ssh -T "#{esc config.VIRTUOSO_SERVER}" "#{esc isql.chomp}"
+HERE
+    end
+
+    # escape double quotes in a string
+    def self.esc(string)
+      string.gsub('"', '\\"').gsub('\\', '\\\\')
+    end
+
+    # Delegates to Deployment#deploy
+    def self.deploy(*args)
+      SeOpenData::Utils::Deployment.new.deploy(*args)
+    end
+
   end
 end
