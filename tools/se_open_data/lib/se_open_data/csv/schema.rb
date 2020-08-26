@@ -359,7 +359,7 @@ module SeOpenData
             end
           end
         rescue => e
-          raise "error when converting row #{index} of CSV data, exected to have schema :#{@from_schema.id}, to schema :#{@to_schema.id} : #{e.message}"
+          raise ArgumentError, "error when converting row #{index} of CSV data, exected to have schema :#{@from_schema.id}, to schema :#{@to_schema.id} : #{e.message}"
         end
 
         alias convert each_row
