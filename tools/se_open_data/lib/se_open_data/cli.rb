@@ -77,6 +77,25 @@ module SeOpenData
       end
     end
 
+    # Obtains new data from an HTTP URL
+    #
+    # The url needs to be configured as DOWNLOAD_URL
+    #
+    # FIXME document more
+    def self.command_http_download
+      # Find the config file...
+      config = load_config
+
+      # Make the target directory if needed
+      FileUtils.mkdir_p config.SRC_CSV_DIR
+
+      # Original src csv file
+      original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+
+      # Download the data
+      IO.write original_csv, fetch(config.DOWNLOAD_URL)
+    end
+ 
     # Obtains new data by running the `downloader` script in the
     # current directory, if present
     #
