@@ -77,6 +77,40 @@ module SeOpenData
       end
     end
 
+    # Obtains new data by running the `downloader` script in the
+    # current directory, if present
+    #
+    # Does nothing if absent.
+    #
+    # May require credentials to be configured.
+    #
+    # Note, although typically we expect the script to be written in
+    # Ruby and use the SeOpenData library, we don't assume that and
+    # invoke it as a separate process, to allow other languages and
+    # tools to be used.
+    #
+    # The requirements are that:
+    #
+    # 1. Data is written, in whatever format, to the location named in
+    #    the configuration by the value of `ORIGINAL_CSV` in the
+    #    directory, relative to the script's directory, named by
+    #    `SRC_CSV_DIR`. (It doesn't actually have to be CSV format.)
+    #
+    # This allows the `converter` script and the rest of the
+    # conversion process can then continue to transform the data from
+    # here.
+    #
+    def self.command_download
+      downloader_file = File.join(Dir.pwd, "downloader")
+      unless File.exist? downloader_file
+        Log.warn "no 'downloader' file found in current directory, skipping"
+        return
+      end
+      unless system downloader_file
+        raise "'downloader' command in current directory failed"
+      end
+    end
+
     # Runs the `converter` script in the current directory, if present
     #
     # Note, although typically we expect the script to be written in
