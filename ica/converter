@@ -6,6 +6,7 @@
 
 require_relative "../tools/se_open_data/lib/load_path"
 require "se_open_data"
+require "se_open_data/csv/add_postcode_lat_long"
 require "csv"
 
 # Defines a schema mapping for ica-youth-network data.
@@ -228,28 +229,24 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
     output_csv = config.STANDARD_CSV
     generated_reports_folder = config.GEN_CSV_DIR + "docs/"
 
-    if (File.file?(output_csv))
-      puts "Refusing to overwrite existing output file: #{output_csv}"
-    else
-      #
-
-      ## handle limesurvey
-      # generate the cleared error file
-      clean_headers input: csv_to_standard_1, output: cleared_errors
-      convert input: cleared_errors, output: converted
-      # # add locations TODO this should be making direct calls to the bin, instead of calling the system
-      latlngcmd = "ruby -I #{config.SE_OPEN_DATA_LIB_DIR} #{config.SE_OPEN_DATA_BIN_DIR}csv/standard/add-postcode-lat-long.rb " +
-                  "--postcodeunit-cache #{UK_POSTCODES_CACHE} --postcode-global-cache #{GLOBAL_POSTCODES_CACHE}" +
-                  " #{converted} > #{output_csv}"
-      puts latlngcmd
-      system latlngcmd
-
-      # generate the report files (no need to pass a key)
-      geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
-      geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
-      # ruby -I /home/dean/Documents/sea/open-data/tools/se_open_data/lib  ../../tools/se_open_data/bin/csv/standard/add-postcode-lat-long.rb --postcodeunit-cache postcode_lat_lng.json --postcode-global-cache geodata_cache.json generated-data/experimental/csv/de-duplicated.csv > generated-data/experimental/csv/corrected-geo-data.csv
-
-    end
+    # Get the Geoapify API key
+    pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+    api_key = pass.get config.GEOCODER_API_KEY_PATH
+    
+    # generate the cleared error file
+    clean_headers input: csv_to_standard_1, output: cleared_errors
+    convert input: cleared_errors, output: converted
+    # add location data
+    SeOpenData::CSV.add_postcode_lat_long(infile: converted,
+                                          outfile: output_csv,
+                                          api_key: api_key,
+                                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+                                          postcode_global_cache: config.GEODATA_CACHE,
+                                          replace_address: false)
+    
+    # generate the report files (no need to pass a key)
+    geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
+    geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
   end
 
   private
