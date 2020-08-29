@@ -234,12 +234,13 @@ module DotCoop
     merge_doms_remove_dups(infile: outlets_csv,
                            outfile: deduplicated_csv,
                            errfile: ignored_duplicates_csv)
-    add_postcode_lat_long(infile: deduplicated_csv,
-                          outfile: corrected_geo_data_csv,
-                          api_key: api_key,
-                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                          postcode_global_cache: config.GEODATA_CACHE,
-                          replace_address: "force")
+    SeOpenData::CSV.add_postcode_lat_long(
+      infile: deduplicated_csv,
+      outfile: corrected_geo_data_csv,
+      api_key: api_key,
+      lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+      postcode_global_cache: config.GEODATA_CACHE,
+      replace_address: "force")
     merge_doms_remove_dups(infile: corrected_geo_data_csv,
                            outfile: dedup_after_geo_csv,
                            errfile: ignored_duplicates_csv,
@@ -256,46 +257,6 @@ module DotCoop
   end
 
   private
-
-  # FIXME Perhaps move this wrapper somewhere shared?
-  def self.add_postcode_lat_long(infile:, outfile:,
-                                 api_key:, lat_lng_cache:, postcode_global_cache:,
-                                 replace_address: false, csv_opts: {})
-    input = File.open(infile, "r:bom|utf-8")
-    output = File.open(outfile, "w")
-    geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
-    geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
-    subhash = lambda do |hash, *keys|
-      keys = keys.select { |k| hash.key?(k) }
-      Hash[keys.zip(hash.values_at(*keys))]
-    end
-    headers = StdSchema.to_h
-    SeOpenData::CSV.add_postcode_lat_long(
-        input,
-        output,
-        StdSchema.field(:postcode).header,
-        StdSchema.field(:country_name).header,
-        subhash.call(headers,
-                :geocontainer,
-                :geocontainer_lat,
-                :geocontainer_lon),
-        lat_lng_cache,
-        csv_opts,
-        postcode_global_cache,
-        subhash.call(headers,
-                :street_address,
-                :locality,
-                :region,
-                :postcode,
-                :country_name),
-        replace_address,
-        geocoder_headers,
-        geocoder
-      )
-  ensure
-    input.close
-    output.close
-  end
 
   def self.merge_doms_remove_dups(infile:, outfile:, errfile: File::NULL, original_csv: nil)
     input = File.open(infile, "r:bom|utf-8")

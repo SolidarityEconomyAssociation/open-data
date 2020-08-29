@@ -8,6 +8,50 @@ end
 
 module SeOpenData
   module CSV
+    require "se_open_data/csv/schemas"
+
+    # The latest output schema
+    StdSchema = SeOpenData::CSV::Schemas::Versions[-1]
+      
+    def self.add_postcode_lat_long(infile:, outfile:,
+                                   api_key:, lat_lng_cache:, postcode_global_cache:,
+                                   replace_address: false, csv_opts: {})
+      input = File.open(infile, "r:bom|utf-8")
+      output = File.open(outfile, "w")
+      geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
+      geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
+      subhash = lambda do |hash, *keys|
+        keys = keys.select { |k| hash.key?(k) }
+        Hash[keys.zip(hash.values_at(*keys))]
+      end
+      headers = StdSchema.to_h
+      SeOpenData::CSV._add_postcode_lat_long(
+        input,
+        output,
+        StdSchema.field(:postcode).header,
+        StdSchema.field(:country_name).header,
+        subhash.call(headers,
+                     :geocontainer,
+                     :geocontainer_lat,
+                     :geocontainer_lon),
+        lat_lng_cache,
+        csv_opts,
+        postcode_global_cache,
+        subhash.call(headers,
+                     :street_address,
+                     :locality,
+                     :region,
+                     :postcode,
+                     :country_name),
+        replace_address,
+        geocoder_headers,
+        geocoder
+      )
+    ensure
+      input.close
+      output.close
+    end
+  
     # Transforms a CSV file, adding latitude and longitude fields
     # obtained by geocoding a postcode field.
     #
@@ -32,7 +76,7 @@ module SeOpenData
     # @param replace_address [Boolean] set to true if we should replace the current address headers && set to "force" if we should replace the headers with whatever the geocoder finds (i.e.replace the field even if the geocoder finds nothing)
     # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
     # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
-    def self.add_postcode_lat_long(
+    def self._add_postcode_lat_long(
       input_io,
       output_io,
       input_csv_postcode_header,

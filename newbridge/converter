@@ -645,7 +645,7 @@ module NewBridgeProject
     
     geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
     geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
-      SeOpenData::CSV.add_postcode_lat_long(
+      SeOpenData::CSV._add_postcode_lat_long(
         input,
         output,
         OutputStandard::Headers[:postcode],
