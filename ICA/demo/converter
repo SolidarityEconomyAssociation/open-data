@@ -238,7 +238,7 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
       clean_headers input: csv_to_standard_1, output: cleared_errors
       convert input: cleared_errors, output: converted
       # # add locations TODO this should be making direct calls to the bin, instead of calling the system
-      latlngcmd = "ruby -I #{config.SE_OPEN_DATA_LIB_DIR} #{config.SE_OPEN_DATA_BIN_DIR}csv/standard/add-postcode-lat-long.rb " +
+      latlngcmd = "ruby -I ../../tools/se_open_data/lib/ ../../tools/se_open_data/bin/csv/standard/add-postcode-lat-long.rb " +
                   "--postcodeunit-cache #{UK_POSTCODES_CACHE} --postcode-global-cache #{GLOBAL_POSTCODES_CACHE}" +
                   " #{converted} > #{output_csv}"
       puts latlngcmd
@@ -256,8 +256,8 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
-  UK_POSTCODES_CACHE = "postcode_lat_lng.json"
-  GLOBAL_POSTCODES_CACHE = "geodata_cache.json"
+  UK_POSTCODES_CACHE = "../../postcode_lat_lng.json"
+  GLOBAL_POSTCODES_CACHE = "../../geodata_cache.json"
 
   # See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
   # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
