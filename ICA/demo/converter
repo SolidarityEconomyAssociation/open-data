@@ -215,11 +215,10 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
   # the conversion process.
   def self.main
     # Find the config file...
-    config_file = Dir.glob(__dir__ + "/settings/{config,defaults}.txt").first
-    config = SeOpenData::Config.new(config_file)
+    config = SeOpenData::Config.load
 
     # original src csv files
-    csv_to_standard_1 = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV_1)
+    csv_to_standard_1 = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
     # Intermediate csv files
     cleared_errors = File.join(config.GEN_CSV_DIR, "cleared_errors.csv")
