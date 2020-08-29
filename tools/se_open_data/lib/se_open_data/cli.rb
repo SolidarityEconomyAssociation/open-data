@@ -453,8 +453,8 @@ HERE
     end
 
     # Delegates to Deployment#deploy
-    def self.deploy(*args)
-      SeOpenData::Utils::Deployment.new.deploy(*args)
+    def self.deploy(**args)
+      SeOpenData::Utils::Deployment.new.deploy(**args)
     end
 
   end

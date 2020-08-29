@@ -23,7 +23,7 @@ module SeOpenData
       id_to_rows = Hash.new {|h, k| h[k] = []}
       headers = nil
 
-      csv_in = ::CSV.new(input_io, csv_opts)
+      csv_in = ::CSV.new(input_io, **csv_opts)
       csv_in.each do |row|
         unless headers
           headers = row.headers
