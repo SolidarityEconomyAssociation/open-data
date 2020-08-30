@@ -42,6 +42,7 @@ module SeOpenData
       # @raise ...FIXME
       def deploy(from_dir:, to_dir:, to_server: nil, ensure_present: nil, exclude: nil,
                  owner: nil, group: nil, verbose: false)
+        Log.debug "deploy #{SeOpenData::Utils::LogHelper.dump_args(method(__method__), binding)}"
 
         args = %w(-rltgoDz)
 
