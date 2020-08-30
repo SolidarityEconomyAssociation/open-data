@@ -4,7 +4,7 @@
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
 
-require_relative '../../tools/se_open_data/lib/load_path'
+require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data'
 require 'csv'
 require 'json'
@@ -195,15 +195,9 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
     # Output csv file
     output_csv = config.STANDARD_CSV
     
-    if(File.file?(output_csv))
-      puts "Refusing to overwrite existing output file: #{output_csv}"
-    else
-      #convert to a csv file then to standard
-      convert_to_csv input: csv_to_standard_1, output: json_to_csv_file
-      convert input: json_to_csv_file, output: output_csv
-
-
-    end
+    #convert to a csv file then to standard
+    convert_to_csv input: csv_to_standard_1, output: json_to_csv_file
+    convert input: json_to_csv_file, output: output_csv
   end
 
   def self.country_code_to_name(code)
