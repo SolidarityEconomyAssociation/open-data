@@ -15,6 +15,7 @@ lon = SeOpenData::CSV::Standard::V1::Headers[:geocontainer_lon]
 SeOpenData::CSV.merge_and_remove_latlon_dups(
   ARGF.read,
   $stdout,
+  'docs',
   domainHeader,
   nameHeader,
   lat,

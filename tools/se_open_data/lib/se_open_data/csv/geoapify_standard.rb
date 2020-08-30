@@ -399,7 +399,8 @@ module SeOpenData
 
             # print documents
             verbose_fields = ["geocontainer_lat", "geocontainer_lon", "confidence"]
-            doc = SeOpenData::Utils::ErrorDocumentGenerator.new("", "", "", "", [], false)
+            doc = SeOpenData::Utils::ErrorDocumentGenerator.new("", "", "", "", [], false,
+                                                                output_dir: gen_dir)
             doc.generate_document_from_row_array(no_location_title, no_location_intro,
                                                  no_location_file, no_entries_array, no_entries_headers)
 

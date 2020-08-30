@@ -43,6 +43,7 @@ module SeOpenData
     # @param input_io          Input CSV (must have headers)
     # @param output_io         CSV with duplicates removed
     # @param error_io          CSV containing duplicates (no headers)
+    # @param reports_dir       directory into which to write report documents
     # @param keys              Array of column headings that make up the unique key
     # @param domainHeader      Header name for the domain
     # @param nameHeader        Header name for the name
@@ -51,6 +52,7 @@ module SeOpenData
       input_io,
       output_io,
       error_io,
+      reports_dir,
       keys,
       domainHeader,
       nameHeader,
@@ -301,7 +303,8 @@ module SeOpenData
         
         These documents make it clear how SEA is interpreting the DotCoop data and can be used by DotCoop to suggest corrections they can make to the source data.
         
-        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]", nameHeader, domainHeader, headers)
+        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]", nameHeader, domainHeader, headers,
+                                                                     output_dir: reports_dir)
 
       if original_csv != nil
         err_doc_client.add_similar_entries_fields_after_geo_uniform("Duplicates by Field after address cleaning with Geocoding service", "There are still some potential duplicates to find.

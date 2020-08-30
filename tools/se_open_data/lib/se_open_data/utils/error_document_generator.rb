@@ -9,12 +9,13 @@ module SeOpenData
     #
     # It uses prawn to generate a formatted PDF
     class ErrorDocumentGenerator
-      def initialize(title, introduction, name_header, domain_header, headers, create_title = true)
-        @title_pdf = "docs/titledoc.pdf"
-        @ids_pdf = "docs/idsdups.pdf"
-        @fields_pdf = "docs/fieldups.pdf"
-        @geo_pdf = "docs/geodups.pdf"
-        @lat_lon_pdf = "docs/latlngdups.pdf"
+      def initialize(title, introduction, name_header, domain_header, headers, create_title = true,
+                     output_dir: 'docs')
+        @title_pdf = File.join(output_dir, "titledoc.pdf")
+        @ids_pdf = File.join(output_dir, "idsdups.pdf")
+        @fields_pdf = File.join(output_dir, "fieldups.pdf")
+        @geo_pdf = File.join(output_dir, "geodups.pdf")
+        @lat_lon_pdf = File.join(output_dir, "latlngdups.pdf")
         @name_header = name_header
         @domain_header = domain_header
         @headers = headers
@@ -27,8 +28,8 @@ module SeOpenData
 
         pdf.text introduction, :size => 12  # sum
 
-        # Create the directory before rendering
-        FileUtils.mkdir_p File.dirname(@title_pdf)
+        # Create the output directory before rendering
+        FileUtils.mkdir_p output_dir
         pdf.render_file @title_pdf
 
         #create intro doc only if no other intro doc exists

@@ -223,6 +223,9 @@ module DotCoop
     output_csv = config.STANDARD_CSV
     uri_name_postcode_csv = File.join(config.GEN_CSV_DIR, "uri-name-postcode.csv")
 
+    # Reports dir
+    reports_dir = File.join(config.TOP_OUTPUT_DIR, 'reports')
+    
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
@@ -233,7 +236,8 @@ module DotCoop
     Converter.convert File.open(original_csv, "r:bom|utf-8"), outlets_csv
     merge_doms_remove_dups(infile: outlets_csv,
                            outfile: deduplicated_csv,
-                           errfile: ignored_duplicates_csv)
+                           errfile: ignored_duplicates_csv,
+                           reports_dir: reports_dir)
     SeOpenData::CSV.add_postcode_lat_long(
       infile: deduplicated_csv,
       outfile: corrected_geo_data_csv,
@@ -244,13 +248,15 @@ module DotCoop
     merge_doms_remove_dups(infile: corrected_geo_data_csv,
                            outfile: dedup_after_geo_csv,
                            errfile: ignored_duplicates_csv,
-                           original_csv: deduplicated_csv)
-    merge_doms_dedup_lonlat(infile: dedup_after_geo_csv, outfile: output_csv) 
+                           original_csv: deduplicated_csv,
+                           reports_dir: reports_dir)
+    merge_doms_dedup_lonlat(infile: dedup_after_geo_csv, outfile: output_csv,
+                            reports_dir: reports_dir)
 
     make_uri_name_postcode(infile: output_csv, outfile: uri_name_postcode_csv,
                            uri_prefix: config.GRAPH_NAME)
     document_geocoder(converted: deduplicated_csv, postcode_global_cache: config.GEODATA_CACHE,
-                      docs_folder: File.join(config.TOP_OUTPUT_DIR, 'reports'), api_key: api_key)
+                      docs_folder: reports_dir, api_key: api_key)
 
   rescue => e
     raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
@@ -258,7 +264,8 @@ module DotCoop
 
   private
 
-  def self.merge_doms_remove_dups(infile:, outfile:, errfile: File::NULL, original_csv: nil)
+  def self.merge_doms_remove_dups(infile:, outfile:, errfile: File::NULL,
+                                  reports_dir:, original_csv: nil)
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
     errstr = File.open(errfile, "w")
@@ -274,6 +281,7 @@ module DotCoop
       input,
       output,
       errstr,
+      reports_dir,
       keys,
       domain_header,
       name_header,
@@ -289,7 +297,7 @@ module DotCoop
   #
   # A duplicate is defined as having the same keys as a previous row.
   # OR if all other fields except the key field and the domain field are equal
-  def self.merge_doms_dedup_lonlat(infile:, outfile:)
+  def self.merge_doms_dedup_lonlat(infile:, outfile:, reports_dir:)
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
 
@@ -302,6 +310,7 @@ module DotCoop
     SeOpenData::CSV.merge_and_remove_latlon_dups(
       input,
       output,
+      reports_dir,
       domain_header,
       name_header,
       lat,

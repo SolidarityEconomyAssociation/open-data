@@ -36,6 +36,7 @@ module SeOpenData
     #
     # @param input_io          Input CSV (must have headers)
     # @param output_io         CSV with duplicates removed
+    # @param reports_dir       directory into which to wrote reports
     # @param domainHeader      column heading for the domain field
     # @param nameHeader        column heading for the name field
     # @param lat      column heading for the latitude field
@@ -43,6 +44,7 @@ module SeOpenData
     def CSV.merge_and_remove_latlon_dups(
       input_io,
       output_io,
+      reports_dir,
       domainHeader,
       nameHeader,
       lat,
@@ -121,7 +123,8 @@ module SeOpenData
         
         These documents make it clear how SEA is interpreting the DotCoop data and can be used by DotCoop to suggest corrections they can make to the source data.
         
-        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]", nameHeader, domainHeader, headers)
+        [We can provide these reports in other formats, csv, json etc. as requested, which may assist you using the data to correct the source data.]", nameHeader, domainHeader, headers,
+                                                                     output_dir: reports_dir)
 
       err_doc_client.add_similar_entries_latlon("Duplicates by Lat and Lon fields after Geocoding", "This is part of the cleaning with Geocoding service step.
         

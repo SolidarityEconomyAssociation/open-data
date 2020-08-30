@@ -57,6 +57,7 @@ SeOpenData::CSV.merge_and_de_duplicate(
   ARGF.read,
   $stdout,
   $stderr,
+  'docs',
   $options.keys,
   $options.domainHeader,
   $options.nameHeader,
