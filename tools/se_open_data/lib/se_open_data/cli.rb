@@ -188,6 +188,9 @@ module SeOpenData
       require "se_open_data/csv/standard"
       require "se_open_data/initiative/rdf"
       require "se_open_data/initiative/collection"
+      require "json"
+      require "etc"
+      require "socket"
       config = load_config
 
       # Delete and re-create an empty WWW_DIR directory.  It's
@@ -242,6 +245,24 @@ module SeOpenData
         collection.add_from_csv(input.read)
         collection.serialize_everything(config.GEN_DOC_DIR)
       end
+
+      # Write timestamp and hash metadata. This is so we can see where
+      # and how the data was generated.
+      # Note, meta.json absent at this point so is not included in doc_hash
+      commit_id = `git rev-parse HEAD 2>/dev/null`.chomp
+      commit_id += "-modified" if system('git diff-index --quiet HEAD')
+      standard_data_hash = `git hash-object #{config.STANDARD_CSV}`.chomp
+      doc_hash = `cd #{config.GEN_DOC_DIR} && find . | git hash-object --stdin`.chomp
+      metadata = {
+        timestamp: Time.now.getutc,
+        commit_id: commit_id,
+        standard_data_hash: standard_data_hash,
+        doc_hash: doc_hash,
+        user: Etc.getlogin,
+        host: Socket.gethostname,
+      }
+      meta_json = File.join(config.GEN_DOC_DIR, 'meta.json')
+      IO.write meta_json, metadata.to_json
     end
 
     # Deploys the generated data on a web server.
