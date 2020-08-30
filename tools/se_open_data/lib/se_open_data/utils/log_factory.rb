@@ -4,6 +4,27 @@ require 'logger'
 module SeOpenData
   module Utils
 
+    class LogHelper
+      # Gets a hash of the arguments of a method.
+      #
+      # Intended to use with logging, to show method arguments.
+      #
+      # Call like this:
+      #
+      #     SeOpenData::Utils::LogHelper.dump_args(method(__method__), binding)
+      #
+      # @param _method The calling method instance
+      # @param _binding The calling method's variable binding
+      # @return a hash of argument names to their values.
+      def self.dump_args(_method, _binding)
+        Hash[
+          _method.parameters.map.collect do |_, name|
+            [name, _binding.local_variable_get(name)]
+          end
+        ]
+      end
+    end
+
     # Defines a configurable logging mechanism
     #
     # Designed to be simple to include, without needing to be
