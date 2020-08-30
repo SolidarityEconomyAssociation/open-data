@@ -227,7 +227,7 @@ class Converter < SeOpenData::CSV::RowReader
 
     # Output csv file
     output_csv = config.STANDARD_CSV
-    generated_reports_folder = config.GEN_CSV_DIR + "docs/"
+    generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
 
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
