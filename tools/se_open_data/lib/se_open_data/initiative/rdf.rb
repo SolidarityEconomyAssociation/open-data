@@ -37,7 +37,7 @@ module SeOpenData
       end
 
       def uri_s
-        "#{config.uri_prefix}#{initiative.id}"
+        ::File.join(config.uri_prefix, initiative.id)
       end
 
       def uri
