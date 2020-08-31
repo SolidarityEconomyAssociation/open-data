@@ -16,7 +16,7 @@ function process {
     )
 }
 
-for dir in oxford newbridge; do
+for dir in oxford newbridge dotcoop; do
     echo "PROCESSING $dir..."
     process "$dir"
     echo
