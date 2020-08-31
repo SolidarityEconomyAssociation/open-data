@@ -342,7 +342,7 @@ module DotCoop
            {
              uri: File.join(uri_prefix, id), # concats with a '/'
              name: name,
-             postcode: postcode.upcase.gsub(/\s+/, ""),
+             postcode: postcode.to_s.upcase.gsub(/\s+/, ""),
            }
            end
            
