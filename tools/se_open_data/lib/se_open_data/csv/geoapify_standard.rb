@@ -387,12 +387,12 @@ module SeOpenData
             # sort bad location
             low_confidence_array.sort! { |x, y| -(y["confidence"] <=> x["confidence"]) }
 
-            no_location_file = gen_dir + "EntriesWithoutALocation.pdf"
+            no_location_file = File.join(gen_dir,"EntriesWithoutALocation.pdf")
             no_location_title = "Entries That Could Not be Geocoded"
             no_location_intro = "In this file we present the entries that could not be geocoded using the details described in each row.
             In total there are #{no_entries_array.length} entries without a location."
 
-            bad_location_file = gen_dir + "LowConfidenceEntries.pdf"
+            bad_location_file = File.join(gen_dir,"LowConfidenceEntries.pdf")
             bad_location_title = "Entries That Are Geocoded With Low Confidence"
             bad_location_intro = "In this file we present the entries that are geocoded, but with a low confidence factor (below #{confidence_level}).
             In total there are #{low_confidence_array.length} entries which were geocoded with low confidence."
@@ -408,7 +408,7 @@ module SeOpenData
                                                  bad_location_file, low_confidence_array, low_confidence_headers, verbose_fields)
 
             # write bad-location entries to csv
-            ::CSV.open(gen_dir + "bad_location.csv", "w") do |csv|
+            ::CSV.open(File.join(gen_dir, "bad_location.csv"), "w") do |csv|
               csv << low_confidence_headers.reject { |h| headers_to_not_print.include?(h) }
               low_confidence_array.each { |r|
                 rowarr = []
@@ -418,7 +418,7 @@ module SeOpenData
             end
 
             # write no-location entries to csv
-            ::CSV.open(gen_dir + "no_location.csv", "w") do |csv|
+            ::CSV.open(File.join(gen_dir,"no_location.csv"), "w") do |csv|
               csv << no_entries_headers.reject { |h| headers_to_not_print.include?(h) }
               no_entries_array.each { |r|
                 rowarr = []
