@@ -27,6 +27,9 @@
 require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data/cli'
 
-# Run the entry point if we're invoked as a script
-# This just does the csv download
-SeOpenData::Cli.command_http_download if __FILE__ == $0
+# Run the entry point if we're invoked as a script.  This just does
+# the csv download. But we also exit with the returned value, to
+# signal whether it succeeded (return code 0 or true), failed (1 or
+# false), or was just skipped because there is no new data (return
+# code 100)
+exit SeOpenData::Cli.command_http_download if __FILE__ == $0
