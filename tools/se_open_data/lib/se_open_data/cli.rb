@@ -103,6 +103,13 @@ module SeOpenData
     #
     # The url needs to be configured as DOWNLOAD_URL
     #
+    # Saves the HTTP ETAG code in a file named after the original csv,
+    # but with an `.etag` extension appended. If this ETAG file exists,
+    # this method checks if this has changed before downloading again,
+    # and returns 100 if it hasn't changed.
+    #
+    # Otherwise, returns true on success, or false otherwise.
+    #
     # FIXME document more
     def self.command_http_download
       # Find the config file...
@@ -114,8 +121,38 @@ module SeOpenData
       # Original src csv file
       original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
+      # ETAG file store
+      etag_file = original_csv+'.etag'
+      etag = etag(config.DOWNLOAD_URL)
+      
+      if File.exist? etag_file
+        # Check if we should inhibit another download
+        old_etag = IO.read(etag_file).strip
+        if old_etag == etag
+          warn "No new data"
+          return 100
+        end
+      end
+      
       # Download the data
+      IO.write etag_file, etag
       IO.write original_csv, fetch(config.DOWNLOAD_URL)
+      return true
+    rescue => e
+      warn e.message
+      return false
+    end
+ 
+    def self.command_etag
+      # Find the config file...
+      config = load_config
+
+      # Download the data
+      puts etag(config.DOWNLOAD_URL)
+      return true
+    rescue => e
+      warn e.message
+      return false 
     end
  
     # Obtains new data by running the `downloader` script in the
@@ -475,7 +512,7 @@ HERE
     # Also sets the 'Accept: application/rdf+xml' header.
     #
     # @return the query content
-    def self.fetch(uri_str, limit = 10)
+    def self.fetch(uri_str, limit: 10)
       require "net/http"
       raise ArgumentError, "too many HTTP redirects" if limit == 0
 
@@ -497,10 +534,43 @@ HERE
       when Net::HTTPRedirection
         location = response["location"]
         warn "redirected to #{location}"
-        fetch(location, limit - 1)
+        fetch(location, limit: limit - 1)
       else
         response.value
       end
+    end
+    
+    def self.head(uri_str, limit: 10)
+      require "net/http"
+      raise ArgumentError, "too many HTTP redirects" if limit == 0
+
+      uri = URI(uri_str)
+      request = Net::HTTP::Head.new(uri)
+      request["Accept"] = "application/rdf+xml"
+
+      puts "head #{uri}"
+      response = Net::HTTP.start(
+        uri.hostname, uri.port,
+        :use_ssl => uri.scheme == "https",
+      ) do |http|
+        http.request(request)
+      end
+
+      case response
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        location = response["location"]
+        warn "redirected to #{location}"
+        head(location, limit: limit - 1)
+      else
+        response
+      end
+    end
+
+    def self.etag(uri_str, limit: 10)
+      response = head(uri_str, limit: limit)
+      response['etag'].strip
     end
     
     private
