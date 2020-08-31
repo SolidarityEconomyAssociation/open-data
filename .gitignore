@@ -16,6 +16,9 @@
 *.old
 junk
 
+# Cached data should be written here (or checked out from a store)
+/caches/
+
 # data/co-ops-uk/2015-06/Makefile creates a directory for output:
 data/co-ops-uk/2015-06/generated-data
 

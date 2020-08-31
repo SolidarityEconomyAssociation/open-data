@@ -59,7 +59,7 @@ URI_NAME_POSTCODE_RUBY := $(SE_OPEN_DATA_BIN_DIR)csv/standard/make-uri-name-post
 # The CSV_POSTCODEUNIT_ADDER script will convert postcodes into lat/long by 
 # getting linked data over the web. This is (currently) a slow process (plenty of room for speed ups!)
 # The POSTCODE_LAT_LNG_CACHE is a file for cacheing the results of these slow lookups.
-POSTCODE_LAT_LNG_CACHE := ../../postcode_lat_lng.json
+POSTCODE_LAT_LNG_CACHE := ../../caches/postcode_lat_lng.json
 
 RUBY := ruby -I $(SE_OPEN_DATA_LIB_DIR) 
 
@@ -90,7 +90,7 @@ $(STD_DE_DUPED_CSV) : $(STD_FIXED_DUPS_CSV)  | $(GEN_CSV_DIR)
 
 # Populate the container lat/long fields, where the postcodeunit is the container:
 $(STANDARD_CSV) : $(STD_DE_DUPED_CSV) | $(GEN_CSV_DIR)
-	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE)  --postcode-global-cache ../../os_postcode_cache.json $< > $@
+	$(RUBY) $(CSV_POSTCODEUNIT_ADDER) --postcodeunit-cache $(POSTCODE_LAT_LNG_CACHE)  --postcode-global-cache ../../caches/os_postcode_cache.json $< > $@
 
 # Create a CSV file from the STANDARD one with just a few columns: URI, Name and Normalized postcode
 $(STD_URI_NAME_POSTCODE_CSV): $(STANDARD_CSV) | $(GEN_CSV_DIR)
