@@ -8,8 +8,8 @@ SRC_CSV_DIR := original-data/
 # Components of the URIs used in this dataset:
 # Generated URIs will datrt with: $(URI_SCHEME)://$(URI_HOST)/$(URI_PATH_PREFIX)
 URI_SCHEME := https
-URI_HOST := w3id.solidarityeconomy.coop
-URI_PATH_PREFIX := ica-youth-network/
+URI_HOST := dev.lod.coop
+URI_PATH_PREFIX := ica-youth-network
 
 ###########################################
 # To where are the Linked Data to be deployed?
