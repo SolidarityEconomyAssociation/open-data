@@ -36,11 +36,25 @@ module SeOpenData
       end
     end
 
+    # Runs all the steps required to download and redeploy data.
+    #
+    # If any step fails to return success, it stops and subsequent
+    # steps are not executed.
+    #
+    # @return true if all steps succed, false if any fail.
     def self.command_run_all
       %w(download convert generate deploy create_w3id triplestore).each do |name|
         puts "Running command #{name}"
-        send "command_#{name}".to_sym
+        rc = send "command_#{name}".to_sym
+        if rc != true && rc != 0
+          warn "stopping, #{name} failed"
+          return false
+        end
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Removes all the generated files in the directory set by
@@ -49,6 +63,10 @@ module SeOpenData
       config = load_config
       puts "Deleting #{config.TOP_OUTPUT_DIR} and any contents."
       FileUtils.rm_rf config.TOP_OUTPUT_DIR
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Obtains new data from limesurvey.
@@ -75,6 +93,10 @@ module SeOpenData
       ) do |exporter|
         IO.write src_file, exporter.export_responses(config.LIMESURVEY_SURVEY_ID, "csv", "en")
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Obtains new data from an HTTP URL
@@ -119,15 +141,26 @@ module SeOpenData
     # conversion process can then continue to transform the data from
     # here.
     #
+    # @return true on success, false on failure, or 100 (an
+    # arbitrarily chosen code) to indicate there is no downloader
+    # script, or that the script determinied there was nothing new to
+    # download. This allows unnecessary rebuilds to be avoided.
     def self.command_download
       downloader_file = File.join(Dir.pwd, "downloader")
       unless File.exist? downloader_file
         Log.warn "no 'downloader' file found in current directory, skipping"
-        return
+        return 100
       end
       unless system downloader_file
+        if $?.exitstatus == 100
+          return 100
+        end
         raise "'downloader' command in current directory failed"
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Runs the `converter` script in the current directory, if present
@@ -161,6 +194,10 @@ module SeOpenData
       unless system converter_file
         raise "'converter' command in current directory failed"
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Generates the static data in `WWW_DIR` and `GEN_SPARQL_DIR`
@@ -263,6 +300,10 @@ module SeOpenData
       }
       meta_json = File.join(config.GEN_DOC_DIR, 'meta.json')
       IO.write meta_json, metadata.to_json
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Deploys the generated data on a web server.
@@ -280,6 +321,10 @@ module SeOpenData
         group: config.DEPLOYMENT_WEB_GROUP,
         verbose: true,
       )
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
@@ -289,7 +334,7 @@ module SeOpenData
 
       if !config.respond_to? :W3ID_REMOTE_LOCATION
         Log.info "No W3ID_REMOTE_LOCATION configured, skipping"
-        return
+        return true
       end
       
       # Create w3id config
@@ -357,6 +402,10 @@ HERE
         owner: config.DEPLOYMENT_WEB_USER,
         group: config.DEPLOYMENT_WEB_GROUP,
       )
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Uploads the linked-data graph to the Virtuoso triplestore server
@@ -413,10 +462,12 @@ HERE
 ****\t#{autoload_cmd "<PASSWORD>", config}
 HERE
       end
-    rescue
+      return true
+    rescue => e
       # Delete this output file, and rethrow
       File.delete config.VIRTUOSO_SCRIPT_LOCAL if File.exist? config.VIRTUOSO_SCRIPT_LOCAL
-      raise
+      warn e.message
+      return false
     end
 
     # Gets the content of an URL, following redirects
