@@ -26,6 +26,15 @@ Where <command> can be:
 - run_all
 - clean
 
+The return code indicates whether these commands succeed or not. A
+zero return code indicuates success, as usual for console commands. A
+non-zero value indicates something else: typically failure.
+
+However the download command may return the value 100 to indicate that
+either there is no download script, or that it has determined there is
+no new data to download. This is so that later steps can be skipped in
+this case.
+
 USAGE
 
 command, *rest = ARGV
@@ -35,4 +44,4 @@ method = "command_#{command}".to_sym
 abort usage unless SeOpenData::Cli.respond_to? method
 
 puts "invoking command: #{command}"
-SeOpenData::Cli.send method
+exit SeOpenData::Cli.send(method)

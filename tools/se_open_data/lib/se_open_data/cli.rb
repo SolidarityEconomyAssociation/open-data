@@ -36,11 +36,25 @@ module SeOpenData
       end
     end
 
+    # Runs all the steps required to download and redeploy data.
+    #
+    # If any step fails to return success, it stops and subsequent
+    # steps are not executed.
+    #
+    # @return true if all steps succed, false if any fail.
     def self.command_run_all
       %w(download convert generate deploy create_w3id triplestore).each do |name|
         puts "Running command #{name}"
-        send "command_#{name}".to_sym
+        rc = send "command_#{name}".to_sym
+        if rc != true && rc != 0
+          warn "stopping, #{name} failed"
+          return false
+        end
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Removes all the generated files in the directory set by
@@ -49,6 +63,10 @@ module SeOpenData
       config = load_config
       puts "Deleting #{config.TOP_OUTPUT_DIR} and any contents."
       FileUtils.rm_rf config.TOP_OUTPUT_DIR
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Obtains new data from limesurvey.
@@ -75,11 +93,22 @@ module SeOpenData
       ) do |exporter|
         IO.write src_file, exporter.export_responses(config.LIMESURVEY_SURVEY_ID, "csv", "en")
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Obtains new data from an HTTP URL
     #
     # The url needs to be configured as DOWNLOAD_URL
+    #
+    # Saves the HTTP ETAG code in a file named after the original csv,
+    # but with an `.etag` extension appended. If this ETAG file exists,
+    # this method checks if this has changed before downloading again,
+    # and returns 100 if it hasn't changed.
+    #
+    # Otherwise, returns true on success, or false otherwise.
     #
     # FIXME document more
     def self.command_http_download
@@ -92,8 +121,38 @@ module SeOpenData
       # Original src csv file
       original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
+      # ETAG file store
+      etag_file = original_csv+'.etag'
+      etag = etag(config.DOWNLOAD_URL)
+      
+      if File.exist? etag_file
+        # Check if we should inhibit another download
+        old_etag = IO.read(etag_file).strip
+        if old_etag == etag
+          warn "No new data"
+          return 100
+        end
+      end
+      
       # Download the data
+      IO.write etag_file, etag
       IO.write original_csv, fetch(config.DOWNLOAD_URL)
+      return true
+    rescue => e
+      warn e.message
+      return false
+    end
+ 
+    def self.command_etag
+      # Find the config file...
+      config = load_config
+
+      # Download the data
+      puts etag(config.DOWNLOAD_URL)
+      return true
+    rescue => e
+      warn e.message
+      return false 
     end
  
     # Obtains new data by running the `downloader` script in the
@@ -119,15 +178,26 @@ module SeOpenData
     # conversion process can then continue to transform the data from
     # here.
     #
+    # @return true on success, false on failure, or 100 (an
+    # arbitrarily chosen code) to indicate there is no downloader
+    # script, or that the script determinied there was nothing new to
+    # download. This allows unnecessary rebuilds to be avoided.
     def self.command_download
       downloader_file = File.join(Dir.pwd, "downloader")
       unless File.exist? downloader_file
         Log.warn "no 'downloader' file found in current directory, skipping"
-        return
+        return 100
       end
       unless system downloader_file
+        if $?.exitstatus == 100
+          return 100
+        end
         raise "'downloader' command in current directory failed"
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Runs the `converter` script in the current directory, if present
@@ -161,6 +231,10 @@ module SeOpenData
       unless system converter_file
         raise "'converter' command in current directory failed"
       end
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Generates the static data in `WWW_DIR` and `GEN_SPARQL_DIR`
@@ -263,6 +337,10 @@ module SeOpenData
       }
       meta_json = File.join(config.GEN_DOC_DIR, 'meta.json')
       IO.write meta_json, metadata.to_json
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Deploys the generated data on a web server.
@@ -280,6 +358,10 @@ module SeOpenData
         group: config.DEPLOYMENT_WEB_GROUP,
         verbose: true,
       )
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # This inserts an .htaccess file on the w3id.solidarityeconomy.coop website
@@ -289,7 +371,7 @@ module SeOpenData
 
       if !config.respond_to? :W3ID_REMOTE_LOCATION
         Log.info "No W3ID_REMOTE_LOCATION configured, skipping"
-        return
+        return true
       end
       
       # Create w3id config
@@ -357,6 +439,10 @@ HERE
         owner: config.DEPLOYMENT_WEB_USER,
         group: config.DEPLOYMENT_WEB_GROUP,
       )
+      return true
+    rescue => e
+      warn e.message
+      return false
     end
 
     # Uploads the linked-data graph to the Virtuoso triplestore server
@@ -413,10 +499,12 @@ HERE
 ****\t#{autoload_cmd "<PASSWORD>", config}
 HERE
       end
-    rescue
+      return true
+    rescue => e
       # Delete this output file, and rethrow
       File.delete config.VIRTUOSO_SCRIPT_LOCAL if File.exist? config.VIRTUOSO_SCRIPT_LOCAL
-      raise
+      warn e.message
+      return false
     end
 
     # Gets the content of an URL, following redirects
@@ -424,7 +512,7 @@ HERE
     # Also sets the 'Accept: application/rdf+xml' header.
     #
     # @return the query content
-    def self.fetch(uri_str, limit = 10)
+    def self.fetch(uri_str, limit: 10)
       require "net/http"
       raise ArgumentError, "too many HTTP redirects" if limit == 0
 
@@ -446,10 +534,43 @@ HERE
       when Net::HTTPRedirection
         location = response["location"]
         warn "redirected to #{location}"
-        fetch(location, limit - 1)
+        fetch(location, limit: limit - 1)
       else
         response.value
       end
+    end
+    
+    def self.head(uri_str, limit: 10)
+      require "net/http"
+      raise ArgumentError, "too many HTTP redirects" if limit == 0
+
+      uri = URI(uri_str)
+      request = Net::HTTP::Head.new(uri)
+      request["Accept"] = "application/rdf+xml"
+
+      puts "head #{uri}"
+      response = Net::HTTP.start(
+        uri.hostname, uri.port,
+        :use_ssl => uri.scheme == "https",
+      ) do |http|
+        http.request(request)
+      end
+
+      case response
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        location = response["location"]
+        warn "redirected to #{location}"
+        head(location, limit: limit - 1)
+      else
+        response
+      end
+    end
+
+    def self.etag(uri_str, limit: 10)
+      response = head(uri_str, limit: limit)
+      response['etag'].strip
     end
     
     private
