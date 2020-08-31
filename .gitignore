@@ -16,6 +16,9 @@
 *.old
 junk
 
+# Ignore this Ruby bundler config
+/tools/se_open_data/.bundle/
+
 # Cached data should be written here (or checked out from a store)
 /caches/
 
