@@ -19,7 +19,7 @@
 # deploying the linked data for this project, as configured by
 # `settings/config.txt`:
 #
-#     seod run-all
+#     seod run_all
 #
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
