@@ -21,7 +21,7 @@ module SeOpenData
     # Suggested usage is to use the defaults and allow the
     # `default.conf` (or `local.conf`, if present) to be picked up in
     # development mode (i.e. when `SEOD_CONFIG` is unset), and set
-    # `SEOD_CONFIG=prod.conf` for production environments. This allows
+    # `SEOD_CONFIG=production.conf` for production environments. This allows
     # both of these to be checked in, and for the default case to be
     # development; it also allows developers to have their own
     # environments defined in `local.conf` if they need it (and this
