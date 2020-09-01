@@ -596,6 +596,7 @@ HERE
 
     # Delegates to Deployment#deploy
     def self.deploy(**args)
+      warn "deploying to #{args.fetch(:to_server, 'localhost')}:#{args[:to_dir]}"
       SeOpenData::Utils::Deployment.new.deploy(**args)
     end
 
