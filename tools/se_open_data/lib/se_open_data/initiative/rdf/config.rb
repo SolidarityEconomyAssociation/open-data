@@ -26,7 +26,8 @@ module SeOpenData
         # @param sameas_csv [String] - name of CSV file with OWL sameAs relations. If defined, sameas_headers: must be defined too
         # @param sameas_headers [String] - CSV file where the equivalent URIs are stored
         def initialize(uri_prefix, essglobal_uri, one_big_file_basename, map_app_sparql_query_filename, css_files, postcodeunit_cache_filename, csv_standard, sameas_csv=nil, sameas_headers=nil, using_ica_activities=false)
-          @uri_prefix, @essglobal_uri, @postcodeunit_cache = uri_prefix, essglobal_uri, postcodeunit_cache
+          @uri_prefix = uri_prefix.sub(%r{/*$}, '/') # ensure trailing delim
+          @essglobal_uri, @postcodeunit_cache = essglobal_uri, postcodeunit_cache
           @essglobal_vocab = ::RDF::Vocabulary.new(essglobal_uri + "vocab/")
           @essglobal_standard = ::RDF::Vocabulary.new(essglobal_uri + "standard/")
           @one_big_file_basename = one_big_file_basename
