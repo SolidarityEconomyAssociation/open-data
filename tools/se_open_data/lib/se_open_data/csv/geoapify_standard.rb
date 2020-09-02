@@ -317,7 +317,12 @@ module SeOpenData
               cn = Country_Codes[country].downcase
               url = "https://api.geoapify.com/v1/geocode/search?text=#{uri_search_key}&&filter=countrycode:#{cn}&limit=1&apiKey=#{@api_key}"
             end
+
             results = HTTParty.get(url)
+            if results.code != 200
+              raise "Failed to geocode search key: #{search_key}"
+            end
+
             res_raw_json = JSON.parse(results.to_s)["features"]
             res_raw = (res_raw_json == nil || res_raw_json.length < 1) ? {} : res_raw_json[0]["properties"]
 
