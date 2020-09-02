@@ -655,7 +655,8 @@ module Oxford
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
     Converter.convert File.open(original_csv, "r:bom|utf-8"), initial_pass
     add_postcode_lat_long(infile: initial_pass, outfile: output_csv,
-                          api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,)
+                          api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+                          postcode_global_cache: config.GEODATA_CACHE)
   rescue => e
     raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
   end
@@ -712,7 +713,8 @@ module Oxford
     end
   end
 
-  def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:)
+  def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:,
+                                 postcode_global_cache:)
     input = File.open(infile, "r:bom|utf-8")
     output = File.open(outfile, "w")
     
@@ -720,7 +722,7 @@ module Oxford
     
     geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
     geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
-      SeOpenData::CSV._add_postcode_lat_long(
+    SeOpenData::CSV._add_postcode_lat_long(
         input,
         output,
         OutputStandard::Headers[:postcode],
@@ -731,7 +733,7 @@ module Oxford
                 :geocontainer_lon),
         lat_lng_cache,
         {},
-        nil, # postcodeunit_global_cache
+        postcode_global_cache,
         subhash(OutputStandard::Headers,
                 :street_address,
                 :locality,
