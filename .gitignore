@@ -33,8 +33,6 @@ data/co-ops-uk/2016-06/websites.html
 
 # data/co-ops-uk/2016-06/generate-triples.rb creates JSON of initiatives, as temporary measure until SPARQL is in place to return these results:
 data/co-ops-uk/2016-06/initiatives.json
-ICA/demo/generated-data/
-APIs
 tests
 
 # Mac OS/X cruft:
