@@ -153,7 +153,7 @@ HERE
       "SHARED" => "shared",
       "map" => "hello",
       "URI_HOST" => "w3id.solidarityeconomy.coop",
-      "URI_PATH_PREFIX" => "ica-youth-network/",
+      "URI_PATH_PREFIX" => "ica-youth-network",
       "DEPLOYMENT_SERVER" => "sea-0-admin",
       "DEPLOYMENT_WEBROOT" => "/var/www/html/data1.solidarityeconomy.coop/",
       "DEPLOYMENT_RSYNC_FLAGS" => "--delete",
@@ -173,12 +173,12 @@ HERE
       "SPARQL_LIST_GRAPHS_FILE" => caller_dir+"/generated-data/sparql/list-graphs.rq",
       "SPARQL_ENDPOINT_FILE" => caller_dir+"/generated-data/sparql/endpoint.txt",
       "SPARQL_GRAPH_NAME_FILE" => caller_dir+"/generated-data/sparql/default-graph-uri.txt",
-      "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network/",
+      "GRAPH_NAME" => "https://w3id.solidarityeconomy.coop/ica-youth-network",
       "ONE_BIG_FILE_BASENAME" => caller_dir+"/generated-data/virtuoso/all",
       "SAME_AS_FILE" => "",
       "SAME_AS_HEADERS" => "",
-      "DEPLOYMENT_DOC_SUBDIR" => "ica-youth-network/",
-      "DEPLOYMENT_DOC_DIR" => "/var/www/html/data1.solidarityeconomy.coop/ica-youth-network/",
+      "DEPLOYMENT_DOC_SUBDIR" => "ica-youth-network",
+      "DEPLOYMENT_DOC_DIR" => "/var/www/html/data1.solidarityeconomy.coop/ica-youth-network",
       "VIRTUOSO_NAMED_GRAPH_FILE" => caller_dir+"/generated-data/virtuoso/global.graph",
       "VIRTUOSO_SQL_SCRIPT" => "loaddata.sql",
       "VERSION" => "2020526214656",
@@ -187,7 +187,7 @@ HERE
       "VIRTUOSO_SCRIPT_REMOTE" => "/home/admin/Virtuoso/BulkLoading/Data/2020526214656/loaddata.sql",
       "W3ID_LOCAL_DIR" => caller_dir+"/generated-data/w3id/",
       "HTACCESS" => caller_dir+"/generated-data/w3id/.htaccess",
-      "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network/"
+      "REDIRECT_W3ID_TO" => "https://data1.solidarityeconomy.coop/ica-youth-network"
     }
     
     it "should generate an expected map" do
