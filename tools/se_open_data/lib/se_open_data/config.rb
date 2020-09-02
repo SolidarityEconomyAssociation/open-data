@@ -94,6 +94,18 @@ module SeOpenData
       @map["STANDARD_CSV"] = join @map["TOP_OUTPUT_DIR"], @map["STANDARD_CSV"]
       #csv.rb end
 
+      unless @map["URI_SCHEME"] =~ /^https?$/
+        raise "Invalid URI_SCHEME: must be http or https"
+      end
+      
+      # Clean up these - extra delimiters can cause havoc and be hard to find
+      %w(URI_HOST URI_PATH_PREFIX).each do |key|
+        # Just remove relatively harmless stuff, superfluous delimiters at the ends
+        @map[key] = @map[key]
+                      .sub(%r{[ /]+$},'')
+                      .sub(%r{^[ /]+},'')
+      end
+      
       # Used by static data generation
       @map["WWW_DIR"] = unixjoin @map["TOP_OUTPUT_DIR"], "www", ""
       @map["GEN_DOC_DIR"] = unixjoin @map["WWW_DIR"], "doc", ""
