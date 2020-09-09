@@ -232,7 +232,7 @@ class Converter < SeOpenData::CSV::RowReader
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
-    
+
     # generate the cleared error file
     clean_headers input: csv_to_standard_1, output: cleared_errors
     convert input: cleared_errors, output: converted
@@ -243,7 +243,7 @@ class Converter < SeOpenData::CSV::RowReader
                                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
                                           postcode_global_cache: config.GEODATA_CACHE,
                                           replace_address: false)
-    
+
     # generate the report files (no need to pass a key)
     geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
     geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
@@ -311,6 +311,8 @@ class Converter < SeOpenData::CSV::RowReader
     _struct_type: "Structure Type",
     _prim_activity: "Economic activity (primary)",
     _sup_activities: "Economic activities (additional)",
+    latitude: "Latitude",
+    longitude: "Longitude",
   }
   # MISSING!
   # primary_activity (name?)
