@@ -742,7 +742,8 @@ module Oxford
                 :country_name),
         true,
         geocoder_headers,
-        geocoder
+        geocoder,
+        true
       )
   ensure
     input.close

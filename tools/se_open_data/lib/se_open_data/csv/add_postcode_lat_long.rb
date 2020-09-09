@@ -12,10 +12,10 @@ module SeOpenData
 
     # The latest output schema
     StdSchema = SeOpenData::CSV::Schemas::Versions[-1]
-      
+
     def self.add_postcode_lat_long(infile:, outfile:,
                                    api_key:, lat_lng_cache:, postcode_global_cache:,
-                                   replace_address: false, csv_opts: {})
+                                   replace_address: false, csv_opts: {}, use_ordinance_survey: false)
       input = File.open(infile, "r:bom|utf-8")
       output = File.open(outfile, "w")
       geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
@@ -45,13 +45,14 @@ module SeOpenData
                      :country_name),
         replace_address,
         geocoder_headers,
-        geocoder
+        geocoder,
+        use_ordinance_survey
       )
     ensure
       input.close
       output.close
     end
-  
+
     # Transforms a CSV file, adding latitude and longitude fields
     # obtained by geocoding a postcode field.
     #
@@ -76,6 +77,7 @@ module SeOpenData
     # @param replace_address [Boolean] set to true if we should replace the current address headers && set to "force" if we should replace the headers with whatever the geocoder finds (i.e.replace the field even if the geocoder finds nothing)
     # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
     # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
+    # @param use_ordinance_survey [Boolean] set true to use ordinance survey to geocode UK postcodes
     def self._add_postcode_lat_long(
       input_io,
       output_io,
@@ -88,7 +90,8 @@ module SeOpenData
       address_headers,
       replace_address,
       geocoder_headers,
-      geocoder_standard
+      geocoder_standard,
+      use_ordinance_survey
     )
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, **csv_opts)
@@ -114,8 +117,7 @@ module SeOpenData
         # Only run if matches uk postcodes
         postcode = row[input_csv_postcode_header]
         country = row[input_country_header]
-        #if uk_postcode?(postcode)
-        if false #uk_postcode?(postcode) # UCOMMENT TO USE ORDINANCE SURVEY FOR UK POSTCODE GEOLOCATION
+        if use_ordinance_survey && uk_postcode?(postcode) # UCOMMENT TO USE ORDINANCE SURVEY FOR UK POSTCODE GEOLOCATION
           pcunit = postcode_client.get(postcode)
           loc_data = {
             geocontainer: pcunit ? pcunit[:within] : nil,

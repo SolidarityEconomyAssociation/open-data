@@ -39,6 +39,7 @@ class OptParse
                                                               :postcode,
                                                               :country_name)
     options.api_key = "geoapifyAPI.txt"
+    options.use_ordinance_survey = false
 
     options.geocoder_headers = APIStandard::Headers
     #should be in sync with STANDARD_CACHE_KEY_HEADERS
@@ -83,6 +84,11 @@ class OptParse
         options.replace_address = "force"
       end
 
+      opts.on("--use-ordinance-survey",
+              "replace address when geocoding") do |v|
+        options.use_ordinance_survey = true
+      end
+
       opts.separator ""
       opts.separator "Common options:"
 
@@ -116,7 +122,8 @@ SeOpenData::CSV._add_postcode_lat_long(
   $options.address_headers,
   $options.replace_address,
   $options.geocoder_headers,
-  $geocoder
+  $geocoder,
+  $options.use_ordinance_survey
 )
 
 # For debugging
