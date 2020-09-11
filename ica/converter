@@ -246,7 +246,8 @@ class Converter < SeOpenData::CSV::RowReader
 
     # generate the report files (no need to pass a key)
     geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
-    geoapify.gen_geo_report(GLOBAL_POSTCODES_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
+    geoapify.gen_geo_report(config.GEODATA_CACHE, 0.05, generated_reports_folder, converted, ["Description"])
+    geoapify.gen_geo_location_confidence_csv(config.GEODATA_CACHE,generated_reports_folder,converted)
   end
 
   private

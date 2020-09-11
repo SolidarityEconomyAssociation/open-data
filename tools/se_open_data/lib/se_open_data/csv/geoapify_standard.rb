@@ -377,7 +377,10 @@ module SeOpenData
               addr_array = []
               addr_headers.each { |header| addr_array.push(row[header]) if row.has_key? header }
               address = client.clean_and_build_address(addr_array)
-              if no_entries_map.has_key? address
+              # if no cached address and the address was not added manually
+              if row["Latitude"] && row["Latitude"] != ""
+                # skip manual cases
+              elsif no_entries_map.has_key? address
                 no_entries_array.push row
                 no_entries_headers = row.headers.reject { |h| headers_to_not_print.include?(h) } unless no_entries_headers
               elsif low_confidence_map.has_key? address
@@ -392,12 +395,12 @@ module SeOpenData
             # sort bad location
             low_confidence_array.sort! { |x, y| -(y["confidence"] <=> x["confidence"]) }
 
-            no_location_file = File.join(gen_dir,"EntriesWithoutALocation.pdf")
+            no_location_file = File.join(gen_dir, "EntriesWithoutALocation.pdf")
             no_location_title = "Entries That Could Not be Geocoded"
             no_location_intro = "In this file we present the entries that could not be geocoded using the details described in each row.
             In total there are #{no_entries_array.length} entries without a location."
 
-            bad_location_file = File.join(gen_dir,"LowConfidenceEntries.pdf")
+            bad_location_file = File.join(gen_dir, "LowConfidenceEntries.pdf")
             bad_location_title = "Entries That Are Geocoded With Low Confidence"
             bad_location_intro = "In this file we present the entries that are geocoded, but with a low confidence factor (below #{confidence_level}).
             In total there are #{low_confidence_array.length} entries which were geocoded with low confidence."
@@ -423,13 +426,65 @@ module SeOpenData
             end
 
             # write no-location entries to csv
-            ::CSV.open(File.join(gen_dir,"no_location.csv"), "w") do |csv|
+            ::CSV.open(File.join(gen_dir, "no_location.csv"), "w") do |csv|
               csv << no_entries_headers.reject { |h| headers_to_not_print.include?(h) }
               no_entries_array.each { |r|
                 rowarr = []
                 no_entries_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
                 csv << rowarr
               }
+            end
+          end
+
+          def gen_geo_location_confidence_csv(cached_entries_file, gen_dir, generated_standard_file)
+            return unless File.exist?(cached_entries_file)
+            # read in entries
+            entries_raw = File.read(cached_entries_file)
+            # is a map {key: properties}
+            entries_json = JSON.load entries_raw
+            addr_headers = Headers.keys.map { |a| SeOpenData::CSV::Standard::V1::Headers[a] }
+            client = SeOpenData::RDF::OsPostcodeGlobalUnit::Client
+            headers = nil
+
+            ::CSV.open(File.join(gen_dir, "marked_confidence_entries.csv"), "w") do |csv|
+              ::CSV.foreach(generated_standard_file, headers: true) do |row|
+                unless headers
+                  headers = row.headers
+                  headers.push "Confidence"
+                  csv << headers
+                end
+
+                # make a list of manuals
+                if row["Latitude"]
+                  row["Confidence"] = "manual"
+                  csv << row
+                  next
+                end
+
+                # make this with row
+                addr_array = []
+                addr_headers.each { |header| addr_array.push(row[header]) if row.has_key? header }
+                address = client.clean_and_build_address(addr_array)
+                #if the key exists
+                if !(entries_json.has_key? address) || !(entries_json[address].has_key?("rank"))
+                  row["Confidence"] = "none"
+                  csv << row
+                  next
+                end
+
+                row["geocontainer_lat"] = entries_json[address][Headers[:geocontainer_lat]]
+                row["geocontainer_lon"] = entries_json[address][Headers[:geocontainer_lon]]
+                conf = entries_json[address]["rank"]["confidence"].to_f
+                case
+                when conf < 0.33
+                  row["Confidence"] = "low"
+                when conf < 0.66
+                  row["Confidence"] = "medium"
+                else
+                  row["Confidence"] = "high"
+                end
+                csv << row
+              end
             end
           end
         end
