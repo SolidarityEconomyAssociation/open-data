@@ -409,34 +409,38 @@ module SeOpenData
             verbose_fields = ["geocontainer_lat", "geocontainer_lon", "confidence"]
             doc = SeOpenData::Utils::ErrorDocumentGenerator.new("", "", "", "", [], false,
                                                                 output_dir: gen_dir)
-            doc.generate_document_from_row_array(no_location_title, no_location_intro,
-                                                 no_location_file, no_entries_array, no_entries_headers)
+            if no_entries_array.length != 0
+              doc.generate_document_from_row_array(no_location_title, no_location_intro,
+                                                   no_location_file, no_entries_array, no_entries_headers)
 
-            doc.generate_document_from_row_array(bad_location_title, bad_location_intro,
-                                                 bad_location_file, low_confidence_array, low_confidence_headers, verbose_fields)
-
-            # write bad-location entries to csv
-            ::CSV.open(File.join(gen_dir, "bad_location.csv"), "w") do |csv|
-              csv << low_confidence_headers.reject { |h| headers_to_not_print.include?(h) }
-              low_confidence_array.each { |r|
-                rowarr = []
-                low_confidence_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
-                csv << rowarr
-              }
+              # write no-location entries to csv
+              ::CSV.open(File.join(gen_dir, "no_location.csv"), "w") do |csv|
+                csv << no_entries_headers.reject { |h| headers_to_not_print.include?(h) }
+                no_entries_array.each { |r|
+                  rowarr = []
+                  no_entries_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
+                  csv << rowarr
+                }
+              end
             end
 
-            # write no-location entries to csv
-            ::CSV.open(File.join(gen_dir, "no_location.csv"), "w") do |csv|
-              csv << no_entries_headers.reject { |h| headers_to_not_print.include?(h) }
-              no_entries_array.each { |r|
-                rowarr = []
-                no_entries_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
-                csv << rowarr
-              }
+            if low_confidence_array.length != 0
+              doc.generate_document_from_row_array(bad_location_title, bad_location_intro,
+                                                   bad_location_file, low_confidence_array, low_confidence_headers, verbose_fields)
+
+              # write bad-location entries to csv
+              ::CSV.open(File.join(gen_dir, "bad_location.csv"), "w") do |csv|
+                csv << low_confidence_headers.reject { |h| headers_to_not_print.include?(h) }
+                low_confidence_array.each { |r|
+                  rowarr = []
+                  low_confidence_headers.each { |h| rowarr.push(r[h]) if (!headers_to_not_print.include? h) }
+                  csv << rowarr
+                }
+              end
             end
           end
 
-          def gen_geo_location_confidence_csv(cached_entries_file, gen_dir, generated_standard_file)
+          def gen_geo_location_confidence_csv(cached_entries_file, gen_dir, generated_standard_file, low_bar = 0.25)
             return unless File.exist?(cached_entries_file)
             # read in entries
             entries_raw = File.read(cached_entries_file)
@@ -476,12 +480,10 @@ module SeOpenData
                 row["geocontainer_lon"] = entries_json[address][Headers[:geocontainer_lon]]
                 conf = entries_json[address]["rank"]["confidence"].to_f
                 case
-                when conf < 0.33
+                when conf < low_bar
                   row["Confidence"] = "low"
-                when conf < 0.66
-                  row["Confidence"] = "medium"
                 else
-                  row["Confidence"] = "high"
+                  row["Confidence"] = ""
                 end
                 csv << row
               end
