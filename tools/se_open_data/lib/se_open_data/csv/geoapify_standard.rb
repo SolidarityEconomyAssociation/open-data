@@ -442,6 +442,7 @@ module SeOpenData
 
           def gen_geo_location_confidence_csv(cached_entries_file, gen_dir, generated_standard_file, low_bar = 0.25)
             return unless File.exist?(cached_entries_file)
+            system "mkdir", "-p", gen_dir
             # read in entries
             entries_raw = File.read(cached_entries_file)
             # is a map {key: properties}
@@ -454,7 +455,7 @@ module SeOpenData
               ::CSV.foreach(generated_standard_file, headers: true) do |row|
                 unless headers
                   headers = row.headers
-                  headers.push "Confidence"
+                  headers.push ("Confidence")
                   csv << headers
                 end
 
@@ -476,14 +477,14 @@ module SeOpenData
                   next
                 end
 
-                row["geocontainer_lat"] = entries_json[address][Headers[:geocontainer_lat]]
-                row["geocontainer_lon"] = entries_json[address][Headers[:geocontainer_lon]]
+                row["Geo Container Latitude"] = entries_json[address][Headers[:geocontainer_lat]]
+                row["Geo Container Longitude"] = entries_json[address][Headers[:geocontainer_lon]]
                 conf = entries_json[address]["rank"]["confidence"].to_f
                 case
                 when conf < low_bar
                   row["Confidence"] = "low"
                 else
-                  row["Confidence"] = ""
+                  row["Confidence"] = "no comments"
                 end
                 csv << row
               end
