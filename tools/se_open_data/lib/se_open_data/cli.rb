@@ -669,7 +669,7 @@ HERE
 
     def self.etag(uri_str, limit: 10)
       response = head(uri_str, limit: limit)
-      response['etag'].strip
+      response['etag'].to_s.strip
     end
     
     private
