@@ -71,8 +71,64 @@ module SeOpenData
 
     # Obtains new data from limesurvey.
     #
-    # Require credentials to be configured.
-    # FIXME document more
+    # This method is designed to offer one implementation for the
+    # `downloader` script invoked by the (more generic)
+    # {#command_download} method. So to utilise it, typically the
+    # executable `downloader` Ruby script in the data project
+    # directory would contain something like this:
+    #
+    #     #!/usr/bin/env ruby
+    #     # coding: utf-8
+    #     require_relative '../tools/se_open_data/lib/load_path'
+    #     require 'se_open_data/cli'
+    #     
+    #     # Run the entry point which downloads the data if we're
+    #     # invoked as a script.  But also exit with the returned
+    #     # value, to signal whether it succeeded (return code 0 or
+    #     # true), failed (1 or false), or was just skipped because
+    #     # there is no new data (return code 100)
+    #     
+    #     exit SeOpenData::Cli.command_limesurvey_export if __FILE__ == $0
+    #
+    # Then the source of the data would be configured using one of the
+    # standard config files (`default.conf`, `local.conf` etc., @see
+    # {SeOpenData::Config}), using the following attributes:
+    #
+    # - `LIMESURVEY_SERVICE_URL` - the URL of the LimeSurvey API endpoint
+    # - `LIMESURVEY_SURVEY_ID` - the ID of the survey to download
+    # - `LIMESURVEY_USER` - the user name to authenticate with
+    # - `LIMESURVEY_PASSWORD_PATH` - a path to give to `pass` command
+    #    which will decrypt the password to authenticate with.
+    #
+    # e.g.:
+    #
+    #     LIMESURVEY_SERVICE_URL = https://solidarityeconomyassociation.limequery.com/index.php/admin/remotecontrol
+    #     LIMESURVEY_USER = Nick
+    #     LIMESURVEY_PASSWORD_PATH = people/nick/lime-survey.password 
+    #     LIMESURVEY_SURVEY_ID = 899558
+    #
+    # This then minimises the amount of duplication in each project,
+    # whilst still allowing projects do customise the exact operation
+    # of this step when that is needed.
+    #
+    # The step can be invoked directly like this:
+    #
+    #     ./downloader
+    #
+    # As well as via the {SeOpenData} library's command-line API
+    # {SeOpenData::Cli}:
+    #
+    #     seod download
+    #
+    # To run all the steps,
+    # @see #command_run_all
+    #
+    # The method works by downloading the data from the Lime Survey API.
+    # @see SeOpenData::LimeSurveyExporter
+    #
+    # @return true on success, 100 if there is no new data, or false
+    # on failure.  Although currently there is no way to detect when
+    # data has changed, so this method never returns 100.
     def self.command_limesurvey_export
       require "se_open_data/lime_survey_exporter"
       require "se_open_data/utils/password_store"
@@ -101,16 +157,59 @@ module SeOpenData
 
     # Obtains new data from an HTTP URL
     #
-    # The url needs to be configured as DOWNLOAD_URL
+    # This method is designed to offer one implementation for the
+    # `downloader` script invoked by the (more generic)
+    # {#command_download} method. So to utilise it, typically the
+    # executable `downloader` Ruby script in the data project
+    # directory would contain something like this:
     #
-    # Saves the HTTP ETAG code in a file named after the original csv,
-    # but with an `.etag` extension appended. If this ETAG file exists,
-    # this method checks if this has changed before downloading again,
-    # and returns 100 if it hasn't changed.
+    #     #!/usr/bin/env ruby
+    #     # coding: utf-8
+    #     require_relative '../tools/se_open_data/lib/load_path'
+    #     require 'se_open_data/cli'
+    #     
+    #     # Run the entry point which downloads the data if we're
+    #     # invoked as a script.  But also exit with the returned
+    #     # value, to signal whether it succeeded (return code 0 or
+    #     # true), failed (1 or false), or was just skipped because
+    #     # there is no new data (return code 100)
+    #     
+    #     exit SeOpenData::Cli.command_http_download if __FILE__ == $0
     #
-    # Otherwise, returns true on success, or false otherwise.
+    # Then the source of the data would be configured using one of the
+    # standard config files (`default.conf`, `local.conf` etc., @see
+    # {SeOpenData::Config}), using the `DOWNLOAD_URL` attribute.
+    # For example:
     #
-    # FIXME document more
+    #     DOWNLOAD_URL = https://example.com/original.csv
+    #
+    # This then minimises the amount of duplication in each project,
+    # whilst still allowing projects do customise the exact operation
+    # of this step when that is needed.
+    #
+    # The step can be invoked directly like this:
+    #
+    #     ./downloader
+    #
+    # As well as via the {SeOpenData} library's command-line API
+    # {SeOpenData::Cli}:
+    #
+    #     seod download
+    #
+    # To run all the steps,
+    # @see #command_run_all
+    #
+    # The method works as follows. The HTTP ETAG code is saved in a
+    # file named after the original csv, but with an `.etag` extension
+    # appended. If this ETAG file exists, this method checks if this
+    # has changed before downloading again, and returns 100 if it
+    # hasn't changed.
+    #
+    # (Obviously this requires that the remote web server supplies the
+    # ETAG header, and does it correctly.)
+    #
+    # @return true on success, 100 if there is no new data, or false
+    # on failure.
     def self.command_http_download
       # Find the config file...
       config = load_config
