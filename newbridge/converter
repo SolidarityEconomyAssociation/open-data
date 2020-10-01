@@ -375,14 +375,6 @@ module Converter
     input_csv_opts: {col_sep: ';', skip_blanks: true},
   ) do | # These parameters match source schema field ids
          id:,
-         submitdate:,
-         lastpage:,
-         startlanguage:,
-         seed:,
-         startdate:,
-         datestamp:,
-         ipaddr:,
-         refurl:,
          name:,
          address_a:,
          address_b:,
@@ -398,12 +390,6 @@ module Converter
          twitter:,
          description:,
          activity:,
-         network:,
-         websiteConsent:,
-         contactName:,
-         contactConsent_SQ001:,
-         contactConsent_SQ002:,
-         suggestedInitiatives:,
          approved:,
          structure_SQ001:,
          structure_SQ002:,
@@ -417,11 +403,6 @@ module Converter
          structure_SQ010:,
          structure_SQ011:,
          structure_SQ012:,
-         values_SQ001:,
-         values_SQ002:,
-         values_SQ003:,
-         values_SQ004:,
-         values_SQ005:,
          secondaryActivities_SQ002:,
          secondaryActivities_SQ003:,
          secondaryActivities_SQ004:,
@@ -434,7 +415,7 @@ module Converter
          secondaryActivities_SQ011:,
          secondaryActivities_SQ012:,
          secondaryActivities_SQ013:,
-         attendWorkshop:
+         **rest
          |
          # A mapping to the target schema field ids
 
