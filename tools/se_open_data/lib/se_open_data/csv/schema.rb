@@ -177,6 +177,35 @@ module SeOpenData
         @fields.map {|field| [field.id, field.header] }.to_h
       end
 
+
+      # This loads a schema from a (yaml) file
+      def self.load_file(file)
+        require 'yaml'
+        data = YAML.load_file(file)
+        data.transform_keys!(&:to_sym)
+        data[:fields].each { |field| field.transform_keys!(&:to_sym) }
+        return self.new(**data)
+      end
+
+
+      # This saves the schema to a (yaml) file
+      def save_file(file)
+        require 'yaml'
+        data = {
+          'id' => @id,
+          'name' => @name,
+          'version' => @version,
+          'primary_key' => @primary_key,
+          'comment' => @comment,
+          'fields' => @fields.collect { |field| field.to_h }, 
+        }
+        File.open(file, 'w') do |file|
+          file.write(YAML.dump(data))
+        end
+        return
+      end
+      
+      
       # This implements the top-level DSL for CSV conversions.
       def self.converter(from_schema:, to_schema:,
                          input_csv_opts: DEFAULT_INPUT_CSV_OPTS,
@@ -214,6 +243,15 @@ module SeOpenData
         # @return a new Field instance with the same values but the given index
         def add_index(index)
           Field.new(id: id, index: index, header: @header, desc: @desc, comment: comment)
+        end
+
+        # Converts the field definition to a hash.
+        #
+        # Primarily used for {Schema.save_file}, so omits the field index.
+        #
+        # @return a Hash object corresponding to this Field object.
+        def to_h
+          { 'id' => @id, 'header' => @header, 'desc' => @desc, 'comment' => @comment }
         end
       end
 
