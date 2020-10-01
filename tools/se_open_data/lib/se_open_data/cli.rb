@@ -226,8 +226,10 @@ module SeOpenData
       
       if File.exist? etag_file
         # Check if we should inhibit another download
+        # Note, an empty etag means there is no etag, so we should
+        # not inhibit the download in that case.
         old_etag = IO.read(etag_file).strip
-        if old_etag == etag
+        if old_etag != '' && old_etag == etag
           warn "No new data"
           return 100
         end
