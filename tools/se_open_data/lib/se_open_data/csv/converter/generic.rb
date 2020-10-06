@@ -185,6 +185,8 @@ module SeOpenData
                           email: email,
                           twitter: normalise_twitter_handle(twitter),
                           facebook: normalise_facebook_account(facebook),
+                          qualifiers: '',
+                          base_membership_type: '',
                           companies_house_number: '',
                           latitude: latitude,
                           longitude: longitude,
@@ -217,7 +219,7 @@ module SeOpenData
 
           # Create a csv converter
           from_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
-          to_schema = SeOpenData::CSV::Schemas::Versions[0];
+          to_schema = SeOpenData::CSV::Schemas::Latest;
           converter = mk_converter(from_schema: from_schema, to_schema: to_schema)
           
           # generate the cleared error file # FIXME remove if not needed
