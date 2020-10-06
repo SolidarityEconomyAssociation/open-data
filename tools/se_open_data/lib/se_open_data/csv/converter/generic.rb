@@ -10,7 +10,8 @@ module SeOpenData
     module Converter
       # Converts generic SSE initiative data
       #
-      # This needs to be a schema derived from FIXME
+      # This needs to be a schema whose fields are a superset of LimeSurveyCore
+      # @see SeOpenData::CSV::Schemas::LimeSurveyCore
       #
       module Generic
         # Sometimes a single column can take values that are in fact a
@@ -24,7 +25,8 @@ module SeOpenData
         # This creates a generic converter for mapping incoming data
         # with the specified incoming schema into the standard schema.
         #
-        # The incoming schema must have fields and primary keys matching FIXME
+        # The incoming schema must have all the fields and primary keys
+        # defined by LimeSurveyCore.
         #
         # The case-specific logic that maps the input field data is
         # defined in the do-block. It will be wrapped in a loop which
@@ -53,7 +55,6 @@ module SeOpenData
                         address_c:,
                         locality:,
                         postcode:,
-                        address_a1:,
                         location:,
                         email:,
                         phone:,
