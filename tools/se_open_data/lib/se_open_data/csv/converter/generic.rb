@@ -39,7 +39,7 @@ module SeOpenData
         # The delimiter appears to be configurable in the web download, but not in the API.
         # https://bugs.limesurvey.org/view.php?id=13747
         def self.mk_converter(from_schema:,
-                              to_schema: SeOpenData::CSV::Schemas::Versions[0],
+                              to_schema:,
                               input_csv_opts: {col_sep: ';', skip_blanks: true})
           return SeOpenData::CSV::Schema.converter(
                    from_schema: from_schema,
