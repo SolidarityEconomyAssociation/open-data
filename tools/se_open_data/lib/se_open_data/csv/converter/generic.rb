@@ -1,6 +1,7 @@
-require 'se_open_data'
 require 'se_open_data/config'
+require 'se_open_data/utils/password_store'
 require 'se_open_data/csv/add_postcode_lat_long'
+require 'se_open_data/csv/geoapify_standard'
 require 'se_open_data/csv/schema'
 require 'csv'
 
@@ -12,7 +13,13 @@ module SeOpenData
       # This needs to be a schema derived from FIXME
       #
       module Generic
-        OutputStandard = SeOpenData::CSV::Standard::V1 # FIXME remove
+        # Sometimes a single column can take values that are in fact a
+        # list.  So we need to know the character used to separate the
+        # items in the list.  For example, in the legal_form column,
+        # we might have an initiative that is both a 'Cooperative' and
+        # a 'Company', the cell would then have the value
+        # "Cooperative;Company"
+        SubFieldSeparator = ";"
         
         # This creates a generic converter for mapping incoming data
         # with the specified incoming schema into the standard schema.
@@ -120,7 +127,7 @@ module SeOpenData
                           name: name,
                           description: description,
                           organisational_structure: [
-                            ## Return a list of strings, separated by OutputStandard::SubFieldSeparator.
+                            ## Return a list of strings, separated by SubFieldSeparator.
                             ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
                             ## See lib/se_open_data/essglobal/legal_form.rb
                             community_group == "Y" ? "Community group (formal or informal)" : nil,
@@ -135,7 +142,7 @@ module SeOpenData
                             stakeholder_coop == "Y" ? "Multi-stakeholder co-operative" : nil,
                             community_interest_company == "Y" ? "Community Interest Company (CIC)" : nil,
                             community_benefit_society == "Y" ? "Community Benefit Society / Industrial and Provident Society (IPS)" : nil
-                          ].compact.join(OutputStandard::SubFieldSeparator),
+                          ].compact.join(SubFieldSeparator),
                           primary_activity: {
                             'SQ001' => 'Arts, Media, Culture & Leisure',
                             'SQ002' => 'Campaigning, Activism & Advocacy',
@@ -163,12 +170,12 @@ module SeOpenData
                             money == "Y" ? "Money & Finance" : nil,
                             nature == "Y" ? "Nature, Conservation & Environment" : nil,
                             reuse == "Y" ? "Reduce, Reuse, Repair & Recycle" : nil
-                          ].compact.join(OutputStandard::SubFieldSeparator),
+                          ].compact.join(SubFieldSeparator),
                           street_address: [
                             !address_a.empty? ? address_a : nil,
                             !address_b.empty? ? address_b : nil,
                             !address_c.empty? ? address_c : nil
-                          ].compact.join(OutputStandard::SubFieldSeparator),
+                          ].compact.join(SubFieldSeparator),
                           locality: address_d,
                           region: '',
                           postcode: address_e.to_s.upcase,
@@ -209,8 +216,9 @@ module SeOpenData
           api_key = pass.get config.GEOCODER_API_KEY_PATH
 
           # Create a csv converter
-          schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
-          converter = mk_converter(from_schema: schema)
+          from_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
+          to_schema = SeOpenData::CSV::Schemas::Versions[0];
+          converter = mk_converter(from_schema: from_schema, to_schema: to_schema)
           
           # generate the cleared error file # FIXME remove if not needed
           # SeOpenData::CSV.clean_up in_f: csv_to_standard, out_f: cleared_errors
@@ -220,7 +228,8 @@ module SeOpenData
           converter.convert File.open(original_csv, "r:bom|utf-8"), initial_pass
           add_postcode_lat_long(infile: initial_pass, outfile: output_csv,
                                 api_key: api_key, lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                                postcode_global_cache: config.GEODATA_CACHE)
+                                postcode_global_cache: config.GEODATA_CACHE,
+                                to_schema: to_schema)
         rescue => e
           raise "error transforming #{original_csv} into #{output_csv}: #{e.message}"
         end
@@ -282,7 +291,7 @@ module SeOpenData
         end
 
         def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:,
-                                       postcode_global_cache:)
+                                       postcode_global_cache:, to_schema: )
           input = File.open(infile, "r:bom|utf-8")
           output = File.open(outfile, "w")
           
@@ -290,19 +299,20 @@ module SeOpenData
           
           geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
           geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
+          headers = to_schema.to_h
           SeOpenData::CSV._add_postcode_lat_long(
             input,
             output,
-            OutputStandard::Headers[:postcode],
-            OutputStandard::Headers[:country_name],
-            subhash(OutputStandard::Headers,
+            headers[:postcode],
+            headers[:country_name],
+            subhash(headers,
                     :geocontainer,
                     :geocontainer_lat,
                     :geocontainer_lon),
             lat_lng_cache,
             {},
             postcode_global_cache,
-            subhash(OutputStandard::Headers,
+            subhash(headers,
                     :street_address,
                     :locality,
                     :region,
