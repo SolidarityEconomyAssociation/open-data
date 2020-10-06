@@ -88,6 +88,46 @@ module SeOpenData
         raise ArgumentError, "these header fields are invalid for this schema :#{@id}, #{headers}, because #{invalids.join('; ')}"
       end
 
+      # Checks whether this schema has is compatible with another.
+      #
+      # This requires our fields to include all of its fields (just
+      # the field id must match) and the primary key to be
+      # identical
+      #
+      # Headers may differ, as for our purposes these are assumed to
+      # be non-semantic labels which can vary. For instance a field
+      # with an id `:contact` could have a header `Contact Name` in
+      # one schema, and `Contact` in another, or even
+      # `Ansprechperson`, and these would still be semantically
+      # compatible.
+      #
+      # @param schema {SeOpenData::CSV::Schema} the schema to compare to
+      # @throw RuntimeError if this schema isn't a superset the given
+      def assert_superset_of(schema)
+        if schema.primary_key != @primary_key
+          raise RuntimeError.new(
+                  "schema :#{@id} is not a superset of :#{schema.id} because "+
+                  "its primary key #{@primary_key} does not match #{schema.primary_key}"
+                )
+        end
+
+        missing = []
+        schema.fields.each do |field1|
+          field2 = field(field1.id)
+          
+          if field2.nil?
+            missing.push(field1.id)
+            next
+          end
+        end
+        
+        return if missing.empty?
+        
+        raise RuntimeError.new(
+                "schema :#{@id} is not a superset of :#{schema.id} because "+
+                "these fields are absent from it: #{missing}")
+      end
+
       # Turns an array of values into a hash keyed by field ID.
       #
       # The values are validated during this process.
