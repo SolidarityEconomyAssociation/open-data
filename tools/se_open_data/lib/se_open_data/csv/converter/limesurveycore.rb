@@ -13,7 +13,7 @@ module SeOpenData
       # This needs to be a schema whose fields are a superset of LimeSurveyCore
       # @see SeOpenData::CSV::Schemas::LimeSurveyCore
       #
-      module Generic
+      module LimeSurveyCore
         # Sometimes a single column can take values that are in fact a
         # list.  So we need to know the character used to separate the
         # items in the list.  For example, in the legal_form column,
@@ -22,7 +22,7 @@ module SeOpenData
         # "Cooperative;Company"
         SubFieldSeparator = ";"
         
-        # This creates a generic converter for mapping incoming data
+        # This creates a generic converter for mapping incoming LimeQuery data
         # with the specified incoming schema into the standard schema.
         #
         # The incoming schema must have all the fields and primary keys

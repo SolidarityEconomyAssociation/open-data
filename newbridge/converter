@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 require_relative '../tools/se_open_data/lib/load_path'
-require 'se_open_data/csv/converter/generic'
+require 'se_open_data/csv/converter/limesurveycore'
 
 # Find the config file...
 config = SeOpenData::Config.load
 
 # Run the entry point if we're invoked as a script
 # This just does the csv conversion.
-SeOpenData::CSV::Converter::Generic.convert(config) if __FILE__ == $0
+SeOpenData::CSV::Converter::LimeSurveyCore.convert(config) if __FILE__ == $0
 

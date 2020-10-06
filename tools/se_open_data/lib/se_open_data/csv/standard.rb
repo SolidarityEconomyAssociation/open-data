@@ -1,4 +1,4 @@
-require 'se_open_data/csv/converter/generic'
+require 'se_open_data/csv/converter/limesurveycore'
 require 'se_open_data/csv/schemas'
 
 module SeOpenData
@@ -36,7 +36,7 @@ module SeOpenData
 
         # Defines the header ids (keys) and text (values).
         Headers = SeOpenData::CSV::Schemas::Latest.to_h
-        SubFieldSeparator = SeOpenData::CSV::Converter::Generic::SubFieldSeparator
+        SubFieldSeparator = SeOpenData::CSV::Converter::LimeSurveyCore::SubFieldSeparator
 
         # Keys should provide unique access to the dataset (no dups)
         UniqueKeys = [:id]
