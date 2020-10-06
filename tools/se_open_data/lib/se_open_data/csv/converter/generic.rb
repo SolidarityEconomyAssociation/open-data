@@ -51,8 +51,8 @@ module SeOpenData
                         address_a:,
                         address_b:,
                         address_c:,
-                        address_d:,
-                        address_e:,
+                        locality:,
+                        postcode:,
                         address_a1:,
                         location:,
                         email:,
@@ -63,63 +63,36 @@ module SeOpenData
                         description:,
                         activity:,
                         approved:,
-                        structure_SQ001:,
-                        structure_SQ002:,
-                        structure_SQ003:,
-                        structure_SQ004:,
-                        structure_SQ005:,
-                        structure_SQ006:,
-                        structure_SQ007:,
-                        structure_SQ008:,
-                        structure_SQ009:,
-                        structure_SQ010:,
-                        structure_SQ011:,
-                        structure_SQ012:,
-                        secondaryActivities_SQ002:,
-                        secondaryActivities_SQ003:,
-                        secondaryActivities_SQ004:,
-                        secondaryActivities_SQ005:,
-                        secondaryActivities_SQ006:,
-                        secondaryActivities_SQ007:,
-                        secondaryActivities_SQ008:,
-                        secondaryActivities_SQ009:,
-                        secondaryActivities_SQ010:,
-                        secondaryActivities_SQ011:,
-                        secondaryActivities_SQ012:,
-                        secondaryActivities_SQ013:,
+                        community_group:,
+                        non_profit:,
+                        social_enterprise:,
+                        charity:,
+                        company:,
+                        workers_coop:,
+                        housing_coop:,
+                        consumer_coop:,
+                        producer_coop:,
+                        stakeholder_coop:,
+                        community_interest_company:,
+                        community_benefit_society:,
+                        arts:,
+                        campaigning:,
+                        community:,
+                        education:,
+                        energy:,
+                        food:,
+                        goods_services:,
+                        health:,
+                        housing:,
+                        money:,
+                        nature:,
+                        reuse:,
                         **rest
                         |
                         # A mapping to the target schema field ids
 
                         # Don't import this initiative if it isn't approved
                         next unless approved&.downcase == 'yes'
-
-                        # Define some aliases
-                        arts = secondaryActivities_SQ002
-                        campaigning = secondaryActivities_SQ003
-                        community = secondaryActivities_SQ004
-                        education = secondaryActivities_SQ005
-                        energy = secondaryActivities_SQ006
-                        food = secondaryActivities_SQ007
-                        goods_services = secondaryActivities_SQ008
-                        health = secondaryActivities_SQ009
-                        housing = secondaryActivities_SQ010
-                        money = secondaryActivities_SQ011
-                        nature = secondaryActivities_SQ012
-                        reuse = secondaryActivities_SQ013
-                        
-                        community_group = structure_SQ001
-                        non_profit = structure_SQ002
-                        social_enterprise = structure_SQ003
-                        charity = structure_SQ004
-                        company = structure_SQ005
-                        workers_coop = structure_SQ006
-                        housing_coop = structure_SQ007
-                        consumer_coop = structure_SQ008
-                        producer_coop = structure_SQ009
-                        stakeholder_coop = structure_SQ010
-                        community_interest_company = structure_SQ011
-                        community_benefit_society = structure_SQ012
 
                         (latitude, longitude) = [*location.to_s.split(';'), '', ''].collect &:strip
                         {
@@ -176,9 +149,9 @@ module SeOpenData
                             !address_b.empty? ? address_b : nil,
                             !address_c.empty? ? address_c : nil
                           ].compact.join(SubFieldSeparator),
-                          locality: address_d,
+                          locality: locality,
                           region: '',
-                          postcode: address_e.to_s.upcase,
+                          postcode: postcode.to_s.upcase,
                           country_name: '',
                           homepage: normalise_url(website),
                           phone: normalise_phone_number(phone),

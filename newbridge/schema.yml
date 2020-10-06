@@ -58,11 +58,11 @@ fields:
   header: address[c]
   desc: ''
   comment: ''
-- id: :address_d
+- id: :locality
   header: address[d]
   desc: ''
   comment: ''
-- id: :address_e
+- id: :postcode
   header: address[e]
   desc: ''
   comment: ''
@@ -130,51 +130,51 @@ fields:
   header: approved
   desc: Will be "Yes" if this initiative has been validated and approved by an admin
   comment: Initiatives should only be imported if they are approved.
-- id: :structure_SQ001
+- id: :community_group
   header: structure[SQ001]
   desc: ''
   comment: ''
-- id: :structure_SQ002
+- id: :non_profit
   header: structure[SQ002]
   desc: ''
   comment: ''
-- id: :structure_SQ003
+- id: :social_enterprise
   header: structure[SQ003]
   desc: ''
   comment: ''
-- id: :structure_SQ004
+- id: :charity
   header: structure[SQ004]
   desc: ''
   comment: ''
-- id: :structure_SQ005
+- id: :company
   header: structure[SQ005]
   desc: ''
   comment: ''
-- id: :structure_SQ006
+- id: :workers_coop
   header: structure[SQ006]
   desc: ''
   comment: ''
-- id: :structure_SQ007
+- id: :housing_coop
   header: structure[SQ007]
   desc: ''
   comment: ''
-- id: :structure_SQ008
+- id: :consumer_coop
   header: structure[SQ008]
   desc: ''
   comment: ''
-- id: :structure_SQ009
+- id: :producer_coop
   header: structure[SQ009]
   desc: ''
   comment: ''
-- id: :structure_SQ010
+- id: :stakeholder_coop
   header: structure[SQ010]
   desc: ''
   comment: ''
-- id: :structure_SQ011
+- id: :community_interest_company
   header: structure[SQ011]
   desc: ''
   comment: ''
-- id: :structure_SQ012
+- id: :community_benefit_society
   header: structure[SQ012]
   desc: ''
   comment: ''
@@ -198,51 +198,51 @@ fields:
   header: values[SQ005]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ002
+- id: :arts
   header: secondaryActivities[SQ002]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ003
+- id: :campaigning
   header: secondaryActivities[SQ003]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ004
+- id: :community
   header: secondaryActivities[SQ004]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ005
+- id: :education
   header: secondaryActivities[SQ005]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ006
+- id: :energy
   header: secondaryActivities[SQ006]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ007
+- id: :food
   header: secondaryActivities[SQ007]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ008
+- id: :goods_services
   header: secondaryActivities[SQ008]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ009
+- id: :health
   header: secondaryActivities[SQ009]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ010
+- id: :housing
   header: secondaryActivities[SQ010]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ011
+- id: :money
   header: secondaryActivities[SQ011]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ012
+- id: :nature
   header: secondaryActivities[SQ012]
   desc: ''
   comment: ''
-- id: :secondaryActivities_SQ013
+- id: :reuse
   header: secondaryActivities[SQ013]
   desc: ''
   comment: ''
