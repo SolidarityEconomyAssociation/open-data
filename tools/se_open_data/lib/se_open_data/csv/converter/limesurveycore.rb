@@ -43,6 +43,8 @@ module SeOpenData
         def self.mk_converter(from_schema:,
                               to_schema:,
                               input_csv_opts: {col_sep: ';', skip_blanks: true})
+          from_schema.assert_superset_of SeOpenData::CSV::Schemas::LimeSurveyCore::Latest
+          
           return SeOpenData::CSV::Schema.converter(
                    from_schema: from_schema,
                    to_schema: to_schema,
