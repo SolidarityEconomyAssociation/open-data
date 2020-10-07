@@ -54,8 +54,12 @@ module SeOpenData
       unless @session_key
         @session_key = @rpc.get_session_key(@username, @password)
       end
-      base64_data = @rpc.export_responses(@session_key, survey_id, *options)
-      Base64.decode64(base64_data)
+      data = @rpc.export_responses(@session_key, survey_id, *options)
+      if (data.is_a? String)
+        return Base64.decode64(data)
+      end
+      status = data.is_a?(Hash) ? data['status'] : data
+      raise RuntimeError.new("Export of survey #{survey_id} failed: #{status}")
     end
 
     # Releases the session key.

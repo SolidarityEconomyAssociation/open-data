@@ -45,6 +45,7 @@ module SeOpenData
     # Posts a request to the API
     # @param post_body [String] the content to post
     # @return the response body
+    # @raise JSONRPCError if the post does not get a success response
     def http_post_request(post_body)
       http    = Net::HTTP.new(@uri.host, @uri.port)
       http.use_ssl = @uri.scheme == 'https'
@@ -52,7 +53,12 @@ module SeOpenData
       request.basic_auth @uri.user, @uri.password
       request.content_type = 'application/json'
       request.body = post_body
-      http.request(request).body
+      response = http.request(request)
+      if response.kind_of?(Net::HTTPSuccess)
+        return response.body
+      end
+
+      raise JSONRPCError.new("request to #{@uri.request_uri} failed: #{response.msg}")
     end
 
     # An exception thrown if there is an API error
