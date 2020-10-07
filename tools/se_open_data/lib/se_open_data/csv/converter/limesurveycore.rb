@@ -198,9 +198,6 @@ module SeOpenData
           to_schema = SeOpenData::CSV::Schemas::Latest;
           converter = mk_converter(from_schema: from_schema, to_schema: to_schema)
           
-          # generate the cleared error file # FIXME remove if not needed
-          # SeOpenData::CSV.clean_up in_f: csv_to_standard, out_f: cleared_errors
-          
           # Transforms the rows from Co-ops UK schema to our standard
           # Note the BOM and encoding flags, which avoid a MalformedCSVError
           converter.convert File.open(original_csv, "r:bom|utf-8"), initial_pass
