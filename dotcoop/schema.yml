@@ -1,0 +1,56 @@
+---
+id: :dotCoop
+name: DotCoop
+version: 20200810
+primary_key:
+- :registrant_id
+comment: 
+fields:
+- id: :domain
+  header: Domain
+  desc: ''
+  comment: ''
+- id: :registrant_id
+  header: RegistrantId
+  desc: A unique identifier for the registrant
+  comment: ''
+- id: :creation_date
+  header: CreationDate
+  desc: ''
+  comment: ''
+- id: :organisation
+  header: Organisation
+  desc: ''
+  comment: ''
+- id: :street_number
+  header: StreetNumber
+  desc: ''
+  comment: ''
+- id: :street_name
+  header: StreetName
+  desc: ''
+  comment: ''
+- id: :street_address
+  header: StreetAddress
+  desc: ''
+  comment: ''
+- id: :city
+  header: City
+  desc: ''
+  comment: ''
+- id: :state
+  header: State
+  desc: ''
+  comment: ''
+- id: :country
+  header: Country
+  desc: ''
+  comment: ''
+- id: :post_code
+  header: PostCode
+  desc: ''
+  comment: ''
+- id: :last_changed
+  header: LastChanged
+  desc: ''
+  comment: ''

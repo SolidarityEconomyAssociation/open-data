@@ -36,77 +36,6 @@ require 'csv'
 module DotCoop
 
   
-  # This defines the input CSV schema we expect (after clean-up an index generation)
-  Schema = SeOpenData::CSV::Schema.new(
-    id: :dotCoop,
-    name: "DotCoop",
-    version: 20200810, 
-    comment: 'Initial version, may require amendment',
-    primary_key: [:registrant_id],
-    fields: [
-      {id: :domain,
-       header: 'Domain',
-       desc: '',
-       comment: '',
-      },
-      {id: :registrant_id,
-       header: 'RegistrantId',
-       desc: 'A unique identifier for the registrant',
-       comment: '',
-      },
-      {id: :creation_date,
-       header: 'CreationDate',
-       desc: '',
-       comment: '',
-      },
-      {id: :organisation,
-       header: 'Organisation',
-       desc: '',
-       comment: '',
-      },
-      {id: :street_number,
-       header: 'StreetNumber',
-       desc: '',
-       comment: '',
-      },
-      {id: :street_name,
-       header: 'StreetName',
-       desc: '',
-       comment: '',
-      },
-      {id: :street_address,
-       header: 'StreetAddress',
-       desc: '',
-       comment: '',
-      },
-      {id: :city,
-       header: 'City',
-       desc: '',
-       comment: '',
-      },
-      {id: :state,
-       header: 'State',
-       desc: '',
-       comment: '',
-      },
-      {id: :country,
-       header: 'Country',
-       desc: '',
-       comment: '',
-      },
-      {id: :post_code,
-       header: 'PostCode',
-       desc: '',
-       comment: '',
-      },
-      {id: :last_changed,
-       header: 'LastChanged',
-       desc: '',
-       comment: '',
-      },
-    ]
-  )
-
   PostcodeIndexSchema = SeOpenData::CSV::Schema.new(
     id: :postcode_index,
     name: "Registrant postcode index",
@@ -133,11 +62,10 @@ module DotCoop
   )
 
   # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Versions[1]
-  
-  # A convenient alias...
-  types = SeOpenData::CSV::Schema::Types
-  
+  StdSchema = SeOpenData::CSV::Schemas::Latest
+
+  # Returns a schema converter for the given schema.
+  #
   # This defines the schema mapping for dotCoop data into the
   # standard schema.
   #
@@ -153,53 +81,59 @@ module DotCoop
   #
   # The delimiter appears to be configurable in the web download, but not in the API.
   # https://bugs.limesurvey.org/view.php?id=13747
-  Converter = SeOpenData::CSV::Schema.converter(
-    from_schema: Schema,
-    to_schema: StdSchema,
-    input_csv_opts: {skip_blanks: true}
-#    output_csv_opts: {quote_empty: false}
-  ) do | # These parameters match source schema field ids
-         domain:,
-         registrant_id:,
-         creation_date:,
-         organisation:,
-         street_number:,
-         street_name:,
-         street_address:,
-         city:,
-         state:,
-         country:,
-         post_code:,
-         last_changed:
-         |
-         # A mapping to the target schema field ids
-         {
-           id: registrant_id.sub('C','').sub('-CNIC',''),
-           name: organisation ? organisation : "No Name",
-           description: '',
-           organisational_structure: '',
-           primary_activity: '',
-           activities: '',
-           street_address: street_address,
-           locality: city,
-           region: state,
-           postcode: post_code,
-           country_name: types.country_code_to_name(country),
-           homepage: "http://#{domain}",
-           phone: '',
-           email: '',
-           twitter: '',
-           facebook: '',
-           companies_house_number: '',
-           qualifiers: '',
-           latitude: '',
-           longitude: '',
-           geocontainer: '',
-           geocontainer_lat: '',
-           geocontainer_lon: '',
-         }
+  def self.mk_converter(from_schema:, to_schema:)
+      # A convenient alias...
+    types = SeOpenData::CSV::Schema::Types
+
+    return SeOpenData::CSV::Schema.converter(
+      from_schema: from_schema,
+      to_schema: to_schema,
+      input_csv_opts: {skip_blanks: true}
+      #    output_csv_opts: {quote_empty: false}
+    ) do | # These parameters match source schema field ids
+           domain:,
+           registrant_id:,
+           creation_date:,
+           organisation:,
+           street_number:,
+           street_name:,
+           street_address:,
+           city:,
+           state:,
+           country:,
+           post_code:,
+           last_changed:
+           |
+           # A mapping to the target schema field ids
+           {
+             id: registrant_id.sub('C','').sub('-CNIC',''),
+             name: organisation ? organisation : "No Name",
+             description: '',
+             organisational_structure: '',
+             primary_activity: '',
+             activities: '',
+             street_address: street_address,
+             locality: city,
+             region: state,
+             postcode: post_code,
+             country_name: types.country_code_to_name(country),
+             homepage: "http://#{domain}",
+             phone: '',
+             email: '',
+             twitter: '',
+             facebook: '',
+             companies_house_number: '',
+             qualifiers: '',
+             base_membership_type: '',
+             latitude: '',
+             longitude: '',
+             geocontainer: '',
+             geocontainer_lat: '',
+             geocontainer_lon: '',
+           }
+    end
   end
-         
+           
   # Entry point if invoked as a script.
   #
   # See {SeOpenData::Config} for information about this file. It
@@ -231,10 +165,17 @@ module DotCoop
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
 
+
+    # This defines the input CSV schema we expect (after clean-up an index generation)
+    schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
+    
+    # A converter between the two
+    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    
     # Transforms the rows from Co-ops UK schema to our standard
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
     # original -> outlets -> sorted -> deduplicated -> corrected-geo-data -> dedup-after-geo -> standard
-    Converter.convert File.open(original_csv, "r:bom|utf-8"), outlets_csv
+    converter.convert File.open(original_csv, "r:bom|utf-8"), outlets_csv
     
     sort_data_by_field(infile: outlets_csv,
                       outfile: sorted_csv,
