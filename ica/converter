@@ -48,6 +48,9 @@ require 'se_open_data/config'
 #
 # See discussion here:
 # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
+#
+# FIXEM we should define a schema file and use the same
+# SeOpenData::CSV::Schema#converter method here as the other datasets.
 class Converter < SeOpenData::CSV::RowReader
 
   # @param row [Hash<String => String>] - a row of CSV data
