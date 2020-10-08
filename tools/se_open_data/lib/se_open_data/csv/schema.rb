@@ -88,6 +88,46 @@ module SeOpenData
         raise ArgumentError, "these header fields are invalid for this schema :#{@id}, #{headers}, because #{invalids.join('; ')}"
       end
 
+      # Checks whether this schema has is compatible with another.
+      #
+      # This requires our fields to include all of its fields (just
+      # the field id must match) and the primary key to be
+      # identical
+      #
+      # Headers may differ, as for our purposes these are assumed to
+      # be non-semantic labels which can vary. For instance a field
+      # with an id `:contact` could have a header `Contact Name` in
+      # one schema, and `Contact` in another, or even
+      # `Ansprechperson`, and these would still be semantically
+      # compatible.
+      #
+      # @param schema {SeOpenData::CSV::Schema} the schema to compare to
+      # @throw RuntimeError if this schema isn't a superset the given
+      def assert_superset_of(schema)
+        if schema.primary_key != @primary_key
+          raise RuntimeError.new(
+                  "schema :#{@id} is not a superset of :#{schema.id} because "+
+                  "its primary key #{@primary_key} does not match #{schema.primary_key}"
+                )
+        end
+
+        missing = []
+        schema.fields.each do |field1|
+          field2 = field(field1.id)
+          
+          if field2.nil?
+            missing.push(field1.id)
+            next
+          end
+        end
+        
+        return if missing.empty?
+        
+        raise RuntimeError.new(
+                "schema :#{@id} is not a superset of :#{schema.id} because "+
+                "these fields are absent from it: #{missing}")
+      end
+
       # Turns an array of values into a hash keyed by field ID.
       #
       # The values are validated during this process.
@@ -177,6 +217,35 @@ module SeOpenData
         @fields.map {|field| [field.id, field.header] }.to_h
       end
 
+
+      # This loads a schema from a (yaml) file
+      def self.load_file(file)
+        require 'yaml'
+        data = YAML.load_file(file)
+        data.transform_keys!(&:to_sym)
+        data[:fields].each { |field| field.transform_keys!(&:to_sym) }
+        return self.new(**data)
+      end
+
+
+      # This saves the schema to a (yaml) file
+      def save_file(file)
+        require 'yaml'
+        data = {
+          'id' => @id,
+          'name' => @name,
+          'version' => @version,
+          'primary_key' => @primary_key,
+          'comment' => @comment,
+          'fields' => @fields.collect { |field| field.to_h }, 
+        }
+        File.open(file, 'w') do |file|
+          file.write(YAML.dump(data))
+        end
+        return
+      end
+      
+      
       # This implements the top-level DSL for CSV conversions.
       def self.converter(from_schema:, to_schema:,
                          input_csv_opts: DEFAULT_INPUT_CSV_OPTS,
@@ -214,6 +283,15 @@ module SeOpenData
         # @return a new Field instance with the same values but the given index
         def add_index(index)
           Field.new(id: id, index: index, header: @header, desc: @desc, comment: comment)
+        end
+
+        # Converts the field definition to a hash.
+        #
+        # Primarily used for {Schema.save_file}, so omits the field index.
+        #
+        # @return a Hash object corresponding to this Field object.
+        def to_h
+          { 'id' => @id, 'header' => @header, 'desc' => @desc, 'comment' => @comment }
         end
       end
 

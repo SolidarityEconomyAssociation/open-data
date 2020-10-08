@@ -7,7 +7,10 @@ module SeOpenData
         require "httparty"
         require "json"
         require "cgi"
-        require "se_open_data"
+        require "se_open_data/initiative/rdf/config"
+        require "se_open_data/rdf/os_postcode_unit"
+        require "se_open_data/rdf/os_postcode_global_unit"
+        require "se_open_data/utils/progress_counter"
 
         Limit = 11000
 

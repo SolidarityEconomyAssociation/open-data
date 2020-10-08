@@ -5,9 +5,12 @@
 # CSV data into the se_open_data standard, one step at a time.
 
 require_relative "../tools/se_open_data/lib/load_path"
-require "se_open_data"
-require "se_open_data/csv/add_postcode_lat_long"
-require "csv"
+require 'se_open_data/csv/row_reader'
+require 'se_open_data/csv/convert'
+require 'se_open_data/csv/standard'
+require 'se_open_data/utils/password_store'
+require 'se_open_data/utils/error_document_generator'
+require 'se_open_data/config'
 
 # Defines a schema mapping for ica-youth-network data.
 #

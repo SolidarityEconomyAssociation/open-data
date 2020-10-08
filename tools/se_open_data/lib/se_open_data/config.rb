@@ -27,6 +27,7 @@ module SeOpenData
       "CSS_SRC_DIR" => File.join(RESOURCE_DIR, "css"),
       "SRC_CSV_DIR" => "original-data",
       "ORIGINAL_CSV" => "original.csv",
+      "ORIGINAL_CSV_SCHEMA" => "schema.yml",
       "STANDARD_CSV" => "standard.csv",
       "TOP_OUTPUT_DIR" => "generated-data",
       "URI_SCHEME" => "https",
