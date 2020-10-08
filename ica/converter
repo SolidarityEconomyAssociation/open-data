@@ -92,19 +92,15 @@ class Converter < SeOpenData::CSV::RowReader
     "Cooperative"
   end
 
+  def base_membership_type
+    bmp = BASE_MEMBERSHIP_TYPE[_base_membership_type]
+  end
+
   def organisational_structure
     ## Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
     ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
     ## See lib/se_open_data/essglobal/legal_form.rb
-    # _struct_type _typology
-    # org_st = TYPE_TO_ORG_STRUCT[type]? TYPE_TO_ORG_STRUCT[type] : "Co-operative"
-    org_st_temp = TYPE_TO_ORG_STRUCT[_struct_type] ? TYPE_TO_ORG_STRUCT[_struct_type] : "Co-operative"
-
-    if org_st_temp.is_a?(Hash)
-      org_st = org_st_temp[_typology] ? org_st_temp[_typology] : org_st_temp["ANY"] # default to any
-    else
-      org_st = org_st_temp
-    end
+    org_st = TYPE_TO_ORG_STRUCT[_struct_type] ? TYPE_TO_ORG_STRUCT[_struct_type] : "Co-operative"
 
     org_st
   end
@@ -266,11 +262,7 @@ class Converter < SeOpenData::CSV::RowReader
   # any is the default case for typology
   TYPE_TO_ORG_STRUCT = {
     "Coop Promoter/Supporter" => "Company (Other)",
-    "Cooperative" => { "Consumer/User coops" => "Consumer co-operative",
-                       "Multi-stakeholder coops" => "Multi-stakeholder co-operative",
-                       "Producer coops" => "Producer co-operative",
-                       "Worker coops" => "Workers co-operative",
-                       "ANY" => "Co-operative" },
+    "Cooperative" => "Co-operative",
     "Mutual organisation" => "Mutual",
     "National apex" => "National apex",
     "National sectoral federation or union" => "National sectoral federation or union",
@@ -285,14 +277,23 @@ class Converter < SeOpenData::CSV::RowReader
     "Education / health / social work" => "Education / Health / Social Work",
     "All" => "All",
     "Financial services" => "Financial Services",
-    "Fishing" => "Fishery",
+    "Fishing" => "Fishing",
     "Housing" => "Housing",
     "Insurance" => "Insurance",
     "Other services" => "Other services",
-    "Wholesale and retail trade" => "Wholesale and Retail",
+    "Wholesale and retail trade" => "Wholesale and retail trade",
     "Agriculture" => "Agriculture",
-    "Utilities" => "Utility",
+    "Utilities" => "Utilities",
     "Industry" => "Industry",
+  }
+
+  BASE_MEMBERSHIP_TYPE = {
+    "Consumer/User coops" => "Consumer/Users",
+    "Others" => "Others",
+    "Producer coops" => "Producers",
+    "Worker coops" => "Workers",
+    "Multi-stakeholder coops" => "Multi - stakeholders",
+    "Residents" => "Residents",
   }
 
   # These define methods (as keys) to implement as simple hash
@@ -309,7 +310,7 @@ class Converter < SeOpenData::CSV::RowReader
     _sup_street_address_2: "Main-Supplemental Address 2",
     _name: "Organisation Name",
     _website: "Website",
-    _typology: "Typology",
+    _base_membership_type: "Typology",
     _struct_type: "Structure Type",
     _prim_activity: "Economic activity (primary)",
     _sup_activities: "Economic activities (additional)",

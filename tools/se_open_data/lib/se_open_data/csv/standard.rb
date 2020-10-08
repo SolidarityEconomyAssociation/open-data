@@ -16,10 +16,10 @@ module SeOpenData
     #
     # So don't mess with the symbol names!!
     module Standard
-      
+
       # Version one of the standard.
       module V1
-        
+
         # Note - from ruby 1.9, keys and values are returned in
         # insertion order, so the headers Hash also defines the
         # ordering of the columns.
@@ -50,14 +50,14 @@ module SeOpenData
           facebook: "Facebook",
           companies_house_number: "Companies House Number",
           qualifiers: "Qualifiers",
-
+          base_membership_type: "Membership Type",
           # latitude and longitude are for the exact geolocation of the SSE initiative,
-          # if it is known. 
+          # if it is known.
           # If only a postcode is known, see geocontainer, below.
           latitude: "Latitude",
           longitude: "Longitude",
 
-          # Often, we don't know the exact lat/long of an SSE initiative, but we know about 
+          # Often, we don't know the exact lat/long of an SSE initiative, but we know about
           # a geographic container which has a known lat/long.
           # The most common example of this is the postcode as a geographic container.
           #
@@ -66,9 +66,9 @@ module SeOpenData
           # This is used, for example, in the toolchain for generating the co-ops-uk 2017 RDF.
           geocontainer: "Geo Container",
           geocontainer_lat: "Geo Container Latitude",
-          geocontainer_lon: "Geo Container Longitude"
+          geocontainer_lon: "Geo Container Longitude",
         }
-        
+
         # Sometimes a single column can take values that are in fact a list.
         # So we need to know the character used to separate the items in the list.
         # For example, in the legal_form column, we might have an initiative that

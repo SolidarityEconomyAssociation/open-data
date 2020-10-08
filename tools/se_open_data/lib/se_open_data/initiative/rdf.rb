@@ -155,6 +155,22 @@ module SeOpenData
         end
       end
 
+      def base_membership_type_uris
+        # @returns array of URIs
+        if initiative.base_membership_type.nil?
+          []
+        else
+          initiative.base_membership_type.split(config.csv_standard::SubFieldSeparator).map { |bmp|
+            if config.base_membership_type_lookup.has_label?(bmp)
+              ::RDF::URI(config.base_membership_type_lookup.concept_uri(bmp))
+            else
+              $stderr.puts "Could not find membership type: #{bmp}"
+              nil
+            end
+          }.compact       # To remove any nil elements added above.
+        end
+      end
+
       def primary_activity_uris
         # @returns array of URIs
         if initiative.primary_activity.nil?
@@ -193,6 +209,9 @@ module SeOpenData
         }
         qualifier_uris.each { |qualifier_uri|
           graph.insert([uri, config.essglobal_vocab.qualifier, qualifier_uri]) #might cause error? qualifier should be applied to input
+        }
+        base_membership_type_uris.each { |m_uri|
+          graph.insert([uri, config.essglobal_vocab.baseMembershipType, m_uri])
         }
         primary_activity_uris.each { |activities_mod_uri| # There should only be one
           graph.insert([uri, config.essglobal_vocab.primarySector, activities_mod_uri])
