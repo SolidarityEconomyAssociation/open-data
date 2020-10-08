@@ -62,7 +62,7 @@ module DotCoop
   )
 
   # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Versions[1]
+  StdSchema = SeOpenData::CSV::Schemas::Latest
 
   # Returns a schema converter for the given schema.
   #
@@ -124,6 +124,7 @@ module DotCoop
              facebook: '',
              companies_house_number: '',
              qualifiers: '',
+             base_membership_type: '',
              latitude: '',
              longitude: '',
              geocontainer: '',
