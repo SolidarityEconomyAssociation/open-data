@@ -293,7 +293,7 @@ module SeOpenData
                     :region,
                     :postcode,
                     :country_name),
-            true,
+            false,
             geocoder_headers,
             geocoder,
             true
