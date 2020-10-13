@@ -453,12 +453,6 @@ class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
 
   private
 
-  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
-  UK_POSTCODES_CACHE = "postcode_lat_lng.json"
-  GLOBAL_POSTCODES_CACHE = "geodata_cache.json"
-
-
   # These define methods (as keys) to implement as simple hash
   # look-ups using CSV field names (values).
   #
