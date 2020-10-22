@@ -108,7 +108,7 @@ end
 # Production
 
 $options = OptParse.parse(ARGV)
-pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: false)
+pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: true)
 $geocoder = APIStandard::Geocoder.new(pass.get $options.api_key || File.read("../../APIs/geoapifyAPI.txt"))
 SeOpenData::CSV._add_postcode_lat_long(
   ARGF.read,
