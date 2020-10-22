@@ -25,7 +25,9 @@ module SeOpenData
             xml(:title) { initiative.name } +
             xml(:meta, charset: "UTF-8") +
             config.css_files.map {|f|
-              xml(:link, rel: "stylesheet", href: f)
+              css_path = Pathname.new(f)
+              css_relpath = css_path.relative_path_from(::File.join(initiative.id, '..'))
+              xml(:link, rel: "stylesheet", href: css_relpath)
             }.join
           } +
           xml(:body) {
