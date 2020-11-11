@@ -90,6 +90,10 @@ module SeOpenData
                         money:,
                         nature:,
                         reuse:,
+                        agriculture:,
+                        industry:,
+                        utilities:,
+                        transport:,
                         **rest
                         |
                         # A mapping to the target schema field ids
@@ -102,51 +106,19 @@ module SeOpenData
                           id: id,
                           name: name,
                           description: description,
-                          organisational_structure: [
-                            ## Return a list of strings, separated by SubFieldSeparator.
-                            ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-                            ## See lib/se_open_data/essglobal/legal_form.rb
-                            community_group == "Y" ? "Community group (formal or informal)" : nil,
-                            non_profit == "Y" ? "Not-for-profit organisation" : nil,
-                            social_enterprise == "Y" ? "Social enterprise" : nil,
-                            charity == "Y" ? "Charity" : nil,
-                            company == "Y" ? "Company (Other)" : nil,
-                            workers_coop == "Y" ? "Workers co-operative" : nil,
-                            housing_coop == "Y" ? "Housing co-operative" : nil,
-                            consumer_coop == "Y" ? "Consumer co-operative" : nil,
-                            producer_coop == "Y" ? "Producer co-operative" : nil,
-                            stakeholder_coop == "Y" ? "Multi-stakeholder co-operative" : nil,
-                            community_interest_company == "Y" ? "Community Interest Company (CIC)" : nil,
-                            community_benefit_society == "Y" ? "Community Benefit Society / Industrial and Provident Society (IPS)" : nil
-                          ].compact.join(SubFieldSeparator),
-                          primary_activity: {
-                            'SQ001' => 'Arts, Media, Culture & Leisure',
-                            'SQ002' => 'Campaigning, Activism & Advocacy',
-                            'SQ003' => 'Community & Collective Spaces',
-                            'SQ004' => 'Education',
-                            'SQ005' => 'Energy',
-                            'SQ006' => 'Food',
-                            'SQ007' => 'Goods & Services',
-                            'SQ008' => 'Health, Social Care & Wellbeing',
-                            'SQ009' => 'Housing',
-                            'SQ010' => 'Money & Finance',
-                            'SQ011' => 'Nature, Conservation & Environment',
-                            'SQ012' => 'Reduce, Reuse, Repair & Recycle',
-                          }[activity] || '',
-                          activities:  [
-                            arts == "Y" ? "Arts, Media, Culture & Leisure" : nil,
-                            campaigning == "Y" ? "Campaigning, Activism & Advocacy" : nil,
-                            community == "Y" ? "Community & Collective Spaces" : nil,
-                            education == "Y" ? "Education" : nil,
-                            energy == "Y" ? "Energy" : nil,
-                            food == "Y" ? "Food" : nil,
-                            goods_services == "Y" ? "Goods & Services" : nil,
-                            health == "Y" ? "Health, Social Care & Wellbeing" : nil,
-                            housing == "Y" ? "Housing" : nil,
-                            money == "Y" ? "Money & Finance" : nil,
-                            nature == "Y" ? "Nature, Conservation & Environment" : nil,
-                            reuse == "Y" ? "Reduce, Reuse, Repair & Recycle" : nil
-                          ].compact.join(SubFieldSeparator),
+                          organisational_structure: organisational_structure_label(
+                            community_group, non_profit, social_enterprise, charity,
+                            company, workers_coop, housing_coop, consumer_coop,
+                            producer_coop, stakeholder_coop,
+                            community_interest_company, community_benefit_society
+                          ),
+                          primary_activity: primary_activity_label(activity),
+                          activities: secondary_activity_labels(
+                            arts, campaigning, community,
+                            education, energy, food, goods_services,
+                            health, housing, money, nature, reuse,
+                            agriculture, industry, utilities, transport,
+                          ),
                           street_address: [
                             !address_a.empty? ? address_a : nil,
                             !address_b.empty? ? address_b : nil,
@@ -302,6 +274,260 @@ module SeOpenData
           input.close
           output.close
         end
+
+
+        
+        # Given equal sized arrays of values and labels, create a concatenated list of labels
+        #
+        # For each value of `val_ary` which equals a value in
+        # `true_vals`, include the corresponding label from
+        # `label_ary` in the result.
+        #
+        # @param val_ary [Enumerable] An array of values, to interpret as booleans
+        # @param label_ary [Enumerable] An array of labels, whose
+        # sequence corresponds to `val_ary`
+        # @param true_vals [Enumerable] Lists all the values which represent boolean truth.
+        # Note: `val_ary` values are upper-cased before comparison with `true_vals`.
+        # @param separator [String] A string to join the resulting labels with.
+        # @return A string containing all the matching labels, joined by `separator`.
+        def self.index_bools(val_ary, label_ary, true_vals: ["Y"], separator: SubFieldSeparator)
+          zipped = val_ary.zip(label_ary)
+          labels = zipped.collect do |val, label|
+            !val.nil? && true_vals.include?(val.upcase) ? label : nil
+          end
+          return labels.compact.join(separator)
+        end
+        
+        # Map a LimeSurvey response ID to the equivalent activity label
+        #
+        # @param activity [String] the LimeSurvey "primary activity"
+        # question's response ID.
+        #
+        # @return a prefLabel taken from the file
+        # `essglobal/standard/activities-modified.skos` in the
+        # `map-sse` project, or the empty string if no match found.
+        def self.primary_activity_label(activity)
+          ix = @activities_modified.find_index do |a|
+            activity == a[:activity_id]
+          end
+          raise RangeError.new("unknown activity #{activity}") if ix.nil?
+          label = @activities_modified[ix].fetch(:label, '')
+          return label
+        end
+
+
+        # Map a set of LimeSurvey yes/no values to a concatenated list
+        # of labels with affirmative values.
+        #
+        # Each item in the list is a prefLabel taken from the file
+        # `essglobal/standard/organisational-structure.skos` in the
+        # `map-sse` project.
+        #
+        # @return a list of strings, separated by {SubFieldSeparator}.
+        def self.organisational_structure_label(
+              community_group, non_profit, social_enterprise, charity,
+              company, workers_coop, housing_coop, consumer_coop,
+              producer_coop, stakeholder_coop,
+              community_interest_company, community_benefit_society
+            )
+          return index_bools(
+                   [community_group,
+                    non_profit,
+                    social_enterprise,
+                    charity,
+                    company,
+                    workers_coop,
+                    housing_coop,
+                    consumer_coop,
+                    producer_coop,
+                    stakeholder_coop,
+                    nil, # secondary coop
+                    nil, # coop
+                    community_interest_company,
+                    community_benefit_society,
+                   ],
+                   @organisational_structure.collect {|a| a[:label] })
+        end        
+
+        # Map a set of LimeSurvey yes/no values to a concatenated list
+        # of labels with affirmative values.
+        #
+        # Each item in the list is a prefLabel taken from the file
+        # `essglobal/standard/activities-modified.skos` in the
+        # `map-sse` project.
+        #
+        # @return a list of strings, separated by {SubFieldSeparator}.
+        def self.secondary_activity_labels(arts, campaigning, community,
+                                           education, energy, food, goods_services,
+                                           health, housing, money, nature, reuse,
+                                           agriculture, industry, utilities, transport)
+          return index_bools([arts, campaigning, community,
+                              education, energy, food, goods_services,
+                              health, housing, money, nature, reuse,
+                              agriculture, industry, utilities, transport],
+                             @activities_modified.collect {|a| a[:label]})
+        end
+        
+
+        # The following are essentially a bit of built-in schema. This
+        # is bad! All the defs should be in the schema definitions
+        # elsewhere. However, we're not that sophisticated yet.
+        
+        # This table maps the term IDs in
+        # `map-sse:vocabs/standard/activities-modified.skos` To a)
+        # their labels, and b) the IDs used in the LimeSurvey
+        # questions "activity" and "secondary activity". The order
+        # matters, it should be in order of ID.
+        @activities_modified = [
+          {id: :AM10,
+           label: 'Arts, Media, Culture & Leisure',
+           activity_id: 'SQ001',
+           secondary_activity_id: 'SQ002'},
+          {id: :AM20,
+           label: 'Campaigning, Activism & Advocacy',
+           activity_id: 'SQ002',
+           secondary_activity_id: 'SQ003'},
+          {id: :AM30,
+           label: 'Community & Collective Spaces',
+           activity_id: 'SQ003',
+           secondary_activity_id: 'SQ004'},
+          {id: :AM40,
+           label: 'Education',
+           activity_id: 'SQ004',
+           secondary_activity_id: 'SQ005'},
+          {id: :AM50,
+           label: 'Energy',
+           activity_id: 'SQ005',
+           secondary_activity_id: 'SQ006'},
+          {id: :AM60,
+           label: 'Food',
+           activity_id: 'SQ006',
+           secondary_activity_id: 'SQ007'},
+          {id: :AM70,
+           label: 'Goods & Services',
+           activity_id: 'SQ007',
+           secondary_activity_id: 'SQ008'},
+          {id: :AM80,
+           label: 'Health, Social Care & Wellbeing',
+           activity_id: 'SQ008',
+           secondary_activity_id: 'SQ009'},
+          {id: :AM90,
+           label: 'Housing',
+           activity_id: 'SQ009',
+           secondary_activity_id: 'SQ010'},
+          {id: :AM100,
+           label: 'Money & Finance',
+           activity_id: 'SQ010',
+           secondary_activity_id: 'SQ011'},
+          {id: :AM110,
+           label: 'Nature, Conservation & Environment',
+           activity_id: 'SQ011',
+           secondary_activity_id: 'SQ012'},
+          {id: :AM120,
+           label: 'Reduce, Reuse, Repair & Recycle',
+           activity_id: 'SQ012',
+           secondary_activity_id: 'SQ013'},
+          {id: :AM130,
+           label: 'Agriculture',
+           activity_id: 'SQ013',
+           secondary_activity_id: 'SQ014'},
+          {id: :AM140,
+           label: 'Industry',
+           activity_id: 'SQ014',
+           secondary_activity_id: 'SQ015'},
+          {id: :AM150,
+           label: 'Utilities',
+           activity_id: 'SQ015',
+           secondary_activity_id: 'SQ016'},
+          {id: :AM160,
+           label: 'Transport',
+           activity_id: 'SQ016',
+           secondary_activity_id: 'SQ017'},
+        ]
+
+        # This table maps the term IDs in
+        # `map-sse:vocabs/standard/organisational-structure.skos` To
+        # a) their labels, and b) the IDs used in the LimeSurvey
+        # questions "structure".  The order matters, it should be in
+        # order of ID.
+        @organisational_structure = [
+          {id: :OS10,
+           label: 'Community group (formal or informal)',
+           structure_id: 'SQ001'},
+          {id: :OS20,
+           label: 'Not-for-profit organisation',
+           structure_id: 'SQ002'},
+          {id: :OS30,
+           label: 'Social enterprise',
+           structure_id: 'SQ003'},
+          {id: :OS40,
+           label: 'Charity',
+           structure_id: 'SQ004'},
+          {id: :OS50,
+           label: 'Company (Other)',
+           structure_id: 'SQ005'},
+          {id: :OS60,
+           label: 'Workers co-operative',
+           structure_id: 'SQ006'},
+          {id: :OS70,
+           label: 'Housing co-operative',
+           structure_id: 'SQ007'},
+          {id: :OS80,
+           label: 'Consumer co-operative',
+           structure_id: 'SQ008'},
+          {id: :OS90,
+           label: 'Producer co-operative',
+           structure_id: 'SQ009'},
+          {id: :OS100,
+           label: 'Multi-stakeholder co-operative',
+           structure_id: 'SQ010'},
+          {id: :OS110,
+           label: 'Secondary co-operative',
+           structure_id: nil},
+          {id: :OS115,
+           label: 'Co-operative',
+           structure_id: nil},
+          {id: :OS120,
+           label: 'Community Interest Company (CIC)',
+           structure_id: 'SQ011'},
+          {id: :OS130,
+           label: 'Community Benefit Society / Industrial and Provident Society (IPS)',
+           structure_id: 'SQ012'},
+          {id: :OS140,
+           label: 'Employee trust',
+           structure_id: nil},
+          {id: :OS150,
+           label: 'Self-employed',
+           structure_id: nil},
+          {id: :OS160,
+           label: 'Unincorporated',
+           structure_id: nil},
+          {id: :OS170,
+           label: 'Mutual',
+           structure_id: nil},
+          {id: :OS180,
+           label: 'National apex',
+           structure_id: nil},
+          {id: :OS190,
+           label: 'National sectoral federation or union',
+           structure_id: nil},
+          {id: :OS200,
+           label: 'Regional, state or provincial level federation or union',
+           structure_id: nil},
+          {id: :OS210,
+           label: 'Cooperative group',
+           structure_id: nil},
+          {id: :OS220,
+           label: 'Government agency/body',
+           structure_id: nil},
+          {id: :OS230,
+           label: 'Supranational',
+           structure_id: nil},
+          {id: :OS240,
+           label: 'Cooperative of cooperatives / mutuals',
+           structure_id: nil},
+        ]
+
       end
     end
   end
