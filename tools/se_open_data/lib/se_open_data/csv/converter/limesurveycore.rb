@@ -90,10 +90,10 @@ module SeOpenData
                         money:,
                         nature:,
                         reuse:,
-                        agriculture:,
-                        industry:,
-                        utilities:,
-                        transport:,
+#                        agriculture:,
+#                        industry:,
+#                        utilities:,
+#                        transport:,
                         **rest
                         |
                         # A mapping to the target schema field ids
@@ -117,7 +117,10 @@ module SeOpenData
                             arts, campaigning, community,
                             education, energy, food, goods_services,
                             health, housing, money, nature, reuse,
-                            agriculture, industry, utilities, transport,
+                            *rest.fetch_values(
+                              :agriculture, :industry, :utilities, :transport
+                            ) {|missing| nil }
+                              
                           ),
                           street_address: [
                             !address_a.empty? ? address_a : nil,
@@ -301,16 +304,16 @@ module SeOpenData
         # Map a LimeSurvey response ID to the equivalent activity label
         #
         # @param activity [String] the LimeSurvey "primary activity"
-        # question's response ID.
+        # question's response ID. May be null.
         #
         # @return a prefLabel taken from the file
         # `essglobal/standard/activities-modified.skos` in the
-        # `map-sse` project, or the empty string if no match found.
+        # `map-sse` project, or the empty string if no match found
         def self.primary_activity_label(activity)
           ix = @activities_modified.find_index do |a|
             activity == a[:activity_id]
           end
-          raise RangeError.new("unknown activity #{activity}") if ix.nil?
+          return '' if ix.nil?
           label = @activities_modified[ix].fetch(:label, '')
           return label
         end
