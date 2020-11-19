@@ -320,8 +320,8 @@ class Converter < SeOpenData::CSV::RowReader
     _struct_type: "Structure Type",
     _prim_activity: "Economic activity (primary)",
     _sup_activities: "Economic activities (additional)",
-    latitude: "Latitude",
-    longitude: "Longitude",
+    latitude: "Main-Latitude",
+    longitude: "Main-Longitude",
   }
   # MISSING!
   # primary_activity (name?)
