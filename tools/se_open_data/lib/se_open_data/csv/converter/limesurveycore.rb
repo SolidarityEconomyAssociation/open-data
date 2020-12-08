@@ -153,6 +153,9 @@ module SeOpenData
         # Expects a {SeOpenData::Config} object as the parameter, to
         # define the locations of various resources, and set options on
         # the conversion process.
+        #
+        # Configurations specific to this method
+        # ORIGINAL_CSV_COL_SEP - sets the original CSV's column separator (default ';')
         def self.convert(config)
 
           # original src csv file
@@ -171,7 +174,10 @@ module SeOpenData
           # Create a csv converter
           from_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
           to_schema = SeOpenData::CSV::Schemas::Latest;
-          converter = mk_converter(from_schema: from_schema, to_schema: to_schema)
+          col_sep = config.fetch('ORIGINAL_CSV_COL_SEP', ';')
+          converter = mk_converter(from_schema: from_schema, to_schema: to_schema,
+                                   input_csv_opts: {col_sep: col_sep,
+                                                    skip_blanks: true})
           
           # Transforms the rows from Co-ops UK schema to our standard
           # Note the BOM and encoding flags, which avoid a MalformedCSVError
