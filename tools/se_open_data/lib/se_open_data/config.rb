@@ -192,6 +192,15 @@ module SeOpenData
       @map.has_key? key
     end
 
+    # Sets a value in the config
+    #
+    # Creates it (and an accessor) if it is not already set.
+    def store(key, value)
+      key = key.to_s
+      add_accessor(key) unless @map.has_key? key
+      @map.store(key, value)
+    end
+
     # Gets the underlying config hash
     def map
       @map
