@@ -1,0 +1,176 @@
+---
+id: :deep-adaptation
+name: Deep Adaptation
+version: 20201207
+primary_key:
+- :id
+comment: 
+fields:
+- id: :id
+  header: ID
+  desc: A unique identifier for this initiative
+  comment: ''
+- id: :name
+  header: Name
+  desc: ''
+  comment: ''
+- id: :address_a
+  header: Address
+  desc: ''
+  comment: ''
+- id: :address_b
+  header: Address_b
+  desc: ''
+  comment: ''
+- id: :address_c
+  header: Address_c
+  desc: ''
+  comment: ''
+- id: :locality
+  header: Locality
+  desc: ''
+  comment: ''
+- id: :postcode
+  header: Postcode
+  desc: ''
+  comment: ''
+- id: :address_a1
+  header: Address_a1
+  desc: ''
+  comment: ''
+- id: :location
+  header: Lat/Long
+  desc: ''
+  comment: ''
+- id: :email
+  header: Email
+  desc: ''
+  comment: ''
+- id: :phone
+  header: Phone
+  desc: ''
+  comment: ''
+- id: :website
+  header: Web
+  desc: ''
+  comment: ''
+- id: :facebook
+  header: Facebook
+  desc: ''
+  comment: ''
+- id: :twitter
+  header: Twitter
+  desc: ''
+  comment: ''
+- id: :description
+  header: Description from website
+  desc: ''
+  comment: ''
+- id: :activity
+  header: Primary Activity
+  desc: ''
+  comment: ''
+- id: :contactName
+  header: Contact Person
+  desc: ''
+  comment: ''
+- id: :approved
+  header: Approved
+  desc: Will be "Yes" if this initiative has been validated and approved by an admin
+  comment: Initiatives should only be imported if they are approved.
+- id: :community_group
+  header: Community Group
+  desc: ''
+  comment: ''
+- id: :non_profit
+  header: Non Profit
+  desc: ''
+  comment: ''
+- id: :social_enterprise
+  header: Social Enterprise
+  desc: ''
+  comment: ''
+- id: :charity
+  header: Charity
+  desc: ''
+  comment: ''
+- id: :company
+  header: Company
+  desc: ''
+  comment: ''
+- id: :workers_coop
+  header: Workers Coop
+  desc: ''
+  comment: ''
+- id: :housing_coop
+  header: Housing Coop
+  desc: ''
+  comment: ''
+- id: :consumer_coop
+  header: Consumer Coop
+  desc: ''
+  comment: ''
+- id: :producer_coop
+  header: Producer Coop
+  desc: ''
+  comment: ''
+- id: :stakeholder_coop
+  header: Stakeholder Coop
+  desc: ''
+  comment: ''
+- id: :community_interest_company
+  header: Community Interest Company
+  desc: ''
+  comment: ''
+- id: :community_benefit_society
+  header: Community Benefit Society
+  desc: ''
+  comment: ''
+- id: :arts
+  header: Arts
+  desc: ''
+  comment: ''
+- id: :campaigning
+  header: Campaigning
+  desc: ''
+  comment: ''
+- id: :community
+  header: Community
+  desc: ''
+  comment: ''
+- id: :education
+  header: Education
+  desc: ''
+  comment: ''
+- id: :energy
+  header: Energy
+  desc: ''
+  comment: ''
+- id: :food
+  header: Food
+  desc: ''
+  comment: ''
+- id: :goods_services
+  header: Goods Services
+  desc: ''
+  comment: ''
+- id: :health
+  header: Health
+  desc: ''
+  comment: ''
+- id: :housing
+  header: Housing
+  desc: ''
+  comment: ''
+- id: :money
+  header: Money
+  desc: ''
+  comment: ''
+- id: :nature
+  header: Nature
+  desc: ''
+  comment: ''
+- id: :reuse
+  header: Reuse
+  desc: ''
+  comment: ''
