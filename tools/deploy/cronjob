@@ -16,7 +16,7 @@ function process {
     )
 }
 
-for dir in oxford newbridge mersey-green dotcoop mutual-aid; do
+for dir in oxford newbridge mersey-green deep-adaptation dotcoop mutual-aid; do
     echo "PROCESSING $dir..."
     process "$dir"
     echo
