@@ -154,12 +154,7 @@ module SeOpenData
       # Define an accessor method for all the keys on this instance -
       # but only if they don't exist already
       @map.each_key do |key|
-        method = key.to_sym
-        if !self.respond_to? method
-          define_singleton_method method do
-            @map[key]
-          end
-        end
+        add_accessor(key)
       end
 
       # Make sure these dirs exist
@@ -197,6 +192,15 @@ module SeOpenData
       @map.has_key? key
     end
 
+    # Sets a value in the config
+    #
+    # Creates it (and an accessor) if it is not already set.
+    def store(key, value)
+      key = key.to_s
+      add_accessor(key) unless @map.has_key? key
+      @map.store(key, value)
+    end
+
     # Gets the underlying config hash
     def map
       @map
@@ -204,6 +208,16 @@ module SeOpenData
 
     protected
 
+    # Add an accessor method named `key` (but only if it isn't defined already)
+    def add_accessor(key)
+      method = key.to_sym
+      if !self.respond_to? method
+        define_singleton_method method do
+          @map[key]
+        end
+      end
+    end
+    
     # For overriding in tests
     def make_version
       t = Time.now
