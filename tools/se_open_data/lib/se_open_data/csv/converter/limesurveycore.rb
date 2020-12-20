@@ -132,8 +132,11 @@ module SeOpenData
                           postcode: postcode.to_s.upcase,
                           country_name: '',
                           homepage: normalise_url(website),
-                          phone: normalise_phone_number(phone),
-                          email: email,
+                          # blank sensitive data until new institutional email field added
+                          #phone: normalise_phone_number(phone),
+                          #email: email,
+                          phone: '',
+                          email: '',
                           twitter: normalise_twitter_handle(twitter),
                           facebook: normalise_facebook_account(facebook),
                           qualifiers: '',
