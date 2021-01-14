@@ -81,6 +81,7 @@ GEM
       mini_portile2 (~> 2.4.0)
     nokogumbo (2.0.2)
       nokogiri (~> 1.8, >= 1.8.4)
+    normalize_country (0.3.1)
     opencage-geocoder (2.1.1)
     pdf-core (0.7.0)
     prawn (2.2.2)
@@ -179,6 +180,7 @@ DEPENDENCIES
   linkeddata
   minitest
   nokogiri
+  normalize_country
   opencage-geocoder
   prawn
   prawn-table
