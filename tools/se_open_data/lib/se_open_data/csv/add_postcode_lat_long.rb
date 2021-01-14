@@ -153,15 +153,20 @@ module SeOpenData
             csv_out << row
             next
           end
-          headersToUse.each { |k, v|
-            #only replace information about address, do not delete information
-            #or maybe you should delete it when you want to compare locations?
-            if replace_address == "force"
-              row[v] = pcunit[geocoder_headers[k]]
-            elsif (pcunit[geocoder_headers[k]] != nil && pcunit[geocoder_headers[k]] != "")
+          
+          #only replace information about address, do not delete information
+          #or maybe you should delete it when you want to compare locations?
+          if replace_address == "force"
+            headersToUse.each do |k, v|
               row[v] = pcunit[geocoder_headers[k]]
             end
-          }
+          else 
+            headersToUse.each do |k, v|
+              if pcunit[geocoder_headers[k]].to_s != ""
+                row[v] = pcunit[geocoder_headers[k]]
+              end
+            end
+          end
         end
 
         csv_out << row
