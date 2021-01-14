@@ -20,6 +20,8 @@ module SeOpenData
       output = File.open(outfile, "w")
       geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
       geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
+      # This returns a hash whose keys are the intersection of `keys` and `hash.keys`
+      # and values are the corresponding hash values.
       subhash = lambda do |hash, *keys|
         keys = keys.select { |k| hash.key?(k) }
         Hash[keys.zip(hash.values_at(*keys))]
