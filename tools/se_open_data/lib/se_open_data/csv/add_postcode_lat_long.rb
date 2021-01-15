@@ -20,6 +20,8 @@ module SeOpenData
       output = File.open(outfile, "w")
       geocoder = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
       geocoder_headers = SeOpenData::CSV::Standard::GeoapifyStandard::Headers
+      # This returns a hash whose keys are the intersection of `keys` and `hash.keys`
+      # and values are the corresponding hash values.
       subhash = lambda do |hash, *keys|
         keys = keys.select { |k| hash.key?(k) }
         Hash[keys.zip(hash.values_at(*keys))]
@@ -41,8 +43,7 @@ module SeOpenData
                      :street_address,
                      :locality,
                      :region,
-                     :postcode,
-                     :country_name),
+                     :postcode), # -> address_headers
         replace_address,
         geocoder_headers,
         geocoder,
@@ -68,14 +69,17 @@ module SeOpenData
     # @param output_io [IO, File] file or stream to write CSV data to
     # @param input_csv_postcode_header [String] header of input CSV field containing postcodes
     # @param input_country_header [String] header of input CSV field containing country names
-    # @param new_headers [Hash<Symbol,String>] IDs and header names of output CSV fields
+    # @param new_headers [Hash<Symbol,String>] IDs and header names of additional geocoded CSV
+    # fields to populate (if replace_address is false, only these are populated, else
+    # address_headers are too)
     # @param postcodeunit_cache [String] JSON file where OS postcode unit results are cached (passed to
     # {SeOpenData::RDF::OsPostcodeUnit::Client})
     # @param csv_opts [Hash] options to pass to CSV when parsing input_io (in addition to `headers: true`)
     # @param global_postcode_cache [String] optional path to a JSON file where all the postcodes are kept (passed to {SeOpenData::RDF::OsPostcodeGlobalUnit::Client})
-    # @param address_headers [Hash<Symbol,String] IDs and header names ...
+    # @param address_headers [Hash<Symbol,String>] IDs and header names of address fields
     # @param replace_address [Boolean] set to true if we should replace the current address headers && set to "force" if we should replace the headers with whatever the geocoder finds (i.e.replace the field even if the geocoder finds nothing)
-    # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
+    # @param geocoder_headers [Hash<Symbol,String>] defines geocoded header names (and their
+    # mapping to keys of the returned geocoder data hash)
     # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
     # @param use_ordinance_survey [Boolean] set true to use ordinance survey to geocode UK postcodes
     def self._add_postcode_lat_long(
@@ -96,7 +100,7 @@ module SeOpenData
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, **csv_opts)
       csv_out = ::CSV.new(output_io)
-      allHeaders = new_headers.merge(address_headers)
+
       postcode_client = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache)
       global_postcode_client = nil
       if global_postcode_cache != nil
@@ -130,20 +134,34 @@ module SeOpenData
           }
         elsif global_postcode_client #geocode using global geocoder
           #standardize the address if indicated
+
+          # This will contain the headers of fields to replace with geocoded data
           headersToUse = {}
 
           if replace_address != false
-            headersToUse = allHeaders
+            # include address_fields
+            headersToUse = new_headers.merge(address_headers) # new_headers plus address_headers
           else
-            headersToUse = new_headers
+            # just the input fields
+            headersToUse = new_headers 
           end
 
-          #need to match standard h
-          address = []
+          # Build an address array
+          address = address_headers.collect { |k, v| row[v] }
 
-          address_headers.each { |k, v|
-            address.push(row[v])
-          }
+          # Add the country, for consistency with original
+          # implementation, This implementation omits :country_name
+          # from address_headers, which defines what fields to update,
+          # so that the country name isn't overwritten with an
+          # (empirically inconsistent, non-unique) country name from
+          # the geocoder. The country name should stay as-is (what
+          # sense does it make for an address with the country "Czech
+          # Republic" to be changed to one in "Czechia" by geocoding,
+          # especially if other addresses geocode to "Czech
+          # Republic"?)
+          # See https://github.com/SolidarityEconomyAssociation/dotcoop-project/issues/10
+          address.push(country)
+
           #return with the headers i want to replace
           pcunit = global_postcode_client.get(address, country) #assigns both address_headers field
 
@@ -151,15 +169,20 @@ module SeOpenData
             csv_out << row
             next
           end
-          headersToUse.each { |k, v|
-            #only replace information about address, do not delete information
-            #or maybe you should delete it when you want to compare locations?
-            if replace_address == "force"
-              row[v] = pcunit[geocoder_headers[k]]
-            elsif (pcunit[geocoder_headers[k]] != nil && pcunit[geocoder_headers[k]] != "")
+          
+          #only replace information about address, do not delete information
+          #or maybe you should delete it when you want to compare locations?
+          if replace_address == "force"
+            headersToUse.each do |k, v|
               row[v] = pcunit[geocoder_headers[k]]
             end
-          }
+          else 
+            headersToUse.each do |k, v|
+              if pcunit[geocoder_headers[k]].to_s != ""
+                row[v] = pcunit[geocoder_headers[k]]
+              end
+            end
+          end
         end
 
         csv_out << row
