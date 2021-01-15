@@ -44,7 +44,7 @@ module SeOpenData
                      :locality,
                      :region,
                      :postcode,
-                     :country_name),
+                     :country_name), # -> address_headers
         replace_address,
         geocoder_headers,
         geocoder,
@@ -75,9 +75,10 @@ module SeOpenData
     # {SeOpenData::RDF::OsPostcodeUnit::Client})
     # @param csv_opts [Hash] options to pass to CSV when parsing input_io (in addition to `headers: true`)
     # @param global_postcode_cache [String] optional path to a JSON file where all the postcodes are kept (passed to {SeOpenData::RDF::OsPostcodeGlobalUnit::Client})
-    # @param address_headers [Hash<Symbol,String] IDs and header names ...
+    # @param address_headers [Hash<Symbol,String>] IDs and header names of address fields
     # @param replace_address [Boolean] set to true if we should replace the current address headers && set to "force" if we should replace the headers with whatever the geocoder finds (i.e.replace the field even if the geocoder finds nothing)
-    # @param geocoder_headers [Hash<Symbol,String] IDs and header names ...
+    # @param geocoder_headers [Hash<Symbol,String>] defines geocoded header names (and their
+    # mapping to keys of the returned geocoder data hash)
     # @param geocoder_standard [#get_new_data(search_key,country)] a geocoder
     # @param use_ordinance_survey [Boolean] set true to use ordinance survey to geocode UK postcodes
     def self._add_postcode_lat_long(
