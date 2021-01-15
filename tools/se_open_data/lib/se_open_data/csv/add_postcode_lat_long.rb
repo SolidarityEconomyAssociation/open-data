@@ -43,8 +43,7 @@ module SeOpenData
                      :street_address,
                      :locality,
                      :region,
-                     :postcode,
-                     :country_name), # -> address_headers
+                     :postcode), # -> address_headers
         replace_address,
         geocoder_headers,
         geocoder,
@@ -147,12 +146,22 @@ module SeOpenData
             headersToUse = new_headers 
           end
 
-          #need to match standard h
-          address = []
+          # Build an address array
+          address = address_headers.collect { |k, v| row[v] }
 
-          address_headers.each { |k, v|
-            address.push(row[v])
-          }
+          # Add the country, for consistency with original
+          # implementation, This implementation omits :country_name
+          # from address_headers, which defines what fields to update,
+          # so that the country name isn't overwritten with an
+          # (empirically inconsistent, non-unique) country name from
+          # the geocoder. The country name should stay as-is (what
+          # sense does it make for an address with the country "Czech
+          # Republic" to be changed to one in "Czechia" by geocoding,
+          # especially if other addresses geocode to "Czech
+          # Republic"?)
+          # See https://github.com/SolidarityEconomyAssociation/dotcoop-project/issues/10
+          address.push(country)
+
           #return with the headers i want to replace
           pcunit = global_postcode_client.get(address, country) #assigns both address_headers field
 
