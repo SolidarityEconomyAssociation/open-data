@@ -70,7 +70,9 @@ module SeOpenData
     # @param output_io [IO, File] file or stream to write CSV data to
     # @param input_csv_postcode_header [String] header of input CSV field containing postcodes
     # @param input_country_header [String] header of input CSV field containing country names
-    # @param new_headers [Hash<Symbol,String>] IDs and header names of output CSV fields
+    # @param new_headers [Hash<Symbol,String>] IDs and header names of additional geocoded CSV
+    # fields to populate (if replace_address is false, only these are populated, else
+    # address_headers are too)
     # @param postcodeunit_cache [String] JSON file where OS postcode unit results are cached (passed to
     # {SeOpenData::RDF::OsPostcodeUnit::Client})
     # @param csv_opts [Hash] options to pass to CSV when parsing input_io (in addition to `headers: true`)
