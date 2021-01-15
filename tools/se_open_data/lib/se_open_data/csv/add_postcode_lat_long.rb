@@ -99,7 +99,7 @@ module SeOpenData
       csv_opts.merge!(headers: true)
       csv_in = ::CSV.new(input_io, **csv_opts)
       csv_out = ::CSV.new(output_io)
-      allHeaders = new_headers.merge(address_headers)
+
       postcode_client = SeOpenData::RDF::OsPostcodeUnit::Client.new(postcodeunit_cache)
       global_postcode_client = nil
       if global_postcode_cache != nil
@@ -133,12 +133,16 @@ module SeOpenData
           }
         elsif global_postcode_client #geocode using global geocoder
           #standardize the address if indicated
+
+          # This will contain the headers of fields to replace with geocoded data
           headersToUse = {}
 
           if replace_address != false
-            headersToUse = allHeaders
+            # include address_fields
+            headersToUse = new_headers.merge(address_headers) # new_headers plus address_headers
           else
-            headersToUse = new_headers
+            # just the input fields
+            headersToUse = new_headers 
           end
 
           #need to match standard h
