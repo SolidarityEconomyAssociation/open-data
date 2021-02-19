@@ -560,12 +560,12 @@ HERE
 
       datafiles = {
         "vocab/" => "essglobal_vocab.rdf",
-        "standard/organisational-structure" => "organisational-structure.skos",
-        "standard/activities" => "activities.skos",
-        "standard/activities-ica" => "activities-ica.skos",
-        "standard/activities-modified" => "activities-modified.skos",
-        "standard/base-membership-type" => "base-membership-type.skos",
-        "standard/qualifiers" => "qualifiers.skos",
+        "standard/organisational-structure" => "organisational-structure.rdf",
+        "standard/activities" => "activities.rdf",
+        "standard/activities-ica" => "activities-ica.rdf",
+        "standard/activities-modified" => "activities-modified.rdf",
+        "standard/base-membership-type" => "base-membership-type.rdf",
+        "standard/qualifiers" => "qualifiers.rdf",
       }
       datafiles.each do |src, dst|
         content = fetch config.ESSGLOBAL_URI + src
@@ -579,7 +579,6 @@ HERE
       IO.write config.VIRTUOSO_SCRIPT_LOCAL, <<HERE
 SPARQL CLEAR GRAPH '#{config.GRAPH_NAME}';
 ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.rdf',NULL);
-ld_dir('#{config.VIRTUOSO_DATA_DIR}','*.skos',NULL);
 rdf_loader_run();
 HERE
 
