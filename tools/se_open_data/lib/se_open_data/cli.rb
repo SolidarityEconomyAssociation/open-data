@@ -588,6 +588,8 @@ rdf_loader_run();
 select ll_file, ll_error from DB.DBA.load_list where ll_file like '#{config.VIRTUOSO_DATA_DIR}%' and ll_error is not null;
 select count(*) from DB.DBA.load_list where ll_file like '#{config.VIRTUOSO_DATA_DIR}%' and ll_error is not null;
 exit $if $gt $last[1] 0 1 not;
+sparql select count (*) from <#{config.GRAPH_NAME}> where {?s ?p ?o};
+exit $if $equ $last[1] 0 2 not;
 HERE
 
       to_serv = config.respond_to?(:VIRTUOSO_SERVER) ? config.VIRTUOSO_SERVER : nil
