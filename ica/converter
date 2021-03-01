@@ -3,209 +3,128 @@
 #
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
-
-require_relative "../tools/se_open_data/lib/load_path"
-require "se_open_data/csv/row_reader"
-require "se_open_data/csv/convert"
-require "se_open_data/csv/standard"
-require "se_open_data/utils/password_store"
-require "se_open_data/utils/error_document_generator"
-require "se_open_data/config"
-
-# Defines a schema mapping for ica-youth-network data.
+# We aim to put only logic specific to this project in this file, and
+# keep it brief and clear. Shared logic should go into the {SeOpenData}
+# library.
 #
-# The hash {Converter::InputHeaders} identifies methods
-# which should be implemented as simple CSV field look-ups.
+# This script can be invoked directly, or as part of the {SeOpenData}
+# library's command-line API {SeOpenData::Cli}. For example, this
+# just runs the conversion step (or specifically: a script in the
+# current directory called `converter`):
 #
-# Some are named in {SeOpenData::CSV::Standard::V1}'s keys and so will be copied
-# verbatim into the output CSV data. These have no underscore prefix.
+#     seod convert 
 #
-# Those with underscore prefixes are used internally.
+# And this runs the complete chain of commands generating and
+# deploying the linked data for this project, as configured by
+# `settings/config.txt`:
 #
-# The other keys of {SeOpenData::CSV::Standard::V1} must also have methods
-# implemented in this class. These are the ones which have more
-# complicated transformation rules - they cannot be a simple copy of
-# an existing data field.
+#     seod run-all
 #
-# Input data fields are:
-#
-# - Organization Type
-# - Name
-# - name
-# - Region
-# - Country
-# - City
-# - Latitude
-# - Longitude
-# - Size
-# - Type
-# - Sector
-# - Address
-# - Description
-# - Additional Details
-# - Website
-# - Email
-#
-# See discussion here:
-# https://github.com/SolidarityEconomyAssociation/open-data/issues/11
-#
-# FIXEM we should define a schema file and use the same
-# SeOpenData::CSV::Schema#converter method here as the other datasets.
-class Converter < SeOpenData::CSV::RowReader
+# See the documentation on [`seod`]({SeOpenData::Cli}) for more
+# information.
 
-  # @param row [Hash<String => String>] - a row of CSV data
-  def initialize(row)
-    # Let CSV::RowReader provide methods for accessing columns described by InputHeaders, above:
-    super(row, InputHeaders)
-  end
+require_relative '../tools/se_open_data/lib/load_path'
+require 'se_open_data/utils/password_store'
+require 'se_open_data/utils/error_document_generator'
+require 'se_open_data/config'
+require 'se_open_data/csv/schema'
+require 'se_open_data/csv/schemas'
+require 'se_open_data/csv/schema/types'
+require 'se_open_data/csv/standard'
 
-  def street_address
-    # "#{_street_addres} #{_sup_street_address_1} #{_sup_street_address_2}"
-    main = _street_address ? _street_address : ""
-    sec = _sup_street_address_1 ? _sup_street_address_1 : ""
-    thrd = _sup_street_address_2 ? _sup_street_address_2 : ""
-    res = "#{main} #{sec} #{thrd}"
-    res.strip
-  end
+class Converter
 
-  def homepage
-    if _website && !_website.empty?
-      http_regex = /https?\S+/
-      m = http_regex.match(_website)
-      if m
-        m[0]
-      else
-        www_regex = /^www\./
-        www_m = www_regex.match(_website)
-        if www_m
-          "http://#{_website}"
-        else
-          add_comment("This doesn't look like a website: #{_website} (Maybe it's missing the http:// ?)")
-          nil
-        end
-      end
-    end
-  end
-
-  def name
-    _name || "No Name" # FIXME
-  end
-
-  def legal_forms
-    # Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
-    # Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-    # See lib/se_open_data/essglobal/legal_form.rb
-    "Cooperative"
-  end
-
-  def base_membership_type
-    bmp = BASE_MEMBERSHIP_TYPE[_base_membership_type]
-  end
-
-  def organisational_structure
-    ## Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
-    ## Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-    ## See lib/se_open_data/essglobal/legal_form.rb
-    org_st = TYPE_TO_ORG_STRUCT[_struct_type] ? TYPE_TO_ORG_STRUCT[_struct_type] : "Co-operative"
-
-    org_st
-  end
-
-  def primary_activity
-    ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] ? ECONOMIC_ACTIVITY_TO_ACTIVITY[_prim_activity] : ""
-  end
-
-  def activities
-    if _sup_activities
-      _sup_activities
-        .split(",")
-        .map { |a| ECONOMIC_ACTIVITY_TO_ACTIVITY[a.strip] ? ECONOMIC_ACTIVITY_TO_ACTIVITY[a.strip] : nil }
-        .compact.join(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
-    else
-      ""
-    end
-  end
-
-  def qualifiers
-    if _struct_type == "Coop Promoter/Supporter"
-      "Coop Promoter/Supporter"
-    elsif _sup_activities && _sup_activities.include?("Coop Promoter/Supporter")
-      "Coop Promoter/Supporter"
-    end
-  end
-
-  # Adds a new last column `Id` and inserts in it a numeric index in each row.
+  # The output schema
+  StdSchema = SeOpenData::CSV::Schemas::Latest
+  
+  # Returns a schema converter for the given schema.
   #
-  # @param input - an input stream, or the name of a file to read
-  # @param output - an output stream, or the name of a file to read
-  def self.add_unique_ids(input:, output:)
-    input = File.open(input) unless input.is_a? IO
-    output = File.open(output, "w") unless output.is_a? IO
-
-    csv_opts = {}
-    csv_opts.merge!(headers: true)
-
-    csv_in = ::CSV.new(input, csv_opts)
-    csv_out = ::CSV.new(output)
-    headers = nil
-    i = 0
-    csv_in.each do |row|
-      unless headers
-        headers = row.headers
-        headers.push("Id")
-        csv_out << headers
-      end
-      row["Id"] = i
-      i += 1
-      csv_out << row
-    end
-  ensure
-    input.close
-    output.close
-  end
-
-  def self.clean_headers(input:, output:)
-    # removes quotation marks in headers
-    input = File.open(input) unless input.is_a? IO
-    output = File.open(output, "w") unless output.is_a? IO
-
-    File.open(input) { |inp|
-      File.open(output, "w") { |outp|
-        headers = nil
-
-        inp.each_line { |line|
-          if !headers
-            headers = line
-            headers.gsub! "\"", ""
-            outp.print headers
-          else
-            outp.print line
-          end
-        }
-      }
-    }
-  end
-
-  # Transforms the rows from Co-ops UK schema to our standard
+  # This defines the schema mapping for ICA data into the
+  # standard schema.
   #
-  # @param input - an input stream, or the name of a file to read
-  # @param output - an output stream, or the name of a file to read
-  def self.convert(input:, output:)
-    input = File.open(input) unless input.is_a? IO
-    output = File.open(output, "w") unless output.is_a? IO
+  # The logic that maps the input field data is defined in the
+  # do-block. It will be wrapped in a loop which reads the input file
+  # and writes the output file. See the documentation for
+  # {SeOpenData::CSV::Schema.converter}.
+  #
+  def self.mk_converter(from_schema:, to_schema:)
+      # A convenient alias...
+    types = SeOpenData::CSV::Schema::Types
 
-    # Note the use of #read, convert expects a string so it can remove
-    # BOMs. Possibly not required if the csv has already been cleaned
-    # up?
-    SeOpenData::CSV.convert(
-      output, SeOpenData::CSV::Standard::V1::Headers,
-      input.read, self, {}
-    )
-  ensure
-    input.close
-    output.close
+    return SeOpenData::CSV::Schema.converter(
+      from_schema: from_schema,
+      to_schema: to_schema,
+      input_csv_opts: {skip_blanks: true}
+      #    output_csv_opts: {quote_empty: false}
+    ) do | # These parameters match source schema field ids
+           id:,
+           name:,
+           country:,
+           super_region:,
+           region:,
+           main_address_street:,
+           main_address_supplemental_1:,
+           main_address_supplemental_2:,
+           main_address_city:,
+           main_address_postcode:,
+           main_address_latitude:,
+           main_address_longitude:,
+           website:,
+           typology:,
+           structure_type:,
+           primary_activity:,
+           secondary_activities:,
+           description:
+           |
+           # A mapping to the target schema field ids
+           {
+             id: id.to_i,
+             name: name || "No Name",
+             description: description,
+             organisational_structure: TYPE_TO_ORG_STRUCT.fetch(structure_type, "Co-operative"),
+             primary_activity: ECONOMIC_ACTIVITY_TO_ACTIVITY.fetch(primary_activity, ""),
+             activities: (
+               secondary_activities
+                 .to_s
+                 .split(",")
+                 .map {|a| ECONOMIC_ACTIVITY_TO_ACTIVITY[a.strip] }
+                 .compact
+                 .join(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
+             ),
+             street_address: (
+               [main_address_street,
+                main_address_supplemental_1,
+                main_address_supplemental_2]
+                 .collect { |el| el.to_s }
+                 .join(" ")
+                 .strip
+             ),
+             locality: main_address_city,
+             region: nil,
+             postcode: main_address_postcode,
+             country_name: country,
+             homepage: types.normalise_url(website, default: nil),
+             phone: nil,
+             email: nil,
+             twitter: nil,
+             facebook: nil,
+             companies_house_number: nil,
+             qualifiers: (
+               structure_type == "Coop Promoter/Supporter"? "Coop Promoter/Supporter" :
+                 secondary_activities.to_s.include?("Coop Promoter/Supporter")?
+                   "Coop Promoter/Supporter" : nil
+             ),
+             base_membership_type: BASE_MEMBERSHIP_TYPE[typology],
+             latitude: main_address_latitude,
+             longitude: main_address_longitude,
+             geocontainer: nil,
+             geocontainer_lat: nil,
+             geocontainer_lon: nil,
+           }
+    end
   end
 
+           
   # Entry point if invoked as a script.
   #
   #
@@ -221,10 +140,9 @@ class Converter < SeOpenData::CSV::RowReader
     config = SeOpenData::Config.load
 
     # original src csv files
-    csv_to_standard = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+    original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
     # Intermediate csv files
-    cleared_errors = File.join(config.GEN_CSV_DIR, "cleared_errors.csv")
     converted = File.join(config.GEN_CSV_DIR, "converted.csv")
 
     # Output csv file
@@ -235,9 +153,16 @@ class Converter < SeOpenData::CSV::RowReader
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
 
-    # generate the cleared error file
-    clean_headers input: csv_to_standard, output: cleared_errors
-    convert input: cleared_errors, output: converted
+    # This defines the input CSV schema we expect (after clean-up and geolocation)
+    schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)    
+    
+    # A converter between the two
+    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    
+    # Transforms to our standard CSV schema.
+    # Note the BOM and encoding flags, which avoid a MalformedCSVError
+    converter.convert File.open(original_csv, "r:bom|utf-8"), converted
+    
     # add location data
     SeOpenData::CSV.add_postcode_lat_long(infile: converted,
                                           outfile: output_csv,
@@ -254,11 +179,6 @@ class Converter < SeOpenData::CSV::RowReader
   end
 
   private
-
-  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  LAT_LNG_REGEX = /^\-?\d+\.{1}\d+$/i
-  UK_POSTCODES_CACHE = "postcode_lat_lng.json"
-  GLOBAL_POSTCODES_CACHE = "geodata_cache.json"
 
   # See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
   # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
@@ -301,41 +221,6 @@ class Converter < SeOpenData::CSV::RowReader
     "Multi-stakeholder coops" => "Multi - stakeholders",
     "Residents" => "Residents",
   }
-
-  # These define methods (as keys) to implement as simple hash
-  # look-ups using CSV field names (values).
-  #
-  InputHeaders = {
-    id: "Contact ID",
-    postcode: "Main-Postal Code",
-    country_name: "Country",
-    locality: "Main-City",
-    description: "Description for publications",
-    _street_address: "Main-Street Address",
-    _sup_street_address_1: "Main-Supplemental Address 1",
-    _sup_street_address_2: "Main-Supplemental Address 2",
-    _name: "Organisation Name",
-    _website: "Website",
-    _base_membership_type: "Typology",
-    _struct_type: "Structure Type",
-    _prim_activity: "Economic activity (primary)",
-    _sup_activities: "Economic activities (additional)",
-    latitude: "Main-Latitude",
-    longitude: "Main-Longitude",
-  }
-  # MISSING!
-  # primary_activity (name?)
-  # activities
-  # region (region?)
-  # postcode
-  # phone
-  # twitter
-  # facebook
-  # companies_house_number
-  # geocontainer
-  # geocontainer_lat
-  # geocontainer_lon
-  # qualifiers
 
 end
 
