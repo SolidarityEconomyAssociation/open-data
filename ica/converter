@@ -220,7 +220,7 @@ class Converter < SeOpenData::CSV::RowReader
     config = SeOpenData::Config.load
 
     # original src csv files
-    csv_to_standard_1 = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+    csv_to_standard = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
     # Intermediate csv files
     cleared_errors = File.join(config.GEN_CSV_DIR, "cleared_errors.csv")
@@ -235,7 +235,7 @@ class Converter < SeOpenData::CSV::RowReader
     api_key = pass.get config.GEOCODER_API_KEY_PATH
 
     # generate the cleared error file
-    clean_headers input: csv_to_standard_1, output: cleared_errors
+    clean_headers input: csv_to_standard, output: cleared_errors
     convert input: cleared_errors, output: converted
     # add location data
     SeOpenData::CSV.add_postcode_lat_long(infile: converted,
