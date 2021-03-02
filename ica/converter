@@ -189,6 +189,7 @@ class Converter
 
     # Intermediate csv files
     converted = File.join(config.GEN_CSV_DIR, "converted.csv")
+    geolocated = File.join(config.GEN_CSV_DIR, "geolocated.csv")
 
     # Output csv file
     output_csv = config.STANDARD_CSV
@@ -210,11 +211,29 @@ class Converter
     
     # add location data
     SeOpenData::CSV.add_postcode_lat_long(infile: converted,
-                                          outfile: output_csv,
+                                          outfile: geolocated,
                                           api_key: api_key,
                                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
                                           postcode_global_cache: config.GEODATA_CACHE,
                                           replace_address: false)
+
+    # ICA temp HACK! Rewrite to add the country and the territory ids.
+    # Later, we hope to get the data included in the ICA file, which
+    # will involve an input schema change, and make everything much
+    # easier and more reliable, hopefully!
+    CSV.open(output_csv, 'w', headers: true, write_headers: true) do |out|
+      CSV.foreach(geolocated, headers: true, return_headers: true) do |row|
+        if row.header_row?
+          out << row.headers
+        else
+          id = row["Identifier"]
+          cname = row["Country ID"]
+          row["Country ID"] = normalise_country(cname, id)
+          # puts [id, cname, cn, tid].to_s # DEBUG
+          out << row
+        end
+      end
+    end
 
     # generate the report files (no need to pass a key)
     low_bar = 0.05
