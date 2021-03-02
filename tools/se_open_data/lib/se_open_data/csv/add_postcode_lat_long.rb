@@ -31,7 +31,7 @@ module SeOpenData
         input,
         output,
         StdSchema.field(:postcode).header,
-        StdSchema.field(:country_name).header,
+        StdSchema.field(:country_id).header,
         subhash.call(headers,
                      :geocontainer,
                      :geocontainer_lat,

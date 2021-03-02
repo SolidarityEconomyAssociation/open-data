@@ -31,12 +31,55 @@ require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schemas'
 require 'se_open_data/csv/schema/types'
 require 'se_open_data/csv/standard'
+require 'normalize_country'
 
 class Converter
 
   # The output schema
   StdSchema = SeOpenData::CSV::Schemas::Latest
-  
+
+  def self.normalise_country(country, id)
+    # Special-case HACKS for ICA data.  We happen to know these cases
+    # need their country re-interpreting.
+    case id
+    when "155"
+      "TH" # I-AP
+    when "731"
+      "BE" # I-EU
+    when "1856"
+      "KN" # I-AM-CB
+    when "3516"
+      "KE" # I-AF
+    else
+      case country.downcase
+      when "côte d’ivoire"
+        "CI"
+      when "palestine, state of"
+        "PS"
+      else
+        NormalizeCountry(country, to: :alpha2) ||      
+          warn("unrecognised country: "+country)
+      end
+    end
+  end
+
+  def self.territory(id, cn)
+    # Another special-case HACK for ICA data. We happen to know
+    # these case need different territories from the country.
+    case id
+    when "155"
+      "I-AP"
+    when "731"
+      "I-EU"
+    when "1856"
+      "I-AM-CB"
+    when "3516"
+      "I-AF"
+    else
+      cn
+    end
+  end
+       
   # Returns a schema converter for the given schema.
   #
   # This defines the schema mapping for ICA data into the
@@ -77,6 +120,7 @@ class Converter
            description:
            |
            # A mapping to the target schema field ids
+           cn = normalise_country(country, id)
            {
              id: id.to_i,
              name: name || "No Name",
@@ -102,7 +146,8 @@ class Converter
              locality: main_address_city,
              region: nil,
              postcode: main_address_postcode,
-             country_name: country,
+             country_id: country, # Temp hack, should be cn
+             territory_id: territory(id, cn),
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
              email: nil,
