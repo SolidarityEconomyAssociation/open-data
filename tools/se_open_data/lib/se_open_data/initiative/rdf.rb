@@ -233,12 +233,12 @@ module SeOpenData
         end
         # Map values onto their VCARD porperties:
         {
-          initiative.street_address => "street-address",
-          initiative.locality => "locality",
-          initiative.region => "region",
-          initiative.postcode => "postal-code",
-          initiative.country_name => "country-name",
-        }.each { |val, property|
+          "street-address" => initiative.street_address, 
+          "locality" => initiative.locality,
+          "region" => initiative.region,
+          "postal-code" => initiative.postcode,
+          "country-name" => initiative.country_name,
+        }.each { |property, val|
           if val && !val.empty?
             graph.insert([address_uri, ::RDF::Vocab::VCARD[property], val])
           end
