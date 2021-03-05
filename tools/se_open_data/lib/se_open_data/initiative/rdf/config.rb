@@ -46,8 +46,7 @@ module SeOpenData
           else
             @activities_mod_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
           end
-          # @legal_form_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "legal-form")
-          # @activities_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
+          
           @countries_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "countries")
           
           @csv_standard = csv_standard
