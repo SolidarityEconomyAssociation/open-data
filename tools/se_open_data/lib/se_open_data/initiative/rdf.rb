@@ -198,9 +198,6 @@ module SeOpenData
         if initiative.homepage && !initiative.homepage.empty?
           graph.insert([uri, ::RDF::Vocab::FOAF.homepage, initiative.homepage])
         end
-        # legal_form_uris.each {|legal_form_uri|
-        #   graph.insert([uri, config.essglobal_vocab.legalForm, legal_form_uri])
-        # }
         activities_uris.each { |activities_mod_uri|
           graph.insert([uri, config.essglobal_vocab.economicSector, activities_mod_uri])
         }
