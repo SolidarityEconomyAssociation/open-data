@@ -44,4 +44,10 @@ method = "command_#{command}".to_sym
 abort usage unless SeOpenData::Cli.respond_to? method
 
 puts "invoking command: #{command}"
-exit SeOpenData::Cli.send(method)
+begin
+  exit SeOpenData::Cli.send(method)
+rescue => e
+  warn e.message
+  warn e.backtrace.join("\n")
+  exit -1
+end
