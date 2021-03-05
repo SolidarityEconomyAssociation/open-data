@@ -1,6 +1,7 @@
 require "linkeddata"
 require "se_open_data/initiative/rdf/config"
 require "se_open_data/initiative/file"
+require "normalize_country"
 
 module SeOpenData
   class Initiative
@@ -53,6 +54,22 @@ module SeOpenData
         ::RDF::URI("#{uri}#Address")
       end
 
+      # @returns a URI, or nil
+      def country_uri
+        if initiative.country_id.nil?
+          nil
+        else
+          country_id = initiative.country_id
+          if config.countries_lookup.has_label?(country_id)
+            ::RDF::URI(config.countries_lookup.concept_uri(country_id))
+          else
+            warn "Could not find country: #{country_id}"
+            nil
+          end
+        end
+      end
+
+      
       def phone_uri
         ::RDF::URI("#{uri}#Telephone")
       end
@@ -204,6 +221,7 @@ module SeOpenData
         organisational_structure_uris.each { |organisational_structure_uri|
           graph.insert([uri, config.essglobal_vocab.organisationalStructure, organisational_structure_uri])
         }
+        graph.insert([uri, config.essglobal_vocab.country_uri, country_uri])
         qualifier_uris.each { |qualifier_uri|
           graph.insert([uri, config.essglobal_vocab.qualifier, qualifier_uri]) #might cause error? qualifier should be applied to input
         }
@@ -234,12 +252,16 @@ module SeOpenData
           "locality" => initiative.locality,
           "region" => initiative.region,
           "postal-code" => initiative.postcode,
-          "country-name" => initiative.country_name,
+          "country-name" => NormalizeCountry(initiative.country_id),
         }.each { |property, val|
           if val && !val.empty?
             graph.insert([address_uri, ::RDF::Vocab::VCARD[property], val])
           end
         }
+        if initiative.country_uri
+          graph.insert([address_uri, Config::Osspatialrelations.within, country_uri])
+        end
+
 
         if geocontainer_uri
           graph.insert([address_uri, Config::Osspatialrelations.within, geocontainer_uri])

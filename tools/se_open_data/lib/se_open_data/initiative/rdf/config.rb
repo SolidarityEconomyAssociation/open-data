@@ -11,7 +11,7 @@ module SeOpenData
         Osspatialrelations = ::RDF::Vocabulary.new("http://data.ordnancesurvey.co.uk/ontology/spatialrelations/")
         Geo = ::RDF::Vocabulary.new("http://www.w3.org/2003/01/geo/wgs84_pos#")
         Rov = ::RDF::Vocabulary.new("http://www.w3.org/ns/regorg#")
-        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :qualifiers_lookup, :base_membership_type_lookup, :legal_form_lookup, :activities_lookup, :csv_standard, :sameas
+        attr_reader :uri_prefix, :essglobal_uri, :essglobal_vocab, :one_big_file_basename, :map_app_sparql_query_filename, :css_files, :essglobal_standard, :postcodeunit_cache, :organisational_structure_lookup, :activities_mod_lookup, :qualifiers_lookup, :base_membership_type_lookup, :countries_lookup, :activities_lookup, :csv_standard, :sameas
 
         # Constructor
         #
@@ -48,7 +48,8 @@ module SeOpenData
           end
           # @legal_form_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "legal-form")
           # @activities_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "activities-modified")
-
+          @countries_lookup = SeOpenData::Essglobal::Standard.new(essglobal_uri, "countries")
+          
           @csv_standard = csv_standard
 
           # keys are URIs in *this* dataset. values are arrays of URIs in other datasets.
