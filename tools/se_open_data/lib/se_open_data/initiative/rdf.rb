@@ -55,15 +55,32 @@ module SeOpenData
       end
 
       # @returns a URI, or nil
-      def country_uri
+      def country_id
         if initiative.country_id.nil?
           nil
         else
-          country_id = initiative.country_id
-          if config.countries_lookup.has_label?(country_id)
-            ::RDF::URI(config.countries_lookup.concept_uri(country_id))
+          id = initiative.country_id
+          uri = URI.join(config.countries_lookup.uri+'/', id)
+          if config.countries_lookup.has_concept?(uri)
+            ::RDF::URI(uri)
           else
-            warn "Could not find country: #{country_id}"
+            warn "Could not find country: #{uri}"
+            nil
+          end
+        end
+      end
+
+      # @returns a URI, or nil
+      def territory_id
+        if initiative.territory_id.nil?
+          nil
+        else
+          id = initiative.territory_id
+          uri = URI.join(config.territories_lookup.uri+'/', id)
+          if config.territories_lookup.has_concept?(uri)
+            ::RDF::URI(uri)
+          else
+            warn "Could not find territory: #{uri}"
             nil
           end
         end
@@ -221,7 +238,10 @@ module SeOpenData
         organisational_structure_uris.each { |organisational_structure_uri|
           graph.insert([uri, config.essglobal_vocab.organisationalStructure, organisational_structure_uri])
         }
-        graph.insert([uri, config.essglobal_vocab.country_uri, country_uri])
+        graph.insert([uri, config.essglobal_vocab.country_id, country_id])
+        # Leaving this out until we figure out how to create composite
+        # vocabs (country+region+super-region)
+        #graph.insert([uri, config.essglobal_vocab.territory_id, territory_id])
         qualifier_uris.each { |qualifier_uri|
           graph.insert([uri, config.essglobal_vocab.qualifier, qualifier_uri]) #might cause error? qualifier should be applied to input
         }
@@ -258,9 +278,11 @@ module SeOpenData
             graph.insert([address_uri, ::RDF::Vocab::VCARD[property], val])
           end
         }
-        if initiative.country_uri
-          graph.insert([address_uri, Config::Osspatialrelations.within, country_uri])
-        end
+        # Don't set this yet, it causes duplicate rows in the data query
+        # because of the other within: definition
+        #if initiative.country_id
+        #  graph.insert([address_uri, Config::Osspatialrelations.within, country_id])
+        #end
 
 
         if geocontainer_uri
