@@ -568,6 +568,9 @@ HERE
         "standard/activities-modified" => "activities-modified.rdf",
         "standard/base-membership-type" => "base-membership-type.rdf",
         "standard/qualifiers" => "qualifiers.rdf",
+        "standard/countries-iso" => "countries-iso.rdf",
+        "standard/regions-ica" => "regions-ica.rdf",
+        "standard/super-regions-ica" => "super-regions-ica.rdf",
       }
       datafiles.each do |src, dst|
         content = fetch config.ESSGLOBAL_URI + src
