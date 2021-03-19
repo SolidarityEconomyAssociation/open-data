@@ -203,7 +203,7 @@ module IcaYouthNetwork
     csv_opts = {}
     csv_opts.merge!(headers: true)
 
-    csv_in = ::CSV.new(input, csv_opts)
+    csv_in = ::CSV.new(input, **csv_opts)
     csv_out = ::CSV.new(output)
     headers = nil
     i = 0
