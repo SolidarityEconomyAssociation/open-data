@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding: utf-8
 #
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
@@ -29,7 +30,7 @@ require 'se_open_data/csv/schema/types'
 require 'csv'
 
 # Code related to the ICA Youth-Network initiative data
-module IcaYouthNetwork
+module Converter
 
   # This defines the input CSV schema we expect (after clean-up and
   # index generation, excuted in the main method below.)
@@ -37,6 +38,37 @@ module IcaYouthNetwork
 
   # A convenient alias...
   types = SeOpenData::CSV::Schema::Types
+
+  def self.omit_na(str)
+    str.to_s.match(%r{^\s*n\s*/\s*a\s*$}i)? nil : str
+  end
+  
+  def self.territory(country, region, super_region)
+    # Deal with ICA "Country" field data - We happen to know some
+    # cases of country labels they use differ from those in
+    # NormalizeCountry. Work around these until NormalizeCountry
+    # incorporates our pull-request.
+    #
+    # When a country is supplied, we infer the region and super-region
+    # downstream from here. The ICA don't currently use regions or
+    # super-regions as territories, and we simply vaildate the Region
+    # and Super-region fields.
+    #
+    # Raises an exception if an invalid case is found.
+    case country.downcase
+    when "democratic republic of congo"
+      "CD"
+    when "brasil"
+      "BR"
+    when "cameroun"
+      "CM"
+    when "the sudan"
+      "SD"
+    else
+      NormalizeCountry(country, to: :alpha2) or
+        raise "unrecognised country: #{country}"
+    end
+  end
   
   # This defines the schema mapping for ica-youth-network data into the
   # standard schema.
@@ -50,53 +82,68 @@ module IcaYouthNetwork
   # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
   Converter = SeOpenData::CSV::Schema.converter(
     from_schema: Schema,
-    to_schema: SeOpenData::CSV::Schemas::Versions[0],
+    to_schema: SeOpenData::CSV::Schemas::Latest,
 #    output_csv_opts: {quote_empty: false}
   ) do | # These parameters match source schema field ids
          id:,
-         org_type:,
          name:,
-         name2:,
+         structure_type:,
+         survey_structure_type:,
+         typology:,
+         primary_activity:,
+         additional_activities:,
+         other_activities:,
          region:,
          country:,
+         description:,
+         additional_description:,
+         website:,
+         email:,
+         address:,
          city:,
          latitude:,
          longitude:,
-         size:,
-         type:,
-         sector:,
-         address:,
-         description:,
-         additional:,
-         website:,
-         email:
+         size:
          |
          # A mapping to the target schema field ids
-    {
-      id: id,
-      name: name || "No Name",
-      description: [description, additional].compact.join("<p>"),
-      organisational_structure: normalise_org_struct(type),
-      primary_activity: '',
-      activities: '',
-      street_address: address,
-      locality: city,
-      region: '',
-      postcode: '',
-      country_name: country,
-      homepage: ([nil, '', 'n/a'].include?(website.downcase)?
-        "" : types.multivalue(website) {|it| types.normalise_url(it, default: nil) }),
-      phone: '',
-      email: email.to_s.empty? ? '' : types.normalise_email(email),
-      twitter: '',
-      facebook: '',
-      companies_house_number: '',
-      latitude: types.normalise_float(latitude),
-      longitude: types.normalise_float(longitude),
-      geocontainer: '',
-      geocontainer_lat: '',
-      geocontainer_lon: '',
-    }
+
+         {
+           id: @count? (@count += 1) : (@count = 1), # a hacky way to generate a sequential ID
+           name: name,
+           description: [description, additional_description].compact.join("<p>"),
+           organisational_structure: TYPE_TO_ORG_STRUCT.fetch(types.to_sym survey_structure_type),
+           primary_activity: ECONOMIC_ACTIVITY_TO_ACTIVITY.fetch(types.to_sym primary_activity),
+           activities: (
+             types.multivalue(additional_activities, delim: ",") do |it|
+               ECONOMIC_ACTIVITY_TO_ACTIVITY.fetch(types.to_sym it)
+             end
+           ),
+           street_address: omit_na(address), 
+           locality: city,
+           region: nil,
+           postcode: nil,
+           country_id: territory(country, nil, nil), # HACK, for geocoder, will replace later
+           territory_id: territory(country, region, nil),
+           homepage:  types.multivalue(omit_na website) do |it|
+             types.normalise_url(it, default: nil)
+           end,
+           phone: nil,
+           email: (omit_na email).to_s.empty? ? '' : types.normalise_email(email),
+           twitter: nil,
+           facebook: nil,
+           companies_house_number: nil,
+           qualifiers: (
+             structure_type == "Coop Promoter/Supporter"? "Coop Promoter/Supporter" :
+               additional_activities.to_s.include?("Coop Promoter/Supporter")?
+                 "Coop Promoter/Supporter" : nil
+           ),
+           base_membership_type: BASE_MEMBERSHIP_TYPE.fetch(types.to_sym typology),
+           latitude: types.normalise_float(latitude),
+           longitude: types.normalise_float(longitude),
+           geocontainer: nil,
+           geocontainer_lat: nil,
+           geocontainer_lon: nil,
+         }
   end
 
   # CSV file transform - adds a new last column `Id` and inserts in it
@@ -164,42 +211,48 @@ module IcaYouthNetwork
   end
 
   private
-  
-  # This maps strings in the "Type" field in the input data into
-  # values we can use in the SSE standard "Organizational Structure"
-  # field.
-  #
-  # See
-  # https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
-  # And:
-  # https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
-  #
-  # @param val [String] The value to convert
-  # @return [String] A valid "Organizational Structure" value
-  def self.normalise_org_struct(val)
-    # Strictly this should allow multiple values delimited by ';'
-    TYPE_TO_ORG_STRUCT[val] || "Co-operative"
-  end
 
   TYPE_TO_ORG_STRUCT = {
-    "Cooperativa de consumo / usuario final" => "Consumer co-operative",
-    "Coop\uFFFDrative de consommateur.rice.s" => "Consumer co-operative",
-    "Final consumer/user cooperative" => "Consumer co-operative",
-    "Cooperativa de m\uFFFDltiples actores" => "Multi-stakeholder co-operative",
-    "Coop\uFFFDrative pluri-acteurs" => "Multi-stakeholder co-operative",
-    "Multi-stakeholder cooperative" => "Multi-stakeholder co-operative",
-    "Cooperativa de producci\uFFFDn" => "Producer co-operative",
-    "Coop\uFFFDrative de producteur.rice.s (dont agricole)" => "Producer co-operative",
-    "Producer cooperative" => "Producer co-operative",
-    "Cooperativa de trabajo y empleo" => "Self-employed",
-    "Cooperativa di lavoro" => "Self-employed",
-    "Work and employment cooperative" => "Self-employed",
-    "Coop\uFFFDrative de travailleur.se.s" => "Workers co-operative",
+    # cooperativa_de_consumo_usuario_final: "Consumer/User coop",
+    # cooperative_de_consommateur_rice_s: "Consumer/User coop",
+    final_consumer_user_cooperative: "Consumer/User coop",
+    cooperativa_de_multiples_actores: "Multi-stakeholder co-operative",
+    # cooperative_pluri_acteurs: "Multi-stakeholder co-operative",
+    multi_stakeholder_cooperative: "Multi-stakeholder co-operative",
+    cooperativa_de_produccion: "Producer co-operative",
+    # cooperative_de_producteur_rice_s_dont_agricole: "Producer co-operative",
+    producer_cooperative: "Producer co-operative",
+    # cooperativa_de_trabajo_y_empleo: "Self-employed",
+    # cooperativa_di_lavoro: "Self-employed",
+    work_and_employment_cooperative: "Self-employed",
+    # cooperative_de_travailleur_se_s: "Workers co-operative",
   }
 
+  ECONOMIC_ACTIVITY_TO_ACTIVITY = {
+    education_health_social_work: "Education / health / social work",
+    all: "All",
+    financial_services: "Financial Services",
+    fishing: "Fishing",
+    housing: "Housing",
+    insurance: "Insurance",
+    other_services: "Other services",
+    wholesale_and_retail_trade: "Wholesale and retail trade",
+    agriculture: "Agriculture",
+    utilities: "Utilities",
+    industry: "Industry",
+  }
+
+  BASE_MEMBERSHIP_TYPE = {
+    consumer_user_coops: "Consumer/Users",
+    others: "Others",
+    producer_coops: "Producers",
+    worker_coops: "Workers",
+    multi_stakeholder_coops: "Multi - stakeholders",
+    residents: "Residents",
+  }
 end
 
 # Run the entry point if we're invoked as a script
 # This just does the csv conversion.
-IcaYouthNetwork.main if __FILE__ == $0
+Converter.main if __FILE__ == $0
 

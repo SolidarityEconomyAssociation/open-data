@@ -2,74 +2,102 @@
 id: :ica_youth_network
 name: ICA Youth Network
 version: 20200511
-primary_key: []
+primary_key:
+- :id
 comment: 
 fields:
 - id: :id
-  header: Id
-  desc: A unique identifier for this initiative
-  comment: ''
-- id: :org_type
-  header: Organization Type
-  desc: ''
+  header: civiID
+  desc: A unique identifier for this organisation
   comment: ''
 - id: :name
-  header: Name
-  desc: ''
+  header: Youth Coop
+  desc: The name of the organisation
   comment: ''
-- id: :name2
-  header: name
-  desc: ''
-  comment: Probably a mistake, seems to be a duplicate of Type
+- id: :structure_type
+  header: Structure Type
+  desc: The structure of this organisation
+  comment: ''
+- id: :survey_structure_type
+  header: Type from survey
+  desc: The structure of this organisation as surveyed
+  comment: ''
+- id: :typology
+  header: Typology
+  desc: The base membership type of this organisation
+  comment: ''
+- id: :primary_activity
+  header: Economic Activity (Primary)
+  desc: The primary economic activity of this organisation
+  comment: ''
+- id: :additional_activities
+  header: Economic Activities (Additional)
+  desc: Any additional economic activities of this organisation, delimited by commas.
+  comment: ''
+- id: :other_activities
+  header: Economic Activities (Other services detail)
+  desc: Any other services of this organisation, delimited by commas.
+  comment: ''
 - id: :region
   header: Region
-  desc: ''
-  comment: ''
+  desc: |-
+    Identifies the region of the organisations' territory.
+    Currently the English label of a region, as defined by the ICA.
 - id: :country
   header: Country
-  desc: ''
+  desc: |-
+    The country of the organisation's main address. Normally matches
+    the ISO-3166-1 "common name". Assumed UTF-8 encoding.
+  comment: ''
+- id: :description
+  header: Description
+  desc: |-
+    Description of the organisation, typically in English. Formatted
+    as HTML, UTF-8 encoding.
+  comment: |
+    Somewhat hopeful about the UTF-8 encoding being consistent and
+    valid. Likewise fully valid HTML. Therefore validation and
+    sanitisation recommended.
+- id: :additional_description
+  header: Additional Details
+  desc: |-
+    Further details of the organisation, typically in
+    English. Formatted as HTML, UTF-8 encoding.
+  comment: |
+    Somewhat hopeful about the UTF-8 encoding being consistent and
+    valid. Likewise fully valid HTML. Therefore validation and
+    sanitisation recommended.
+- id: :website
+  header: Website
+  desc: "The organisation's main website URL"
+  comment: ''
+- id: :email
+  header: Email
+  desc: "The organisation's main contact email address"
+  comment: These are should be public addresses
+- id: :address
+  header: Address
+  desc: "The organisation's main address"
   comment: ''
 - id: :city
   header: City
   desc: ''
-  comment: ''
+  comment: |-
+    Not sure what this is for, as it sometimes duplicates part of the address, and
+    other times obviously won't apply
 - id: :latitude
   header: Latitude
-  desc: ''
+  desc: |-
+    The latitide of the organisation's main address. Overrides any
+    geolocated latitude if supplied.
   comment: ''
 - id: :longitude
   header: Longitude
-  desc: ''
+  desc: |-
+    The longitude of the organisation's main address. Overrides any
+    geolocated longitude if supplied.
   comment: ''
 - id: :size
   header: Size
-  desc: ''
-  comment: ''
-- id: :type
-  header: Type
-  desc: ''
-  comment: ''
-- id: :sector
-  header: Sector
-  desc: ''
-  comment: ''
-- id: :address
-  header: Address
-  desc: ''
-  comment: ''
-- id: :description
-  header: Description
-  desc: ''
-  comment: ''
-- id: :additional
-  header: Additional Details
-  desc: ''
-  comment: ''
-- id: :website
-  header: Website
-  desc: ''
-  comment: ''
-- id: :email
-  header: Email
-  desc: ''
+  desc: "The organisation's membership size category"
   comment: ''
