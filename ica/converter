@@ -39,43 +39,50 @@ class Converter
 
   def self.normalise_country(country, id)
     # Special-case HACKS for ICA data.  We happen to know these cases
-    # need their country re-interpreting.
+    # need their country code supplied
     case id
     when "155"
-      "TH" # I-AP
+      "TH"
     when "731"
-      "BE" # I-EU
+      "BE"
     when "1856"
-      "KN" # I-AM-CB
+      "KN"
     when "3516"
-      "KE" # I-AF
+      "KE"
+    when "38222"
+      "US"
     else
-      case country.downcase
-      when "côte d’ivoire"
-        "CI"
-      when "palestine, state of"
-        "PS"
-      else
-        NormalizeCountry(country, to: :alpha2) ||      
-          warn("unrecognised country: "+country)
-      end
+      NormalizeCountry(country, to: :alpha2) or
+        raise "unrecognised country: "+country
     end
   end
-
-  def self.territory(id, cn)
-    # Another special-case HACK for ICA data. We happen to know
-    # these case need different territories from the country.
-    case id
-    when "155"
-      "I-AP"
-    when "731"
-      "I-EU"
-    when "1856"
-      "I-AM-CB"
-    when "3516"
-      "I-AF"
+  
+  def self.territory(country, region, super_region)
+    # Deal with ICA "Country" field data - which means territory in
+    # our terms.  Handles "International" plus country names, converts
+    # these to an identifier - either "I" or a 2 letter ISO country
+    # code. We happen to know some cases of country labels they use
+    # differ from those in NormalizeCountry.
+    #
+    # When a country is supplied, we infer the region and super-region
+    # downstream from here. The ICA don't currently use regions or
+    # super-regions as territories, and we simply vaildate the Region
+    # and Super-region fields.
+    #
+    # Raises an exception if an invalid case is found.
+    case country.downcase
+    when "international"
+      # all fields should match
+      raise "region '#{region.downcase}' != country '#{country}'" unless region == country
+      raise "super-region '#{region.downcase}' != country '#{country}'" unless super_region == country
+      "I"
+    when "côte d’ivoire"
+      "CI"
+    when "palestine, state of"
+      "PS"
     else
-      cn
+      NormalizeCountry(country, to: :alpha2) or
+        raise "unrecognised country: #{country}"
     end
   end
        
@@ -111,15 +118,17 @@ class Converter
            main_address_postcode:,
            main_address_latitude:,
            main_address_longitude:,
+           main_address_country:,
            website:,
            typology:,
            structure_type:,
            primary_activity:,
            secondary_activities:,
-           description:
+           description:,
+           country_code:
            |
            # A mapping to the target schema field ids
-           cn = normalise_country(country, id)
+
            {
              id: id.to_i,
              name: name || "No Name",
@@ -145,8 +154,8 @@ class Converter
              locality: main_address_city,
              region: nil,
              postcode: main_address_postcode,
-             country_id: country, # Temp hack, should be cn
-             territory_id: territory(id, cn),
+             country_id: territory(main_address_country, nil, nil), # HACK, for geocoder, will replace later
+             territory_id: territory(country, region, super_region),
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
              email: nil,
@@ -159,8 +168,8 @@ class Converter
                    "Coop Promoter/Supporter" : nil
              ),
              base_membership_type: BASE_MEMBERSHIP_TYPE[typology],
-             latitude: main_address_latitude,
-             longitude: main_address_longitude,
+             latitude: types.normalise_float(latitude),
+             longitude: types.normalise_float(longitude),
              geocontainer: nil,
              geocontainer_lat: nil,
              geocontainer_lon: nil,
