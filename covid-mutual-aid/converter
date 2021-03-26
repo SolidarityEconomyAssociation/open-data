@@ -45,7 +45,7 @@ require 'json'
 #
 # See discussion here:
 # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
-class IcaYouthNetworkConverter < SeOpenData::CSV::RowReader
+class Converter < SeOpenData::CSV::RowReader
 
   # @param row [Hash<String => String>] - a row of CSV data
   def initialize(row)
@@ -487,5 +487,5 @@ end
 
 # Run the entry point if we're invoked as a script
 # This just does the csv conversion.
-IcaYouthNetworkConverter.main if __FILE__ == $0
+Converter.main if __FILE__ == $0
 
