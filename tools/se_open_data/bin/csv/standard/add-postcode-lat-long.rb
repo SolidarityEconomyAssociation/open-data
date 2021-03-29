@@ -36,8 +36,7 @@ class OptParse
     options.address_headers = OutputStandard::Headers.subhash(:street_address,
                                                               :locality,
                                                               :region,
-                                                              :postcode,
-                                                              :country_name)
+                                                              :postcode)
     options.api_key = "geoapifyAPI.txt"
     options.use_ordinance_survey = false
 
