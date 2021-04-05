@@ -1,9 +1,12 @@
 require 'csv'
+require 'se_open_data/utils/log_factory'
 
 module SeOpenData
   module CSV
     class Schema
       class Types
+        # Create a log instance
+        Log = SeOpenData::Utils::LogFactory.default
 
         def self.normalise_email(val, default: '')
           val.to_s =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i? val : default # FIXME report mismatches
@@ -26,7 +29,7 @@ module SeOpenData
             return "#{scheme}://#{nrest}"
           end
 
-          add_comment("This doesn't look like a website: #{str})")
+          Log.info("This doesn't look like a website: #{str})")
           return default
         end
 
@@ -35,7 +38,7 @@ module SeOpenData
           
           url = normalise_url(str.to_s)
           if url.nil? || url.empty?
-            warn "Ignoring un-normalisable URL: #{str}"
+            Log.info "Ignoring un-normalisable URL: #{str}"
             return nil
           end
 
@@ -49,7 +52,7 @@ module SeOpenData
             return base_url+m[2]
           end
 
-          warn "Ignoring non-facebook URL: #{str}"
+          Log.info "Ignoring non-facebook URL: #{str}"
           return nil
         end
 
@@ -79,11 +82,6 @@ module SeOpenData
         # @return [String|nil] the country name in English,  or nil, if no match was found.
         def self.country_code_to_name(code)
           @@country_codes[:"#{code.to_s.upcase}"]
-        end
-
-        # FIXME implemented here as a stopgap, should be elsewhere
-        def self.add_comment(str)
-          $stderr.puts str
         end
 
         @@country_codes = {
