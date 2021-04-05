@@ -9,21 +9,48 @@ module SeOpenData
           val.to_s =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i? val : default # FIXME report mismatches
         end
         
-        def self.normalise_url(val, default: '') # FIXME use something off the shelf
-          val = val.to_s
-          
-          if val && !val.empty?
-            val.match(/https?\S+/) do |m|
-              return m[0]
-            end
+        def self.normalise_url(str, default: '')
+          val = str.to_s.strip.downcase
 
-            val.match(/^\s*(www\.\S+)/) do |m|
-              return "http://#{m[1]}"
-            end
-
-            add_comment("This doesn't look like a website: #{val} (Maybe it's missing the http:// ?)")
-            return default
+          match = val.match(%r{^(https?):/+(.*)}) # remove any URL scheme for now
+          if match
+            scheme, rest = match.values_at(1, 2)
+          else 
+            scheme = 'http' # default scheme
+            rest = val
           end
+          
+          # match two or more dotted names, optional port, optional path, optional trailing slash
+          rest.match(%r{^([\w_-]+\.)+([\w_-]+)(:\d+)?(/\S+)*/?}) do |m|
+            nrest = m[0].gsub(%r{/+}, '/')
+            return "#{scheme}://#{nrest}"
+          end
+
+          add_comment("This doesn't look like a website: #{str})")
+          return default
+        end
+
+        def self.normalise_facebook(str, base_url: 'https://www.facebook.com/')
+          return nil unless str
+          
+          url = normalise_url(str.to_s)
+          if url.nil? || url.empty?
+            warn "Ignoring un-normalisable URL: #{str}"
+            return nil
+          end
+
+          # remove any query or anchor portion
+          url.sub!(/[?#].*/, '');
+          
+          url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/?(.*)}) do |m|
+            return base_url+m[2]
+          end
+          url.downcase.match(%r{^https?://([\w_-]+\.)?fb.me/?(.*)}) do |m|
+            return base_url+m[2]
+          end
+
+          warn "Ignoring non-facebook URL: #{str}"
+          return nil
         end
 
         def self.normalise_float(val, default: 0)
