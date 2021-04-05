@@ -6,6 +6,7 @@
 
 require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data'
+require 'se_open_data/csv/schema/types'
 require 'csv'
 require 'json'
 
@@ -47,6 +48,9 @@ require 'json'
 # https://github.com/SolidarityEconomyAssociation/open-data/issues/11
 class Converter < SeOpenData::CSV::RowReader
 
+  # A convenient alias...
+  Types = SeOpenData::CSV::Schema::Types
+ 
   # @param row [Hash<String => String>] - a row of CSV data
   def initialize(row)
     # Let CSV::RowReader provide methods for accessing columns described by InputHeaders, above:
@@ -55,24 +59,8 @@ class Converter < SeOpenData::CSV::RowReader
 
   #check each of the websites
   def homepage
-    if _website && !_website.empty?
-      _website.split(SeOpenData::CSV::Standard::V1::SubFieldSeparator).map {|url|
-        http_regex = /https?\S+/
-        m = http_regex.match(url)
-        if m
-          m[0]
-        else
-          www_regex =  /^www\./
-          www_m = www_regex.match(url)
-          if www_m
-            "http://#{url}"
-          else
-            nil
-          end
-        end
-      }.compact.join(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
-    else
-      nil
+    Types.multivalue(_website) do |it|
+      Types.normalise_url(it, default: nil)
     end
   end
 
@@ -80,16 +68,23 @@ class Converter < SeOpenData::CSV::RowReader
     _name || "No Name" # FIXME
   end
 
-  def legal_forms
-    # Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
-    # Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-    # See lib/se_open_data/essglobal/legal_form.rb
-    "Cooperative"
-  end
+  def facebook
+    url = Types.normalise_facebook(link_facebook, base_url: '')
+    return url if url
 
+    # check the webpage field for potential facebook URLs
+    _website.split(SeOpenData::CSV::Standard::V1::SubFieldSeparator).map do |url|
+      if url = Types.normalise_facebook(url, base_url: '')
+        return url
+      end
+    end
+
+    return nil
+  end
+  
+  # We don't display organisational_structure at all
   def organisational_structure
-    #temporarily a coop, should be changed to "Mutual-Aid"
-    "Co-operative"
+    ""
   end
 
   # def primary_activity
@@ -143,8 +138,10 @@ class Converter < SeOpenData::CSV::RowReader
           row.push "#{mutual[header]}"
         end
       end
-      output.puts row.map{|field| field.gsub("\"","\'") }.map{|field| "\"#{field}\""}
-        .map{|field| strip_emoji field }.join(",")
+      new_row = row.map{|field| field.gsub("\"","\'") }.map{|field| "\"#{field}\""}
+                  .map{|field| strip_emoji field }
+
+      output.puts new_row.join(",")
     end
     
   ensure
@@ -460,7 +457,7 @@ class Converter < SeOpenData::CSV::RowReader
     id: "id",
     country_name: "location_country",
     street_address: "location_name",
-    facebook: "link_facebook",
+    link_facebook: "link_facebook",
     latitude: "lat",
     longitude: "lng",
     _name: "name",
