@@ -1,4 +1,5 @@
 require 'se_open_data/config'
+require 'se_open_data/utils/log_factory'
 require 'se_open_data/utils/password_store'
 require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/geoapify_standard'
@@ -14,6 +15,9 @@ module SeOpenData
       # @see SeOpenData::CSV::Schemas::LimeSurveyCore
       #
       module LimeSurveyCore
+        # Create a log instance
+        Log = SeOpenData::Utils::LogFactory.default
+
         # Sometimes a single column can take values that are in fact a
         # list.  So we need to know the character used to separate the
         # items in the list.  For example, in the legal_form column,
@@ -238,15 +242,11 @@ module SeOpenData
               if www_m
                 "http://#{website}"
               else
-                add_comment("This doesn't look like a website: #{website} (Maybe it's missing the http:// ?)")
+                Log.info("This doesn't look like a website: #{website} (Maybe it's missing the http:// ?)")
                 nil
               end
             end
           end
-        end
-
-        def self.add_comment(txt)
-          warn txt
         end
 
         def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:,
