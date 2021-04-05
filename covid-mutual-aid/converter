@@ -89,9 +89,9 @@ class Converter < SeOpenData::CSV::RowReader
     "Cooperative"
   end
 
+  # We don't display organisational_structure at all
   def organisational_structure
-    #temporarily a coop, should be changed to "Mutual-Aid"
-    "Co-operative"
+    ""
   end
 
   # def primary_activity
