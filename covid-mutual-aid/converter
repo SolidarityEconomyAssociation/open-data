@@ -82,13 +82,6 @@ class Converter < SeOpenData::CSV::RowReader
     return nil
   end
   
-  def legal_forms
-    # Return a list of strings, separated by SeOpenData::CSV::Standard::V1::SubFieldSeparator.
-    # Each item in the list is a prefLabel taken from essglobal/standard/legal-form.skos.
-    # See lib/se_open_data/essglobal/legal_form.rb
-    "Cooperative"
-  end
-
   # We don't display organisational_structure at all
   def organisational_structure
     ""
