@@ -47,11 +47,13 @@ module SeOpenData
             
             # remove any query or anchor portion
             url.sub!(/[?#].*/, '');
-            
-            url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/?(.*)}) do |m|
+
+            # Note, we don't match *just* the facebook url with no path. i.e.
+            # Just 'https://www.facebook.com/' alone is not a valid facebook URL
+            url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/(.+)}) do |m|
               return base_url+m[2]
             end
-            url.downcase.match(%r{^https?://([\w_-]+\.)?fb.me/?(.*)}) do |m|
+            url.downcase.match(%r{^https?://([\w_-]+\.)?fb.me/(.+)}) do |m|
               return base_url+m[2]
             end
             
