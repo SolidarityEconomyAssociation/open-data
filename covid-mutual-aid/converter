@@ -69,17 +69,8 @@ class Converter < SeOpenData::CSV::RowReader
   end
 
   def facebook
-    url = Types.normalise_facebook(link_facebook, base_url: '')
-    return url if url
-
-    # check the webpage field for potential facebook URLs
-    _website.split(SeOpenData::CSV::Standard::V1::SubFieldSeparator).map do |url|
-      if url = Types.normalise_facebook(url, base_url: '')
-        return url
-      end
-    end
-
-    return nil
+    urls = _website.split(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
+    return Types.normalise_facebook([link_facebook].chain(urls), base_url: '')
   end
   
   # We don't display organisational_structure at all

@@ -4,6 +4,7 @@ require 'se_open_data/utils/password_store'
 require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/geoapify_standard'
 require 'se_open_data/csv/schema'
+require 'se_open_data/csv/schema/types'
 require 'csv'
 
 module SeOpenData
@@ -18,6 +19,9 @@ module SeOpenData
         # Create a log instance
         Log = SeOpenData::Utils::LogFactory.default
 
+        # A convenient alias...
+        Types = SeOpenData::CSV::Schema::Types
+        
         # Sometimes a single column can take values that are in fact a
         # list.  So we need to know the character used to separate the
         # items in the list.  For example, in the legal_form column,
@@ -135,14 +139,14 @@ module SeOpenData
                           region: '',
                           postcode: postcode.to_s.upcase,
                           country_name: '',
-                          homepage: normalise_url(website),
+                          homepage: Types.normalise_url(website),
                           # blank sensitive data until new institutional email field added
                           #phone: normalise_phone_number(phone),
                           #email: email,
                           phone: '',
                           email: '',
                           twitter: normalise_twitter_handle(twitter),
-                          facebook: normalise_facebook_account(facebook),
+                          facebook: Types.normalise_facebook([facebook, "http://fb.me/#{facebook}", website], base_url: ''),
                           qualifiers: '',
                           base_membership_type: '',
                           companies_house_number: '',
@@ -219,34 +223,6 @@ module SeOpenData
             .downcase
             .sub(/h?t?t?p?s?:?\/?\/?w?w?w?\.?twitter\.com\//, "")
             .delete("@#/")
-        end
-
-        def self.normalise_facebook_account(val)
-          val
-            .downcase
-            .sub(/h?t?t?p?s?:?\/?\/?w?w?w?\.?facebook\.com\//, "")
-            .sub(/h?t?t?p?s?:?\/?\/?w?w?w?\.?fb\.com\//, "")
-            .delete("@#/")
-        end
-
-
-        def self.normalise_url(website)
-          if website && !website.empty? && website != "N/A"
-            http_regex = /https?\S+/
-            m = http_regex.match(website)
-            if m
-              m[0]
-            else
-              www_regex =  /^www\./
-              www_m = www_regex.match(website)
-              if www_m
-                "http://#{website}"
-              else
-                Log.info("This doesn't look like a website: #{website} (Maybe it's missing the http:// ?)")
-                nil
-              end
-            end
-          end
         end
 
         def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:,

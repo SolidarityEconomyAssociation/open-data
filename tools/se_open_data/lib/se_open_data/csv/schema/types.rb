@@ -33,26 +33,35 @@ module SeOpenData
           return default
         end
 
-        def self.normalise_facebook(str, base_url: 'https://www.facebook.com/')
-          return nil unless str
-          
-          url = normalise_url(str.to_s)
-          if url.nil? || url.empty?
-            Log.info "Ignoring un-normalisable URL: #{str}"
-            return nil
-          end
+        def self.normalise_facebook(items, base_url: 'https://www.facebook.com/')
+          return nil unless items
+          items = [items] unless items.respond_to? :each
 
-          # remove any query or anchor portion
-          url.sub!(/[?#].*/, '');
-          
-          url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/?(.*)}) do |m|
-            return base_url+m[2]
-          end
-          url.downcase.match(%r{^https?://([\w_-]+\.)?fb.me/?(.*)}) do |m|
-            return base_url+m[2]
-          end
+          items.each do |str|
+            Log.debug "Attempting to normalise FB URL: #{str}"
+            url = normalise_url(str.to_s)
+            if url.nil? || url.empty?
+              Log.info "Ignoring un-normalisable URL: #{str}"
+              next
+            end
+            
+            # remove any query or anchor portion
+            url.sub!(/[?#].*/, '');
 
-          Log.info "Ignoring non-facebook URL: #{str}"
+            # remove any trailing slash delimiters
+            url.sub!(%r{/+$}, '')
+            
+            # Note, we don't match *just* the facebook url with no path. i.e.
+            # Just 'https://www.facebook.com/' alone is not a valid facebook URL
+            url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/(.+)}) do |m|
+              return base_url+m[2]
+            end
+            url.downcase.match(%r{^https?://([\w_-]+\.)?fb.me/(.+)}) do |m|
+              return base_url+m[2]
+            end
+            
+            Log.info "Ignoring non-facebook URL: #{str}"
+          end
           return nil
         end
 
