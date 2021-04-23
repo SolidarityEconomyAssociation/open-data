@@ -139,7 +139,7 @@ module SeOpenData
                           region: '',
                           postcode: postcode.to_s.upcase,
                           country_name: '',
-                          homepage: normalise_url(website),
+                          homepage: Types.normalise_url(website),
                           # blank sensitive data until new institutional email field added
                           #phone: normalise_phone_number(phone),
                           #email: email,
@@ -223,25 +223,6 @@ module SeOpenData
             .downcase
             .sub(/h?t?t?p?s?:?\/?\/?w?w?w?\.?twitter\.com\//, "")
             .delete("@#/")
-        end
-
-        def self.normalise_url(website)
-          if website && !website.empty? && website != "N/A"
-            http_regex = /https?\S+/
-            m = http_regex.match(website)
-            if m
-              m[0]
-            else
-              www_regex =  /^www\./
-              www_m = www_regex.match(website)
-              if www_m
-                "http://#{website}"
-              else
-                Log.info("This doesn't look like a website: #{website} (Maybe it's missing the http:// ?)")
-                nil
-              end
-            end
-          end
         end
 
         def self.add_postcode_lat_long(infile:, outfile:, api_key:, lat_lng_cache:,
