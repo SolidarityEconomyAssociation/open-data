@@ -48,6 +48,9 @@ module SeOpenData
             # remove any query or anchor portion
             url.sub!(/[?#].*/, '');
 
+            # remove any trailing slash delimiters
+            url.sub!(%r{/+$}, '')
+            
             # Note, we don't match *just* the facebook url with no path. i.e.
             # Just 'https://www.facebook.com/' alone is not a valid facebook URL
             url.downcase.match(%r{^https?://([\w_-]+\.)?facebook.com/(.+)}) do |m|
