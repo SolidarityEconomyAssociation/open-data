@@ -12,7 +12,7 @@ module SeOpenData
           val.to_s =~ /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i? val : default # FIXME report mismatches
         end
         
-        def self.normalise_url(str, default: '')
+        def self.normalise_url(str, default: '', full_url: false)
           val = str.to_s.strip.downcase
 
           match = val.match(%r{^(https?):/+(.*)}) # remove any URL scheme for now
@@ -23,8 +23,14 @@ module SeOpenData
             rest = val
           end
           
-          # match two or more dotted names, optional port, optional path, optional trailing slash
-          rest.match(%r{^([\w_-]+\.)+([\w_-]+)(:\d+)?(/\S+)*/?}) do |m|
+          # Match two or more dotted names, optional port, optional
+          # path, optional trailing slash.  If full_url is truthy,
+          # match all of the URL to the end (defaut is false, for
+          # backward-compatibility, but recommended value is true)
+          pattern = full_url ? %r{^([\w_-]+\.)+([\w_-]+)(:\d+)?(/\S+)*/?$}
+                    : %r{^([\w_-]+\.)+([\w_-]+)(:\d+)?(/\S+)*/?}
+          
+          rest.match(pattern) do |m|
             nrest = m[0].gsub(%r{/+}, '/')
             return "#{scheme}://#{nrest}"
           end
@@ -39,8 +45,8 @@ module SeOpenData
 
           items.each do |str|
             Log.debug "Attempting to normalise FB URL: #{str}"
-            url = normalise_url(str.to_s)
-            if url.nil? || url.empty?
+            url = normalise_url(str.to_s, default: nil, full_url: true)
+            if url.nil?
               Log.info "Ignoring un-normalisable URL: #{str}"
               next
             end
