@@ -1,0 +1,4 @@
+[submodule "tools/se_open_data"]
+	path = tools/se_open_data
+	url = file:///home/nick/gitworking/Code-Operative/SEA/se-open-data
+	branch = dev
