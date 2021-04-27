@@ -1,6 +1,0 @@
---markup markdown
---charset utf-8
-'lib/**/*.rb'
-'bin/**/*'
-CSV_MAPPING.md
-
