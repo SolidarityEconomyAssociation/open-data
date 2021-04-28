@@ -40,3 +40,6 @@ tests
 
 # Ignore local configs
 local.conf
+
+# Ignore local Gem installations
+.gems/
