@@ -4,7 +4,6 @@
 # This script controls a pipeline of processes that convert the original
 # CSV data into the se_open_data standard, one step at a time.
 
-require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data'
 require 'se_open_data/csv/schema/types'
 require 'csv'

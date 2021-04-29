@@ -2,12 +2,13 @@
 
 SCRIPT=${BASH_SOURCE[0]}
 REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
-SEOD=$REPO_DIR/tools/se_open_data/bin/seod
+SEOD='bundle exec seod'
 
 function process {
     local dir="${1:?directory argument required}"
     (
 	cd $REPO_DIR/$dir &&
+	    bundler install &&
 	    $SEOD download &&
 	    $SEOD convert &&
 	    $SEOD generate &&

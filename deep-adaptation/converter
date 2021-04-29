@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data/csv/converter/limesurveycore'
 
 # Find the config file...

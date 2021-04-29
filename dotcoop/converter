@@ -24,7 +24,6 @@
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
 
-require_relative '../tools/se_open_data/lib/load_path'
 require 'se_open_data'
 require 'se_open_data/config'
 require 'se_open_data/csv/add_postcode_lat_long'
