@@ -168,8 +168,8 @@ class Converter
                    "Coop Promoter/Supporter" : nil
              ),
              base_membership_type: BASE_MEMBERSHIP_TYPE[typology],
-             latitude: types.normalise_float(latitude),
-             longitude: types.normalise_float(longitude),
+             latitude: types.normalise_float(main_address_latitude),
+             longitude: types.normalise_float(main_address_longitude),
              geocontainer: nil,
              geocontainer_lat: nil,
              geocontainer_lon: nil,
