@@ -1,25 +1,44 @@
 #!/bin/bash
 
+set -o pipefail
+set -o errexit
+
 SCRIPT=${BASH_SOURCE[0]}
 REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
 SEOD='bundle exec seod'
 
+# Reformat the output of a command to make it easier to follow in logs
+function logify() {
+    local dir=$1
+    shift
+    printf "\n[For $dir: $*]\n"
+    # Prefix STDOUT with space, but STDERR with an exclamation too
+    "$@" > >(sed -e 's/^/  /') 2> >(sed -e 's/^/  ! /')
+}
+
 function process {
     local dir="${1:?directory argument required}"
     (
-	cd $REPO_DIR/$dir &&
-	    bundler install &&
-	    $SEOD download &&
-	    $SEOD convert &&
-	    $SEOD generate &&
-	    sudo -nE $SEOD deploy &&
-	    sudo -nE $SEOD triplestore
+	cd $REPO_DIR/$dir
+	logify $dir bundler install
+	logify $dir $SEOD download
+	logify $dir $SEOD convert
+	logify $dir $SEOD generate
+	logify $dir sudo -nE $SEOD deploy
+	logify $dir sudo -nE $SEOD triplestore
     )
 }
 
+FAILS=()
 for dir in oxford newbridge mersey-green deep-adaptation dotcoop covid-mutual-aid mutual-aid; do
     echo "PROCESSING $dir..."
-    process "$dir"
-    echo
+    if process $dir; then
+        echo "SUCCEEDED $dir"
+    else
+	echo "FAILED $dir (return code $?)"
+	FAILS+=($dir)
+    fi
 done
 
+echo "FINISHING with ${#FAILS[@]} failed: ${FAILS[@]}"
+exit ${#FAILS[@]}
