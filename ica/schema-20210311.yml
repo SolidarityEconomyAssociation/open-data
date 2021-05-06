@@ -1,0 +1,153 @@
+---
+id: :ica
+name: ICA
+version: 20210311
+primary_key:
+- :id
+comment: |
+  This version is the one supplied by the ICA before the country,
+  region and super-region fields were rationalised.
+fields:
+- id: :id
+  header: Contact ID
+  desc: 'A unique identifier for the organisation'
+  comment: 'Typically a positive integer.'
+- id: :name
+  header: Organisation Name
+  desc: "The organisation's preferred name"
+  comment: 'The language is not currently defined. Character set assumed UTF-8.'
+- id: :country
+  header: Country
+  desc: |-
+    The country that the organisation's members' come from (as opposed
+    to the country of the organisation's main address).  Should be an
+    ISO-3166-1 "common name", using UTF-8, or 'International' if it is a
+    supranational organisation.
+  comment: |-
+    Note that the ISO-3166-1 common names change over time.
+- id: :super_region
+  header: Super-region
+  desc: |-
+    Identifies the super-region of the organisations' territory.
+    Currently the English label of an super-region as defined by the ICA.
+  comment: |-
+    This needs to be merged with Region/Country fields, and mapped to
+    a language-neutral identifier.
+- id: :region
+  header: Region
+  desc: |-
+    Identifies the region of the organisations' territory.
+    Currently the English label of a region, as defined by the ICA.
+  comment: |-
+    This needs to be merged with Super-region/Country fields, and mapped to
+    a language-neutral identifier.
+- id: :main_address_street
+  header: Main-Street Address
+  desc: "The street of the organisation's main address"
+  comment: ''
+- id: :main_address_supplemental_1
+  header: Main-Supplemental Address 1
+  desc: "A supplemental attribute of the organisation's main address"
+  comment: ''
+- id: :main_address_supplemental_2
+  header: Main-Supplemental Address 2
+  desc: "A second supplemental attribute of the organisation's main address"
+  comment: ''
+- id: :main_address_city
+  header: Main-City
+  desc: "The city of the organisation's main address"
+  comment: ''
+- id: :main_address_postcode
+  header: Main-Postal Code
+  desc: "The postal code of the organisation's main address"
+  comment: ''
+- id: :main_address_latitude
+  header: Main-Latitude
+  desc: |-
+    The latitide of the organisation's main address. Overrides any
+    geolocated latitude if supplied.
+  comment: ''
+- id: :main_address_longitude
+  header: Main-Longitude
+  desc: |-
+    The longitude of the organisation's main address. Overrides any
+    geolocated longitude if supplied.
+  comment: ''
+- id: :main_address_country
+  header: Country-address
+  desc: |-
+    The country of the organisation's main address. Normally matches
+    the ISO-3166-1 "common name". Assumed UTF-8 encoding.
+  comment: |-
+    Use the country_id field in preference to this.
+- id: :website
+  header: Website
+  desc: "The organisation's main website URL"
+  comment: ''
+- id: :typology
+  header: Typology
+  desc: |-
+    The base ICA membership type. One of: "Consumer/User coops";
+    "Others"; "Producer coops"; "Worker coops"; "Multi-stakeholder
+    coops"; or "Residents".
+  comment: |-
+    Maps to ESSGLOBAL base-membership-type vocab terms (respectively):
+    BMT10 "Consumer/Users"; BMT60 "Others"; BMT20 "Producers"; BMT30
+    "Workers"; BMT40 "Multi - stakeholders"; or BMT50 "Residents".
+- id: :structure_type
+  header: Structure Type
+  desc: |
+    The type of the organisation. One of: "Coop Promoter/Supporter";
+    "Cooperative"; "Mutual organisation"; "National apex"; "National
+    sectoral federation or union"; "Regional, state or provincial
+    level federation or union"; "Supranational"; "Cooperative Group";
+    "Government"; or "Cooperative of cooperatives / mutuals".
+  comment: |
+    Maps to a subset of ESSGLOBAL organisational structure,
+    respectively: OS50 "Company (Other)"; OS115 "Co-operative"; OS170
+    "Mutual"; OS180 "National apex"; OS190 "National sectoral
+    federation or union"; OS200 "Regional, state or provincial level
+    federation or union"; OS230 "Supranational"; OS210 "Cooperative
+    group"; OS220 "Government agency/body"; or OS240 "Cooperative of
+    cooperatives / mutuals".
+
+    See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
+    
+    And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
+- id: :primary_activity
+  header: Economic activity (primary)
+  desc: |-
+    The primary type of economic activity of this organisation. One
+    of: "Education / health / social work"; "All"; "Financial
+    services"; "Fishing"; "Housing"; "Insurance"; "Other services";
+    "Wholesale and retail trade"; "Agriculture"; "Utilities"; or
+    "Industry" (possibly more?)   
+  comment: |-
+    Maps to ESSGLOBAL 'ica-activities' vocab terms, (respectively):
+    ICA160 "Education / health / social work"; ICA290 "All"; ICA140
+    "Financial Services"; ICA50 "Fishing"; ICA210 "Housing"; ICA150
+    "Insurance"; ICA280 "Other services"; ICA260 "Wholesale and retail
+    trade"; ICA10 "Agriculture"; ICA230 "Utilities"; or ICA80
+    "Industry".
+- id: :secondary_activities
+  header: Economic activities (additional)
+  desc: |-
+    Any additional types of economic activities of this
+    organisation. Zero or more comma-delimited instances of the labels
+    defined for the :primary_activity field
+  comment: ''
+- id: :description
+  header: Description for publications
+  desc: |-
+    Description of the organisation, typically in English. Formatted
+    as HTML, UTF-8 encoding.
+  comment: |
+    Somewhat hopeful about the UTF-8 encoding being consistent and
+    valid. Likewise fully valid HTML. Therefore validation and
+    sanitisation recommended.
+- id: :country_code
+  header: Country code
+  desc: |-
+    An upper-case two-letter ISO-3166-2 country code for the
+    organisation's main address.
+  comment: ''
