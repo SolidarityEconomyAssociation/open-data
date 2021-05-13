@@ -20,7 +20,7 @@ function process {
     local dir="${1:?directory argument required}"
     (
 	cd $REPO_DIR/$dir
-	logify $dir bundler install
+	logify $dir bundle install --quiet
 	logify $dir $SEOD download
 	logify $dir $SEOD convert
 	logify $dir $SEOD generate
