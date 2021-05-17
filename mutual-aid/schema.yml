@@ -1,0 +1,40 @@
+---
+id: :mutualAid
+name: Mutual Aid
+version: 20210325
+primary_key:
+- :id
+comment: 
+fields:
+- id: :id
+  header: id
+  desc: A unique identifier for the organisation
+  comment: ''
+- id: :name
+  header: name
+  desc: The name of the organisation
+  comment: ''
+- id: :website
+  header: website
+  desc: "The organisation's website"
+  comment: ''
+- id: :facebook
+  header: facebook
+  desc: "(Path of) the organisation's facebook page"
+  comment: ''
+- id: :twitter
+  header: twitter
+  desc: "The organisation's Twitter page URL"
+  comment: ''
+- id: :location
+  header: location
+  desc: "The organisation's main location"
+  comment: ''
+- id: :approved
+  header: approved
+  desc: "'TRUE' if this data is validatedm, anything else if it should be ignored"
+  comment: ''
+- id: :description
+  header: description
+  desc: "A description of the organisation"
+  comment: ''
