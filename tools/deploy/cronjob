@@ -24,13 +24,13 @@ function logify() {
 function process {
     local dir="${1:?directory argument required}"
     (
-	cd $REPO_DIR/$dir &&
-	logify $dir bundle install --quiet &&
-	logify $dir $SEOD download &&
-	logify $dir $SEOD convert &&
-	logify $dir $SEOD generate &&
-	logify $dir sudo -nE $SEOD deploy &&
-	logify $dir sudo -nE $SEOD triplestore
+        cd $REPO_DIR/$dir &&
+        logify $dir bundle install --quiet &&
+        logify $dir $SEOD download &&
+        logify $dir $SEOD convert &&
+        logify $dir $SEOD generate &&
+        logify $dir sudo -nE $SEOD deploy &&
+        logify $dir sudo -nE $SEOD triplestore
     )
 }
 
