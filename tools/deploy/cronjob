@@ -39,14 +39,20 @@ set +o errexit # <- we want to manage failure more finely than this here
 
 for dir in oxford newbridge mersey-green deep-adaptation dotcoop covid-mutual-aid mutual-aid; do
     echo "PROCESSING $dir..."
-
     
-    if process $dir; then
-        echo "SUCCEEDED $dir"
-    else
-	echo "FAILED $dir (return code $?)"
-	FAILS+=($dir)
-    fi
+    process $dir
+    case "$?" in
+        0)
+            echo "SUCCEEDED $dir"
+            ;;
+        100)
+            echo "NO CHANGES $dir (return code $?)"
+            ;;
+        *)
+            echo "FAILED $dir (return code $?)"
+            FAILS+=($dir)
+            ;;
+    esac
 done
 
 echo "FINISHING with ${#FAILS[@]} failed: ${FAILS[@]}"
