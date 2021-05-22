@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: 2a4bfce51d5957de69121e45462aeb3dad17a3f5
+  revision: e5e49dba515078b26d48e2ea0130fc104978ad0e
   branch: v2.1.0
   specs:
     se_open_data (1.0.0)
@@ -99,7 +99,7 @@ GEM
     multi_xml (0.6.0)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
-    nokogiri (1.11.3-x86_64-linux)
+    nokogiri (1.11.5-x86_64-linux)
       racc (~> 1.4)
     nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
