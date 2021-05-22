@@ -7,6 +7,9 @@ SCRIPT=${BASH_SOURCE[0]}
 REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
 SEOD='bundle exec seod'
 
+# Gems are only cached here if this exists, so make it
+mkdir -p $REPO_DIR/caches/gems
+
 # Reformat the output of a command to make it easier to follow in logs
 function logify() {
     local dir=$1
