@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>International Co-op Day Events</h:title>
+    <model odk:xforms-version="1.0.0">
+      <itext>
+        <translation default="true()" lang="English (en)">
+          <text id="/data/organisation:label">
+            <value>About your organisation</value>
+          </text>
+          <text id="/data/organisation/name:label">
+            <value>Name of the organisation</value>
+          </text>
+          <text id="/data/organisation/location:label">
+            <value>Primary location of the organisation</value>
+          </text>
+          <text id="/data/organisation/location:hint">
+            <value form="guidance">This is where to to put a pin for your organisation on the map. There can currently only be one, so choose the primary location if there are several.</value>
+          </text>
+          <text id="/data/organisation/description:label">
+            <value>Description of the organisation</value>
+          </text>
+          <text id="/data/organisation/description:hint">
+            <value form="guidance">Say what your organisation's purpose is. (Note that formatting may not be preserved.)</value>
+          </text>
+          <text id="/data/organisation/website:label">
+            <value>Website URL</value>
+          </text>
+          <text id="/data/organisation/website:hint">
+            <value form="guidance">A link to your organisation's website, if it has one. (Choose the main one if there are several.)</value>
+          </text>
+          <text id="/data/organisation/logo:label">
+            <value>Logo</value>
+          </text>
+          <text id="/data/organisation/logo:hint">
+            <value form="guidance">An image or a logo for your organisation. Use something which is recognisable even when it is small.</value>
+          </text>
+          <text id="/data/organisation/twitter:label">
+            <value>Twitter account URL</value>
+          </text>
+          <text id="/data/organisation/twitter:hint">
+            <value form="guidance">Give the full URL of the organisation's Twitter account, if it has one. e.g. https://twitter.com/some-name</value>
+          </text>
+          <text id="/data/organisation/facebook:label">
+            <value>Facebook account URL</value>
+          </text>
+          <text id="/data/organisation/facebook:hint">
+            <value form="guidance">Give the full URL of the organisation's Twitter account, if it has one. e.g. https://www.facebook.com/some-name</value>
+          </text>
+          <text id="/data/organisation/linkedin:label">
+            <value>Linked-in account URL</value>
+          </text>
+          <text id="/data/organisation/contact_name:label">
+            <value>Contact name</value>
+          </text>
+          <text id="/data/organisation/contact_name:hint">
+            <value form="guidance">The name of a role or person who should be the point of contact for this organisation. (This information will not be published.)</value>
+          </text>
+          <text id="/data/organisation/contact_email:label">
+            <value>Contact email address</value>
+          </text>
+          <text id="/data/organisation/contact_email:hint">
+            <value form="guidance">The email address for which should be the point of contact for this organisation. (This information will not be published.)</value>
+          </text>
+          <text id="/data/organisation/dotcoop_domains:label">
+            <value>DotCoop domains held</value>
+          </text>
+          <text id="/data/organisation/dotcoop_domains/coop_domain:label">
+            <value>.coop domain</value>
+          </text>
+          <text id="/data/organisation/dotcoop_domains/coop_domain:hint">
+            <value form="guidance">Do not include `https://` schemes, or subdomains, just the top-level domain. e.g. `example.coop` not `http://example.coop` or `www.example.coop`</value>
+          </text>
+          <text id="/data/organisation/ica_id:label">
+            <value>ICA membership number</value>
+          </text>
+          <text id="/data/icd_events:label">
+            <value>International Co-op Day Events</value>
+          </text>
+          <text id="/data/icd_events/event_title:label">
+            <value>Title of event</value>
+          </text>
+          <text id="/data/icd_events/event_description:label">
+            <value>Description of event</value>
+          </text>
+          <text id="/data/icd_events/event_location:label">
+            <value>Primary location of the event</value>
+          </text>
+          <text id="/data/icd_events/event_location:hint">
+            <value form="guidance">This is where to to put a pin for this event on the map. There can currently only be one, so create more event entries if there are several.</value>
+          </text>
+          <text id="/data/icd_events/event_date:label">
+            <value>Date of the event</value>
+          </text>
+          <text id="/data/icd_events/event_start_time:label">
+            <value>Start time of the event</value>
+          </text>
+          <text id="/data/icd_events/event_image:label">
+            <value>Image for the event</value>
+          </text>
+          <text id="/data/icd_events/event_link:label">
+            <value>Website URL for the event</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <data id="snapshot_xml">
+          <start/>
+          <end/>
+          <organisation>
+            <name/>
+            <location/>
+            <description/>
+            <website/>
+            <logo/>
+            <twitter/>
+            <facebook/>
+            <linkedin/>
+            <contact_name/>
+            <contact_email/>
+            <dotcoop_domains jr:template="">
+              <coop_domain/>
+            </dotcoop_domains>
+            <dotcoop_domains>
+              <coop_domain/>
+            </dotcoop_domains>
+            <ica_id/>
+          </organisation>
+          <icd_events jr:template="">
+            <event_title/>
+            <event_description/>
+            <event_location/>
+            <event_date>2021/04/14</event_date>
+            <event_start_time/>
+            <event_image/>
+            <event_link/>
+          </icd_events>
+          <icd_events>
+            <event_title/>
+            <event_description/>
+            <event_location/>
+            <event_date>2021/04/14</event_date>
+            <event_start_time/>
+            <event_image/>
+            <event_link/>
+          </icd_events>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/data/start" type="dateTime"/>
+      <bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/data/end" type="dateTime"/>
+      <bind nodeset="/data/organisation" required="false()"/>
+      <bind nodeset="/data/organisation/name" required="true()" type="string"/>
+      <bind nodeset="/data/organisation/location" required="true()" type="geopoint"/>
+      <bind nodeset="/data/organisation/description" required="false()" type="string"/>
+      <bind constraint="regex(., '^((https?)://)?[a-zA-Z0-9-]+([.][a-zA-Z0-9-]+)+(/[a-zA-Z0-9/+=%&amp;_\.~?\-]*)?$')" jr:constraintMsg="This URL does not look valid." nodeset="/data/organisation/website" required="false()" type="string"/>
+      <bind nodeset="/data/organisation/logo" orx:max-pixels="1024" required="false()" type="binary"/>
+      <bind constraint="regex(., '^https?://[\w.-]+/\S*$')" jr:constraintMsg="This does not look like a valid URL" nodeset="/data/organisation/twitter" required="false()" type="string"/>
+      <bind constraint="regex(., '^https?://[\w.-]+/\S*$')" jr:constraintMsg="This does not look like a valid URL" nodeset="/data/organisation/facebook" required="false()" type="string"/>
+      <bind constraint="regex(., '^https?://[\w.-]+/\S*$')" jr:constraintMsg="This does not look like a valid URL" nodeset="/data/organisation/linkedin" required="false()" type="string"/>
+      <bind nodeset="/data/organisation/contact_name" required="false()" type="string"/>
+      <bind constraint="regex(.,'^[^ @]+@[a-zA-Z0-9-]+([.][a-zA-Z0-9-]+)+')" jr:constraintMsg="This does not look like a valid email" nodeset="/data/organisation/contact_email" required="false()" type="string"/>
+      <bind nodeset="/data/organisation/dotcoop_domains" required="false()"/>
+      <bind constraint="regex(., '^[a-zA-Z0-9-]+[.]coop$')" jr:constraintMsg="This does not look like a valid top-level .coop domain." nodeset="/data/organisation/dotcoop_domains/coop_domain" required="false()" type="string"/>
+      <bind nodeset="/data/organisation/ica_id" required="false()" type="string"/>
+      <bind nodeset="/data/icd_events" required="false()"/>
+      <bind nodeset="/data/icd_events/event_title" required="true()" type="string"/>
+      <bind nodeset="/data/icd_events/event_description" required="false()" type="string"/>
+      <bind nodeset="/data/icd_events/event_location" required="false()" type="geopoint"/>
+      <bind nodeset="/data/icd_events/event_date" required="true()" type="date"/>
+      <bind nodeset="/data/icd_events/event_start_time" required="false()" type="time"/>
+      <bind nodeset="/data/icd_events/event_image" orx:max-pixels="1024" required="false()" type="binary"/>
+      <bind constraint="regex(., '^https?://[\w.-]+/\S*$')" jr:constraintMsg="This URL does not look valid." nodeset="/data/icd_events/event_link" required="false()" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="/data/organisation">
+      <label ref="jr:itext('/data/organisation:label')"/>
+      <input ref="/data/organisation/name">
+        <label ref="jr:itext('/data/organisation/name:label')"/>
+      </input>
+      <input ref="/data/organisation/location">
+        <label ref="jr:itext('/data/organisation/location:label')"/>
+        <hint ref="jr:itext('/data/organisation/location:hint')"/>
+      </input>
+      <input appearance="multiline" ref="/data/organisation/description">
+        <label ref="jr:itext('/data/organisation/description:label')"/>
+        <hint ref="jr:itext('/data/organisation/description:hint')"/>
+      </input>
+      <input ref="/data/organisation/website">
+        <label ref="jr:itext('/data/organisation/website:label')"/>
+        <hint ref="jr:itext('/data/organisation/website:hint')"/>
+      </input>
+      <upload mediatype="image/*" ref="/data/organisation/logo">
+        <label ref="jr:itext('/data/organisation/logo:label')"/>
+        <hint ref="jr:itext('/data/organisation/logo:hint')"/>
+      </upload>
+      <input ref="/data/organisation/twitter">
+        <label ref="jr:itext('/data/organisation/twitter:label')"/>
+        <hint ref="jr:itext('/data/organisation/twitter:hint')"/>
+      </input>
+      <input ref="/data/organisation/facebook">
+        <label ref="jr:itext('/data/organisation/facebook:label')"/>
+        <hint ref="jr:itext('/data/organisation/facebook:hint')"/>
+      </input>
+      <input ref="/data/organisation/linkedin">
+        <label ref="jr:itext('/data/organisation/linkedin:label')"/>
+      </input>
+      <input ref="/data/organisation/contact_name">
+        <label ref="jr:itext('/data/organisation/contact_name:label')"/>
+        <hint ref="jr:itext('/data/organisation/contact_name:hint')"/>
+      </input>
+      <input ref="/data/organisation/contact_email">
+        <label ref="jr:itext('/data/organisation/contact_email:label')"/>
+        <hint ref="jr:itext('/data/organisation/contact_email:hint')"/>
+      </input>
+      <group ref="/data/organisation/dotcoop_domains">
+        <label ref="jr:itext('/data/organisation/dotcoop_domains:label')"/>
+        <repeat appearance="field-list" nodeset="/data/organisation/dotcoop_domains">
+          <input ref="/data/organisation/dotcoop_domains/coop_domain">
+            <label ref="jr:itext('/data/organisation/dotcoop_domains/coop_domain:label')"/>
+            <hint ref="jr:itext('/data/organisation/dotcoop_domains/coop_domain:hint')"/>
+          </input>
+        </repeat>
+      </group>
+      <input ref="/data/organisation/ica_id">
+        <label ref="jr:itext('/data/organisation/ica_id:label')"/>
+      </input>
+    </group>
+    <group ref="/data/icd_events">
+      <label ref="jr:itext('/data/icd_events:label')"/>
+      <repeat nodeset="/data/icd_events">
+        <input ref="/data/icd_events/event_title">
+          <label ref="jr:itext('/data/icd_events/event_title:label')"/>
+        </input>
+        <input ref="/data/icd_events/event_description">
+          <label ref="jr:itext('/data/icd_events/event_description:label')"/>
+        </input>
+        <input ref="/data/icd_events/event_location">
+          <label ref="jr:itext('/data/icd_events/event_location:label')"/>
+          <hint ref="jr:itext('/data/icd_events/event_location:hint')"/>
+        </input>
+        <input ref="/data/icd_events/event_date">
+          <label ref="jr:itext('/data/icd_events/event_date:label')"/>
+        </input>
+        <input ref="/data/icd_events/event_start_time">
+          <label ref="jr:itext('/data/icd_events/event_start_time:label')"/>
+        </input>
+        <upload mediatype="image/*" ref="/data/icd_events/event_image">
+          <label ref="jr:itext('/data/icd_events/event_image:label')"/>
+        </upload>
+        <input ref="/data/icd_events/event_link">
+          <label ref="jr:itext('/data/icd_events/event_link:label')"/>
+        </input>
+        <setvalue event="odk-instance-first-load odk-new-repeat" ref="/data/icd_events/event_location" value=" /data/organisation/location "/>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Test2</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="snapshot_xml">
+          <start/>
+          <end/>
+          <What_is_your_name/>
+          <Where_do_you_live/>
+          <websites jr:template="">
+            <link/>
+          </websites>
+          <websites>
+            <link/>
+          </websites>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/data/start" type="dateTime"/>
+      <bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/data/end" type="dateTime"/>
+      <bind nodeset="/data/What_is_your_name" required="false()" type="string"/>
+      <bind nodeset="/data/Where_do_you_live" required="false()" type="geopoint"/>
+      <bind nodeset="/data/websites/link" required="false()" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/What_is_your_name">
+      <label>What is your name?</label>
+    </input>
+    <input ref="/data/Where_do_you_live">
+      <label>Where do you live?</label>
+    </input>
+    <group ref="/data/websites">
+      <label>Group</label>
+      <repeat nodeset="/data/websites">
+        <input ref="/data/websites/link">
+          <label>What are your favourite websites?</label>
+        </input>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>
