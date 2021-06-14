@@ -38,20 +38,23 @@ HERE
 
 CSV.foreach(input_csv_file, headers: true) do |row|
   if row['ICAID'].nil?
-    from_path = "#{from_path_stem}/dotcoop/#{row['RegistrantId']}"
+    id = row['RegistrantId']
+    from_path = "#{from_path_stem}/dotcoop/#{id}"
     puts <<HERE
-<li><span>#{row['Name']}</span>: ID <a target="_blank" href="#{from_path}">#{row['RegistrantId']}</a></li>
+<li id="#{id}"><span>#{row['Name']}</span>: ID <a target="_blank" href="#{from_path}">#{row['RegistrantId']}</a></li>
 HERE
   else
-    from_path = "#{from_path_stem}/ica/#{row['ICAID']}"
+    id = row['ICAID']
+    from_path = "#{from_path_stem}/ica/#{id}"
     puts <<HERE
-<li><span>#{row['Name']}</span>: ID <a target="_blank" href="#{from_path}">#{row['ICAID']}</a>
+<li id="#{id}"><span>#{row['Name']}</span>: ID <a target="_blank" href="#{from_path}">#{id}</a>
 HERE
   end
   puts <<HERE
 <ul>
 <li><i>Description:</i> <pre style="white-space: break-spaces;">#{row['Description']}</pre></li>
-<li><i>Domains:</i> <span>#{row['Domains']&.gsub(";",", ")}</span></li>
+<li><i>Domains:</i> <span>#{row['Domains']&.split(';')&.map{|d| %Q{<a id="#{d}" target="_blank" href="http://#{d}">#{d}</a>}}&.join("; ")}</span></li>
+<li><i>Address:</i> <pre style="white-space: break-spaces;">#{row['Address']}</pre></li>
 <li><i>Location:</i> <a target="_blank" href="https://www.openstreetmap.org/?mlat=#{row['Location'].sub(" ", "&mlon=")}">#{row['Location']}</a></li>
 <li><i>Website:</i> <a href="#{row['Website']}">#{row['Website']}</a></li>
 </ul></li>

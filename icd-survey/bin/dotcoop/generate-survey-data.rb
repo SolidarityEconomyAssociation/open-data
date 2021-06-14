@@ -63,7 +63,7 @@ specials = {
 joined = {}
 
 # Output header order
-headers = %w(ICAID RegistrantId Name Website Description Domains Location)
+headers = %w(ICAID RegistrantId Name Website Description Domains Address Location)
 
 # Loop over the original.csv data rows, accumulating data, and
 # cross-indexing with the standard.csv data to get accesss to location
@@ -101,22 +101,27 @@ original[:ids].each do |domain, row|
   end
 
   # Now join the data
-  registrant_id = row['RegistrantId']
+  (registrant_id, name, description) = row.fields(*%w{RegistrantId Organisation Description})
+  address = row.fields(*%w{StreetNumber StreetName StreetAddress City State Country PostCode})
+              .map{|f| f&.strip} # strip whitespace
+              .reject{|f| f == nil || f.size == 0 } # reject blanks
+              .join("\n");
+  standard_row = standard[:ids][standard_id]
+  location = standard_row.fields('Geo Container Latitude', 'Geo Container Longitude')&.join(' ')
   if joined.has_key? registrant_id
     fields = joined[registrant_id]
     
-    # Check for mismatches
-    (name, description) = row.fields('Organisation', 'Description')
-    location = standard[:ids][standard_id].fields('Geo Container Latitude', 'Geo Container Latitude')&.join(' ')
-    
+    # Check for mismatches    
     warn "#{registrant_id} name mismatches: #{name} != #{fields['Name']}" if
       fields['Name'] != name
     warn "#{registrant_id} description mismatches: #{description} != #{fields['Description']}" if
       fields['Description'] != description
     warn "#{registrant_id} location mismatches: #{location} != #{fields['Location']}" if
       fields['Location'] != location
+    warn "#{registrant_id} address mismatches: #{address} != #{fields['Address']}" if
+      fields['Address'] != address
 
-    fields['Domains'][row['Domain']] = 1
+    fields['Domains'][domain] = 1
   else
     # Add a new row
     fields = joined[registrant_id] = CSV::Row.new(headers, [])
@@ -128,15 +133,15 @@ original[:ids].each do |domain, row|
     # ID.
     fields['RegistrantId'] = registrant_id
 
-    fields['Name'] = row['Organisation']
+    fields['Name'] = name
     
     %w(Website Description).each do |key|
       fields[key] = row[key]
     end
 
-    fields['Location'] = standard[:ids][standard_id].fields('Geo Container Latitude', 'Geo Container Latitude')&.join(' ')
-
-    fields['Domains'] = {row['Domain'] => 1}
+    fields['Location'] = location
+    fields['Address'] = address
+    fields['Domains'] = {domain => 1}
   end
 end
 
