@@ -17,7 +17,7 @@
 
 
 # Path to the open-data repository checkout
-open_data_dir=../
+open_data_dir=..
 
 # Where to deploy the .htaccess and index.html files
 #deploy_dest=dev-1:/var/www/vhosts/data.solidarityeconomy.coop/www/international-day-cooperatives/2021/
