@@ -45,7 +45,7 @@ standard = read_csv standard_csv_file, id_key: 'Identifier'
 joined = {}
 
 # Output header order
-headers = %w(ICAID RegistrantId Name Website Description Domains Location)
+headers = %w(ICAID RegistrantId Name Website Description Domains Address Location)
 
 # Loop over the standard.csv data rows, accumulating and cleaning data
 standard.each do |domain, row|
@@ -64,6 +64,10 @@ standard.each do |domain, row|
   
   fields['Description'] = html_to_text row['Description']
   fields['Domains'] = nil # may be several - if we knew them at this point
+  fields['Address'] = row.fields("Street Address","Locality","Region","Postcode","Country ID")
+                        .map{|f| f&.strip} # strip whitespace
+                        .reject{|f| f == nil || f.size == 0 } # reject blanks
+                        .join("\n");
   location = row.fields('Latitude', 'Longitude')
   if location.compact.size < 2 || location == ["0", "0"]
     location = row.fields('Geo Container Latitude', 'Geo Container Longitude')
