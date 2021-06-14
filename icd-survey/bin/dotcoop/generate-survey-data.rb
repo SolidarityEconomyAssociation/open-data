@@ -63,7 +63,7 @@ specials = {
 joined = {}
 
 # Output header order
-headers = %w(ICAID RegistrantId Name Website Description Domains Address Location)
+headers = %w(SEAID ICAID RegistrantId Name Website Description Domains Address Location)
 
 # Loop over the original.csv data rows, accumulating data, and
 # cross-indexing with the standard.csv data to get accesss to location
@@ -108,6 +108,7 @@ original[:ids].each do |domain, row|
               .join("\n");
   standard_row = standard[:ids][standard_id]
   location = standard_row.fields('Geo Container Latitude', 'Geo Container Longitude')&.join(' ')
+  sea_id = standard_row['Identifier']
   if joined.has_key? registrant_id
     fields = joined[registrant_id]
     
@@ -120,6 +121,8 @@ original[:ids].each do |domain, row|
       fields['Location'] != location
     warn "#{registrant_id} address mismatches: #{address} != #{fields['Address']}" if
       fields['Address'] != address
+    warn "#{registrant_id} SEA ID mismatches: #{sea_id} != #{fields['SEAID']}" if
+      fields['SEAID'] != sea_id
 
     fields['Domains'][domain] = 1
   else
@@ -127,7 +130,8 @@ original[:ids].each do |domain, row|
     fields = joined[registrant_id] = CSV::Row.new(headers, [])
 
     fields['ICAID'] = nil
-
+    fields['SEAID'] = sea_id
+      
     # May be several RegistrantIds for one org, but this data is per
     # RegistrantId - later logic also assumes this field is a single
     # ID.
