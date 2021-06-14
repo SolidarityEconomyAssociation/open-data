@@ -45,14 +45,14 @@ standard = read_csv standard_csv_file, id_key: 'Identifier'
 joined = {}
 
 # Output header order
-headers = %w(ICAID RegistrantId Name Website Description Domains Address Location)
+headers = %w(SEAID ICAID RegistrantId Name Website Description Domains Address Location)
 
 # Loop over the standard.csv data rows, accumulating and cleaning data
 standard.each do |domain, row|
   standard_id = row['Identifier']
 
   fields = joined[standard_id] = CSV::Row.new(headers, [])
-  fields['ICAID'] = standard_id
+  fields['ICAID'] = fields['SEAID'] = standard_id
 
   # May be several RegistrantIds for this org - if we knew them at
   # this point. However, we don't.  Later logic also assumes this
