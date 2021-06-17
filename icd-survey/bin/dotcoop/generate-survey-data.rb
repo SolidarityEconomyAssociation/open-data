@@ -143,6 +143,7 @@ original[:ids].each do |domain, row|
       fields[key] = row[key]
     end
 
+    fields['Website'] ||=  "http://#{domain}"    
     fields['Location'] = location
     fields['Address'] = address
     fields['Domains'] = {domain => 1}
