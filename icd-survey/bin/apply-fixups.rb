@@ -64,6 +64,8 @@ The Japanese Consumer Co-operative is the largest consumer union in Japan.
 Co-op is engaged in varieties of businesses and any of those is a need-driven one. The main objective is to improve the welfare of its members. Therefore they perform social and cultural activities going far beyond their economic operations.
 
 Governance Consumers' cooperatives utilize the cooperative principle of democratic member control, or one member/one vote. Most consumers' cooperatives have a board of directors elected by and from the membership. The board is usually responsible for hiring management and ensuring that the cooperative meets its goals, both fiscal and otherwise. Democratic functions, such as petitioning or recall of board members, may be codified in the bylaws or organizing document of the cooperative. Most consumers' cooperatives hold regular membership meetings (often once a year).
+
+...
 HERE
 
     when 105
