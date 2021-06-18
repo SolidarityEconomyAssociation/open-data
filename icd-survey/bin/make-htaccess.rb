@@ -40,7 +40,12 @@ HERE
 
 CSV.foreach(input_csv_file, headers: true) do |row|
   params = fields.keys.map do |field|
-    "d[#{fields[field]}]=#{enc(row[field]).gsub(/%/, '\\%')}"
+    # Percents are interpreted by Apache specially and need to be
+    # backslashed.  For mysterious reasons, percents also seem to be
+    # need to be double url-encoded in Enketo prefill strings, i.e. as
+    # %2525, rather than merely %25, so we reencode that at the same
+    # time. (If we don't the link hangs.)
+    "d[#{fields[field]}]=#{enc(row[field]).gsub(/%/, '\\%25')}"
   end
   if row['ICAID'].nil?
     from_path = "dotcoop/#{row['RegistrantId']}"
