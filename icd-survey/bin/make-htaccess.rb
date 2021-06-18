@@ -12,6 +12,10 @@ unless input_csv_file = ARGV[0]
   exit 1;
 end
 
+def apache_esc(str)
+  str.gsub(/%/, '\\%')
+end
+
 def enc(str)
   return URI.encode_www_form_component(str).gsub(/[+]/, '%20')
 end
@@ -47,6 +51,8 @@ CSV.foreach(input_csv_file, headers: true) do |row|
     # time. (If we don't the link hangs.)
     "d[#{fields[field]}]=#{enc(row[field]).gsub(/%/, '\\%25')}"
   end
+  params << "returnUrl=#{apache_esc enc 'https://www.coopsday.coop'}"
+  
   if row['ICAID'].nil?
     from_path = "^dotcoop/#{row['RegistrantId']}$"
   else
