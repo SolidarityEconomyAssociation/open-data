@@ -48,9 +48,9 @@ CSV.foreach(input_csv_file, headers: true) do |row|
     "d[#{fields[field]}]=#{enc(row[field]).gsub(/%/, '\\%25')}"
   end
   if row['ICAID'].nil?
-    from_path = "dotcoop/#{row['RegistrantId']}"
+    from_path = "^dotcoop/#{row['RegistrantId']}$"
   else
-    from_path = "ica/#{row['ICAID']}"
+    from_path = "^ica/#{row['ICAID']}$"
   end
   
   to_url = "#{to_url_stem}?#{params.join('&')}"  
