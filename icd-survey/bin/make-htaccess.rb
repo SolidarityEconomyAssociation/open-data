@@ -43,6 +43,10 @@ RewriteEngine On
 HERE
 
 CSV.foreach(input_csv_file, headers: true) do |row|
+  row['Location'] += ' 0 0'
+  # Note: extra zeros appended are for altitude and accuracy.
+  # KBT seems to expect them and then refuse to export GeoJSON if they're not set
+
   params = fields.keys.map do |field|
     # Percents are interpreted by Apache specially and need to be
     # backslashed.  For mysterious reasons, percents also seem to be
