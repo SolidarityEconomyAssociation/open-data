@@ -163,7 +163,7 @@ class Converter
              facebook: nil,
              companies_house_number: nil,
              qualifiers: (
-               structure_type == "Coop Promoter/Supporter"? "Coop Promoter/Supporter" :
+               structure_type == "Coop Promoter/Supporter"? "Coop Promoter/Supporter" : 
                  secondary_activities.to_s.include?("Coop Promoter/Supporter")?
                    "Coop Promoter/Supporter" : nil
              ),
