@@ -98,7 +98,7 @@ module Converter
             homepage: Types.normalise_url(website, default: nil),
             phone: nil,
             email: nil,
-            twitter: Types.normalise_twitter([twitter, "http://twitter.com/#{twitter}", website]),
+            twitter: Types.normalise_twitter([twitter, "http://twitter.com/#{twitter}", website], base_url: ''),
             facebook: Types.normalise_facebook([facebook, "http://fb.me/#{facebook}", website], base_url: ''),
             companies_house_number: nil,
             qualifiers: nil,
