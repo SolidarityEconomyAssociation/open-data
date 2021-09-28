@@ -133,7 +133,7 @@ class Converter
              id: id.to_i,
              name: name || "No Name",
              description: description,
-             organisational_structure: TYPE_TO_ORG_STRUCT.fetch(structure_type, "Co-operative"),
+             organisational_structure: TYPE_TO_ORG_STRUCT.fetch(structure_type, "Cooperative"),
              primary_activity: ECONOMIC_ACTIVITY_TO_ACTIVITY.fetch(primary_activity, ""),
              activities: (
                secondary_activities
@@ -260,7 +260,7 @@ class Converter
   # any is the default case for typology
   TYPE_TO_ORG_STRUCT = {
     "Coop Promoter/Supporter" => "Company (Other)",
-    "Cooperative" => "Co-operative",
+    "Cooperative" => "Cooperative",
     "Mutual organisation" => "Mutual",
     "National apex" => "National apex",
     "National sectoral federation or union" => "National sectoral federation or union",
