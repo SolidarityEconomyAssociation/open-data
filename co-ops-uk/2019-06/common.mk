@@ -14,13 +14,15 @@ STANDARD_CSV := $(TOP_OUTPUT_DIR)standard.csv
 #SAMEAS_CSV := ../../dotcoop/domains2018-04-24/generated-data/test/sameas.csv
 #SAMEAS_HEADERS := "cuk uri","dot uri"
 
+SE_OPEN_DATA_DIR :=  $(shell bundle info se_open_data --path)
+
 # bin directory for se_open_data scripts.
 # If the bin derectory is on your PATH, you don't this:
-SE_OPEN_DATA_BIN_DIR := ../../tools/se_open_data/bin/
+SE_OPEN_DATA_BIN_DIR := $(SE_OPEN_DATA_DIR)/bin/
 
 # lib directory for se_open_data library.
 # This is unnecessary if the library is installed as a gem (not yet possible as at April 2018)
-SE_OPEN_DATA_LIB_DIR := $(abspath ../../tools/se_open_data/lib/)
+SE_OPEN_DATA_LIB_DIR := $(abspath $(SE_OPEN_DATA_DIR)/lib/)
 
 # Any CSS files in CSS_SRC_DIR will be deployed to the DEPLOYMENT_SERVER
 CSS_SRC_DIR := css/
