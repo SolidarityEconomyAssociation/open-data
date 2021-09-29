@@ -1,0 +1,44 @@
+---
+id: :ownedByOxford
+name: Owned by Oxford
+version: 20210928
+primary_key:
+- :id
+comment: 
+fields:
+- id: :id
+  header: id
+  desc: A unique identifier for the organisation
+  comment: ''
+- id: :name
+  header: Organisation Name
+  desc: The name of the organisation
+  comment: ''
+- id: :website
+  header: Website
+  desc: "The organisation's website"
+  comment: ''
+- id: :street
+  header: Street Address
+  desc: "The organisation's main street address"
+  comment: ''
+- id: :postcode
+  header: Post Code
+  desc: "The organisation's main address' post code"
+  comment: ''
+- id: :latitude
+  header: Latitude
+  desc: "The organisation's main address' latitude"
+  comment: ''
+- id: :longitude
+  header: Longitude
+  desc: "The organisation's main address' longitude"
+  comment: ''
+- id: :description
+  header: Description
+  desc: "A description of the organisation"
+  comment: ''
+- id: :approved
+  header: Ready for Map
+  desc: "`true` if this data is validated, anything else if it should be ignored"
+  comment: ''
