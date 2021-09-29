@@ -26,9 +26,9 @@
 
 require 'se_open_data'
 require 'se_open_data/config'
-require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
+require 'se_open_data/csv/converter/limesurveycore'
 require 'csv'
 
 
@@ -143,6 +143,7 @@ module Converter
 
     # Intermediate csv files
     converted_csv = File.join(config.GEN_CSV_DIR, "converted.csv")
+    standard_csv = File.join(config.GEN_CSV_DIR, "standard.csv")
 
     # Output csv file
     output_csv = config.STANDARD_CSV
@@ -154,8 +155,12 @@ module Converter
     converter = mk_converter(from_schema: schema, to_schema: StdSchema)
 
     # Convert the csv to the standard schema
-    converter.convert File.open(converted_csv), output_csv
-    
+    converter.convert File.open(converted_csv), standard_csv
+
+    SeOpenData::CSV::Converter::LimeSurveyCore
+      .add_postcode_lat_long(infile: standard_csv, outfile: output_csv,
+                             lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+                             to_schema: StdSchema)
   rescue => e
     raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
   end
