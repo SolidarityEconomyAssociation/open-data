@@ -74,7 +74,10 @@ module Converter
         approved:,
         description:
         |
-        if approved&.upcase == 'TRUE'
+        # Inconveniently, the approved value gets converted as 1 or
+        # true, depending on whether it came from OnlyOffice or
+        # LibreOffice...
+        if approved&.to_s == '1' || approved&.upcase == 'TRUE'
           # A mapping to the target schema field ids
           latlng = [nil, nil] # default
           if location
