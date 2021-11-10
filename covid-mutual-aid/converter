@@ -77,6 +77,11 @@ class Converter < SeOpenData::CSV::RowReader
     ""
   end
 
+  def postcode
+    # Regex adapted from https://stackoverflow.com/a/51885364/2960236
+    street_address.upcase.scan(/\b(?:[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})\b/).last
+  end
+
   # def primary_activity
   # end
 
