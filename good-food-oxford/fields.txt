@@ -1,0 +1,49 @@
+- Organisation Id
+- Organisation Created At
+- Organisation Updated At
+- Organisation Name
+- Editor
+- Organisation Website
+- Organisation Facebook
+- Organisation Twitter
+- Organisation Spreadsheet Import Id
+- Location Id
+- Location Created At
+- Location Updated At
+- Street Address
+- City
+- Postcode
+- Location Telephone
+- Location Email
+- Message
+- Disabled Access
+- Mon
+- Tue
+- Wed
+- Thu
+- Fri
+- Sat
+- Sun
+- Limited Access
+- Access Criteria
+- Other Access
+- Food Services Provided
+- Other Food
+- Cost
+- Price
+- Other Services
+- Latitude
+- Longitude
+
+- id: Location Id
+- name: Organisation Name
+- homepage: Organisation Website
+- facebook: Organisation Facebook
+- twitter: Organisation Twitter
+- street_address: Street Address
+- locality: City
+- postcode: Postcode
+- telephone? Location Telephone
+- email? Location Email
+- latitude: Latitude
+- longitude: Longitude

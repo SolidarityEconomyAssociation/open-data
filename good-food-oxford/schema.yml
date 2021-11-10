@@ -1,0 +1,59 @@
+---
+id: :goodFoodOxford
+name: Good Food Oxford
+version: 20211110
+primary_key:
+- :id
+comment: 
+fields:
+- id: :id
+  header: Location Id
+  desc: A unique identifier for the organisation outlet
+  comment: ''
+- id: :org_id
+  header: Organisation Id
+  desc: A unique identifier for the organisation
+- id: :name
+  header: Organisation Name
+  desc: The name of the organisation
+  comment: ''
+- id: :website
+  header: Organisation Website
+  desc: "The organisation's website"
+  comment: ''
+- id: :facebook
+  header: Organisation Facebook
+  desc: "The organisation's Facebook page"
+  comment:
+- id: :twitter
+  header: Organisation Twitter
+  desc:  "The organisation's Twitter feed"
+  comment:
+- id: :street
+  header: Street Address
+  desc: "The organisation outlet's main street address"
+  comment: ''
+- id: :city
+  header: City
+  desc: "The organisation outlet's city or locality"
+  comment:
+- id: :telephone
+  header: Location Telephone
+  desc: "The organisation outlet's telephone number"
+  comment:
+- id: :email
+  header: Location Email
+  desc: "The organisation outlet's email address"
+  comment:
+- id: :postcode
+  header: Postcode
+  desc: "The organisation outlet's main address' post code"
+  comment: ''
+- id: :latitude
+  header: Latitude
+  desc: "The organisation outlet's main address' latitude"
+  comment: ''
+- id: :longitude
+  header: Longitude
+  desc: "The organisation outlet's main address' longitude"
+  comment: ''
