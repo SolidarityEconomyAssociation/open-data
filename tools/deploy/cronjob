@@ -16,7 +16,8 @@ function logify() {
     shift
     printf "\n[For $dir: $*]\n"
     # Prefix STDOUT with space, but STDERR with an exclamation too
-    "$@" > >(sed -e 's/^/  /') 2> >(sed -e 's/^/  ! /')
+    # Piping to cat makes this function wait for the process substitutions before returning
+    "$@" > >(sed -e 's/^/  /') 2> >(sed -e 's/^/  ! /') | cat
 }
 
 # Process one directory (passed as first argument)
