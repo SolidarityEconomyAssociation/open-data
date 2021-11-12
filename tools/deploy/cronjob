@@ -1,24 +1,62 @@
 #!/bin/bash
 
+set -o pipefail
+set -o errexit
+
 SCRIPT=${BASH_SOURCE[0]}
 REPO_DIR=$(readlink -f ${SCRIPT%/*}/../..)
 SEOD=$REPO_DIR/tools/se_open_data/bin/seod
 
+# Gems are only cached here if this exists, so make it
+mkdir -p $REPO_DIR/caches/gems
+
+# Reformat the output of a command to make it easier to follow in logs
+function logify() {
+    local dir=$1
+    shift
+    printf "\n[For $dir: $*]\n"
+    # Prefix STDOUT with space, but STDERR with an exclamation too
+    # Piping to cat makes this function wait for the process substitutions before returning
+    "$@" > >(sed -e 's/^/  /') 2> >(sed -e 's/^/  ! /') | cat
+}
+
+# Process one directory (passed as first argument)
+#
+# This should return a non-zero code if any part fails but the other
+# dirs should still be processed (or possibly exit, in the extreme
+# case when all processing should stop)
 function process {
     local dir="${1:?directory argument required}"
     (
-	cd $REPO_DIR/$dir &&
-	    $SEOD download &&
-	    $SEOD convert &&
-	    $SEOD generate &&
-	    sudo -nE $SEOD deploy &&
-	    sudo -nE $SEOD triplestore
+        cd $REPO_DIR/$dir &&
+        logify $dir $SEOD download &&
+        logify $dir $SEOD convert &&
+        logify $dir $SEOD generate &&
+        logify $dir sudo -nE $SEOD deploy &&
+        logify $dir sudo -nE $SEOD triplestore
     )
 }
 
+FAILS=()
+set +o errexit # <- we want to manage failure more finely than this here
+
 for dir in oxford newbridge mersey-green deep-adaptation dotcoop covid-mutual-aid; do
     echo "PROCESSING $dir..."
-    process "$dir"
-    echo
+    
+    process $dir
+    case "$?" in
+        0)
+            echo "SUCCEEDED $dir"
+            ;;
+        100)
+            echo "NO CHANGES $dir (return code $?)"
+            ;;
+        *)
+            echo "FAILED $dir (return code $?)"
+            FAILS+=($dir)
+            ;;
+    esac
 done
 
+echo "FINISHING with ${#FAILS[@]} failed: ${FAILS[@]}"
+exit ${#FAILS[@]}
