@@ -38,6 +38,42 @@ fields:
   header: Description
   desc: "A description of the organisation"
   comment: ''
+- id: :primary_activity
+  header: Primary Activity
+  desc: "Indicates the organisation's primary activity"
+  comment: 'Should be an English activities-modified record ID'
+- id: :primary_activity_id
+  header: Primary Activity ID
+  desc: "Indicates the organisation's primary activity"
+  comment: 'Should be an activities-modified vocab ID'
+- id: :primary_activity_label
+  header: Primary Activity Label
+  desc: "Indicates the organisation's primary activity"
+  comment: 'Should be an activities-modified vocab label'
+- id: :secondary_activities
+  header: Secondary Activities
+  desc: "Indicates the organisation's secondary activities, if any"
+  comment: 'Should be zero or more English activities-modified vocab labels, delimited with semi-colons'
+- id: :secondary_activity_ids
+  header: Secondary Activity IDs
+  desc: "Indicates the organisation's secondary activities, if any"
+  comment: 'Should be zero or more activities-modified vocab IDs, delimited with semi-colons'
+- id: :secondary_activity_labels
+  header: Secondary Activity Labels
+  desc: "Indicates the organisation's secondary activities, if any"
+  comment: 'Should be zero or more activities-modified record IDs, delimited with semi-colons'
+- id: :organisational_structure
+  header: Organisational Structure
+  desc: "Indicates the organisation's structure"
+  comment: 'Should be an English organisational-structure vocab label'
+- id: :organisational_structure_id
+  header: Organisational Structure ID
+  desc: "Indicates the organisation's structure"
+  comment: 'Should be an organisational-structure vocab ID'
+- id: :organisational_structure_label
+  header: Organisational Structure Label
+  desc: "Indicates the organisation's structure"
+  comment: 'Should be an organisational-structure record ID'
 - id: :approved
   header: Ready for Map
   desc: "`true` if this data is validated, anything else if it should be ignored"

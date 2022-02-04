@@ -57,7 +57,12 @@ module Converter
         if header == 'id'
           record['id']
         else
-          fields.fetch(header, nil)
+          field = fields.fetch(header, nil)
+          if field.is_a? Array
+            Types.multivalue_join(field)
+          else
+            field
+          end
         end
       end
     end
@@ -76,6 +81,12 @@ module Converter
   # {SeOpenData::CSV::Schema.converter}.
   #
   def self.mk_converter(from_schema:, to_schema:)
+    # Find the config file...
+    config = SeOpenData::Config.load
+    essglobal = config.ESSGLOBAL_URI
+    ac = "#{essglobal}standard/activities-modified/"
+    os = "#{essglobal}standard/organisational-structure/"
+    
     return SeOpenData::CSV::Schema.converter(
              from_schema: from_schema,
              to_schema: to_schema,
@@ -91,17 +102,28 @@ module Converter
         latitude:,
         longitude:,
         description:,
+        primary_activity:,
+        primary_activity_label:,
+        primary_activity_id:,
+        secondary_activities:,
+        secondary_activity_labels:,
+        secondary_activity_ids:,
+        organisational_structure:,
+        organisational_structure_label:,
+        organisational_structure_id:,
         approved:
         |
         if approved&.downcase == 'true'
           raise "No name for item ##{id}" unless name
           {
-            id: id,
+            id: id.delete_prefix('rec'),
             name: name,
             description: description,
-            organisational_structure: nil,
-            primary_activity: nil,
-            activities: nil,
+            organisational_structure: organisational_structure_id && os+organisational_structure_id,
+            primary_activity: primary_activity_id && ac+primary_activity_id,
+            activities: secondary_activity_ids && Types.multivalue(secondary_activity_ids) do |activity|
+              ac+activity
+            end,
             street_address: street,
             locality: 'Oxford',
             region: nil,
