@@ -17,7 +17,7 @@ URI_PATH_PREFIX := coops-uk
 # can be dereferenced to the deployed RDF and HTML files (configured below).
 # The value of DEPLOYMENT_SERVER should be the name of a host set up in an ssh config file. 
 #     (See http://nerderati.com/2011/03/17/simplify-your-life-with-an-ssh-config-file/)
-DEPLOYMENT_SERVER ?= prod-0
+DEPLOYMENT_SERVER ?= prod-1
 ESSGLOBAL_URI	 := https://w3id.solidarityeconomy.coop/essglobal/V2a/
 
 # The directory on the deployment server where the RDF and HTML is to be deployed:
@@ -32,8 +32,8 @@ DEPLOYMENT_RSYNC_FLAGS := --delete
 # Set up the triplestore:
 #
 # virtuoso server name, typically this is configured in ~/.ssh/config:
-VIRTUOSO_SERVER := prod-0
+VIRTUOSO_SERVER := prod-1
 # Directory on virtuoso server which has been configured (DirsAllowed in virtuoso.ini)
 # ready for Bulk data loading:
 VIRTUOSO_ROOT_DATA_DIR := /var/tmp/virtuoso/BulkLoading/
-SPARQL_ENDPOINT := http://prod-0.solidarityeconomy.coop:8890/sparql
+SPARQL_ENDPOINT := http://prod-1.solidarityeconomy.coop:8890/sparql
