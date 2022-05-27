@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Writes Oxford-postcode rows from a variety of data sources to a CSV
+# file, for import into Owned by Oxford's External Initiatives table.
+#
+# The sources `standard.csv` files located in open-data paths defined
+# by the keys of the stems array. Remember to update the source files
+# first!
+#
+# Usage:
+#
+#    ./dump-airtable
+#
+# Requires:
+# - Usual Linux toolchain (bash, tail)
+# - csvkit (csvstack, csvcut, csvgrep, csvsql)
+
+# The common input fields.  Some fields are omitted (as they vary
+# between the datasets). The output fields are these plus URI and
+# Source.
+cols="Name,Identifier,Description,Organisational Structure,Primary Activity,Activities,Street Address,Locality,Region,Postcode,Website,Phone,Email,Twitter,Facebook,Companies House Number,Qualifiers,Membership Type,Latitude,Longitude,Geo Container,Geo Container Latitude,Geo Container Longitude"
+
+declare -A stems=(
+    [co-ops-uk/2019-06/generated-data/dev]=coops-uk
+    [covid-mutual-aid/generated-data]=covid-mutual-aid
+    [dotcoop/generated-data]=dotcoop
+    [good-food-oxford/generated-data]=good-food-oxford
+    [oxford/generated-data]=sea-lod/oxford
+)
+declare -A sources=(
+    [co-ops-uk/2019-06/generated-data/dev]="Co-ops UK"
+    [covid-mutual-aid/generated-data]="Covid Mutual Aid"
+    [dotcoop/generated-data]="dotCoop"
+    [good-food-oxford/generated-data]="Good Food Oxford"
+    [oxford/generated-data]="Solidarity Oxford"
+)
+
+base_uri=https://lod.coop
+
+{
+    # Concatenate the CSV files. csvstack is dumber than we'd like, so
+    # we have to use csvcut to reorder the columns to be the same in
+    # all cases, chopping and re-adding the headers ourselves. We only
+    # use csvstack to add the source of the data in the Stem and
+    # Source columns
+    
+    echo "Stem,Source,$cols"; # Prepend the headers we chop off later
+    for d in "${!stems[@]}"; do
+	csvcut -c "$cols" ../$d/standard.csv | # normalise the columns
+	    csvstack -n Source -g "${sources[$d]}" - | # add Source column
+	    csvstack -n Stem -g "$base_uri/${stems[$d]}/" - | # add Stem column
+	    tail -n +2 # Chop off the headers
+    done
+} | csvgrep -c Postcode -r '^OX[0-9]' | # keep only oxford postcodes
+    csvsql --query 'select *, Stem || Identifier as URI from stdin' | # construct URI column
+    csvcut -c "$cols,URI,Source" # Reorder the colums to the desired order, dropping Stem
