@@ -51,29 +51,85 @@ fields:
   desc: "Indicates the organisation's primary activity"
   comment: 'Should be an activities-modified vocab label'
 - id: :secondary_activities
-  header: Secondary Activities
+  header: Activities
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more English activities-modified vocab labels, delimited with semi-colons'
 - id: :secondary_activity_ids
-  header: Secondary Activity IDs
+  header: Activity IDs
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more activities-modified vocab IDs, delimited with semi-colons'
 - id: :secondary_activity_labels
-  header: Secondary Activity Labels
+  header: Activity Labels
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more activities-modified record IDs, delimited with semi-colons'
-- id: :organisational_structure
+- id: :organisational_structures
   header: Organisational Structure
-  desc: "Indicates the organisation's structure"
-  comment: 'Should be an English organisational-structure vocab label'
-- id: :organisational_structure_id
+  desc: "Indicates the organisation's structure(s)"
+  comment: 'Should be multiple English organisational-structure vocab labels'
+- id: :organisational_structure_ids
   header: Organisational Structure ID
-  desc: "Indicates the organisation's structure"
-  comment: 'Should be an organisational-structure vocab ID'
-- id: :organisational_structure_label
+  desc: "Indicates the organisation's structure(s)"
+  comment: 'Should be multiple organisational-structure vocab IDs'
+- id: :organisational_structure_labels
   header: Organisational Structure Label
-  desc: "Indicates the organisation's structure"
-  comment: 'Should be an organisational-structure record ID'
+  desc: "Indicates the organisation's structure(s)"
+  comment: 'Should be multiple organisational-structure record labels'
+- id: :ext_uri
+  header: "URI (from External Initiative)"
+  desc: "The identifying URI field from any linked external initiative row"
+  comment: 'Optional. This field, if not empty, indicates there is a linked row'
+- id: :ext_name
+  header: "Name (from External Initiative)"
+  desc: "The Name field from any linked external initiative row"
+  comment: 'Optional'
+- id: :ext_description
+  header: "Description (from External Initiative)"
+  desc: "The Description field from any linked external initiative row"
+  comment: 'Optional. Free text.'
+- id: :ext_street_address
+  header: "Street Address (from External Initiative)"
+  desc: "The Street Address field from any linked external initiative row"
+  comment: 'Optional. Free text, but should be geolocatable.'
+- id: :ext_postcode
+  header: "Postcode (from External Initiative)"
+  desc: "The Postcode field from any linked external initiative row"
+  comment: 'Optional. Should be a valid postcode'
+- id: :ext_website
+  header: "Website (from External Initiative)"
+  desc: "The Website URI from any linked external initiative row"
+  comment: 'Optional. Should be a valid URL.'
+- id: :ext_primary_activity
+  header: "Primary Activity (from External Initiative)"
+  desc: "The Primary Activity label from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be a single English language label, not an ID or URI'
+- id: :ext_primary_activity_id
+  header: "Primary Activity ID (from External Initiative)"
+  desc: "The Primary Activity ID from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be an ID, but not a full URI'  
+- id: :ext_secondary_activities
+  header: " Activities (from External Initiative)"
+  desc: "The Activities label from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be multiple English language labels delimited by commas, not IDs or URIs'
+- id: :ext_secondary_activity_ids
+  header: "Activity IDs (from External Initiative)"
+  desc: "The Activity IDs from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be an ID, but not a full URI'
+- id: :ext_organisational_structures
+  header: "Organisational Structure (from External Initiative)"
+  desc: "The Organisational Structure labels from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be a multiple English language labels delimited by commas, not IDs or URIs'
+- id: :ext_organisational_structure_ids
+  header: "Organisational Structure ID (from External Initiative)"
+  desc: "The Organisational Structure IDs from any linked external initiative row"
+  comment: 'Optional. Note this is expected to be IDs delimited by commas, but not full URIs'
+- id: :ext_latitude
+  header: "Latitude (from External Initiative)"
+  desc: "The Latitude field from any linked external initiative row"
+  comment: 'Optional. Should be a real number in the valid range'
+- id: :ext_longitude
+  header: "Longitude (from External Initiative)"
+  desc: "The Longitude field from any linked external initiative row"
+  comment: 'Optional. Should be a real number in the valid range'
 - id: :approved
   header: Ready for Map
   desc: "`true` if this data is validated, anything else if it should be ignored"

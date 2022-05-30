@@ -70,6 +70,23 @@ module Converter
     output.close
   end
 
+  def self._prefix(stem, value)
+    if value
+      stem+value
+    else
+      nil
+    end
+  end
+
+  def self._multi_prefix(stem, values)
+    if values
+      Types.multivalue(values) do |value|
+        stem+value
+      end
+    else
+      nil
+    end
+  end
   
   # Returns a schema converter for the given schema.
   #
@@ -108,29 +125,42 @@ module Converter
         secondary_activities:,
         secondary_activity_labels:,
         secondary_activity_ids:,
-        organisational_structure:,
-        organisational_structure_label:,
-        organisational_structure_id:,
+        organisational_structures:,
+        organisational_structure_labels:,
+        organisational_structure_ids:,
+        ext_uri:,
+        ext_name:,
+        ext_description:,
+        ext_street_address:,
+        ext_postcode:,
+        ext_website:,
+        ext_primary_activity:,
+        ext_primary_activity_id:,
+        ext_secondary_activities:,
+        ext_secondary_activity_ids:,
+        ext_organisational_structures:,
+        ext_organisational_structure_ids:,
+        ext_latitude:,
+        ext_longitude:,
         approved:
         |
         if approved&.downcase == 'true'
+          name ||= ext_name
           raise "No name for item ##{id}" unless name
           {
             id: id.delete_prefix('rec'),
-            name: name,
-            description: description,
-            organisational_structure: organisational_structure_id && os+organisational_structure_id,
-            primary_activity: primary_activity_id && ac+primary_activity_id,
-            activities: secondary_activity_ids && Types.multivalue(secondary_activity_ids) do |activity|
-              ac+activity
-            end,
-            street_address: street,
+            name: name || ext_name,
+            description: description || ext_description,
+            organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
+            primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
+            activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
+            street_address: street || ext_street_address,
             locality: 'Oxford',
             region: nil,
-            postcode: postcode,
+            postcode: postcode || ext_postcode,
             country_id: 'GB',
             territory_id: nil,
-            homepage: Types.normalise_url(website, default: nil),
+            homepage: Types.normalise_url(website || ext_website, default: nil),
             phone: nil,
             email: nil,
             twitter: nil,
@@ -138,8 +168,8 @@ module Converter
             companies_house_number: nil,
             qualifiers: nil,
             base_membership_type: nil,
-            latitude: latitude,
-            longitude: longitude,
+            latitude: latitude || ext_latitude,
+            longitude: longitude || ext_longitude,
             geocontainer: nil,
             geocontainer_lat: nil,
             geocontainer_lon: nil,
