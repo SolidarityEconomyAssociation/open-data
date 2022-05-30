@@ -1,0 +1,54 @@
+#!/bin/env ruby
+
+require 'airrecord'
+require 'csv'
+
+# This updates the External Initiatives table on Airtable to match the
+# CSV entries read from a file output by airtable-dump
+#
+# Usage:
+#
+#    airtable-import <file.csv
+#
+
+
+table_name = 'External Initiatives'
+unique_column = 'URI'
+
+# The secret API key for access to Airtable
+airtable_api_key = `pass show accounts/airtable.com/nick.stokoe@code-operative.co.uk.apikey`
+
+# Which Airtable base to use
+airtable_app_id = 'appr96wyWydb1ryUS' 
+
+table = Airrecord.table(airtable_api_key, airtable_app_id, table_name)
+warn "getting all records"
+records = table.all
+
+warn "updating/inserting records"
+upserted_rows = {}
+CSV.new($stdin, headers: true).each do |row|
+  record = records.find {|rec| rec[unique_column] == row[unique_column] }
+  
+  if record
+    warn "updating row for #{row[unique_column]}"
+    row.headers.each {|key| record[key] = row[key] }
+    upserted_rows[record.id] = true
+    record.save("typecast" => true)
+  else
+    warn "creating row for #{row[unique_column]}"
+    record = table.create(row.to_h)
+    upserted_rows[record.id] = true
+    record.save("typecast" => true)
+  end
+end
+
+warn "deleting surplus records"
+records.each do |record|
+  unless upserted_rows.has_key?(record.id)
+    warn "deleting row for #{record.id}"
+    record.destroy
+  end
+end
+
+warn "done"
