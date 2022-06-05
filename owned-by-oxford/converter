@@ -34,9 +34,6 @@ require 'csv'
 
 module Converter
   
-  # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Latest
-
   # A convenient alias...
   Types = SeOpenData::CSV::Schema::Types
 
@@ -119,6 +116,7 @@ module Converter
         latitude:,
         longitude:,
         description:,
+        type_of_relationship:,
         primary_activity:,
         primary_activity_label:,
         primary_activity_id:,
@@ -151,6 +149,7 @@ module Converter
             id: id.delete_prefix('rec'),
             name: name || ext_name,
             description: description || ext_description,
+            relationship_to_obo: Types.multivalue(type_of_relationship) {|subfield| subfield.chomp },
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
             primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
             activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
@@ -215,7 +214,7 @@ module Converter
     SeOpenData::CSV::Converter::LimeSurveyCore
       .add_postcode_lat_long(infile: standard_csv, outfile: output_csv,
                              lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                             to_schema: StdSchema)
+                             to_schema: output_schema)
   rescue => e
     raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
   end

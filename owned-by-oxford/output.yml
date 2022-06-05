@@ -142,3 +142,8 @@ fields:
     An optional longitudinal coordinate of the initiative's main address, when
     inferred from the address fields. A floating point number.
   comment: ''
+- id: :relationship_to_obo
+  header: Relationship
+  desc: |
+    An optional label defining the organisation's relationship to Owned by Oxford
+  comment: Should be a list of English language identifier phrases
