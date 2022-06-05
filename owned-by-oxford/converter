@@ -190,6 +190,9 @@ module Converter
     # This defines the input CSV schema we expect (after clean-up an index generation)
     schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
     
+    # This defines the output CSV schema
+    output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
+    
     # original data file
     original_data = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
@@ -204,7 +207,7 @@ module Converter
     convert_to_csv(headers: schema.field_headers, input: original_data, output: converted_csv)
     
     # A converter between the input and standard csv schema
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    converter = mk_converter(from_schema: schema, to_schema: output_schema)
 
     # Convert the csv to the standard schema
     converter.convert File.open(converted_csv), standard_csv
