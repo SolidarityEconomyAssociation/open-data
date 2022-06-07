@@ -37,6 +37,20 @@ module Converter
   # A convenient alias...
   Types = SeOpenData::CSV::Schema::Types
 
+  # Splits the field by the given delimiter, passes to the block for mapping,
+  #
+  # Parses the block like a CSV row, with default delimiter
+  # character ';' and quote character "'" (needed for values
+  # with the delimiter within). The escape character is '\\'
+  #
+  # @param val [String] the multi-value field
+  # @param delim [String] the sub-field delimiter character to parse
+  # @param quote [String] the sub-field quote character to parse
+  def self.multivalues(val, delim: ';', quote: "'")
+    subfields = ::CSV.parse_line(val.to_s, quote_char: quote, col_sep: delim).to_a
+    return subfields.collect {|field| field.strip }.compact
+  end
+
   # Convert the exported JSON into CSV
   #
   # This is as simple as possible, the more complex things are done in
@@ -56,7 +70,14 @@ module Converter
         else
           field = fields.fetch(header, nil)
           if field.is_a? Array
-            Types.multivalue_join(field)
+            if field.size > 1
+              Types.multivalue_join(field)
+            elsif field.size == 1
+              # Treat this as a single element field.
+              field[0] # Doesn't quote like multivalue_join!
+            else
+              ''
+            end
           else
             field
           end
@@ -153,7 +174,7 @@ module Converter
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
             primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
             activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
-            street_address: street || ext_street_address,
+            street_address: multivalues(ext_street_address).join(",\n"),
             locality: 'Oxford',
             region: nil,
             postcode: postcode || ext_postcode,
