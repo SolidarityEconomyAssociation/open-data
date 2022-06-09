@@ -57,25 +57,13 @@ class Converter
     end
   end
   
-  def self.territory(country, region, super_region)
-    # Deal with ICA "Country" field data - which means territory in
-    # our terms.  Handles "International" plus country names, converts
-    # these to an identifier - either "I" or a 2 letter ISO country
-    # code. We happen to know some cases of country labels they use
-    # differ from those in NormalizeCountry.
-    #
-    # When a country is supplied, we infer the region and super-region
-    # downstream from here. The ICA don't currently use regions or
-    # super-regions as territories, and we simply vaildate the Region
-    # and Super-region fields.
+  def self.country(country)
+    # Convert ICA "Country-address" field data - which is the
+    # physical location of the organisation - to an ISO 2 letter code.
+    # Deals with some special cases.
     #
     # Raises an exception if an invalid case is found.
     case country.downcase
-    when "international"
-      # all fields should match
-      raise "region '#{region.downcase}' != country '#{country}'" unless region == country
-      raise "super-region '#{region.downcase}' != country '#{country}'" unless super_region == country
-      "I"
     when "côte d’ivoire"
       "CI"
     when "palestine, state of"
@@ -83,6 +71,26 @@ class Converter
     else
       NormalizeCountry(country, to: :alpha2) or
         raise "unrecognised country: #{country}"
+    end
+  end
+  
+  def self.territory(country_code)
+    # Deal with ICA "Country code" field data - which means territory
+    # in our terms.  Assumed to be a 2-letter ISO country code, but
+    # also handles a blank value (meaning "International", returned as
+    # "I").
+    #
+    # When a country is supplied, we infer the region and super-region
+    # downstream from here. The ICA don't currently use regions or
+    # super-regions as territories, and we simply vaildate the Region
+    # and Super-region fields.
+    #
+    # Raises an exception if an invalid case is found.
+    case country_code.to_s
+    when ""
+      "I"
+    else
+      country_code
     end
   end
        
@@ -154,8 +162,10 @@ class Converter
              locality: main_address_city,
              region: nil,
              postcode: main_address_postcode,
-             country_id: territory(main_address_country, nil, nil), # HACK, for geocoder, will replace later
-             territory_id: territory(country, region, super_region),
+             # Get the country_id from the main_address_country (meaning physical location) field
+             country_id: country(main_address_country),
+             # Get the territory_id from the country_code (meaning territory) field
+             territory_id: territory(country_code),
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
              email: nil,
@@ -219,29 +229,11 @@ class Converter
     
     # add location data
     SeOpenData::CSV.add_postcode_lat_long(infile: converted,
-                                          outfile: geolocated,
+                                          outfile: output_csv,
                                           api_key: api_key,
                                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
                                           postcode_global_cache: config.GEODATA_CACHE,
                                           replace_address: false)
-
-    # ICA temp HACK! Rewrite to add the country and the territory ids.
-    # Later, we hope to get the data included in the ICA file, which
-    # will involve an input schema change, and make everything much
-    # easier and more reliable, hopefully!
-    CSV.open(output_csv, 'w', headers: true, write_headers: true) do |out|
-      CSV.foreach(geolocated, headers: true, return_headers: true) do |row|
-        if row.header_row?
-          out << row.headers
-        else
-          id = row["Identifier"]
-          cname = row["Country ID"]
-          row["Country ID"] = normalise_country(cname, id)
-          # puts [id, cname, cn, tid].to_s # DEBUG
-          out << row
-        end
-      end
-    end
 
     # generate the report files (no need to pass a key)
     low_bar = 0.05
