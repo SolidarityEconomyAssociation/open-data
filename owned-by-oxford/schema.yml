@@ -38,6 +38,10 @@ fields:
   header: Description
   desc: "A description of the organisation"
   comment: ''
+- id: :type_of_relationship
+  header: Type of Relationship
+  desc: An optional label defining the organisation's relationship to Owned by Oxford
+  comment: Should be a list of English language identifier phrases
 - id: :primary_activity
   header: Primary Activity
   desc: "Indicates the organisation's primary activity"

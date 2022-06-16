@@ -34,11 +34,22 @@ require 'csv'
 
 module Converter
   
-  # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Latest
-
   # A convenient alias...
   Types = SeOpenData::CSV::Schema::Types
+
+  # Splits the field by the given delimiter, passes to the block for mapping,
+  #
+  # Parses the block like a CSV row, with default delimiter
+  # character ';' and quote character "'" (needed for values
+  # with the delimiter within). The escape character is '\\'
+  #
+  # @param val [String] the multi-value field
+  # @param delim [String] the sub-field delimiter character to parse
+  # @param quote [String] the sub-field quote character to parse
+  def self.multivalues(val, delim: ';', quote: "'")
+    subfields = ::CSV.parse_line(val.to_s, quote_char: quote, col_sep: delim).to_a
+    return subfields.collect {|field| field.strip }.compact
+  end
 
   # Convert the exported JSON into CSV
   #
@@ -59,7 +70,14 @@ module Converter
         else
           field = fields.fetch(header, nil)
           if field.is_a? Array
-            Types.multivalue_join(field)
+            if field.size > 1
+              Types.multivalue_join(field)
+            elsif field.size == 1
+              # Treat this as a single element field.
+              field[0] # Doesn't quote like multivalue_join!
+            else
+              ''
+            end
           else
             field
           end
@@ -119,6 +137,7 @@ module Converter
         latitude:,
         longitude:,
         description:,
+        type_of_relationship:,
         primary_activity:,
         primary_activity_label:,
         primary_activity_id:,
@@ -151,10 +170,11 @@ module Converter
             id: id.delete_prefix('rec'),
             name: name || ext_name,
             description: description || ext_description,
+            relationship_to_obo: Types.multivalue(type_of_relationship) {|subfield| subfield.chomp },
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
             primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
             activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
-            street_address: street || ext_street_address,
+            street_address: multivalues(ext_street_address).join(",\n"),
             locality: 'Oxford',
             region: nil,
             postcode: postcode || ext_postcode,
@@ -190,6 +210,9 @@ module Converter
     # This defines the input CSV schema we expect (after clean-up an index generation)
     schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
     
+    # This defines the output CSV schema
+    output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
+    
     # original data file
     original_data = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
@@ -204,7 +227,7 @@ module Converter
     convert_to_csv(headers: schema.field_headers, input: original_data, output: converted_csv)
     
     # A converter between the input and standard csv schema
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    converter = mk_converter(from_schema: schema, to_schema: output_schema)
 
     # Convert the csv to the standard schema
     converter.convert File.open(converted_csv), standard_csv
@@ -212,7 +235,7 @@ module Converter
     SeOpenData::CSV::Converter::LimeSurveyCore
       .add_postcode_lat_long(infile: standard_csv, outfile: output_csv,
                              lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                             to_schema: StdSchema)
+                             to_schema: output_schema)
   rescue => e
     raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
   end
