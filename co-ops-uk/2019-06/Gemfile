@@ -1,2 +1,0 @@
-source "https://rubygems.org"
-gem "se_open_data", :github => "SolidarityEconomyAssociation/se-open-data", :branch => "v1.1.1"
