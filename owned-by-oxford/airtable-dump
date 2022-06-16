@@ -1,0 +1,100 @@
+#!/bin/env ruby
+
+require 'csv'
+
+# Writes Oxford-postcode rows from a variety of data sources to a CSV
+# file, for import into Owned by Oxford's External Initiatives table.
+#
+# The sources `standard.csv` files located in open-data paths defined
+# by the keys of the stems array. Remember to update the source files
+# first!
+#
+# Usage:
+#
+#    ./dump-airtable
+#
+# Requires:
+# - Usual Linux toolchain (bash, tail)
+# - csvkit (csvstack, csvcut, csvgrep, csvsql)
+
+# The common input fields.  Some fields are omitted (as they vary
+# between the datasets). The output fields are these plus URI and
+# Source.
+
+cols = [
+  'Name','Identifier','Description','Organisational Structure',
+  'Primary Activity','Activities','Street Address','Locality',
+  'Region','Postcode','Website','Phone','Email','Twitter','Facebook',
+  'Companies House Number','Qualifiers','Membership Type',
+  'Latitude','Longitude','Geo Container','Geo Container Latitude',
+  'Geo Container Longitude','URI','Source'
+]
+
+stems = {
+    'co-ops-uk/2019-06/generated-data/dev' => 'coops-uk',
+    'covid-mutual-aid/generated-data' => 'covid-mutual-aid',
+    'dotcoop/generated-data' => 'dotcoop',
+    'good-food-oxford/generated-data' => 'good-food-oxford',
+    'oxford/generated-data' => 'sea-lod/oxford',
+}
+sources = {
+    'co-ops-uk/2019-06/generated-data/dev' => 'Co-ops UK',
+    'covid-mutual-aid/generated-data' => 'Covid Mutual Aid',
+    'dotcoop/generated-data' => 'dotCoop',
+    'good-food-oxford/generated-data' => 'Good Food Oxford',
+    'oxford/generated-data' => 'Solidarity Oxford',
+}
+
+base_uri = 'https://lod.coop'
+
+options = {
+  headers: true
+}
+
+# Write the headers
+puts cols.join(",")
+
+for path in stems.keys do
+  file = "../#{path}/standard.csv"
+
+  # Read in the next file
+  CSV.foreach(file, **options) do |old_row|
+    # Skip rows without an Oxford postcode
+    next unless old_row['Postcode'] =~ /^OX[0-9]/
+
+    # Copy the selected fields across
+    row = CSV::Row.new(
+      cols,
+      old_row.fields(*cols)
+    )
+
+    # Expand the Twitter and Facebook URLs
+    row['Twitter'] = 'https://twitter.com/'+row['Twitter'] if !row['Twitter'].to_s.empty?
+    row['Facebook'] = 'https://facebook.com/'+row['Facebook'] if !row['Facebook'].to_s.empty?
+
+    # Remove hyphen from co-operative, as the airtable terms don't have it
+    row['Organisational Structure']&.gsub!(/co-op/, 'coop')
+    
+    # Change the multi-value fields to a form which airtable understands
+    # (Quoted values delimited by commas)
+    for field in ['Activities','Organisational Structure'] do
+      next unless row[field].to_s != ""
+      row[field] = row[field]
+                     .split(/;/)
+                     .collect {|c| c.match(',')? '"'+c+'"' : c }
+                     .join(',')
+    end
+
+    # Only keep the first Website, if there are multiple
+    row['Website']&.gsub!(/;.*/, '')
+
+
+    # Set the URI field
+    stem = stems[path]
+    row['URI'] = "#{base_uri}/#{stem}/#{row['Identifier']}"
+
+    # Set the Source field
+    row['Source'] = sources[path]
+    puts row.to_s(quote_empty: false)
+  end
+end
