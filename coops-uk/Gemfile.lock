@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: 8c8f294b831d1818b074698d0fe51dd4635dcbd3
-  branch: v2.1.1
+  revision: 2963b6f4600a8884ddd81f6c8a81ea263d598757
+  branch: v2.1.7
   specs:
     se_open_data (1.0.0)
       httparty
