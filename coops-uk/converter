@@ -139,6 +139,11 @@ class Converter
              geocontainer: nil,
              geocontainer_lat: nil,
              geocontainer_lon: nil,
+             sector: sector,
+             sic_section: sic_section,
+             sic_code: sic_code,
+             ownership: ownership,
+             legal_form: legal_form,
            }
     end
   end
@@ -192,7 +197,7 @@ class Converter
         end
 
         org_struct = if row['Organisational Structure ID']
-                       "#{config.ESSGLOBAL_URI}standard/activities-ica/#{row['Organisational Structure ID']}"
+                       "#{config.ESSGLOBAL_URI}standard/organisational-structure/#{row['Organisational Structure ID']}"
                      end
         bmt = if row['Base Membership Type ID']
                 "#{config.ESSGLOBAL_URI}standard/base-membership-type/#{row['Base Membership Type ID']}"
@@ -205,11 +210,12 @@ class Converter
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
 
-    # This defines the input CSV schema we expect (after clean-up and geolocation)
-    schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)    
+    # This defines the input and output CSV schemas (after clean-up and geolocation)
+    input_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
+    output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
     
     # A converter between the two
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema)
 
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
