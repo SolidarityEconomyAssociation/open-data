@@ -188,8 +188,9 @@ module Converter
             companies_house_number: nil,
             qualifiers: nil,
             base_membership_type: nil,
-            latitude: latitude || ext_latitude,
-            longitude: longitude || ext_longitude,
+            # these fields depend on the street address
+            latitude: (street ? latitude : ext_latitude), 
+            longitude: (street ? longitude : ext_longitude),
             geocontainer: nil,
             geocontainer_lat: nil,
             geocontainer_lon: nil,
