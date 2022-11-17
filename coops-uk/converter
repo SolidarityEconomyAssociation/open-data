@@ -41,12 +41,14 @@ class Converter
   @@legal_ownership_to_org_membership = {}
   
   def self.activity_from_cuk(sic_code)
-    sic_division = sic_code[0,2]
+    sic_division = sic_code[0,2].to_i
+    # puts "#{sic_code} => #{@@sic_division_to_ica_activity[sic_division]}"
     return @@sic_division_to_ica_activity[sic_division]
   end
 
   def self.org_membership_from_cuk(legal_form, ownership)
     result = @@legal_ownership_to_org_membership["#{legal_form}\0#{ownership}"]
+    # puts "#{legal_form} / #{ownership} => #{result}"
     return result
   end
        
@@ -176,11 +178,11 @@ class Converter
 
     # Load the SIC sections data
     CSV.foreach("sic-division-to-ica-activity.csv", headers: true) do |row|
-      division = row["Division"]
+      division = row["SIC Division"].to_i
       if @@sic_division_to_ica_activity[division]
         abort "Duplicate division #{division} in sic-division-to-ica-activity.csv"
       end
-      if row["Activity ID"]
+      if row["Activity ID"] != ''
         @@sic_division_to_ica_activity[division] =
           "#{config.ESSGLOBAL_URI}standard/activities-ica/#{row['Activity ID']}"
       end
@@ -196,13 +198,15 @@ class Converter
           abort "Duplicate legal form/ownership key #{key} in legal-ownership-to-org-membership.csv"
         end
 
-        org_struct = if row['Organisational Structure ID']
-                       "#{config.ESSGLOBAL_URI}standard/organisational-structure/#{row['Organisational Structure ID']}"
-                     end
-        bmt = if row['Base Membership Type ID']
-                "#{config.ESSGLOBAL_URI}standard/base-membership-type/#{row['Base Membership Type ID']}"
-              end
-        @@legal_ownership_to_org_membership[key] = [org_struct, bmt]
+        os = row['Organisational Structure ID'].to_s.upcase
+        os_url = if os != ''
+                   "#{config.ESSGLOBAL_URI}standard/organisational-structure/#{os}"
+                 end
+        bmt = row['Base Membership Type ID'].to_s.upcase
+        bmt_url = if bmt != ''
+                    "#{config.ESSGLOBAL_URI}standard/base-membership-type/#{bmt}"
+                  end
+        @@legal_ownership_to_org_membership[key] = [os_url, bmt_url]
       end
     end
 

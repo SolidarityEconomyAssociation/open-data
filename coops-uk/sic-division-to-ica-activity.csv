@@ -1,4 +1,4 @@
-Division,Activity ID
+SIC Division,Activity ID
 01,ICA10
 02,ICA30
 03,ICA50
@@ -86,3 +86,4 @@ Division,Activity ID
 96,ICA120
 97,ICA280
 98,ICA280
+99,ICA280

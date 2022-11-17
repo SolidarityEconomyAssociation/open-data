@@ -1,92 +1,91 @@
-Legal Form,Organisational Structure VES,Organisational Structure ID,Ownership Classification,Base Membership Type VES,Base Membership Type ID,Missing
-Charitable Incorporated Organisation,,,Co-operatives,,,
-Community Interest Company,,,Co-operatives,,,
-Company,Company (Other),OS10,Co-operatives,Unspecified,BMT20,Generic Apex
-Limited Partnership,,,Co-operatives,,,
-LLP,,,Co-operatives,,,
-Scottish Charitable Incorporated Organisation,,,Co-operatives,,,
-Society,CBS/IPS,,Co-operatives,Unspecified,BMT20,Generic Federation
-Unincorporated,Unincorporated,OS50,Co-operatives,Unspecified,BMT20,Generic Apex
-Unspecified,,,Co-operatives,,,
-Charitable Incorporated Organisation,Charity,OS40,Community of Interest,Others,BMT10,CIO
-Community Interest Company,Community Interest Company (CIC),OS120,Community of Interest,Others,BMT10,
-Company,Company (Other),OS10,Community of Interest,Others,BMT10,
-Limited Partnership,,,Community of Interest,,,
-LLP,,,Community of Interest,,,
-Scottish Charitable Incorporated Organisation,,,Community of Interest,,,
-Society,CBS/IPS,,Community of Interest,Others,BMT10,
-Unincorporated,Unincorporated,OS50,Community of Interest,Others,BMT10,
-Unspecified,Unspecified,OS50,Community of Interest,Others,BMT10,
-Charitable Incorporated Organisation,,,Consumers,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Consumers,Consumer/Users,BMT10,
-Company,Company (Other),OS10,Consumers,Consumer/Users,BMT10,
-Limited Partnership,,,Consumers,,,
-LLP,,,Consumers,,,
-Scottish Charitable Incorporated Organisation,,,Consumers,,,
-Society,CBS/IPS,,Consumers,Consumer/Users,BMT10,
-Unincorporated,Unincorporated,OS50,Consumers,Consumer/Users,BMT10,
-Unspecified,Unspecified,OS50,Consumers,Consumer/Users,BMT10,
-Charitable Incorporated Organisation,,,Employee Trust,,,
-Community Interest Company,,,Employee Trust,,,
-Company,Employee trust,OS10,Employee Trust,Workers,BMT30,
-Limited Partnership,,,Employee Trust,,,
-LLP,,,Employee Trust,,,
-Scottish Charitable Incorporated Organisation,,,Employee Trust,,,
-Society,,,Employee Trust,,,
-Unincorporated,,,Employee Trust,,,
-Unspecified,,,Employee Trust,,,
-Charitable Incorporated Organisation,,,Enterprises,,,
-Community Interest Company,,,Enterprises,,,
-Company,Company (Other),OS10,Enterprises,Producers,BMT20,
-Limited Partnership,,,Enterprises,,,
-LLP,,,Enterprises,,,
-Scottish Charitable Incorporated Organisation,Company (Other),OS10,Enterprises,Producers,BMT20,SCIO
-Society,CBS/IPS,,Enterprises,Producers,BMT20,
-Unincorporated,Unincorporated,OS50,Enterprises,Producers,BMT20,
-Unspecified,Unspecified,OS50,Enterprises,Producers,BMT20,
-Charitable Incorporated Organisation,,,Multi-stakeholder,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Multi-stakeholder,Multi-stakeholders,BMT10,
-Company,Company (Other),OS10,Multi-stakeholder,Multi-stakeholders,BMT10,
-Limited Partnership,,,Multi-stakeholder,,,
-LLP,,,Multi-stakeholder,,,
-Scottish Charitable Incorporated Organisation,,,Multi-stakeholder,,,
-Society,CBS/IPS,,Multi-stakeholder,Multi-stakeholders,BMT10,
-Unincorporated,Unincorporated,OS50,Multi-stakeholder,Multi-stakeholders,BMT10,
-Unspecified,Unspecified,OS50,Multi-stakeholder,Multi-stakeholders,BMT10,
-Charitable Incorporated Organisation,,,Self-employed,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Self-employed,Self-employed,BMT20,
-Company,Company (Other),OS10,Self-employed,Self-employed,BMT20,
-Limited Partnership,,,Self-employed,,,
-LLP,Company (Other),OS10,Self-employed,Self-employed,BMT20,Partnership
-Scottish Charitable Incorporated Organisation,,,Self-employed,,,
-Society,CBS/IPS,,Self-employed,Self-employed,BMT20,
-Unincorporated,Unincorporated,OS50,Self-employed,Self-employed,BMT20,
-Unspecified,Unspecified,OS50,Self-employed,Self-employed,BMT20,
-Charitable Incorporated Organisation,,,Tenants,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Tenants,Residents,BMT20,
-Company,Company (Other),OS10,Tenants,Residents,BMT20,
-Limited Partnership,,,Tenants,,,
-LLP,,,Tenants,,,
-Scottish Charitable Incorporated Organisation,,,Tenants,,,
-Society,CBS/IPS,,Tenants,Residents,BMT20,
-Unincorporated,,,Tenants,,,
-Unspecified,,,Tenants,,,
-Charitable Incorporated Organisation,,,Unspecified,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Unspecified,Unspecified,BMT20,
-Company,Company (Other),OS10,Unspecified,Unspecified,BMT20,
-Limited Partnership,,,Unspecified,,,
-LLP,Company (Other),OS10,Unspecified,Unspecified,BMT20,Partnership
-Scottish Charitable Incorporated Organisation,Company (Other),OS10,Unspecified,Unspecified,BMT20,SCIO
-Society,CBS/IPS,,Unspecified,Unspecified,BMT20,
-Unincorporated,Unincorporated,OS50,Unspecified,Unspecified,BMT20,
-Unspecified,Unspecified,OS50,Unspecified,Unspecified,BMT20,
-Charitable Incorporated Organisation,,,Workers,,,
-Community Interest Company,Community Interest Company (CIC),OS120,Workers,Workers,BMT30,
-Company,Company (Other),OS10,Workers,Workers,BMT30,
-Limited Partnership,Company (Other),OS10,Workers,Workers,BMT30,Partnership
-LLP,Company (Other),OS10,Workers,Workers,BMT30,Partnership
-Scottish Charitable Incorporated Organisation,,,Workers,,,
-Society,CBS/IPS,,Workers,Workers,BMT30,
-Unincorporated,Unincorporated,OS50,Workers,Workers,BMT30,
-Unspecified,Unspecified,OS50,Workers,Workers,BMT30,
-
+Legal Form,Organisational Structure VES,Organisational Structure ID,Ownership Classification,Base Membership Type VES,Base Membership Type ID
+Charitable Incorporated Organisation,Charity,OS40,Co-operatives,Unspecified,
+Community Interest Company,Community Interest Company (CIC),OS120,Co-operatives,Unspecified,
+Company,Cooperative,OS115,Co-operatives,Unspecified,
+Limited Partnership,Cooperative,OS115,Co-operatives,Unspecified,
+LLP,Cooperative,OS115,Co-operatives,Unspecified,
+Scottish Charitable Incorporated Organisation,Charity,OS40,Co-operatives,Unspecified,
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Co-operatives,Unspecified,
+Unincorporated,Cooperative,OS115,Co-operatives,Unspecified,
+Unspecified,Cooperative,OS115,Co-operatives,Unspecified,
+Charitable Incorporated Organisation,Charity,OS40,Community of Interest,Others,BMT60
+Community Interest Company,Community Interest Company (CIC),OS120,Community of Interest,Others,BMT60
+Company,Company (Other),OS50,Community of Interest,Others,BMT60
+Limited Partnership,Cooperative,OS115,Community of Interest,Others,BMT60
+LLP,Cooperative,OS115,Community of Interest,Others,BMT60
+Scottish Charitable Incorporated Organisation,Charity,OS40,Community of Interest,Others,BMT60
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Community of Interest,Others,BMT60
+Unincorporated,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Community of Interest,Others,BMT60
+Unspecified,Unspecified,,Community of Interest,Others,BMT60
+Charitable Incorporated Organisation,Charity,OS40,Consumers,Consumer/Users,BMT10
+Community Interest Company,Community Interest Company (CIC),OS120,Consumers,Consumer/Users,BMT10
+Company,Cooperative,OS115,Consumers,Consumer/Users,BMT10
+Limited Partnership,Cooperative,OS115,Consumers,Consumer/Users,BMT10
+LLP,Cooperative,OS115,Consumers,Consumer/Users,BMT10
+Scottish Charitable Incorporated Organisation,Charity,OS40,Consumers,Consumer/Users,BMT10
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Consumers,Consumer/Users,BMT10
+Unincorporated,Unincorporated,OS160,Consumers,Consumer/Users,BMT10
+Unspecified,Unspecified,,Consumers,Consumer/Users,BMT10
+Charitable Incorporated Organisation,Employee trust,OS140,Employee Trust,Workers,BMT30
+Community Interest Company,Employee trust,OS140,Employee Trust,Workers,BMT30
+Company,Employee trust,OS140,Employee Trust,Workers,BMT30
+Limited Partnership,Employee trust,OS140,Employee Trust,Workers,BMT30
+LLP,Employee trust,OS140,Employee Trust,Workers,BMT30
+Scottish Charitable Incorporated Organisation,Employee trust,OS140,Employee Trust,Workers,BMT30
+Society,Employee trust,OS140,Employee Trust,Workers,BMT30
+Unincorporated,Employee trust,OS140,Employee Trust,Workers,BMT30
+Unspecified,Employee trust,OS140,Employee Trust,Workers,BMT30
+Charitable Incorporated Organisation,Charity,OS40,Enterprises,Producers,BMT20
+Community Interest Company,Community Interest Company (CIC),OS120,Enterprises,Producers,BMT20
+Company,Company (Other),OS50,Enterprises,Producers,BMT20
+Limited Partnership,Cooperative,OS115,Enterprises,Producers,BMT20
+LLP,Cooperative,OS115,Enterprises,Producers,BMT20
+Scottish Charitable Incorporated Organisation,Company (Other),OS50,Enterprises,Producers,BMT20
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Enterprises,Producers,BMT20
+Unincorporated,Unincorporated,OS160,Enterprises,Producers,BMT20
+Unspecified,Unspecified,,Enterprises,Producers,BMT20
+Charitable Incorporated Organisation,Charity,OS40,Multi-stakeholder,Multi-stakeholders,BMT40
+Community Interest Company,Community Interest Company (CIC),OS120,Multi-stakeholder,Multi-stakeholders,BMT40
+Company,Company (Other),OS50,Multi-stakeholder,Multi-stakeholders,BMT40
+Limited Partnership,Cooperative,OS115,Multi-stakeholder,Multi-stakeholders,BMT40
+LLP,Cooperative,OS115,Multi-stakeholder,Multi-stakeholders,BMT40
+Scottish Charitable Incorporated Organisation,Charity,OS40,Multi-stakeholder,Multi-stakeholders,BMT40
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Multi-stakeholder,Multi-stakeholders,BMT40
+Unincorporated,Unincorporated,OS160,Multi-stakeholder,Multi-stakeholders,BMT40
+Unspecified,Unspecified,,Multi-stakeholder,Multi-stakeholders,BMT40
+Charitable Incorporated Organisation,Charity,OS40,Self-employed,Workers,BMT30
+Community Interest Company,Community Interest Company (CIC),OS120,Self-employed,Workers,BMT30
+Company,Company (Other),OS50,Self-employed,Workers,BMT30
+Limited Partnership,Cooperative,OS115,Self-employed,Workers,BMT30
+LLP,Cooperative,OS115,Self-employed,Workers,BMT30
+Scottish Charitable Incorporated Organisation,Charity,OS40,Self-employed,Workers,BMT30
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Self-employed,Workers,BMT30
+Unincorporated,Unincorporated,OS160,Self-employed,Workers,BMT30
+Unspecified,Unspecified,,Self-employed,Workers,BMT30
+Charitable Incorporated Organisation,Charity,OS40,Tenants,Residents,BMT50
+Community Interest Company,Community Interest Company (CIC),OS120,Tenants,Residents,BMT50
+Company,Company (Other),OS50,Tenants,Residents,BMT50
+Limited Partnership,Cooperative,OS115,Tenants,Residents,BMT50
+LLP,Cooperative,OS115,Tenants,Residents,BMT50
+Scottish Charitable Incorporated Organisation,Charity,OS40,Tenants,Residents,BMT50
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Tenants,Residents,BMT50
+Unincorporated,Unincorporated,OS160,Tenants,Residents,BMT50
+Unspecified,Unspecified,,Tenants,Residents,BMT50
+Charitable Incorporated Organisation,Charity,OS40,Unspecified,Unspecified,
+Community Interest Company,Community Interest Company (CIC),OS120,Unspecified,Unspecified,
+Company,Company (Other),OS50,Unspecified,Unspecified,
+Limited Partnership,Cooperative,OS115,Unspecified,Unspecified,
+LLP,Cooperative,OS115,Unspecified,Unspecified,
+Scottish Charitable Incorporated Organisation,Company (Other),OS50,Unspecified,Unspecified,
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Unspecified,Unspecified,
+Unincorporated,Unincorporated,OS160,Unspecified,Unspecified,
+Unspecified,Unspecified,,Unspecified,Unspecified,
+Charitable Incorporated Organisation,Charity,OS40,Workers,Workers,BMT30
+Community Interest Company,Community Interest Company (CIC),OS120,Workers,Workers,BMT30
+Company,Company (Other),OS50,Workers,Workers,BMT30
+Limited Partnership,Cooperative,OS115,Workers,Workers,BMT30
+LLP,Cooperative,OS115,Workers,Workers,BMT30
+Scottish Charitable Incorporated Organisation,Charity,OS40,Workers,Workers,BMT30
+Society,Community Benefit Society / Industrial and Provident Society (IPS),OS130,Workers,Workers,BMT30
+Unincorporated,Unincorporated,OS160,Workers,Workers,BMT30
+Unspecified,Unspecified,,Workers,Workers,BMT30
