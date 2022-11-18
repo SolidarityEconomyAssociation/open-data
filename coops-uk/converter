@@ -112,6 +112,8 @@ class Converter
            reg_parish_code: ,
            reg_parish_name: 
            |
+           next if reg_status.downcase == 'dead'
+             
            # A mapping to the target schema field ids
            primary_activity = activity_from_cuk(sic_code)
            org_structure, base_membership_type = org_membership_from_cuk(legal_form, ownership)
