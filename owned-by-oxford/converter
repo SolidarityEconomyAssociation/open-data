@@ -37,6 +37,32 @@ module Converter
   # A convenient alias...
   Types = SeOpenData::CSV::Schema::Types
 
+  MultiFields = [
+    'Street Address',
+    'Organisational Structure',
+    'Organisational Structure ID',
+    'Organisational Structure Label',
+    'Activities',
+    'Activities ID',
+    'Activities Label',
+    'Secondary Activites',
+    'Secondary Activites ID',
+    'Secondary Activites Label',
+    'Membership Type',
+    'Membership Type ID',
+    'Membership Type Label',
+    'Street Address (from External Initiative)',
+    'Organisational Structure (from External Initiative)',
+    'Organisational Structure ID (from External Initiative)',
+    'Organisational Structure Label (from External Initiative)',
+    'Activities (from External Initiative)',
+    'Activities ID (from External Initiative)',
+    'Activities Label (from External Initiative)',
+    'Membership Type (from External Initiative)',
+    'Membership Type ID (from External Initiative)',
+    'Membership Type Label (from External Initiative)',
+  ]
+
   # Splits the field by the given delimiter, passes to the block for mapping,
   #
   # Parses the block like a CSV row, with default delimiter
@@ -70,7 +96,7 @@ module Converter
         else
           field = fields.fetch(header, nil)
           if field.is_a? Array
-            if field.size > 1
+            if MultiFields.include?(header) || field.size > 1
               Types.multivalue_join(field)
             elsif field.size == 1
               # Treat this as a single element field.
