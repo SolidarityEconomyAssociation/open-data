@@ -28,7 +28,7 @@ cols = [
 ]
 
 stems = {
-    'co-ops-uk/2019-06/generated-data/dev' => 'coops-uk',
+    'coops-uk/generated-data' => 'coops-uk',
     'covid-mutual-aid/generated-data' => 'covid-mutual-aid',
     'dotcoop/generated-data' => 'dotcoop',
     'good-food-oxford/generated-data' => 'good-food-oxford',
