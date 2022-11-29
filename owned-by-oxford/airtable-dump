@@ -11,16 +11,13 @@ require 'csv'
 #
 # Usage:
 #
-#    ./dump-airtable
+#    ./dump-airtable >outputfile
 #
-# Requires:
-# - Usual Linux toolchain (bash, tail)
-# - csvkit (csvstack, csvcut, csvgrep, csvsql)
+
 
 # The common input fields.  Some fields are omitted (as they vary
 # between the datasets). The output fields are these plus URI and
 # Source.
-
 cols = [
   'Name','Identifier','Description','Organisational Structure',
   'Primary Activity','Activities','Street Address','Locality',
