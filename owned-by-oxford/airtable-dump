@@ -1,6 +1,8 @@
 #!/bin/env ruby
 
 require 'csv'
+require 'linkeddata'
+require 'rdf/turtle'
 
 # Writes Oxford-postcode rows from a variety of data sources to a CSV
 # file, for import into Owned by Oxford's External Initiatives table.
@@ -13,6 +15,43 @@ require 'csv'
 #
 #    ./dump-airtable >outputfile
 #
+
+def load_vocab(uri)
+  url = uri.sub(%r{/*$}, '')
+  graph = RDF::Graph.load(url, headers: {'Accept' => 'text/turtle'})
+  query = RDF::Query.new(
+    **{
+      :concept => {
+        RDF.type => RDF::Vocab::SKOS.Concept,
+        RDF::Vocab::SKOS.inScheme => RDF::URI(uri),
+        RDF::Vocab::SKOS.prefLabel => :label,
+      },
+    }
+  )
+  solns = query.execute(graph)
+  en_concepts = solns.each.select do |soln|
+    soln.label.language == :en
+  end
+  index = en_concepts.collect do |concept|
+    [concept.concept.value, concept.label.value]
+  end
+
+  index.to_h
+end
+
+def expand_vocab(val, index)
+  val&.gsub!(%r{^(http[^;]*)/([^;]*)}) do |match|
+    index[match] || abort("no vocab term match for #{match}")
+  end
+end
+
+os = load_vocab('https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/')
+ac = load_vocab('https://dev.lod.coop/essglobal/2.1/standard/activities-ica/')
+bmt = load_vocab('https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/')
+
+#os = RDF::Vocabulary.from_graph(graph, url: url)
+#abort RDF::Vocabulary.find_term(os.OS130).prefLabel.inspect #graph.to_a.find_term(os.OS130).properties.inspect
+#abort os.inspect
 
 
 # The common input fields.  Some fields are omitted (as they vary
@@ -71,6 +110,9 @@ for path in stems.keys do
 
     # Remove hyphen from co-operative, as the airtable terms don't have it
     row['Organisational Structure']&.gsub!(/co-op/, 'coop')
+    expand_vocab row['Organisational Structure'], os
+    expand_vocab row['Primary Activity'], ac
+    expand_vocab row['Membership Type'], bmt
     
     # Change the multi-value fields to a form which airtable understands
     # (Quoted values delimited by commas)
