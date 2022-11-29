@@ -74,7 +74,7 @@ for path in stems.keys do
     
     # Change the multi-value fields to a form which airtable understands
     # (Quoted values delimited by commas)
-    for field in ['Activities','Organisational Structure'] do
+    for field in ['Activities','Organisational Structure','Street Address'] do
       next unless row[field].to_s != ""
       row[field] = row[field]
                      .split(/;/)
