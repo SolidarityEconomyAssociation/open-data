@@ -55,15 +55,15 @@ fields:
   desc: "Indicates the organisation's primary activity"
   comment: 'Should be an activities-modified vocab label'
 - id: :secondary_activities
-  header: Activities
+  header: Secondary Activities
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more English activities-modified vocab labels, delimited with semi-colons'
 - id: :secondary_activity_ids
-  header: Activity IDs
+  header: Secondary Activity IDs
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more activities-modified vocab IDs, delimited with semi-colons'
 - id: :secondary_activity_labels
-  header: Activity Labels
+  header: Secondary Activity Labels
   desc: "Indicates the organisation's secondary activities, if any"
   comment: 'Should be zero or more activities-modified record IDs, delimited with semi-colons'
 - id: :organisational_structures
