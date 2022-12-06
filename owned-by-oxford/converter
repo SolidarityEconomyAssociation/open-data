@@ -202,7 +202,7 @@ module Converter
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
             primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
             activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
-            street_address: multivalues(street || ext_street_address).join(",\n"),
+            street_address: street || multivalues(ext_street_address).join(",\n"),
             locality: 'Oxford',
             region: nil,
             postcode: postcode || ext_postcode,
