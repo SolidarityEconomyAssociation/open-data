@@ -19,7 +19,7 @@ fields:
   desc: "The organisation's website"
   comment: ''
 - id: :street
-  header: Street Address
+  header: Address
   desc: "The organisation's main street address"
   comment: ''
 - id: :postcode
