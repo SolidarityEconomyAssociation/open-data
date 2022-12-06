@@ -75,6 +75,8 @@ module Converter
   def self.multivalues(val, delim: ';', quote: "'")
     subfields = ::CSV.parse_line(val.to_s, quote_char: quote, col_sep: delim).to_a
     return subfields.collect {|field| field.strip }.compact
+  rescue
+    raise "failed to parse multivalue field (#{val}) with delims #{delim} and quote #{quote}"
   end
 
   # Convert the exported JSON into CSV
