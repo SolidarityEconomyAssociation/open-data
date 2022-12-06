@@ -78,6 +78,10 @@ fields:
   header: Organisational Structure Label
   desc: "Indicates the organisation's structure(s)"
   comment: 'Should be multiple organisational-structure record labels'
+- id: :contact_email
+  header: Contact email (from People)
+  desc: "A contact email for the organisation"
+  comment: 'An optional single text field, with a valid email address'
 - id: :ext_uri
   header: "URI (from External Initiative)"
   desc: "The identifying URI field from any linked external initiative row"
