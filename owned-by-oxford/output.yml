@@ -39,6 +39,12 @@ fields:
   desc: "Any additional categories of actitivity executed by the initiative. Allowed
     values are zero or more terms from a relevant vocabulary, separated by semi-colons."
   comment: ''
+- id: :combined_activities
+  header: Combined Activities
+  desc: "All the organisation's activities, including primary and secondary"
+  comment: |-
+    Allowed values are zero or more terms from the relevant vocabulary, 
+    separated by semi-colons.
 - id: :street_address
   header: Street Address
   desc: |

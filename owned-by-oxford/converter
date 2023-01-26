@@ -194,14 +194,22 @@ module Converter
         if approved&.downcase == 'true'
           name ||= ext_name
           raise "No name for item ##{id}" unless name
+
+          primary_activity_uris = _prefix(ac, primary_activity_id || ext_primary_activity_id)
+          secondary_activity_uris = _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids)
+          combined_activity_ids = [primary_activity_id || ext_primary_activity_id,
+                                   secondary_activity_ids || ext_secondary_activity_ids]
+                                    .compact.join(';')
+          combined_activity_uris = _multi_prefix(ac, combined_activity_ids)
           {
             id: id.delete_prefix('rec'),
             name: name || ext_name,
             description: description || ext_description,
             relationship_to_obo: Types.multivalue(type_of_relationship) {|subfield| subfield.chomp },
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
-            primary_activity: _prefix(ac, primary_activity_id || ext_primary_activity_id),
-            activities: _multi_prefix(ac, secondary_activity_ids || ext_secondary_activity_ids),
+            primary_activity: primary_activity_uris,
+            activities: secondary_activity_uris,
+            combined_activities: combined_activity_uris,
             street_address: street || multivalues(ext_street_address).join(",\n"),
             locality: 'Oxford',
             region: nil,
