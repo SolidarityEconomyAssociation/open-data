@@ -68,6 +68,8 @@ class Converter
       "CI"
     when "palestine, state of"
       "PS"
+    when "türkiye"
+      "TR"
     else
       NormalizeCountry(country, to: :alpha2) or
         raise "unrecognised country: #{country}"
