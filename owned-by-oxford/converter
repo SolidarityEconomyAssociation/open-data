@@ -38,6 +38,7 @@ module Converter
   Types = SeOpenData::CSV::Schema::Types
 
   MultiFields = [
+    'Nature of Organisation',
     'Organisational Structure',
     'Organisational Structure ID',
     'Organisational Structure Label',
@@ -158,6 +159,7 @@ module Converter
       | # These parameters match source schema field ids
         id:,
         name:,
+        nature_of_org:,
         website:,
         street:,
         postcode:,
@@ -204,6 +206,7 @@ module Converter
           {
             id: id.delete_prefix('rec'),
             name: name || ext_name,
+            nature_of_org: Types.multivalue(nature_of_org) {|subfield| subfield.chomp },
             description: description || ext_description,
             relationship_to_obo: Types.multivalue(type_of_relationship) {|subfield| subfield.chomp },
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),

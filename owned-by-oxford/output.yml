@@ -24,6 +24,12 @@ fields:
     malicious content which could compromise security if embedded in a webpage (such
     as phishing links or scripts), but this should validated and not be assumed
     blindly to be safe."
+- id: :nature_of_org
+  header: Nature of Organisation
+  desc: Categorises the organisation in terms of the expected audience.
+  comment: |-
+    Should be zero or more of the values 'ObO criteria enterprise'
+    or 'Support or training organisation', semi-colon delimited.
 - id: :organisational_structure
   header: Organisational Structure
   desc: "The initiative's category of organisational structure. Allowed values are

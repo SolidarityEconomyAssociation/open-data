@@ -14,6 +14,12 @@ fields:
   header: Organisation Name
   desc: The name of the organisation
   comment: ''
+- id: :nature_of_org
+  header: Nature of Organisation
+  desc: Categorises the organisation in terms of the expected audience.
+  comment: |-
+    Should be zero or more of the values 'ObO criteria enterprise'
+    or 'Support or training organisation', semi-colon delimited.
 - id: :website
   header: Website
   desc: "The organisation's website"
