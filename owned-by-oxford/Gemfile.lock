@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: e6ca2d72102b499cea7875eb4f779d86a063b33d
-  branch: v2.1.6
+  revision: d26ba8a077c16373d28226255addad10bc168e52
+  branch: v2.1.10
   specs:
     se_open_data (1.0.0)
       httparty
       i18n
       levenshtein
-      linkeddata
+      linkeddata (>= 3.2)
       nokogiri
       normalize_country
       opencage-geocoder
