@@ -10,6 +10,8 @@ require 'csv'
 #
 #    airtable-import <file.csv
 #
+# (prefix with `bundle exec` if you have used bundler to install the
+# dependencies)
 
 
 table_name = 'External Initiatives'
