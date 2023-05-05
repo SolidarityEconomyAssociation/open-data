@@ -13,8 +13,10 @@ require 'rdf/turtle'
 #
 # Usage:
 #
-#    ./dump-airtable >outputfile
+#    ./airtable-dump >outputfile
 #
+# (prefix with `bundle exec` if you have used bundler to install the
+# dependencies)
 
 def load_vocab(uri)
   url = uri.sub(%r{/*$}, '')
