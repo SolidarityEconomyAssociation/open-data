@@ -92,6 +92,7 @@ module DotCoop
     end
 
     sector = tag_index['Sector']
+    verification_status = tag_index['verificationStatus']
     orgid = tag_index['OrgID']
     if orgid.to_s == ''
       raise "missing OrgID tag in org #{orgname} DeskproID #{dpid}"
@@ -128,6 +129,7 @@ module DotCoop
       geocontainer_lat: nil,
       geocontainer_lon: nil,
       dotcoop_sector: sector,
+      dotcoop_verification_status: verification_status,
     }
 
     
