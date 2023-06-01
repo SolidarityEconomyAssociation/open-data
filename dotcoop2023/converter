@@ -113,7 +113,7 @@ module DotCoop
       locality: city,
       region: region,
       postcode: post_code,
-      country_id: country.to_s.upcase,
+      country_id: nil,
       territory_id: nil,
       homepage: domain_urls.join(';'),
       phone: nil,
