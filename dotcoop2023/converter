@@ -91,7 +91,7 @@ module DotCoop
       index
     end
 
-    sector = tag_index.values_at('Sector')
+    sector = tag_index['Sector']
     orgid = tag_index['OrgID']
     if orgid.to_s == ''
       raise "missing OrgID tag in org #{orgname} DeskproID #{dpid}"
