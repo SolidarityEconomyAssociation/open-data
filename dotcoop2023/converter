@@ -32,7 +32,6 @@ require 'se_open_data/csv/schema/types'
 require 'csv'
 
 # FIXME
-# missing IDs
 # postcodes eh?
 # Sector tag - what taxonomy?
 
@@ -67,17 +66,14 @@ module DotCoop
 
   # The output schema
   StdSchema = SeOpenData::CSV::Schemas::Latest
-  @@id = 0
   
   def self.parse_dotcoop_organisation(org)
-    (dpid, orgid, orgname, address, domains, tags) =
-      org.values_at('id', 'orgid', 'name', 'address', 'domains', 'tags')
+    (dpid, orgname, address, domains, tags) =
+      org.values_at('id', 'name', 'address', 'domains', 'tags')
     tags ||= []
     domains ||= []
     address ||= {}
-    orgid = @@id
-    @@id += 1
-             
+    
     domain_urls = domains.map do |domain|
       "http://#{domain['name']}"
     end
@@ -88,7 +84,7 @@ module DotCoop
     tag_index = tags.reduce({}) do |index, tag|
       name, value = tag.values_at('name','value')
       if index.has_key? name
-        raise "duplicate tag #{name} in org #{orgname} ID #{orgid}"
+        raise "duplicate tag #{name} in org #{orgname} DeskproID #{dpid}"
       end
       index[name] = value
 
@@ -96,6 +92,14 @@ module DotCoop
     end
 
     sector = tag_index.values_at('Sector')
+    orgid = tag_index['OrgID']
+    if orgid.to_s == ''
+      raise "missing OrgID tag in org #{orgname} DeskproID #{dpid}"
+    end
+
+    if orgid !~ /^[\w_=-]{6,}$/
+      raise "invalid OrgID tag in org #{orgname} DeskproID #{dpid}: #{orgid}"
+    end
     
     fields = {
       id: orgid,
