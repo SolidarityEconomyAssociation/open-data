@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: e6ca2d72102b499cea7875eb4f779d86a063b33d
-  branch: v2.1.6
+  revision: d26ba8a077c16373d28226255addad10bc168e52
+  branch: v2.1.10
   specs:
     se_open_data (1.0.0)
       httparty
       i18n
       levenshtein
-      linkeddata
+      linkeddata (>= 3.2)
       nokogiri
       normalize_country
       opencage-geocoder
@@ -17,13 +17,13 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.1)
+    addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     bcp47 (0.3.3)
       i18n
     builder (3.2.4)
     concurrent-ruby (1.2.2)
-    connection_pool (2.3.0)
+    connection_pool (2.4.1)
     ebnf (2.3.2)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
@@ -39,16 +39,16 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
-    json-canonicalization (0.3.1)
-    json-ld (3.2.3)
+    json-canonicalization (0.3.2)
+    json-ld (3.2.5)
       htmlentities (~> 4.3)
-      json-canonicalization (~> 0.3)
+      json-canonicalization (~> 0.3, >= 0.3.2)
       link_header (~> 0.0, >= 0.0.8)
       multi_json (~> 1.15)
-      rack (~> 2.2)
-      rdf (~> 3.2, >= 3.2.9)
+      rack (>= 2.2, < 4)
+      rdf (~> 3.2, >= 3.2.10)
     json-ld-preloaded (3.2.2)
       json-ld (~> 3.2)
       rdf (~> 3.2)
@@ -93,9 +93,9 @@ GEM
     mini_mime (1.1.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
-    net-http-persistent (4.0.1)
+    net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    nokogiri (1.14.2-x86_64-linux)
+    nokogiri (1.15.2-x86_64-linux)
       racc (~> 1.4)
     normalize_country (0.3.2)
     opencage-geocoder (3.1.0)
@@ -109,8 +109,8 @@ GEM
       stringio
     public_suffix (5.0.1)
     racc (1.6.2)
-    rack (2.2.6.4)
-    rdf (3.2.9)
+    rack (3.0.7)
+    rdf (3.2.10)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.2.1)
       rdf (~> 3.2)
@@ -136,14 +136,15 @@ GEM
       rdf (~> 3.2)
     rdf-ordered-repo (3.2.1)
       rdf (~> 3.2, >= 3.2.1)
-    rdf-rdfa (3.2.0)
-      haml (~> 5.2)
+    rdf-rdfa (3.2.2)
+      haml (>= 5.2, < 7)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
       rdf-aggregate-repo (~> 3.2)
       rdf-vocab (~> 3.2)
       rdf-xsd (~> 3.2)
-    rdf-rdfxml (3.2.0)
+    rdf-rdfxml (3.2.1)
+      haml (~> 5.2)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
       rdf-rdfa (~> 3.2)
@@ -168,7 +169,7 @@ GEM
     rdf-turtle (3.2.1)
       ebnf (~> 2.3)
       rdf (~> 3.2)
-    rdf-vocab (3.2.3)
+    rdf-vocab (3.2.6)
       rdf (~> 3.2, >= 3.2.4)
     rdf-xsd (3.2.1)
       rdf (~> 3.2)
@@ -201,11 +202,11 @@ GEM
     sparql-client (3.2.1)
       net-http-persistent (~> 4.0, >= 4.0.1)
       rdf (~> 3.2, >= 3.2.6)
-    stringio (3.0.5)
-    sxp (1.2.3)
+    stringio (3.0.6)
+    sxp (1.2.4)
       matrix (~> 0.4)
       rdf (~> 3.2)
-    temple (0.10.0)
+    temple (0.10.2)
     tilt (2.1.0)
     ttfunk (1.7.0)
     unicode-types (1.8.0)
@@ -219,6 +220,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  rdf-rdfxml (~> 3.2, >= 3.2.1)
   se_open_data!
 
 BUNDLED WITH
