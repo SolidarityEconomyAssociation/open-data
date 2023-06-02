@@ -1,2 +1,3 @@
 source "https://rubygems.org"
 gem "nokogiri"
+gem "rdf-rdfxml", "~> 3.2", ">= 3.2.1"
