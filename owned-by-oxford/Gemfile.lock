@@ -28,7 +28,7 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
-    ebnf (2.3.2)
+    ebnf (2.3.3)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
       scanf (~> 1.0)
