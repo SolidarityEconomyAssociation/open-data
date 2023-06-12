@@ -37,9 +37,18 @@ class Converter
   # The output schema
   StdSchema = SeOpenData::CSV::Schemas::Latest
 
+  @@sic_code_to_sic_section = {}
   @@sic_division_to_ica_activity = {}
   @@legal_ownership_to_org_membership = {}
   
+  def self.sic_section_from_sic_code(sic_code)
+    sic_code = sic_code.to_i
+    raise "No mapping for sic_code #{sic_code}" unless @@sic_code_to_sic_section.has_key?(sic_code)
+    sic_section = @@sic_code_to_sic_section[sic_code]
+    # puts "#{sic_code} => #{sic_section}"
+    return sic_section
+  end
+
   def self.activity_from_cuk(sic_code)
     sic_division = sic_code[0,2].to_i
     # puts "#{sic_code} => #{@@sic_division_to_ica_activity[sic_division]}"
@@ -117,6 +126,7 @@ class Converter
            # A mapping to the target schema field ids
            primary_activity = activity_from_cuk(sic_code)
            org_structure, base_membership_type = org_membership_from_cuk(legal_form, ownership)
+           sic_section = sic_section_from_sic_code(sic_code)
            {
              id: org_id,
              name: trading_name,
@@ -177,6 +187,19 @@ class Converter
     # Output csv file
     output_csv = config.STANDARD_CSV
     generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
+
+    # Load the SIC Code -> SIC section mapping
+    @@sic_code_to_sic_section[0] = nil
+    CSV.foreach("sic-code-to-sic-section.csv", headers: true) do |row|
+      code = row["SIC Code"].to_i
+      if @@sic_code_to_sic_section[code]
+        abort "Duplicate SIC Code #{division} in sic-code-to-sic-section.csv"
+      end
+      if row["SIC section"] != ''
+        @@sic_code_to_sic_section[code] =
+          "#{row['SIC section']}"
+      end
+    end
 
     # Load the SIC sections data
     CSV.foreach("sic-division-to-ica-activity.csv", headers: true) do |row|
