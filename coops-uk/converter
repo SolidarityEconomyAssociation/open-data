@@ -233,8 +233,7 @@ class Converter
                                           api_key: api_key,
                                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
                                           postcode_global_cache: config.GEODATA_CACHE,
-                                          replace_address: false,
-                                          use_ordinance_survey: true)
+                                          replace_address: false)
   end
 
   private
