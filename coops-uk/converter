@@ -37,9 +37,18 @@ class Converter
   # The output schema
   StdSchema = SeOpenData::CSV::Schemas::Latest
 
+  @@sic_code_to_sic_section = {}
   @@sic_division_to_ica_activity = {}
   @@legal_ownership_to_org_membership = {}
   
+  def self.sic_section_from_sic_code(sic_code)
+    sic_code = sic_code.to_i
+    raise "No mapping for sic_code #{sic_code}" unless @@sic_code_to_sic_section.has_key?(sic_code)
+    sic_section = @@sic_code_to_sic_section[sic_code]
+    # puts "#{sic_code} => #{sic_section}"
+    return sic_section
+  end
+
   def self.activity_from_cuk(sic_code)
     sic_division = sic_code[0,2].to_i
     # puts "#{sic_code} => #{@@sic_division_to_ica_activity[sic_division]}"
@@ -51,7 +60,18 @@ class Converter
     # puts "#{legal_form} / #{ownership} => #{result}"
     return result
   end
-       
+
+  def self.reg_country_to_code(reg_country)
+    case (reg_country)
+    when 'United Kingdom'
+      'GB'
+    when 'Jersey'
+      'JE'
+    else
+      nil
+    end
+  end
+
   # Returns a schema converter for the given schema.
   #
   # This defines the schema mapping for original data into the
@@ -72,51 +92,53 @@ class Converter
       input_csv_opts: {skip_blanks: true}
       #    output_csv_opts: {quote_empty: false}
     ) do | # These parameters match source schema field ids
-           org_id: ,
-           reg_no: ,
-           registrar: ,
-           reg_name: ,
-           trading_name: ,
-           legal_form: ,
-           reg_street: ,
-           reg_city: ,
-           reg_state_province: ,
-           reg_postcode: ,
-           uk_nation: ,
-           sic_code: ,
-           sic_section: ,
-           sic_code_2: ,
-           sic_code_desc_2: ,
-           sic_code_3: ,
-           sic_desc_3: ,
-           sic_code_4: ,
-           sic_desc_4: ,
-           sic_code_5: ,
-           sic_desc_5: ,
-           sector: ,
-           ownership: ,
-           reg_status: ,
-           inc_date: ,
-           diss_date: ,
-           website: ,
-           reg_admin_county_code: ,
-           reg_admin_county_name: ,
-           reg_admin_district_code: ,
-           reg_admin_district_name: ,
-           reg_admin_ward_code: ,
-           reg_admin_ward_name: ,
-           reg_admin_constituency_code: ,
-           reg_admin_constituency_name: ,
-           reg_lsoa_name: ,
-           reg_msoa_name: ,
-           reg_parish_code: ,
-           reg_parish_name: 
+           org_id:,
+           org_id2:,
+           reg_name:,
+           type_of_org:,
+           type_of_org2:,
+           sic_code:,
+           sic_text:,
+           reg_status:,
+           sic_level_1:,
+           reg_no:,
+           reg_street:,
+           reg_city:,
+           reg_state_province:,
+           reg_postcode:,
+           reg_country:,
+           legal_form:,
+           legal_form1:,
+           legal_form2:,
+           inc_date:,
+           diss_date:,
+           sector:,
+           uk_nation:,
+           ownership:,
+           trading_name:,
+           website:,
+           registrar:,
+           retil_society:,
+           reg_admin_county_code:,
+           reg_admin_county_name:,
+           reg_admin_district_code:,
+           reg_admin_district_name:,
+           reg_admin_ward_code:,
+           reg_admin_ward_name:,
+           reg_admin_constituency_code:,
+           reg_admin_constituency_name:,
+           reg_lsoa_name:,
+           reg_msoa_name:,
+           reg_parish_code:,
+           reg_parish_name:,
+           reg_region:
            |
            next if reg_status.downcase == 'dead'
              
            # A mapping to the target schema field ids
            primary_activity = activity_from_cuk(sic_code)
            org_structure, base_membership_type = org_membership_from_cuk(legal_form, ownership)
+           sic_section = sic_section_from_sic_code(sic_code)
            {
              id: org_id,
              name: trading_name,
@@ -128,7 +150,7 @@ class Converter
              locality: reg_city,
              region: reg_state_province,
              postcode: reg_postcode,
-             country_id: 'GB',
+             country_id: reg_country_to_code(reg_country),
              territory_id: nil,
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
@@ -177,6 +199,19 @@ class Converter
     # Output csv file
     output_csv = config.STANDARD_CSV
     generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
+
+    # Load the SIC Code -> SIC section mapping
+    @@sic_code_to_sic_section[0] = nil
+    CSV.foreach("sic-code-to-sic-section.csv", headers: true) do |row|
+      code = row["SIC Code"].to_i
+      if @@sic_code_to_sic_section[code]
+        abort "Duplicate SIC Code #{division} in sic-code-to-sic-section.csv"
+      end
+      if row["SIC section"] != ''
+        @@sic_code_to_sic_section[code] =
+          "#{row['SIC section']}"
+      end
+    end
 
     # Load the SIC sections data
     CSV.foreach("sic-division-to-ica-activity.csv", headers: true) do |row|
@@ -233,8 +268,7 @@ class Converter
                                           api_key: api_key,
                                           lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
                                           postcode_global_cache: config.GEODATA_CACHE,
-                                          replace_address: false,
-                                          use_ordinance_survey: true)
+                                          replace_address: false)
   end
 
   private
