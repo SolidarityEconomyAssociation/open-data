@@ -20,6 +20,7 @@ SIC Code,SIC section
 1600,"Agriculture, Forestry and Fishing"
 1610,"Agriculture, Forestry and Fishing"
 1620,"Agriculture, Forestry and Fishing"
+1621,"Agriculture, Forestry and Fishing"
 1629,"Agriculture, Forestry and Fishing"
 1630,"Agriculture, Forestry and Fishing"
 1640,"Agriculture, Forestry and Fishing"
@@ -69,6 +70,7 @@ SIC Code,SIC section
 20150,Manufacturing
 20160,Manufacturing
 20400,Manufacturing
+20411,Manufacturing
 20520,Manufacturing
 20530,Manufacturing
 20590,Manufacturing
@@ -92,6 +94,7 @@ SIC Code,SIC section
 32300,Manufacturing
 32990,Manufacturing
 33120,Manufacturing
+33150,Manufacturing
 33170,Manufacturing
 33190,Manufacturing
 35100,"Electricity, Gas, Steam and Air Con"
@@ -150,6 +153,7 @@ SIC Code,SIC section
 47421,Wholesale and Retail; Vehicle Repair
 47430,Wholesale and Retail; Vehicle Repair
 47510,Wholesale and Retail; Vehicle Repair
+47520,Wholesale and Retail; Vehicle Repair
 47530,Wholesale and Retail; Vehicle Repair
 47540,Wholesale and Retail; Vehicle Repair
 47599,Wholesale and Retail; Vehicle Repair
@@ -396,3 +400,5 @@ SIC Code,SIC section
 97000,Households as Employers; For Own Use
 98000,Households as Employers; For Own Use
 98100,Households as Employers; For Own Use
+99000,
+99999,
