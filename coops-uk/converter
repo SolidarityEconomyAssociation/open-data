@@ -60,18 +60,7 @@ class Converter
     # puts "#{legal_form} / #{ownership} => #{result}"
     return result
   end
-
-  def self.reg_country_to_code(reg_country)
-    case (reg_country)
-    when 'United Kingdom'
-      'GB'
-    when 'Jersey'
-      'JE'
-    else
-      nil
-    end
-  end
-
+       
   # Returns a schema converter for the given schema.
   #
   # This defines the schema mapping for original data into the
@@ -92,46 +81,45 @@ class Converter
       input_csv_opts: {skip_blanks: true}
       #    output_csv_opts: {quote_empty: false}
     ) do | # These parameters match source schema field ids
-           org_id:,
-           org_id2:,
-           reg_name:,
-           type_of_org:,
-           type_of_org2:,
-           sic_code:,
-           sic_text:,
-           reg_status:,
-           sic_level_1:,
-           reg_no:,
-           reg_street:,
-           reg_city:,
-           reg_state_province:,
-           reg_postcode:,
-           reg_country:,
-           legal_form:,
-           legal_form1:,
-           legal_form2:,
-           inc_date:,
-           diss_date:,
-           sector:,
-           uk_nation:,
-           ownership:,
-           trading_name:,
-           website:,
-           registrar:,
-           retil_society:,
-           reg_admin_county_code:,
-           reg_admin_county_name:,
-           reg_admin_district_code:,
-           reg_admin_district_name:,
-           reg_admin_ward_code:,
-           reg_admin_ward_name:,
-           reg_admin_constituency_code:,
-           reg_admin_constituency_name:,
-           reg_lsoa_name:,
-           reg_msoa_name:,
-           reg_parish_code:,
-           reg_parish_name:,
-           reg_region:
+           org_id: ,
+           reg_no: ,
+           registrar: ,
+           reg_name: ,
+           trading_name: ,
+           legal_form: ,
+           reg_street: ,
+           reg_city: ,
+           reg_state_province: ,
+           reg_postcode: ,
+           uk_nation: ,
+           sic_code: ,
+           sic_section: ,
+           sic_code_2: ,
+           sic_code_desc_2: ,
+           sic_code_3: ,
+           sic_desc_3: ,
+           sic_code_4: ,
+           sic_desc_4: ,
+           sic_code_5: ,
+           sic_desc_5: ,
+           sector: ,
+           ownership: ,
+           reg_status: ,
+           inc_date: ,
+           diss_date: ,
+           website: ,
+           reg_admin_county_code: ,
+           reg_admin_county_name: ,
+           reg_admin_district_code: ,
+           reg_admin_district_name: ,
+           reg_admin_ward_code: ,
+           reg_admin_ward_name: ,
+           reg_admin_constituency_code: ,
+           reg_admin_constituency_name: ,
+           reg_lsoa_name: ,
+           reg_msoa_name: ,
+           reg_parish_code: ,
+           reg_parish_name: 
            |
            next if reg_status.downcase == 'dead'
              
@@ -150,7 +138,7 @@ class Converter
              locality: reg_city,
              region: reg_state_province,
              postcode: reg_postcode,
-             country_id: reg_country_to_code(reg_country),
+             country_id: 'GB',
              territory_id: nil,
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
