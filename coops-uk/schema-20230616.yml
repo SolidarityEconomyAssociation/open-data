@@ -414,7 +414,7 @@ fields:
   desc: ""
   comment: ""
 - id: :description
-  header: Description
+  header: description
   desc: ""
   comment: ""
 - id: :reg_combined_auth
