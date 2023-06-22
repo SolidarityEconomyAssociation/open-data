@@ -1,16 +1,12 @@
 ---
 id: :co-ops-uk
 name: Co-ops UK
-version: 20230515
+version: 20230616
 primary_key:
 - :org_id
 comment: |
-  This schema describes the interim data supplied by Co-ops UK
-  specifically for the worker.coop data import.
-
-  See https://github.com/DigitalCommons/coopsuk/issues/19
-  
-  Comments are inferrences from the data.
+  Comments are inferrences from the data (carried forward from
+  20220616, amended if differences noticed)
   
   Descriptions are taken from:
     
@@ -103,31 +99,90 @@ comment: |
   Any feedback and any corrections to data@uk.coop.
 fields:
 - id: :org_id
-  header: Co-ops UK Identifier
-  desc: | 
+  header: CUK Organisation ID
+  desc: |
     This is Co-operatives UK’s unique identifier for the
     organisation. This is the primary ID used to link between datasets
     and trace updates. Where ever possible is should be retained in an
     data used and not amended.
   comment: 'R000001, R000002, R000003 etc.  Unique, non-null'
-- id: :org_id2
-  header: Organisation ID
-  desc: 
-  comment: 
-- id: :reg_name
-  header: Organisation Name
+- id: :reg_no
+  header: Registered Number
   desc: |
-    The organisation's registered name provides the name of the organisation as recorded
+    The unique identifier allocated by the legal registrar. Note that
+    this is not necessary unique in the dataset as different
+    registrars use different numbering systems.
+  comment: 'e.g 545R, 11253R, 10143R etc. Appears to be unique. May be null.'
+- id: :registrar
+  header: Registrar
+  desc: |
+    Derived from the legal form, this indicates who the registrar for the organisation is.
+  comment: 'e.g FCA, Companies House, OSCR etc. Not unique, non-null.'
+  # values:
+  #   - Charity Commission
+  #   - Companies House
+  #   - FCA
+  #   - Legal Form is not defined
+  #   - OSCR
+  #   - Unknown legal form
+- id: :reg_name
+  header: Registered Name
+  desc: |
+    Registered name provides the name of the organisation as recorded
     by the legal registrar.
-  comment: 'Unique, appears non nullable.'
-- id: :type_of_org
-  header: Type of Organisation
-  desc:
-  comment: 
-- id: :type_of_org2
-  header: Type of Organisation Subcategory
-  desc:
-  comment: 
+  comment: 'Not unique, appears to be no nulls.'
+- id: :trading_name
+  header: Trading Name
+  desc: |
+    The Trading Name may be different from the Registered Name if the
+    organisation provides good/services under a different name.
+  comment: 'Not unique, appears to be no nulls.'
+- id: :legal_form
+  header: Legal Form
+  desc: Indicates the registered legal form of the society.
+  comment: 'Category name. Not unique. May be null.'
+  # values:
+  #  - Charitable Incorporated Organisation
+  #  - Community Interest Company
+  #  - Company
+  #  - LLP
+  #  - Limited Partnership
+  #  - Scottish Charitable Incorporated Organisation
+  #  - Society
+  #  - Unincorporated  
+- id: :reg_street
+  header: Registered Street
+  desc: "The registered office's street address"
+  comment: 'May be null.'
+- id: :reg_city
+  header: Registered City
+  desc: "The registered office's city"
+  comment: 'May be null'
+- id: :reg_state_province
+  header: Registered State/Province
+  desc: |
+    The registered office's state or province.
+  comment: 'May be null'
+- id: :reg_postcode
+  header: Registered Postcode
+  desc: "The registered office's postcode"
+  comment: 'May be null'
+- id: :uk_nation
+  header: UK Nation
+  desc: |
+    The devolved UK nation in which the organisation's registered
+    address is located.  Note that the country and region that
+    accompanies each organisation indicates only where the
+    organisation is registered and not the country/region where trade
+    was transacted.
+  comment: 'A category. May be null.'
+  # values:
+  #   - England
+  #   - Guernsey
+  #   - Jersey
+  #   - Northern Ireland
+  #   - Scotland
+  #   - Wales
 - id: :sic_code
   header: SIC Code
   desc: |
@@ -149,86 +204,65 @@ fields:
 
     http://www.ons.gov.uk/ons/guide-method/classifications/current-standard-classifications/standard-industrial-classification/index.html
   comment: 'A number. May be null'
-- id: :sic_text
-  header: SIC Text
-  desc: |
-    The label associated with the SIC code
-  comment: 
-- id: :reg_status
-  header: Registered Status
-  desc: |
-    Live or Dead. Dead organisations are only included if they were live in the last 5 years.
-  comment: 'May be one of "Live" or "Dead". No nulls.'
+- id: :sic_section
+  header: SIC section
+  desc: ""
+  comment: 'A category. May be null.'
   # values:
-  #   - Dead
-  #   - Live
-- id: :sic_level_1
-  header: SIC_Level_1
-  desc:
-  comment: 
-- id: :reg_no
-  header: Registered Number
-  desc: |
-    The unique identifier allocated by the legal registrar. Note that
-    this is not necessary unique in the dataset as different
-    registrars use different numbering systems.
-  comment: 'e.g 545R, 11253R, 10143R etc. Appears to be unique. May be null.'
-- id: :reg_street
-  header: Registered Street
-  desc: "The registered office's street address"
-  comment: 'May be null.'
-- id: :reg_city
-  header: Registered City
-  desc: "The registered office's city"
-  comment: 'May be null'
-- id: :reg_state_province
-  header: Registered State/Province
-  desc: The registered office's state or province.
-  comment: 'May be null'
-- id: :reg_postcode
-  header: Registered Postcode
-  desc: "The registered office's postcode"
-  comment: 'May be null'
-- id: :reg_country
-  header: Registered Country
-  desc: "The registered office's country"
-  comment: '"United Kingdom" or "Jersey"'
-- id: :legal_form
-  header: Legal Form
-  desc: Indicates the registered legal form of the society.
-  comment: 'Category name. Not unique. May be null.'
-  # values:
-  #  - Charitable Incorporated Organisation
-  #  - Community Interest Company
-  #  - Company
-  #  - LLP
-  #  - Limited Partnership
-  #  - Scottish Charitable Incorporated Organisation
-  #  - Society
-  #  - Unincorporated  
-- id: :legal_form1
-  header: Legal Form Subcategory 1
-  desc:
-  comment: 
-- id: :legal_form2
-  header: Legal Form Subcategory 2
-  desc:
-  comment: 
-- id: :inc_date
-  header: Incorporation Date
-  desc: |
-    For incorporated organisations, the date the organisation was
-    officially incorporated as reported by their registrar.
-  comment: 'A date in the form dd/mm/yyyy, or null'
-- id: :diss_date
-  header: Dissolved Date
-  desc: |
-    For incorporated organisations that have ceased to exist, the date
-    the organisation was officially dissolved/liquidated as reported
-    by their registrar.
-  comment: 'A date in the form dd/mm/yyyy, or null'
+  #   - Accommodation and Food Services
+  #   - Administrative and Support Services
+  #   - Agriculture, Forestry and Fishing
+  #   - Arts, Entertainment and Recreation
+  #   - Construction
+  #   - Education
+  #   - Electricity, Gas, Steam and Air Con
+  #   - Financial and Insurance
+  #   - Households as Employers; For Own Use
+  #   - Human Health and Social Work
+  #   - Information and Communication
+  #   - Manufacturing
+  #   - Mining and Quarrying
+  #   - Other Service Activities
+  #   - Professional, Scientific and Technical
+  #   - Public Administration and Defence
+  #   - Real Estate
+  #   - Transportation and Storage
+  #   - Water Supply; Sewerage and Waste
+  #   - Wholesale and Retail; Vehicle Repair
+- id: :sic_code_2
+  header: SIC code  - level 2
+  desc: ""
+  comment: 'A category number. May be null.'
+- id: :sic_code_desc_2
+  header: SIC code  - level 2 description
+  desc: ""
+  comment: 'A category label. May be null.'
+- id: :sic_code_3
+  header: SIC code  - level 3
+  desc: ""
+  comment: 'A category number. May be null.'
+- id: :sic_desc_3
+  header: SIC code  - level 3 description
+  desc: ""
+  comment: 'A category label. May be null.'
+- id: :sic_code_4
+  header: SIC code  - level 4
+  desc: ""
+  comment: 'A category number. May be null.'
+- id: :sic_desc_4
+  header: SIC code  - level 4 description
+  desc: ""
+  comment: 'A category label. May be null.'
+- id: :sic_code_5
+  header: SIC code  - level 5
+  desc: ""
+  comment: 'A category number. May be null.'
+- id: :sic_desc_5
+  header: SIC code  - level 5 description
+  desc: ""
+  comment: 'A category label. May be null.'
 - id: :sector
-  header: Co-ops UK Industry Sector
+  header: Sector - Simplified, High Level
   desc: |
     To complement the sector, which uses hierarchical SIC codes,
     Co-operatives UK produces a simplified, high level and
@@ -274,24 +308,8 @@ fields:
   #   - Retail
   #   - Sports and Recreation
   #   - Transport
-- id: :uk_nation
-  header: UK Nation
-  desc: |
-    The devolved UK nation in which the organisation's registered
-    address is located.  Note that the country and region that
-    accompanies each organisation indicates only where the
-    organisation is registered and not the country/region where trade
-    was transacted.
-  comment: 'A category. May be null.'
-  # values:
-  #   - England
-  #   - Guernsey
-  #   - Jersey
-  #   - Northern Ireland
-  #   - Scotland
-  #   - Wales
 - id: :ownership
-  header: Ownership Classifications
+  header: Ownership Classification
   desc: |
     Indicates who the members of the co-operative are. The following
     classifications are used:
@@ -306,7 +324,7 @@ fields:
     | Self-Employed | The members are individuals who use the cooperative to collectively support or conduct their business activities | Freelancer co-operatives, collective business services purchasing |
     | Tenants | The members are individuals who rent directly, or have shared ownership in a property or multiple properties | Tenant-run housing co-operatives, residents’ associations |
     | Workers | The members are individuals who work for and share ownership of the co-operative | Retail worker co-operatives |      
-  comment: 'Zero or more category labels.'
+  comment: 'A category label. May be null.'
   # values:
   #   - Co-operatives
   #   - Community of Interest
@@ -318,32 +336,31 @@ fields:
   #   - Self-employed
   #   - Tenants
   #   - Workers
-- id: :trading_name
-  header: Trading Name
+- id: :reg_status
+  header: Registered Status
   desc: |
-    The Trading Name may be different from the Registered Name if the
-    organisation provides good/services under a different name.
-  comment: 'Not unique, appears to be no nulls.'
+    Live or Dead. Dead organisations are only included if they were live in the last 5 years.
+  comment: 'May be one of "Live" or "Dead". No nulls.'
+  # values:
+  #   - Dead
+  #   - Live
+- id: :inc_date
+  header: Incorporation Date
+  desc: |
+    For incorporated organisations, the date the organisation was
+    officially incorporated as reported by their registrar.
+  comment: 'A date in the form dd/mm/yyyy, or null'
+- id: :diss_date
+  header: Dissolved Date
+  desc: |
+    For incorporated organisations that have ceased to exist, the date
+    the organisation was officially dissolved/liquidated as reported
+    by their registrar.
+  comment: 'A date in the form dd/mm/yyyy, or null'
 - id: :website
   header: Website
   desc: Where available, a link to the organisation’s website.
   comment: 'A URL. May be null'
-- id: :registrar
-  header: Registrar
-  desc: |
-    Derived from the legal form, this indicates who the registrar for the organisation is.
-  comment: 'e.g FCA, Companies House, OSCR etc. Not unique, non-null.'
-  # values:
-  #   - Charity Commission
-  #   - Companies House
-  #   - FCA
-  #   - Legal Form is not defined
-  #   - OSCR
-  #   - Unknown legal form
-- id: :retil_society
-  header: Retail Society
-  desc:
-  comment: 
 - id: :reg_admin_county_code
   header: Registered Admin County Code
   desc: ""
@@ -392,7 +409,28 @@ fields:
   header: Registered Parish Name
   desc: ""
   comment: 'A name or phrase. May be null.'
+- id: :fca_reporting_classification
+  header: FCA Reporting Classification
+  desc: ""
+  comment: ""
+- id: :description
+  header: Description
+  desc: ""
+  comment: ""
+- id: :reg_combined_auth
+  header: Registered Combined Athority
+  desc: ""
+  comment: ""
+- id: :reg_lsoa_code
+  header: Registered LSOA Code
+  desc: ""
+  comment: ""
+- id: :reg_msoa_code
+  header: Registered MSOA Code
+  desc: ""
+  comment: ""
 - id: :reg_region
   header: Registered Region
   desc: ""
-  comment: 'A name of a region..'
+  comment: ""
+
