@@ -269,7 +269,7 @@ class Converter
            reg_region:
            |
            case ownership.to_s.downcase
-           when 'self employed'
+           when 'self-employed'
            when 'workers'
            else
              next
