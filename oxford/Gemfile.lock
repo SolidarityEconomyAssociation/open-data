@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: 6058fc4ae47a082bbdb16a7c0a281f4853d2f66e
+  revision: ebcb1e95e00f17f560367f55a9fb096afa0a416d
   branch: murmurations-od71
   specs:
     se_open_data (1.0.0)
@@ -23,7 +23,7 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
-    ebnf (2.3.2)
+    ebnf (2.3.4)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
       scanf (~> 1.0)
@@ -38,7 +38,7 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.0)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json-canonicalization (0.3.2)
     json-ld (3.2.5)
@@ -107,9 +107,9 @@ GEM
     psych (5.1.0)
       stringio
     public_suffix (5.0.1)
-    racc (1.6.2)
-    rack (3.0.7)
-    rdf (3.2.10)
+    racc (1.7.1)
+    rack (3.0.8)
+    rdf (3.2.11)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.2.1)
       rdf (~> 3.2)
@@ -131,7 +131,7 @@ GEM
       rdf (~> 3.2)
       sparql (~> 3.2)
       sxp (~> 1.2)
-    rdf-normalize (0.5.1)
+    rdf-normalize (0.6.0)
       rdf (~> 3.2)
     rdf-ordered-repo (3.2.1)
       rdf (~> 3.2, >= 3.2.1)
@@ -206,7 +206,7 @@ GEM
       matrix (~> 0.4)
       rdf (~> 3.2)
     temple (0.10.2)
-    tilt (2.1.0)
+    tilt (2.2.0)
     ttfunk (1.7.0)
     unicode-types (1.8.0)
     yaml-ld (0.0.2)
