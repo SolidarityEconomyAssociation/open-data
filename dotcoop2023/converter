@@ -78,8 +78,8 @@ module DotCoop
       "http://#{domain['name']}"
     end
     
-    (street_address, city, region, post_code, country) =
-      address.values_at('streetAddress', 'city', 'region', 'postCode', 'country')
+    (street_address, city, region, post_code, country, country_id) =
+      address.values_at('streetAddress', 'city', 'region', 'postCode', 'country', 'isoCountryCode')
                                             
     tag_index = tags.reduce({}) do |index, tag|
       name, value = tag.values_at('name','value')
@@ -113,7 +113,7 @@ module DotCoop
       locality: city,
       region: region,
       postcode: post_code,
-      country_id: nil,
+      country_id: country_id,
       territory_id: nil,
       homepage: domain_urls.join(';'),
       phone: nil,
