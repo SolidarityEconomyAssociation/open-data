@@ -1,0 +1,121 @@
+---
+id: :monitor
+name: Monitor
+version: 20230822
+primary_key:
+- :id
+comment: >-
+  Note that the original data contains errors and inconsistencies
+  which the conversion process needs to correct. See this issue:
+    
+  https://github.com/DigitalCommons/dotcoop-project/issues/36
+fields:
+- id: :id
+  header: id
+  desc: 'A unique identifier for this organisation'
+  comment: ''
+- id: :economic_activity_1
+  header: economic_activity_1
+  desc: ''
+  comment: >-
+    One of:
+      - Agriculture including forestry and food industries under control of producers
+      - Education, health and social work
+      - Financial services
+      - Industry and utilities
+      - Insurance
+      - Other services
+      - Wholesale and retail trade
+    
+    Although see the comment for this schema for a note about errors.
+- id: :economic_activity_2
+  header: economic_activity_2
+  desc: ''
+  comment: >-
+    One of:
+      - ""
+      - Agriculture
+      - Agriculture - grain
+      - Agriculture - grain (rice)
+      - Agriculture - purchasing
+      - Catering service
+      - Coffee growing
+      - Construction
+      - Construction - shared services for artisans - purchasing
+      - Cotton
+      - Dairy
+      - Dairy and livestock farming
+      - Energy
+      - Energy, oil, gas
+      - Enterprise service
+      - Facility management service
+      - Fishery
+      - Forestry
+      - Fruit and vegetable growing
+      - Fruit growing
+      - Fruit growing (almond)
+      - Fruit growing (kiwi)
+      - Fruit, vegetable and flower growing
+      - Horticulture
+      - Hotel and restaurant - shared services - purchasing
+      - Housing
+      - Livestock farming
+      - Manufacturing
+      - Manufacturing - food
+      - Organic grocery store
+      - Pharmacy
+      - Real estate agency
+      - Retailing
+      - Retailing - bike
+      - Retailing - construction materials
+      - Retailing - consumer electronics
+      - Retailing - food service
+      - Retailing - grocery
+      - Retailing - hardware
+      - Retailing - office supplies
+      - Retailing - optical store
+      - Retailing - pharmacy
+      - Retailing - service station
+      - Retailing - sport materials
+      - Retailing - toy store
+      - Retailing - various materials
+      - Seeds
+      - Shared services for professionals
+      - Sugar
+      - Telecom infrastructure
+      - Transport service
+      - Travel agency
+    
+    Although see the comment for this schema for a note about errors.
+- id: :type
+  header: type
+  desc: ''
+  comment: >-
+    One of:
+      - Consumer/User
+      - Employee-owned enterprise
+      - Enterprise controlled by coop(s)
+      - Multistakeholder
+      - Mutual
+      - Producer
+      - Worker
+- id: :organization_name
+  header: organization_name
+  desc: 'The name of this organisation'
+  comment: ''
+- id: :website
+  header: website
+  desc: 'The website for this organisation'
+  comment: ''
+- id: :country
+  header: country
+  desc: "The country of the organisation's address"
+  comment: 'A human-readable label in English'
+- id: :address_on_map
+  header: address_on_map
+  desc: "The organisation's address on the map, for geolocation"
+  comment: ''
+- id: :postal_address
+  header: postal_address
+  desc: "The organisation's postal address"
+  comment: ''

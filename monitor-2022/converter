@@ -1,0 +1,173 @@
+#!/bin/env ruby
+# coding: utf-8
+#
+
+require 'csv'
+require 'se_open_data'
+require 'se_open_data/config'
+#require 'se_open_data/csv/add_postcode_lat_long'
+#require 'se_open_data/csv/schema'
+#require 'se_open_data/csv/schema/types'
+require 'normalize_country'
+
+class Converter
+  # Entry point if invoked as a script.
+  #
+  #
+  # Expects a config file in a directory `./settings` relative to this
+  # script, called either `default.txt` or `config.txt`. The latter is
+  # loaded preferentially, otherwise the former is.
+  #
+  # See {SeOpenData::Config} for information about this file. It
+  # defines the locations of various resources, and sets options on
+  # the conversion process.
+  def self.main
+    # Find the config file...
+    config = SeOpenData::Config.load
+
+    # original src csv files
+    original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+
+    # Intermediate csv files
+    converted = File.join(config.GEN_CSV_DIR, "converted.csv")
+    geolocated = File.join(config.GEN_CSV_DIR, "geolocated.csv")
+
+    # Output csv file
+    output_csv = config.STANDARD_CSV
+
+    # Get the Geoapify API key
+    pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+    api_key = pass.get config.GEOCODER_API_KEY_PATH
+
+    # This defines the input CSV schema we expect (after clean-up and geolocation)
+    input_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)    
+    output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
+ 
+    # A converter between the two
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema)
+    
+    # Transforms to our standard CSV schema.
+    # Note the BOM and encoding flags, which avoid a MalformedCSVError
+    converter.convert File.open(original_csv, "r:bom|utf-8"), converted
+    
+    # add location data
+    SeOpenData::CSV.add_postcode_lat_long(infile: converted,
+                                          outfile: output_csv,
+                                          api_key: api_key,
+                                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+                                          postcode_global_cache: config.GEODATA_CACHE,
+                                          replace_address: false)
+
+  end
+
+  private
+
+  def self.country(country)
+    # Convert "country" field data - which is the
+    # physical location of the organisation - to an ISO 2 letter code.
+    # Case statement allows it to deal with special cases if they arise.
+    #
+    # Raises an exception if an invalid case is found.
+    #case country.downcase
+    #else
+      NormalizeCountry(country, to: :alpha2) or
+        raise "unrecognised country: #{country}"
+    #end
+  end
+  
+  # Returns a schema converter for the given schema.
+  #
+  # This defines the schema mapping for ICA data into the
+  # standard schema.
+  #
+  # The logic that maps the input field data is defined in the
+  # do-block. It will be wrapped in a loop which reads the input file
+  # and writes the output file. See the documentation for
+  # {SeOpenData::CSV::Schema.converter}.
+  #
+  def self.mk_converter(from_schema:, to_schema:)
+    # A convenient alias...
+    types = SeOpenData::CSV::Schema::Types
+
+    return SeOpenData::CSV::Schema.converter(
+      from_schema: from_schema,
+      to_schema: to_schema,
+      input_csv_opts: {skip_blanks: true}
+      #    output_csv_opts: {quote_empty: false}
+           ) do | # These parameters match source schema field ids
+                  id:,
+                  economic_activity_1:,
+                  economic_activity_2:,
+                  type:,
+                  organization_name:,
+                  website:,
+                  country:,
+                  address_on_map:,
+                  postal_address:
+                  |
+                  # A mapping to the target schema field ids
+                  
+                  {
+                    id: id,
+                    name: organization_name,
+                    description: nil,
+                    organisational_structure: nil,
+                    primary_activity: nil,
+                    activities: nil,
+                    street_address: address_on_map.gsub("\n",","),
+                    locality: nil,
+                    region: nil,
+                    postcode: nil,
+                    country_id: nil,
+                    territory_id: country(country),
+                    homepage: types.normalise_url(website, default: nil),
+                    phone: nil,
+                    email: nil,
+                    twitter: nil,
+                    facebook: nil,
+                    companies_house_number: nil,
+                    qualifiers: nil,
+                    base_membership_type: nil,
+                    latitude: nil,
+                    longitude: nil,
+                    geocontainer: nil,
+                    geocontainer_lat: nil,
+                    geocontainer_lon: nil,
+                    postal_address: postal_address,
+                    economic_activity_1:
+                      case economic_activity_1.downcase
+                      when "financial services"
+                      when "industry and utilities"
+                      else
+                        economic_activity_1
+                      end,
+                    economic_activity_2:
+                      case economic_activity_2.to_s.downcase
+                      when /^Energy, oil, ga[zs]$/
+                        "Energy, oil, gas"
+                      when "Fruit and vegitable growing"
+                        "Fruit and vegetable growing"
+                      when "Sugar", "Sugar "
+                        "Sugar"
+                      when ""
+                        nil
+                      else
+                        economic_activity_2
+                      end,
+                    org_type:
+                      case type.downcase
+                      when "consumer/user"
+                        "Consumer/User"
+                      when "worker"
+                        "Worker"
+                      else
+                        type
+                      end
+                  }
+             end
+  end
+end  
+                  
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Converter.main if __FILE__ == $0
