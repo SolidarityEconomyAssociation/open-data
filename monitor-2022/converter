@@ -44,7 +44,8 @@ class Converter
     output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
  
     # A converter between the two
-    converter = mk_converter(from_schema: input_schema, to_schema: output_schema)
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema,
+                             essglobal_uri: config.ESSGLOBAL_URI)
     
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
@@ -74,6 +75,125 @@ class Converter
         raise "unrecognised country: #{country}"
     #end
   end
+
+  def self.normalise_economic_activity_1(economic_activity_1)
+    case economic_activity_1.downcase
+    when "agriculture including forestry and food industries under control of producers",
+         "education, health and social work",
+         "industry and utilities",
+         "insurance",
+         "other services",
+         "wholesale and retail trade"
+      economic_activity_1.strip.capitalize
+    when "financial services", "financial service"
+      "Financial services"
+    else
+      raise "Unknown economic_activity_1: #{economic_activity_1}"
+    end
+  end
+
+  def self.normalise_economic_activity_2(economic_activity_2)
+    case economic_activity_2.to_s.downcase
+    when "agriculture",
+         "agriculture - grain",
+         "agriculture - grain (rice)",
+         "agriculture - purchasing",
+         "catering service",
+         "coffee growing",
+         "construction",
+         "construction - shared services for artisans - purchasing",
+         "cotton",
+         "dairy",
+         "dairy and livestock farming",
+         "energy",
+         "enterprise service",
+         "facility management service",
+         "fishery",
+         "forestry",
+         "fruit growing",
+         "fruit growing (almond)",
+         "fruit growing (kiwi)",
+         "fruit, vegetable and flower growing",
+         "horticulture",
+         "hotel and restaurant - shared services - purchasing",
+         "housing",
+         "livestock farming",
+         "manufacturing",
+         "manufacturing - food",
+         "organic grocery store",
+         "pharmacy",
+         "real estate agency",
+         "retailing",
+         "retailing - bike",
+         "retailing - construction materials",
+         "retailing - consumer electronics",
+         "retailing - food service",
+         "retailing - grocery",
+         "retailing - hardware",
+         "retailing - office supplies",
+         "retailing - optical store",
+         "retailing - pharmacy",
+         "retailing - service station",
+         "retailing - sport materials",
+         "retailing - toy store",
+         "retailing - various materials",
+         "seeds",
+         "shared services for professionals",
+         "telecom infrastructure",
+         "transport service",
+         "travel agency"
+      economic_activity_2.strip.capitalize      
+    when /^energy, oil, ga[zs]$/
+      "Energy, oil, gas"
+    when "fruit and vegitable growing"
+      "Fruit and vegetable growing"
+    when "sugar", "sugar "
+      "Sugar"
+    when ""
+      nil
+    else
+      raise "Unknown economic_activity_1: #{economic_activity_1}"
+    end
+  end
+  
+  def self.normalise_org_type(org_type)
+    case org_type.downcase
+    when "employee-owned enterprise",
+         "enterprise controlled by coop(s)",
+         "multistakeholder",
+         "mutual",
+         "producer"
+      org_type.strip.capitalize
+    when "consumer/user",
+         "consumer/ user"
+      "Consumer/User"
+    when "worker"
+      "Worker"
+    else
+      raise "Unknown organisation type: #{org_type}"
+    end
+  end
+
+  def self.base_membership_type(base_uri, org_type)
+    case org_type.downcase
+    when "consumer/user"
+      base_uri+"BMT10"
+    when "employee-owned enterprise"
+      base_uri+"BMT30"
+    when "enterprise controlled by coop(s)"
+      nil
+    when "multistakeholder"
+      base_uri+"BMT40"
+    when "mutual"
+      nil
+    when "producer"
+      base_uri+"BMT20"
+    when "worker"
+      base_uri+"BMT30"
+    else
+      raise "Unknown organisation type: #{org_type}"
+    end
+  end
   
   # Returns a schema converter for the given schema.
   #
@@ -85,9 +205,10 @@ class Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:)
+  def self.mk_converter(from_schema:, to_schema:, essglobal_uri:)
     # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
+    bmt_base = essglobal_uri+"standard/base-membership-type/"
 
     return SeOpenData::CSV::Schema.converter(
       from_schema: from_schema,
@@ -106,7 +227,9 @@ class Converter
                   postal_address:
                   |
                   # A mapping to the target schema field ids
-                  
+
+                  org_type = normalise_org_type(type)
+
                   {
                     id: id,
                     name: organization_name,
@@ -127,42 +250,16 @@ class Converter
                     facebook: nil,
                     companies_house_number: nil,
                     qualifiers: nil,
-                    base_membership_type: nil,
+                    base_membership_type: base_membership_type(bmt_base, org_type),
                     latitude: nil,
                     longitude: nil,
                     geocontainer: nil,
                     geocontainer_lat: nil,
                     geocontainer_lon: nil,
                     postal_address: postal_address,
-                    economic_activity_1:
-                      case economic_activity_1.downcase
-                      when "financial services"
-                      when "industry and utilities"
-                      else
-                        economic_activity_1
-                      end,
-                    economic_activity_2:
-                      case economic_activity_2.to_s.downcase
-                      when /^Energy, oil, ga[zs]$/
-                        "Energy, oil, gas"
-                      when "Fruit and vegitable growing"
-                        "Fruit and vegetable growing"
-                      when "Sugar", "Sugar "
-                        "Sugar"
-                      when ""
-                        nil
-                      else
-                        economic_activity_2
-                      end,
-                    org_type:
-                      case type.downcase
-                      when "consumer/user"
-                        "Consumer/User"
-                      when "worker"
-                        "Worker"
-                      else
-                        type
-                      end
+                    economic_activity_1: normalise_economic_activity_1(economic_activity_1),
+                    economic_activity_2: normalise_economic_activity_2(economic_activity_2),
+                    org_type: org_type
                   }
              end
   end
