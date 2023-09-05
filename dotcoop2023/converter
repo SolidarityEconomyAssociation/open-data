@@ -30,10 +30,7 @@ require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
 require 'csv'
-
-# FIXME
-# postcodes eh?
-# Sector tag - what taxonomy?
+require 'base64'
 
 # Code related to the DotCoop SSE initiative data
 module DotCoop
@@ -65,9 +62,75 @@ module DotCoop
   )
 
   # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Latest
+  OutSchema = SeOpenData::CSV::Schema.load_file("output.yml")
+
+
+  # Converts a UUID into a short URI-friendly ID
+  #
+  # Takes the first 7 characters, which are hex digits corresponding
+  # to 28 bits, and re-encodes them as 5 URL-safe base64 characters (6
+  # bits per char). Selected as a reasonable trade off in terms of ID
+  # size to collision likelihood: a 1 in 2^28 chance of shortened tag
+  # ID collisions.
+  def self.uuid_to_sid(uuid)
+    prefix = uuid[0,7]
+    bin = [prefix].pack("H*")
+    Base64.urlsafe_encode64(bin, padding: false)[0,5] # strip the invariant final char
+  end
+
   
-  def self.parse_dotcoop_organisation(org)
+  def self.parse_dotcoop_tag_dictionary(tag_dictionary)
+    prefixes = {} # empty prefix index
+    vocabs = {} # empty vocabs index
+    vocabs_def = {
+      'prefixes' => prefixes,
+      'vocabs' => vocabs,
+    }
+
+    tag_dictionary.each_pair do |uuid, index|
+      sid = uuid_to_sid(uuid) # to use as the prefix
+
+      # A URI for DotCoop tags.
+      # We append a / delimiter so that the term IDs can be appended
+      uri = "https://lod.coop/dotcoop-tag/#{uuid}/" 
+
+      # Add the prefix
+      prefixes[uri] = sid
+
+      # Add an empty vocab index
+      vocab = vocabs[sid+':'] ||= {}
+
+      # Build the vocab index
+      index.each_pair do |term_id, lang_terms|
+        term = "#{sid}:#{term_id}"
+        
+        # Build the term index
+        lang_terms.each_pair do |lang_id, phrase|
+          lang_id = lang_id.upcase # normalise - we assume and trust it's two characters!
+
+          # Get the vocab terms for this language
+          vocab_lang = vocab[lang_id] ||= {}
+          
+          # Set the vocab title in this language to something (if not already)
+          vocab_lang['title'] ||= "DotCoop tag ID #{uuid}" # Best we can do?
+        
+          # Create term index (if not already)
+          vocab_lang_terms = vocab_lang['terms'] ||= {}
+
+          vocab_lang_terms[term] = phrase
+        end
+      end
+    end
+
+    return vocabs_def
+  end
+  
+  def self.parse_dotcoop_organisation(org, vocabs_def)
+    vocabs = vocabs_def['vocabs']
+    prefixes = vocabs_def['prefixes']
+    raise "missing vocabs in vocab def!" unless vocabs
+    raise "missing prefixes in vocab def!"  unless prefixes
+    
     (dpid, orgname, address, domains, tags) =
       org.values_at('id', 'name', 'address', 'domains', 'tags')
     tags ||= []
@@ -80,19 +143,22 @@ module DotCoop
     
     (street_address, city, region, post_code, country, country_id) =
       address.values_at('streetAddress', 'city', 'region', 'postCode', 'country', 'isoCountryCode')
-                                            
+
+    # Compile all the tags into an index of the tag name to the tag value
     tag_index = tags.reduce({}) do |index, tag|
-      name, value = tag.values_at('name','value')
+      id, name, value = tag.values_at('id', 'name','value')
       if index.has_key? name
-        raise "duplicate tag #{name} in org #{orgname} DeskproID #{dpid}"
+        raise "duplicate tag name '#{name}' in org #{orgname} DeskproID #{dpid}"
       end
       index[name] = value
 
+      if index.has_key? id
+        raise "duplicate tag id '#{id}' in org #{orgname} DeskproID #{dpid}"
+      end
+      
       index
     end
 
-    sector = tag_index['Sector']
-    verification_status = tag_index['verificationStatus']
     orgid = tag_index['OrgID']
     if orgid.to_s == ''
       raise "missing OrgID tag in org #{orgname} DeskproID #{dpid}"
@@ -100,6 +166,28 @@ module DotCoop
 
     if orgid !~ /^[\w_=-]{6,}$/
       raise "invalid OrgID tag in org #{orgname} DeskproID #{dpid}: #{orgid}"
+    end
+
+    # Validate the tags against the tag index.
+    # And also expand IDs to include a suitable prefix for our output data
+    tags.each do |tag|
+      id, name, value = tag.values_at('id', 'name','value')
+      sid = uuid_to_sid(id)
+      vocab = vocabs[sid+':']
+      
+      # We can only check cases with indexes
+      if vocab 
+        # Check the ID is valid. Is there a term in the "EN" language for it?
+        # (It's a shortcut, yes. We're biassed EN speakers!)
+        prefixed_value = "#{sid}:#{value}"
+        if !vocab.has_key?("EN") && vocab["EN"].has_key?(prefixed_value)
+          raise "tag '#{name} ID #{id} in org #{orgname} DeskproID #{dpid}"+
+                "has an invalid value '#{value}'"
+        end
+
+        # rewrite the value to add the prefix
+        tag_index[name] = prefixed_value
+      end
     end
     
     fields = {
@@ -128,14 +216,14 @@ module DotCoop
       geocontainer: nil,
       geocontainer_lat: nil,
       geocontainer_lon: nil,
-      dotcoop_sector: sector,
-      dotcoop_verification_status: verification_status,
+      econ_sector_id: tag_index['sector'],
+      org_category_id: tag_index['category'],
     }
 
     
     CSV::Row.new(
-      StdSchema.field_headers,
-      StdSchema.fields.map do |field|
+      OutSchema.field_headers,
+      OutSchema.fields.map do |field|
         unless fields.has_key? field.id
           raise "missing field #{field.id} in org parser: #{org}"
         end
@@ -144,7 +232,7 @@ module DotCoop
     )
   end
   
-  def self.dotcoop_import(json_file, csv_file)
+  def self.dotcoop_import(json_file, csv_file, vocabs_file)
     json = IO.read(json_file)
     data = JSON.parse(json)
     
@@ -159,8 +247,16 @@ module DotCoop
     unless organisations.is_a? Array
       raise "Top `organisations` JSON element should be an array, in #{json_file}"
     end
-    
-    CSV.open(csv_file, 'w', headers: StdSchema.field_headers, write_headers: true) do |csv|
+
+    tag_dictionary = data.fetch('tagDictionary',{})
+    unless tag_dictionary.is_a? Hash
+      raise "Top `tagDictionary` JSON element should be an object, in #{json_file}"
+    end
+
+    vocabs = parse_dotcoop_tag_dictionary(tag_dictionary)
+    IO.write(vocabs_file, JSON.generate(vocabs))
+
+    CSV.open(csv_file, 'w', headers: OutSchema.field_headers, write_headers: true) do |csv|
       organisations.each do |org|
         # Check it's a hash
         unless org.is_a? Hash
@@ -168,7 +264,7 @@ module DotCoop
         end
 
         # Parse it
-        row = parse_dotcoop_organisation(org)
+        row = parse_dotcoop_organisation(org, vocabs)
 
         # Write it
         csv << row
@@ -186,13 +282,18 @@ module DotCoop
     # Find the config file...
     config = SeOpenData::Config.load
 
+    # We'll need this in a moment...
+    extras_dir = File.join(config.TOP_OUTPUT_DIR, "extras")
+    FileUtils.remove_dir extras_dir, force: true
+    FileUtils.mkdir extras_dir
+    
     # original src JSON file
     original_json = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
-    imported_csv = File.join(config.GEN_CSV_DIR, "standard.csv")
-#    reports_dir = File.join(config.TOP_OUTPUT_DIR, 'reports')
+    imported_csv = File.join(config.GEN_CSV_DIR, "standard.csv")    
+    dotcoop_vocab_json = File.join(config.TOP_OUTPUT_DIR, "extras/dotcoop-vocabs.json")
     output_csv = config.STANDARD_CSV
 
-    dotcoop_import original_json, imported_csv
+    dotcoop_import original_json, imported_csv, dotcoop_vocab_json
     
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
@@ -222,7 +323,7 @@ module DotCoop
   def self.document_geocoder(converted: nil, docs_folder:,
                              postcode_global_cache:, api_key:)
     geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
-    header = StdSchema.field(:homepage).header
+    header = OutSchema.field(:homepage).header
     geoapify.gen_geo_report(postcode_global_cache, 0.05, docs_folder, converted, [header])
   end
 
