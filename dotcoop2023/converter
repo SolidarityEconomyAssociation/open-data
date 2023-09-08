@@ -155,6 +155,10 @@ module DotCoop
       if index.has_key? id
         raise "duplicate tag id '#{id}' in org #{orgname} DeskproID #{dpid}"
       end
+
+      if id !~ /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        raise "non 8-4-4-4-12 uuid format tag '#{id}' in org #{orgname} DeskproID #{dpid}"
+      end
       
       index
     end
