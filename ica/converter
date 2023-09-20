@@ -106,9 +106,10 @@ class Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:)
+  def self.mk_converter(from_schema:, to_schema:, config:)
       # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
+    ess = config.ESSGLOBAL_URI
 
     return SeOpenData::CSV::Schema.converter(
       from_schema: from_schema,
@@ -143,13 +144,13 @@ class Converter
              id: id.to_i,
              name: name || "No Name",
              description: description,
-             organisational_structure: TYPE_TO_ORG_STRUCT.fetch(structure_type, "Cooperative"),
-             primary_activity: ECONOMIC_ACTIVITY_TO_ACTIVITY.fetch(primary_activity, ""),
+             organisational_structure: type_to_org_struct(structure_type, ess+OS),
+             primary_activity: economic_activity_to_activity(primary_activity, ess+ACI),
              activities: (
                secondary_activities
                  .to_s
                  .split(",")
-                 .map {|a| ECONOMIC_ACTIVITY_TO_ACTIVITY[a.strip] }
+                 .map {|a| economic_activity_to_activity(a.strip, ess+ACI) }
                  .compact
                  .join(SeOpenData::CSV::Standard::V1::SubFieldSeparator)
              ),
@@ -175,11 +176,11 @@ class Converter
              facebook: nil,
              companies_house_number: nil,
              qualifiers: (
-               structure_type == "Coop Promoter/Supporter"? "Coop Promoter/Supporter" : 
+               structure_type == "Coop Promoter/Supporter"? ess+QF+"q09" : 
                  secondary_activities.to_s.include?("Coop Promoter/Supporter")?
-                   "Coop Promoter/Supporter" : nil
+                   ess+QF+"q90" : nil
              ),
-             base_membership_type: BASE_MEMBERSHIP_TYPE[typology],
+             base_membership_type: base_membership_type(typology, ess+BMT),
              latitude: types.normalise_float(main_address_latitude),
              longitude: types.normalise_float(main_address_longitude),
              geocontainer: nil,
@@ -223,7 +224,7 @@ class Converter
     schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)    
     
     # A converter between the two
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema)
+    converter = mk_converter(from_schema: schema, to_schema: StdSchema, config: config)
     
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
@@ -246,47 +247,67 @@ class Converter
 
   private
 
+  ACI = "activities-ica/"
+  BMT = "base-membership-type/"
+  OS = "organisational-structure/"
+  QF = "qualifiers/"
+  #​​  COUN = "countries-iso/"
+  #  REG = "regions-ica/"
+  #  SREG = "super-regions-ica/"
+  
   # See https://github.com/SolidarityEconomyAssociation/open-data/issues/11#issuecomment-606719676
   # And: https://vocabs.solidarityeconomy.coop/essglobal/V2a/html-content/essglobal.html#H6.1
   # maps structure type to (map typology to essOrganisationalStructure) or essOrganisationalStructure
   #     "Structure Type" => {"Typology" => "Ess Global Organisational Structure"},
   #     "Structure Type" => "Ess Global Organisational Structure"
   # any is the default case for typology
-  TYPE_TO_ORG_STRUCT = {
-    "Coop Promoter/Supporter" => "Company (Other)",
-    "Cooperative" => "Cooperative",
-    "Mutual organisation" => "Mutual",
-    "National apex" => "National apex",
-    "National sectoral federation or union" => "National sectoral federation or union",
-    "Regional, state or provincial level federation or union" => "Regional, state or provincial level federation or union",
-    "Supranational" => "Supranational",
-    "Cooperative Group" => "Cooperative group",
-    "Government" => "Government agency/body",
-    "Cooperative of cooperatives / mutuals" => "Cooperative of cooperatives / mutuals",
-  }
+  def self.type_to_org_struct(type, base)
+    return nil if type == nil
+    base+case(type)
+         when "Coop Promoter/Supporter" then "OS50"
+         when "Cooperative" then "OS115"
+         when "Mutual organisation" then "OS170"
+         when "National apex" then "OS180"
+         when "National sectoral federation or union" then "OS190"
+         when "Regional, state or provincial level federation or union" then "OS200"
+         when "Supranational" then "OS230"
+         when "Cooperative Group" then "OS210"
+         when "Government" then "OS220"
+         when "Cooperative of cooperatives / mutuals" then "OS240"
+         else raise "Unknown type #{type}"
+         end
+  end
 
-  ECONOMIC_ACTIVITY_TO_ACTIVITY = {
-    "Education / health / social work" => "Education / health / social work",
-    "All" => "All",
-    "Financial services" => "Financial Services",
-    "Fishing" => "Fishing",
-    "Housing" => "Housing",
-    "Insurance" => "Insurance",
-    "Other services" => "Other services",
-    "Wholesale and retail trade" => "Wholesale and retail trade",
-    "Agriculture" => "Agriculture",
-    "Utilities" => "Utilities",
-    "Industry" => "Industry",
-  }
-
-  BASE_MEMBERSHIP_TYPE = {
-    "Consumer/User coops" => "Consumer/Users",
-    "Others" => "Others",
-    "Producer coops" => "Producers",
-    "Worker coops" => "Workers",
-    "Multi-stakeholder coops" => "Multi - stakeholders",
-    "Residents" => "Residents",
-  }
+   def self.economic_activity_to_activity(activity, base)
+     return nil if activity == nil
+     base+case(activity)
+          when "Education / health / social work" then "ICA270"
+          when "All" then "ICA290"
+          when "Financial services" then "ICA140"
+          when "Fishing" then "ICA50"
+          when "Housing" then "ICA210"
+          when "Insurance" then "ICA150"
+          when "Other services" then "ICA200"
+          when "Wholesale and retail trade" then "ICA260"
+          when "Agriculture" then "ICA10"
+          when "Utilities" then "ICA230"
+          when "Industry" then "ICA80"
+          else raise "Unknown activity #{activity}"
+          end
+   end
+   
+   def self.base_membership_type(bmt, base)
+     return nil if bmt == nil
+     base+case(bmt)
+          when "Consumer/User coops" then "BMT10"
+          when "Others" then "BMT60"
+          when "Producer coops" then "BMT20"
+          when "Worker coops" then "BMT30"
+          when "Multi-stakeholder coops" then "BMT40"
+          when "Residents" then "BMT50"
+          else raise "Unknown base membership type #{bmt}"
+          end
+   end
 
 end
 
