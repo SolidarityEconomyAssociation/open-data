@@ -193,13 +193,16 @@ module DotCoop
         tag_index[name] = prefixed_value
       end
     end
+
+    sector = tag_index['sector']
+    category = tag_index['category']
     
     fields = {
       id: orgid,
       name: orgname,
       description: nil,
       organisational_structure: nil,
-      primary_activity: nil,
+      primary_activity: activity_from_dc_sector(sector),
       activities: nil,
       street_address: street_address,
       locality: city,
@@ -220,8 +223,8 @@ module DotCoop
       geocontainer: nil,
       geocontainer_lat: nil,
       geocontainer_lon: nil,
-      econ_sector_id: tag_index['sector'],
-      org_category_id: tag_index['category'],
+      econ_sector_id: sector,
+      org_category_id: category,
     }
 
     
@@ -297,6 +300,21 @@ module DotCoop
     dotcoop_vocab_json = File.join(config.TOP_OUTPUT_DIR, "extras/dotcoop-vocabs.json")
     output_csv = config.STANDARD_CSV
 
+    # Load the mapping for DC economic sector -> ICA economic activities
+    CSV.foreach("dc-sector-to-ica-activity.csv", headers: true) do |row|
+      sector = row["DotCoop Sector"]
+      if @@dc_sector_to_ica_activity[sector]
+        abort "Duplicate sector #{sector} in dc-sector-to-ica-activity.csv"
+      end
+      activity = row['Activity ID']
+      if activity != nil and activity != ''
+        @@dc_sector_to_ica_activity[sector] =
+          "#{config.ESSGLOBAL_URI}standard/activities-ica/#{activity.upcase}"
+      end
+    end
+
+
+    
     dotcoop_import original_json, imported_csv, dotcoop_vocab_json
     
     # Get the Geoapify API key
@@ -320,6 +338,14 @@ module DotCoop
 
   private
 
+  @@dc_sector_to_ica_activity = {}
+  
+  def self.activity_from_dc_sector(sector_code)
+    # puts "#{sector_code} => #{@@dc_sector_to_ica_activity[sector_code]}"
+    return @@dc_sector_to_ica_activity[sector_code]
+  end
+
+  
   # @param postcode_global_cache CSV file where all the postcodes are
   # kept (note that this will be a json in the future @param converted
   # the file used for geocoding @param docs_folder generated
