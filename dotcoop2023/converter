@@ -309,7 +309,7 @@ module DotCoop
       api_key: api_key,
       lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
       postcode_global_cache: config.GEODATA_CACHE,
-      replace_address: "force")
+      replace_address: false)
     
 #    document_geocoder(converted: imported_csv, postcode_global_cache: config.GEODATA_CACHE,
 #                      docs_folder: reports_dir, api_key: api_key)
