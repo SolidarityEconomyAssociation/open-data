@@ -1,0 +1,56 @@
+---
+id: :ncba
+name: NCBA
+version: 20220921
+primary_key:
+- :record_id
+comment: 
+fields:
+- id: :record_id
+  header: Record ID
+  desc: A unique identifier for organisation
+  comment: ''
+- id: :company_name
+  header: Company Name
+  desc: ''
+  comment: ''
+- id: :company_domain
+  header: Company Domain Name
+  desc:
+  comment:
+- id: :member_year
+  header: Member Year
+  desc:
+  comment:
+- id: :coop_sector
+  header: Co-op Sector
+  desc:
+  comment:
+- id: :industry
+  header: Industry
+  desc:
+  comment:
+- id: created
+  header: Create Date
+  desc:
+  comment:
+- id: :last_activity
+  header: Last Activity Date
+  desc:
+  comment:
+- id: :city
+  header: City
+  desc:
+  comment:
+- id: :state_region
+  header: State/Region
+  desc:
+  comment:
+- id: :country_region
+  header: Country/Region
+  desc: ''
+  comment: ''
+- id: :postcode
+  header: Postal Code
+  desc: ''
+  comment: ''
