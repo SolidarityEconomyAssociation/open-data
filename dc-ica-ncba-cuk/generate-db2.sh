@@ -100,12 +100,13 @@ sqlite3 $DB "create table domain_freq as select domain, count(dcid) as dc, count
 # Duplicate fields are disambiguated with a :X suffix, using incrementing indexes as X.
 sqlite3 $DB "create view ncba_x as select ncba.*, dc.*,ica.* from ncba left join (select * from domains, dc where domains.dcid = dc.Identifier) as dc on dc.domain = ncba.domain left join ica on ica.Domain = ncba.Domain and ica.Domain like '%.coop'";
 
+# All the domains linked to DC orgs
+sqlite3 $DB "create view dc_domains as select * from domains, dc where domains.dcid = dc.Identifier;"
+
 # View left joining DC to ICA. i.e. All the ICA orgs not in ncba_x FIXME or DC?
 sqlite3 $DB "create view ica_x as select ica.*, dc_domains.* from ica left join dc_domains on dc_domains.domain = ica.Domain;"
 
 # All the DC domains not in NCBA FIXME or ICA?
 sqlite3 $DB "create view dc_x as select count(dc.Identifier) as NumDomains,dc.* from dc left join (select distinct domains.domain, domains.dcid from domains, domain_freq where domains.domain = domain_freq.domain and domain_freq.ncba = 0 and domain_freq.ica = 0 and domain_freq.cuk = 0) as d on d.dcid = dc.Identifier  group by dc.Identifier;"
 
-# All the domains linked to DC orgs
-sqlite3 $DB "create view dc_domains as select * from domains, dc where domains.dcid = dc.Identifier;"
 
