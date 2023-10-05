@@ -109,7 +109,7 @@ class Converter
   def self.mk_converter(from_schema:, to_schema:, config:)
       # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
-    ess = config.ESSGLOBAL_URI
+    ess = config.ESSGLOBAL_URI + 'standard/'
 
     return SeOpenData::CSV::Schema.converter(
       from_schema: from_schema,
