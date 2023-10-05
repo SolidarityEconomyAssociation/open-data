@@ -1,6 +1,6 @@
 ---
-id: :dotcoop2023xxx
-name: Solidarity Economy Initiatives
+id: :ncba
+name: NCBA
 version: 1
 primary_key:
 - :id
@@ -142,13 +142,23 @@ fields:
     An optional longitudinal coordinate of the initiative's main address, when
     inferred from the address fields. A floating point number.
   comment: ''
-- id: :econ_sector_id
-  header: Economic Sector ID
-  desc: |
-    DotCoop's economic sector for the organisation
-  comment: Should be a valid integer identifier prefixed by a DotCoop "sector" vocab abbreviation
-- id: :org_category_id
-  header: Organisational Category ID
-  desc: |
-    DotCoop's organisation category
-  comment: Should be a valid integer identifier prefixed by a DotCoop "category" vocab abbreviation
+- id: :coop_sector
+  header: Co-op Sector
+  desc:
+  comment:
+- id: :industry
+  header: Industry
+  desc:
+  comment:
+- id: :city
+  header: City
+  desc:
+  comment:
+- id: :state_region
+  header: State/Region
+  desc:
+  comment:
+- id: :domain
+  header: Domain
+  desc:
+  comment:
