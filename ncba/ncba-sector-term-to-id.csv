@@ -1,0 +1,21 @@
+NCBA Sector ID,NCBA Sector Label,Description/Definition
+1,C-Agriculture,Agriculture based co-operative
+2,"C-Assoc,Council,etc",Association/council representing and/or serving co-operatives
+3,C-Bank-Finance,Co-operative bank
+4,C-Bank-Insurance,Co-operative insurance (mutual)
+5,C-Consumer,Consumer based/focused co-operative
+6,C-Consumer-Grocery,Retail grocery co-operative
+7,C-CU,Credit Union
+8,C-CU League,Credit Union League
+9,C-CUSO,Credit Union created service organization
+10,C-Healthcare,Healthcare co-operative
+11,C-Housing,Housing co-operative
+12,C-NonUsCoop,Co-operative that is headquartered out of the U.S.A.
+13,C-Platform,Platform based co-operative (on an app or web based)
+14,C-Producer,Producer co-operative
+15,C-Purchasing,Purchasing co-operative
+16,C-RE Assoc,Utilities based association of co-operatives
+17,C-Unspec Co-op,Co-operative that has not been identified (historical data)
+18,C-Utilities,Utilities based co-operative
+19,C-Worker,Worker co-operative
+20,C-Assoc-National,National co-operative association
