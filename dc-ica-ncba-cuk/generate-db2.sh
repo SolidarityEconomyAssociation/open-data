@@ -25,9 +25,9 @@ curl -f $CUK_URL >$CUK_CSV
 
 # --blanks is important otherwise 'NA', 'N/A', 'none' or 'null' -> null!
 csvsql --db sqlite:///$DB --tables $DC_TB --blanks --insert $DC_CSV
-csvsql --db sqlite:///$DB --tables $ICA_TB --blanks --insert $ICA_CSV
-csvsql --db sqlite:///$DB --tables $NCBA_TB --blanks --insert $NCBA_CSV
-csvsql --db sqlite:///$DB --tables $CUK_TB --blanks --insert $CUK_CSV
+csvsql --db sqlite:///$DB --tables $ICA_TB --blanks --no-constraints --insert $ICA_CSV
+csvsql --db sqlite:///$DB --tables $NCBA_TB --blanks --no-constraints --insert $NCBA_CSV
+csvsql --db sqlite:///$DB --tables $CUK_TB --blanks --no-constraints --insert $CUK_CSV
 
 # Add Domains field to $DC_TB
 sqlite3 $DB "alter table $DC_TB add column Domains TEXT"
@@ -51,6 +51,10 @@ for TB in $ICA_TB $NCBA_TB $CUK_TB; do
     sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # third?
     # Remove any remaining www. subdomains
     sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like 'www.%.%'"; # third?
+
+    # Any orgs with lat/lng 0,0 should be set to null (this is a problem with ICA data at least,
+    # which may need fixing properly upstream
+    sqlite3 $DB "update $TB set Latitude = null, Longitude = null where Latitude = 0 and Longitude = 0;"
 done
 
 # Likewise for DC, copy Website into Domains and clean up (although less cleaning needed)
