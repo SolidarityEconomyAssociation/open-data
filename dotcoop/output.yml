@@ -1,7 +1,7 @@
 ---
-id: :dotcoop2023
+id: :dotcoop
 name: Solidarity Economy Initiatives
-version: 1
+version: 2
 primary_key:
 - :id
 comment: 
