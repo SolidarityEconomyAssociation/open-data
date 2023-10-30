@@ -26,183 +26,15 @@
 
 require 'se_open_data'
 require 'se_open_data/config'
-require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
+require 'se_open_data/geocoding'
+require 'se_open_data/utils/file_cache'
 require 'csv'
 require 'base64'
-require 'geocoder'
-require 'digest'
 require 'normalize_country'
 require 'fileutils'
 
-class SeOpenData::Utils::BaseCache
-  def initialize
-    @cache = {}
-  end
-
-  def digest(key)
-    Digest::MD5.hexdigest key
-  end
-
-  def [] (key)
-    @cache[digest key]
-  end
-
-  def []= (key, val)
-    @cache[digest key] = val
-  end
-
-  def del(key)
-    @cache.delete(digest key)
-  end
-
-  def copy(cache)
-    unless cache.is_a? SeOpenData::Utils::BaseCache
-      raise "cannot copy anything not a SeOpenData::Utils::BaseCache"
-    end
-    @cache = cache.hash.clone
-    return self
-  end
-
-  def hash
-    @cache
-  end
-end
-
-class SeOpenData::Utils::HashCache < SeOpenData::Utils::BaseCache
-
-  def initialize
-    super
-  end
-  
-  def load(cache_file)
-    cache_fh =
-      if File.exist?(cache_file)
-        File.read(cache_file)
-      else
-        # create empty object
-        File.open(cache_file, "w") { |f| f.write("{}") }
-        File.read(cache_file)
-      end
-
-    loaded = JSON.load(cache_fh)
-    @cache_file = cache_file
-    @cache.clear
-    @cache.merge! loaded
-    @loaded_hash = @cache.hash
-
-    # warn ">> loaded "+cache_file
-    # Save ourselves at exit
-    at_exit { self.save }
-    
-    return self
-  end
-
-  def save
-    # warn ">> saving if #{@loaded_hash} != #{@cache.hash} and #{@cache_file} == nil"
-    return if @loaded_hash == @cache.hash # nothing to do
-    return if @cache_file == nil # no file to save to
-    # warn ">> saving"
-    File.open(@cache_file, "w") do |f|
-      f.puts JSON.pretty_generate(@cache)
-    end
-    
-    @loaded_hash = @cache.hash # update this
-    return self
-  end
-
-end
-
-class SeOpenData::Utils::FileCache < SeOpenData::Utils::BaseCache
-  def initialize
-    super
-  end
-  
-  def load(cache_dir)
-    if !Dir.exist?(cache_dir)
-      FileUtils.mkdir_p(cache_dir)
-    end
-
-    @cache.clear
-    # warn "load "+cache_dir
-    Dir.foreach(cache_dir) do |name|
-      next if name == '.' or name == '..'
-      path = File.join(cache_dir, name)
-      next if !File.file? path
-      next if !name.end_with? '.txt'
-      # warn "loading "+name+"=>"+name[0..-5].to_s
-      content = IO.read(path)
-      @cache[name[0..-5]] = content
-    end
-    
-    @cache_dir = cache_dir
-    @loaded_hash = @cache.hash
-
-    # warn ">> loaded "+cache_dir
-    # Save ourselves at exit
-    at_exit { self.save }
-    
-    return self
-  end
-
-  def save
-    #warn ">> saving if #{@loaded_hash} != #{@cache.hash} and #{@cache_dir} == nil"
-    return if @loaded_hash == @cache.hash # nothing to do
-    return if @cache_dir == nil # no dir to save to
-    
-    # warn ">> saving"
-    Dir.foreach(@cache_dir) do |name|
-      next if name == '.' or name == '..'
-      path = File.join(@cache_dir, name)
-      warn "unlink? #{path} -> #{File.exist? path} and #{!@cache.has_key? name}"
-      if File.exist? path and !@cache.has_key? name
-        File.unlink(path)
-      end
-    end
-    @cache.each_pair do |key, content|
-      path = File.join(@cache_dir, key+'.txt')
-      IO.write(path, content)
-    end
-    
-    @loaded_hash = @cache.hash # update this
-    return self
-  end
-
-end
-
-# API for geocoding just needs to expose #locate(address)
-class SeOpenData::Geocoding
-
-  class Result
-    attr_reader :lat, :lng, :confidence
-    def initialize(lat, lng, confidence)
-      @lat, @lng, @confidence = [lat, lng, confidence]
-    end
-  end
-  
-  # builds a geocoder function
-  def build(lookup:, cache: nil, api_key: nil)
-
-    # For now we just use Geocoder, we don't need to complicate things.
-    Geocoder.configure(lookup: :geoapify, api_key: api_key, cache: cache, timeout: 10)
-
-    return lambda {|address|
-      warn "geocoding: "+address
-      result = Geocoder.search(address).first
-
-      if result == nil
-        Result.new(nil, nil, nil)
-      else
-        return Result.new(
-                 result.latitude,
-                 result.longitude,
-                 result.data.dig("properties","rank","confidence")*100
-               )
-      end
-    }
-  end
-end
 
 # Code related to the DotCoop SSE initiative data
 module DotCoop
@@ -377,6 +209,7 @@ module DotCoop
         post_code,
         NormalizeCountry(country_id, to: :short)
       ].compact
+        # try to clean up funny dotcoop addresses with extra commas etc.
         .map {|it| it.strip.gsub(/[;,](\s*[;,])+/, ',').gsub(/[\s,;]*$/, '') }
         .select {|it| it != '' }
         .join(", ")
@@ -406,9 +239,9 @@ module DotCoop
       latitude: nil,
       longitude: nil,
       geocontainer: nil,
-      geocontainer_lat: geocoded.lat,
-      geocontainer_lon: geocoded.lng,
-      geocontainer_confidence: geocoded.confidence,
+      geocontainer_lat: geocoded&.lat,
+      geocontainer_lon: geocoded&.lng,
+      geocontainer_confidence: geocoded&.confidence,
       econ_sector_id: sector,
       org_category_id: category,
     }
