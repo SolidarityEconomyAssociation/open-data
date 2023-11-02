@@ -24,12 +24,12 @@
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
 
-require 'se_open_data'
 require 'se_open_data/config'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
 require 'se_open_data/geocoding'
 require 'se_open_data/utils/file_cache'
+require 'se_open_data/utils/password_store'
 require 'csv'
 require 'base64'
 require 'normalize_country'
