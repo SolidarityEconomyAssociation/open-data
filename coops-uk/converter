@@ -24,7 +24,6 @@
 # information.
 
 require 'se_open_data/utils/password_store'
-require 'se_open_data/utils/error_document_generator'
 require 'se_open_data/config'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schemas'
@@ -71,7 +70,7 @@ class Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:)
+  def self.mk_converter(from_schema:, to_schema:, geocode:)
       # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
 
@@ -128,7 +127,18 @@ class Converter
            reg_region:
            |
            next if reg_status.downcase == 'dead'
-             
+
+           geocoded_addr =
+             [
+               reg_street,
+               reg_city,
+               reg_state_province,
+               reg_postcode,
+               uk_nation,
+             ].join(', ')
+           
+           geocoded = geocode.call(geocoded_addr)
+           
            # A mapping to the target schema field ids
            primary_activity = sic_code == nil ? nil : activity_from_cuk(sic_code)
            org_structure, base_membership_type = org_membership_from_cuk(legal_form, ownership)
@@ -161,8 +171,10 @@ class Converter
              latitude: nil,
              longitude: nil,
              geocontainer: nil,
-             geocontainer_lat: nil,
-             geocontainer_lon: nil,
+             geocontainer_lat: geocoded&.lat,
+             geocontainer_lon: geocoded&.lng,
+             geocontainer_confidence: geocoded&.confidence,
+             geocoded_addr: geocoded_addr,
              sector: sector,
              sic_section: sic_section,
              sic_code: sic_code,
@@ -190,13 +202,8 @@ class Converter
     # original src csv files
     original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
-    # Intermediate csv files
-    converted = File.join(config.GEN_CSV_DIR, "converted.csv")
-    geolocated = File.join(config.GEN_CSV_DIR, "geolocated.csv")
-
     # Output csv file
     output_csv = config.STANDARD_CSV
-    generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
 
     # Load the SIC Code -> SIC section mapping
     @@sic_code_to_sic_section[0] = nil
@@ -253,20 +260,21 @@ class Converter
     input_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
     output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
     
+    cache = SeOpenData::Utils::FileCache.new.load(config.GEODATA_CACHE)
+
+    geocode = SeOpenData::Geocoding.new.build(
+      lookup: :geoapify,
+      api_key: api_key,
+      cache: cache,
+    )
+
     # A converter between the two
-    converter = mk_converter(from_schema: input_schema, to_schema: output_schema)
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema, geocode: geocode)
 
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
-    converter.convert File.open(original_csv, "r:iso-8859-1"), converted
+    converter.convert File.open(original_csv, "r:iso-8859-1"), output_csv
     
-    # add location data
-    SeOpenData::CSV.add_postcode_lat_long(infile: converted,
-                                          outfile: output_csv,
-                                          api_key: api_key,
-                                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                                          postcode_global_cache: config.GEODATA_CACHE,
-                                          replace_address: false)
   end
 
   private
