@@ -201,7 +201,7 @@ module DotCoop
     sector = tag_index['sector']
     category = tag_index['category']
 
-    geocoded = geocode.call(
+    addr =
       [
         street_address,
         city,
@@ -213,7 +213,7 @@ module DotCoop
         .map {|it| it.strip.gsub(/[;,](\s*[;,])+/, ',').gsub(/[\s,;]*$/, '') }
         .select {|it| it != '' }
         .join(", ")
-    )
+    geocoded = geocode.call(addr)
     
     fields = {
       id: orgid,
@@ -242,6 +242,7 @@ module DotCoop
       geocontainer_lat: geocoded&.lat,
       geocontainer_lon: geocoded&.lng,
       geocontainer_confidence: geocoded&.confidence,
+      geocoded_addr: addr,
       econ_sector_id: sector,
       org_category_id: category,
     }

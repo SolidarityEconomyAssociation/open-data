@@ -147,6 +147,10 @@ fields:
     An optional longitudinal coordinate of the initiative's main address, when
     inferred from the address fields. A floating point number.
   comment: ''
+- id: geocoded_addr
+  header: Geocoded Address
+  desc: The address used for geocoding
+  comment: ''
 - id: :econ_sector_id
   header: Economic Sector ID
   desc: |
