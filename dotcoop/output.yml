@@ -130,6 +130,11 @@ fields:
     An optional identifier indicating a geographical region containing the initiative's
     main address, if known.
   comment: ''
+- id: :geocontainer_confidence
+  header: Geo Container Confidence
+  desc: |
+    An optional percentage indicating how certain this geocoded result is.
+  comment: ''
 - id: :geocontainer_lat
   header: Geo Container Latitude
   desc: |
@@ -141,6 +146,10 @@ fields:
   desc: |
     An optional longitudinal coordinate of the initiative's main address, when
     inferred from the address fields. A floating point number.
+  comment: ''
+- id: geocoded_addr
+  header: Geocoded Address
+  desc: The address used for geocoding
   comment: ''
 - id: :econ_sector_id
   header: Economic Sector ID

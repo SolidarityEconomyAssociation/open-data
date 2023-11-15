@@ -24,13 +24,17 @@
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
 
-require 'se_open_data'
 require 'se_open_data/config'
-require 'se_open_data/csv/add_postcode_lat_long'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
+require 'se_open_data/geocoding'
+require 'se_open_data/utils/file_cache'
+require 'se_open_data/utils/password_store'
 require 'csv'
 require 'base64'
+require 'normalize_country'
+require 'fileutils'
+
 
 # Code related to the DotCoop SSE initiative data
 module DotCoop
@@ -125,7 +129,7 @@ module DotCoop
     return vocabs_def
   end
   
-  def self.parse_dotcoop_organisation(org, vocabs_def)
+  def self.parse_dotcoop_organisation(org, vocabs_def, geocode)
     vocabs = vocabs_def['vocabs']
     prefixes = vocabs_def['prefixes']
     raise "missing vocabs in vocab def!" unless vocabs
@@ -196,6 +200,20 @@ module DotCoop
 
     sector = tag_index['sector']
     category = tag_index['category']
+
+    addr =
+      [
+        street_address,
+        city,
+        region,
+        post_code,
+        NormalizeCountry(country_id, to: :short)
+      ].compact
+        # try to clean up funny dotcoop addresses with extra commas etc.
+        .map {|it| it.strip.gsub(/[;,](\s*[;,])+/, ',').gsub(/[\s,;]*$/, '') }
+        .select {|it| it != '' }
+        .join(", ")
+    geocoded = geocode.call(addr)
     
     fields = {
       id: orgid,
@@ -221,8 +239,10 @@ module DotCoop
       latitude: nil,
       longitude: nil,
       geocontainer: nil,
-      geocontainer_lat: nil,
-      geocontainer_lon: nil,
+      geocontainer_lat: geocoded&.lat,
+      geocontainer_lon: geocoded&.lng,
+      geocontainer_confidence: geocoded&.confidence,
+      geocoded_addr: addr,
       econ_sector_id: sector,
       org_category_id: category,
     }
@@ -239,7 +259,7 @@ module DotCoop
     )
   end
   
-  def self.dotcoop_import(json_file, csv_file, vocabs_file)
+  def self.dotcoop_import(json_file, csv_file, vocabs_file, geocode)
     json = IO.read(json_file)
     data = JSON.parse(json)
     
@@ -271,7 +291,7 @@ module DotCoop
         end
 
         # Parse it
-        row = parse_dotcoop_organisation(org, vocabs)
+        row = parse_dotcoop_organisation(org, vocabs, geocode)
 
         # Write it
         csv << row
@@ -313,25 +333,20 @@ module DotCoop
       end
     end
 
-
-    
-    dotcoop_import original_json, imported_csv, dotcoop_vocab_json
-    
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
 
-    SeOpenData::CSV.add_postcode_lat_long(
-      infile: imported_csv,
-      outfile: output_csv,
-      api_key: api_key,
-      lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-      postcode_global_cache: config.GEODATA_CACHE,
-      replace_address: false)
-    
-#    document_geocoder(converted: imported_csv, postcode_global_cache: config.GEODATA_CACHE,
-#                      docs_folder: reports_dir, api_key: api_key)
+    cache = SeOpenData::Utils::FileCache.new.load(config.GEODATA_CACHE)
 
+    geocode = SeOpenData::Geocoding.new.build(
+      lookup: :geoapify,
+      api_key: api_key,
+      cache: cache,
+    )
+
+    dotcoop_import original_json, output_csv, dotcoop_vocab_json, geocode
+    
   rescue => e
     raise "error transforming #{original_json} into #{output_csv}: #{e.message}"
   end
@@ -346,18 +361,6 @@ module DotCoop
   end
 
   
-  # @param postcode_global_cache CSV file where all the postcodes are
-  # kept (note that this will be a json in the future @param converted
-  # the file used for geocoding @param docs_folder generated
-  # documentation folder
-  def self.document_geocoder(converted: nil, docs_folder:,
-                             postcode_global_cache:, api_key:)
-    geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new(api_key)
-    header = OutSchema.field(:homepage).header
-    geoapify.gen_geo_report(postcode_global_cache, 0.05, docs_folder, converted, [header])
-  end
-
-
 end
 
 # Run the entry point if we're invoked as a script
