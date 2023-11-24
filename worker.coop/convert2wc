@@ -1,0 +1,246 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+#
+# This script controls a pipeline of processes that convert the original
+# CSV data into the se_open_data standard, one step at a time.
+# We aim to put only logic specific to this project in this file, and
+# keep it brief and clear. Shared logic should go into the {SeOpenData}
+# library.
+#
+# This script can be invoked directly, or as part of the {SeOpenData}
+# library's command-line API {SeOpenData::Cli}. For example, this
+# just runs the conversion step (or specifically: a script in the
+# current directory called `converter`):
+#
+#     seod convert 
+#
+# And this runs the complete chain of commands generating and
+# deploying the linked data for this project, as configured by
+# `settings/config.txt`:
+#
+#     seod run-all
+#
+# See the documentation on [`seod`]({SeOpenData::Cli}) for more
+# information.
+
+# like converter - but converts to data for workers.coop
+
+require 'se_open_data/utils/password_store'
+require 'se_open_data/utils/error_document_generator'
+require 'se_open_data/config'
+require 'se_open_data/csv/schema'
+require 'se_open_data/csv/schemas'
+require 'se_open_data/csv/schema/types'
+require 'se_open_data/csv/standard'
+require 'normalize_country'
+
+class Converter
+
+  @@sic_division_to_ica_activity = {}
+  @@legal_ownership_to_org_membership = {}
+  
+  def self.activity_from_cuk(sic_code)
+    sic_division = sic_code[0,2].to_i
+    # puts "#{sic_code} => #{@@sic_division_to_ica_activity[sic_division]}"
+    return @@sic_division_to_ica_activity[sic_division]
+  end
+
+  def self.org_membership_from_cuk(legal_form, ownership)
+    result = @@legal_ownership_to_org_membership["#{legal_form}\0#{ownership}"]
+    # puts "#{legal_form} / #{ownership} => #{result}"
+    return result
+  end
+       
+  # Returns a schema converter for the given schema.
+  #
+  # This defines the schema mapping for original data into the
+  # standard schema.
+  #
+  # The logic that maps the input field data is defined in the
+  # do-block. It will be wrapped in a loop which reads the input file
+  # and writes the output file. See the documentation for
+  # {SeOpenData::CSV::Schema.converter}.
+  #
+  def self.mk_converter(from_schema:, to_schema:)
+      # A convenient alias...
+    types = SeOpenData::CSV::Schema::Types
+
+    return SeOpenData::CSV::Schema.converter(
+      from_schema: from_schema,
+      to_schema: to_schema,
+      input_csv_opts: {skip_blanks: true}
+      #    output_csv_opts: {quote_empty: false}
+    ) do | # These parameters match source schema field ids
+           org_id: ,
+           reg_no: ,
+           registrar: ,
+           reg_name: ,
+           trading_name: ,
+           legal_form: ,
+           reg_street: ,
+           reg_city: ,
+           reg_state_province: ,
+           reg_postcode: ,
+           uk_nation: ,
+           sic_code: ,
+           sic_section: ,
+           sic_code_2: ,
+           sic_code_desc_2: ,
+           sic_code_3: ,
+           sic_desc_3: ,
+           sic_code_4: ,
+           sic_desc_4: ,
+           sic_code_5: ,
+           sic_desc_5: ,
+           sector: ,
+           ownership: ,
+           reg_status: ,
+           inc_date: ,
+           diss_date: ,
+           website: ,
+           reg_admin_county_code: ,
+           reg_admin_county_name: ,
+           reg_admin_district_code: ,
+           reg_admin_district_name: ,
+           reg_admin_ward_code: ,
+           reg_admin_ward_name: ,
+           reg_admin_constituency_code: ,
+           reg_admin_constituency_name: ,
+           reg_lsoa_name: ,
+           reg_msoa_name: ,
+           reg_parish_code: ,
+           reg_parish_name: 
+           |
+           next if reg_status.downcase == 'dead'
+             
+           # A mapping to the target schema field ids
+           primary_activity = activity_from_cuk(sic_code)
+           org_structure, base_membership_type = org_membership_from_cuk(legal_form, ownership)
+           {
+             id: org_id,
+             name: trading_name,
+             description: nil,
+             organisational_structure: org_structure,
+             primary_activity: primary_activity,
+             activities: nil,
+             street_address: reg_street,
+             locality: reg_city,
+             region: reg_state_province,
+             postcode: reg_postcode,
+             country_id: 'GB',
+             territory_id: nil,
+             homepage: types.normalise_url(website, default: nil),
+             phone: nil,
+             email: nil,
+             twitter: nil,
+             facebook: nil,
+             companies_house_number: registrar == "Companies House"? reg_no : nil,
+             qualifiers: nil,
+             base_membership_type: base_membership_type,
+             latitude: nil,
+             longitude: nil,
+             geocontainer: nil,
+             geocontainer_lat: nil,
+             geocontainer_lon: nil,
+             sector: sector,
+             sic_section: sic_section,
+             sic_code: sic_code,
+             ownership: ownership,
+             legal_form: legal_form,
+           }
+    end
+  end
+
+           
+  # Entry point if invoked as a script.
+  #
+  #
+  # Expects a config file in a directory `./settings` relative to this
+  # script, called either `default.txt` or `config.txt`. The latter is
+  # loaded preferentially, otherwise the former is.
+  #
+  # See {SeOpenData::Config} for information about this file. It
+  # defines the locations of various resources, and sets options on
+  # the conversion process.
+  def self.main
+    # Find the config file...
+    config = SeOpenData::Config.load
+
+    # original src csv files
+    original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+
+    # Intermediate csv files
+    converted = File.join(config.GEN_CSV_DIR, "converted.csv")
+    geolocated = File.join(config.GEN_CSV_DIR, "geolocated.csv")
+
+    # Output csv file
+    output_csv = config.STANDARD_CSV
+    generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
+
+    # Load the SIC sections data
+    CSV.foreach("sic-division-to-ica-activity.csv", headers: true) do |row|
+      division = row["SIC Division"].to_i
+      if @@sic_division_to_ica_activity[division]
+        abort "Duplicate division #{division} in sic-division-to-ica-activity.csv"
+      end
+      if row["Activity ID"] != ''
+        @@sic_division_to_ica_activity[division] =
+          "#{config.ESSGLOBAL_URI}standard/activities-ica/#{row['Activity ID']}"
+      end
+    end
+
+    # Load the legal form / ownership mappings
+    CSV.foreach("legal-ownership-to-org-membership.csv", headers: true) do |row|
+      legal_form = row["Legal Form"]
+      ownership = row["Ownership Classification"]
+      if legal_form && ownership
+        key = "#{legal_form}\0#{ownership}"
+        if @@legal_ownership_to_org_membership[key]
+          abort "Duplicate legal form/ownership key #{key} in legal-ownership-to-org-membership.csv"
+        end
+
+        os = row['Organisational Structure ID'].to_s.upcase
+        os_url = if os != ''
+                   "#{config.ESSGLOBAL_URI}standard/organisational-structure/#{os}"
+                 end
+        bmt = row['Base Membership Type ID'].to_s.upcase
+        bmt_url = if bmt != ''
+                    "#{config.ESSGLOBAL_URI}standard/base-membership-type/#{bmt}"
+                  end
+        @@legal_ownership_to_org_membership[key] = [os_url, bmt_url]
+      end
+    end
+
+    # Get the Geoapify API key
+    pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+    api_key = pass.get config.GEOCODER_API_KEY_PATH
+
+    # This defines the input and output CSV schemas (after clean-up and geolocation)
+    input_schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
+    output_schema = SeOpenData::CSV::Schema.load_file("output.yml")
+    
+    # A converter between the two
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema)
+
+    # Transforms to our standard CSV schema.
+    # Note the BOM and encoding flags, which avoid a MalformedCSVError
+    converter.convert File.open(original_csv, "r:iso-8859-1"), converted
+    
+    # add location data
+    SeOpenData::CSV.add_postcode_lat_long(infile: converted,
+                                          outfile: output_csv,
+                                          api_key: api_key,
+                                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
+                                          postcode_global_cache: config.GEODATA_CACHE,
+                                          replace_address: false,
+                                          use_ordinance_survey: true)
+  end
+
+  private
+
+
+end
+
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Converter.main if __FILE__ == $0
