@@ -1,0 +1,238 @@
+---
+id: :worker-coop
+name: Worker Co-op
+version: 202311239
+primary_key:
+- :contact_id
+comment: 
+fields:
+- id: display_name
+  header: Display Name
+  desc: 
+  comment:
+
+- id: contact_id
+  header: Contact ID
+  desc: 
+  comment: 
+
+- id: sic_code
+  header: Sic Code
+  desc: 
+  comment: 
+
+- id: type_of_organisation
+  header: Type of organisation
+  desc: 
+  comment: 
+
+- id: legal_form
+  header: Legal Form
+  desc: 
+  comment: 
+
+- id: ownership_type
+  header: Ownership type
+  desc: 
+  comment: 
+
+- id: industry
+  header: Industry
+  desc: 
+  comment: 
+
+- id: registered_status
+  header: Registered Status
+  desc: 
+  comment: 
+
+- id: registered_number
+  header: Registered Number
+  desc: |
+    The unique identifier allocated by the legal registrar. Note that
+    this is not necessary unique in the dataset as different
+    registrars use different numbering systems.
+  comment: 'e.g 545R, 11253R, 10143R etc. Appears to be unique. May be null.'
+
+- id: cuk_id
+  header: CUK ID
+  desc: |
+    This is Co-operatives UK’s unique identifier for the
+    organisation. This is the primary ID used to link between datasets
+    and trace updates. Where ever possible is should be retained in an
+    data used and not amended.
+  comment: 'R000001, R000002, R000003 etc.  Unique, non-null'
+
+- id: incorporation_date
+  header: Incorporation date
+  desc: |
+    For incorporated organisations, the date the organisation was
+    officially incorporated as reported by their registrar.
+  comment: 'A date in the form dd/mm/yyyy 00:00:00, or null'
+
+- id: description
+  header: Description
+  desc: 
+  comment: 
+
+- id: organisational_structure
+  header: Organisational structure
+  desc: 
+  comment: 
+
+- id: primary_activity
+  header: Primary Activity
+  desc: 
+  comment: 
+
+- id: sector
+  header: Sector
+  desc: |
+    To complement the sector, which uses hierarchical SIC codes,
+    Co-operatives UK produces a simplified, high level and
+    non-hierarchical form of classification. It highlights areas most
+    prominent in the co-operative sector and is subject to review and
+    change over time.
+    
+    This classification is derived from the SIC code and contains the
+    following categories:
+      - Agriculture
+      - Arts and Culture
+      - Digital, Media and Communication
+      - Education
+      - Energy and Environment
+      - Finance
+      - Food service, Accommodation and Pubs
+      - Health and Social Care
+      - Housing
+      - Manufacturing
+      - Membership associations, social clubs and trade unions
+      - None
+      - Other
+      - Professional and Legal services
+      - Retail
+      - Sports and Recreation
+      - Transport
+  comment: 'A category label. May be null.'
+  # values:
+  #   - Agriculture
+  #   - Arts and Culture
+  #   - Digital, Media and Communication
+  #   - Education
+  #   - Energy and Environment
+  #   - Finance
+  #   - Food service, Accommodation and Pubs
+  #   - Health and Social Care
+  #   - Housing
+  #   - Manufacturing
+  #   - Membership associations, social clubs and trade unions
+  #   - None
+  #   - Other
+  #   - Professional and Legal services
+  #   - Retail
+  #   - Sports and Recreation
+  #   - Transport
+
+- id: membership_type
+  header: Membership Type
+  desc: 
+  comment: 
+
+- id: sic_section
+  header: SIC Section
+  comment: 'A category. May be null.'
+  # values:
+  #   - Accommodation and Food Services
+  #   - Administrative and Support Services
+  #   - Agriculture, Forestry and Fishing
+  #   - Arts, Entertainment and Recreation
+  #   - Construction
+  #   - Education
+  #   - Electricity, Gas, Steam and Air Con
+  #   - Financial and Insurance
+  #   - Households as Employers; For Own Use
+  #   - Human Health and Social Work
+  #   - Information and Communication
+  #   - Manufacturing
+  #   - Mining and Quarrying
+  #   - Other Service Activities
+  #   - Professional, Scientific and Technical
+  #   - Public Administration and Defence
+  #   - Real Estate
+  #   - Transportation and Storage
+  #   - Water Supply; Sewerage and Waste
+  #   - Wholesale and Retail; Vehicle Repair
+
+- id: new_registered_status
+  header: New registered status
+  desc: 
+  comment: 
+
+- id: registrar
+  header: Registrar
+  desc: |
+    Derived from the legal form, this indicates who the registrar for the organisation is.
+  comment: 'e.g FCA, Companies House, OSCR etc. Not unique, non-null.'
+  # values:
+  #   - Charity Commission
+  #   - Companies House
+  #   - FCA
+  #   - Legal Form is not defined
+  #   - OSCR
+  #   - Unknown legal form
+
+- id: street_address
+  header: Street Address
+  desc: 
+  comment: 
+
+- id: supplemental_address_1
+  header: Supplemental Address 1
+  desc: 
+  comment: 
+
+- id: supplemental_address_2
+  header: Supplemental Address 2
+  desc: 
+  comment: 
+
+- id: city
+  header: City
+  desc: 
+  comment: 
+
+- id: postal_code
+  header: Postal Code
+  desc: 
+  comment: 
+
+- id: latitude
+  header: Latitude
+  desc: 
+  comment: 
+
+- id: longitude
+  header: Longitude
+  desc: 
+  comment: 
+
+- id: country_id
+  header: Country ID
+  desc: 
+  comment: 
+
+- id: country_code
+  header: iso_code
+  desc: The two-letter ISO code for the country.
+  comment: 
+
+- id: email
+  header: Email
+  desc: 
+  comment: 
+
+- id: website
+  header: Website
+  desc: Where available, a link to the organisation’s website.
+  comment: 'A URL. May be null'
+

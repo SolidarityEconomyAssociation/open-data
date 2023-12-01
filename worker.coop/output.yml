@@ -130,11 +130,6 @@ fields:
     An optional identifier indicating a geographical region containing the initiative's
     main address, if known.
   comment: ''
-- id: :geocontainer_confidence
-  header: Geo Container Confidence
-  desc: |
-    An optional percentage indicating how certain this geocoded result is.
-  comment: ''
 - id: :geocontainer_lat
   header: Geo Container Latitude
   desc: |
@@ -147,10 +142,23 @@ fields:
     An optional longitudinal coordinate of the initiative's main address, when
     inferred from the address fields. A floating point number.
   comment: ''
+- id: :geocontainer_confidence
+  header: Geo Container Confidence
+  desc: |
+    An optional percentage indicating how certain this geocoded result is.
+  comment: ''
 - id: geocoded_addr
   header: Geocoded Address
   desc: The address used for geocoding
   comment: ''
+- id: supplemental_address_1
+  header: Supplemental Address 1
+  desc: 
+  comment: 
+- id: supplemental_address_2
+  header: Supplemental Address 2
+  desc: 
+  comment: 
 - id: :sector
   header: Sector
   desc: |
@@ -166,13 +174,47 @@ fields:
   desc: |
     The SIC Code indicating the precise economic sector of the organisation
   comment: Should be a string of numerals
-- id: :ownership
+- id: :ownership_type
   header: Ownership Classification
   desc: |
     The ownership classification of the organisation
   comment: Should be an English language identifier phrase
-- id: :legal_form
+- id: industry
+  header: Industry
+  desc: 
+  comment: 
+- id: legal_form
   header: Legal Form
+  desc: 
+  comment: 
+- id: type_of_organisation
+  header: Type of Organisation
+  desc: 
+  comment: 
+- id: registered_status
+  header: Registered Status
+  desc: 
+  comment: 
+- id: new_registered_status
+  header: New Registered Status
+  desc: 
+  comment: 
+- id: registered_number
+  header: Registered Number
   desc: |
-    The legal form of the organisation
-  comment: Should be an English language identifier phrase
+    The unique identifier allocated by the legal registrar. Note that
+    this is not necessary unique in the dataset as different
+    registrars use different numbering systems.
+  comment: 'e.g 545R, 11253R, 10143R etc. Appears to be unique. May be null.'
+- id: registrar
+  header: Registrar
+  desc: 
+  comment: 
+- id: incorporation_date
+  header: Incorporation Date
+  desc: 
+  comment: 
+- id: cuk_id
+  header: CUK ID
+  desc: 
+  comment: 
