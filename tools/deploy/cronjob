@@ -41,7 +41,7 @@ function process {
 FAILS=()
 set +o errexit # <- we want to manage failure more finely than this here
 
-for dir in owned-by-oxford oxford newbridge mersey-green deep-adaptation mutual-aid covid-mutual-aid dotcoop; do
+for dir in owned-by-oxford oxford newbridge mersey-green deep-adaptation covid-mutual-aid dotcoop; do
     echo "PROCESSING $dir..."
     
     process $dir
