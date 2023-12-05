@@ -159,6 +159,7 @@ class Converter
                 main_address_supplemental_1,
                 main_address_supplemental_2]
                  .collect { |el| el.to_s }
+                 .keep_if { |el| el =~ /\S/ }
                  .join(" ")
                  .strip
              ),
