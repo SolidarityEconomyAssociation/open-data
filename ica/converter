@@ -262,7 +262,7 @@ class Converter
   #     "Structure Type" => "Ess Global Organisational Structure"
   # any is the default case for typology
   def self.type_to_org_struct(type, base)
-    return nil if type == nil
+    return nil if type == nil or type == ""
     base+case(type)
          when "Coop Promoter/Supporter" then "OS50"
          when "Cooperative" then "OS115"
@@ -279,7 +279,7 @@ class Converter
   end
 
    def self.economic_activity_to_activity(activity, base)
-     return nil if activity == nil
+     return nil if activity == nil or activity == ""
      base+case(activity)
           when "Education / health / social work" then "ICA270"
           when "All" then "ICA290"
@@ -297,7 +297,7 @@ class Converter
    end
    
    def self.base_membership_type(bmt, base)
-     return nil if bmt == nil
+     return nil if bmt == nil or bmt == ""
      base+case(bmt)
           when "Consumer/User coops" then "BMT10"
           when "Others" then "BMT60"
