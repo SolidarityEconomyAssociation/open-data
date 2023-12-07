@@ -182,8 +182,8 @@ class Converter
                    ess+QF+"q90" : nil
              ),
              base_membership_type: base_membership_type(typology, ess+BMT),
-             latitude: types.normalise_float(main_address_latitude),
-             longitude: types.normalise_float(main_address_longitude),
+             latitude: types.normalise_float(main_address_latitude, default: nil),
+             longitude: types.normalise_float(main_address_longitude, default: nil),
              geocontainer: nil,
              geocontainer_lat: nil,
              geocontainer_lon: nil,
