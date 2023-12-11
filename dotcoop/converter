@@ -82,8 +82,7 @@ module DotCoop
     Base64.urlsafe_encode64(bin, padding: false)[0,5] # strip the invariant final char
   end
 
-  
-  def self.parse_dotcoop_tag_dictionary(tag_dictionary)
+  def self.parse_dotcoop_tag_dictionary(tag_dictionary, dotcoop_tag_uri)
     prefixes = {} # empty prefix index
     vocabs = {} # empty vocabs index
     vocabs_def = {
@@ -96,7 +95,7 @@ module DotCoop
 
       # A URI for DotCoop tags.
       # We append a / delimiter so that the term IDs can be appended
-      uri = "https://lod.coop/dotcoop-tag/#{uuid}/" 
+      uri = dotcoop_tag_uri + sid+ "/"
 
       # Add the prefix
       prefixes[uri] = sid
@@ -259,7 +258,7 @@ module DotCoop
     )
   end
   
-  def self.dotcoop_import(json_file, csv_file, vocabs_file, geocode)
+  def self.dotcoop_import(json_file, csv_file, vocabs_file, geocode, dotcoop_tag_uri)
     json = IO.read(json_file)
     data = JSON.parse(json)
     
@@ -345,7 +344,8 @@ module DotCoop
       cache: cache,
     )
 
-    dotcoop_import original_json, output_csv, dotcoop_vocab_json, geocode
+    dotcoop_tag_uri = config.DOTCOOP_TAG_URI
+    dotcoop_import original_json, output_csv, dotcoop_vocab_json, geocode, dotcoop_tag_uri
     
   rescue => e
     raise "error transforming #{original_json} into #{output_csv}: #{e.message}"
