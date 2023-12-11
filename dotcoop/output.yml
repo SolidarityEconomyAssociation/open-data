@@ -161,3 +161,7 @@ fields:
   desc: |
     DotCoop's organisation category
   comment: Should be a valid integer identifier prefixed by a DotCoop "category" vocab abbreviation
+- id: :member_of
+  header: Member Of
+  desc: Parent organisations this organisations is a member of
+  comment: Zero or more organisation IDs delimited with semi-colons
