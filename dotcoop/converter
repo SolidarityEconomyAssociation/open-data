@@ -82,8 +82,10 @@ module DotCoop
     Base64.urlsafe_encode64(bin, padding: false)[0,5] # strip the invariant final char
   end
 
-  
-  def self.parse_dotcoop_tag_dictionary(tag_dictionary)
+  MemberOfUUID = '71269da9-a6bf-4351-a500-0f945f2fe8d3' # the UUID for memberOf
+  MemberOfSID = self.uuid_to_sid(MemberOfUUID)
+    
+  def self.parse_dotcoop_tag_dictionary(tag_dictionary, dotcoop_tag_uri)
     prefixes = {} # empty prefix index
     vocabs = {} # empty vocabs index
     vocabs_def = {
@@ -96,7 +98,7 @@ module DotCoop
 
       # A URI for DotCoop tags.
       # We append a / delimiter so that the term IDs can be appended
-      uri = "https://lod.coop/dotcoop-tag/#{uuid}/" 
+      uri = dotcoop_tag_uri + sid+ "/"
 
       # Add the prefix
       prefixes[uri] = sid
@@ -128,19 +130,25 @@ module DotCoop
 
     return vocabs_def
   end
-  
-  def self.parse_dotcoop_organisation(org, vocabs_def, geocode)
+
+  # Parses an organisation definition object
+  #
+  # maps taxonomies to vocab IDs
+  #
+  # modifies org_vocab - a hash - to add a mapping from short orgid URI
+  # to the orgname (assumes the EN locality - again we're biassed EN speakers)
+  def self.parse_dotcoop_organisation(org, vocabs_def, orgs_vocab, geocode)
     vocabs = vocabs_def['vocabs']
     prefixes = vocabs_def['prefixes']
     raise "missing vocabs in vocab def!" unless vocabs
     raise "missing prefixes in vocab def!"  unless prefixes
-    
+
     (dpid, orgname, address, domains, tags) =
       org.values_at('id', 'name', 'address', 'domains', 'tags')
     tags ||= []
     domains ||= []
     address ||= {}
-    
+
     domain_urls = domains.map do |domain|
       "http://#{domain['name']}"
     end
@@ -148,27 +156,29 @@ module DotCoop
     (street_address, city, region, post_code, country, country_id) =
       address.values_at('streetAddress', 'city', 'region', 'postCode', 'country', 'isoCountryCode')
 
-    # Compile all the tags into an index of the tag name to the tag value
+    # Compile all the tags into an index of the tag name an array of to the tag value(s)
     tag_index = tags.reduce({}) do |index, tag|
       id, name, value = tag.values_at('id', 'name','value')
-      if index.has_key? name
-        raise "duplicate tag name '#{name}' in org #{orgname} DeskproID #{dpid}"
-      end
-      index[name] = value
-
-      if index.has_key? id
-        raise "duplicate tag id '#{id}' in org #{orgname} DeskproID #{dpid}"
+      unless index.has_key? name
+        index[name] = []
       end
 
+      unless index.has_key? id
+        index[id] = []
+      end
+      
       if id !~ /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
         raise "non 8-4-4-4-12 uuid format tag '#{id}' in org #{orgname} DeskproID #{dpid}"
       end
       
+      index[name].push(value)
+      index[id].push(value)
+      
       index
     end
 
-    orgid = tag_index['OrgID']
-    if orgid.to_s == ''
+    orgid = tag_index['OrgID']&.first
+    if orgid == nil or orgid == ''
       raise "missing OrgID tag in org #{orgname} DeskproID #{dpid}"
     end
 
@@ -176,6 +186,9 @@ module DotCoop
       raise "invalid OrgID tag in org #{orgname} DeskproID #{dpid}: #{orgid}"
     end
 
+    # Add the organisation to the orgs vocab
+    orgs_vocab["#{MemberOfSID}:#{orgid}"] = orgname
+       
     # Validate the tags against the tag index.
     # And also expand IDs to include a suitable prefix for our output data
     tags.each do |tag|
@@ -184,22 +197,25 @@ module DotCoop
       vocab = vocabs[sid+':']
       
       # We can only check cases with indexes
-      if vocab 
-        # Check the ID is valid. Is there a term in the "EN" language for it?
-        # (It's a shortcut, yes. We're biassed EN speakers!)
-        prefixed_value = "#{sid}:#{value}"
-        if !vocab.has_key?("EN") && vocab["EN"].has_key?(prefixed_value)
-          raise "tag '#{name} ID #{id} in org #{orgname} DeskproID #{dpid}"+
-                "has an invalid value '#{value}'"
-        end
+      if vocab
+        tag_index[name].map! do |index|
+          # Check the ID is valid. Is there a term in the "EN" language for it?
+          # (It's a shortcut, yes. We're biassed EN speakers!)
+          prefixed_value = "#{sid}:#{value}"
+          if !vocab.has_key?("EN") && vocab["EN"].has_key?(prefixed_value)
+            raise "tag '#{name} ID #{id} in org #{orgname} DeskproID #{dpid}"+
+                  "has an invalid value '#{value}'"
+          end
 
-        # rewrite the value to add the prefix
-        tag_index[name] = prefixed_value
+          # rewrite the value to add the prefix
+          prefixed_value
+        end
       end
     end
 
-    sector = tag_index['sector']
-    category = tag_index['category']
+    sector = tag_index['sector']&.first
+    category = tag_index['category']&.first
+    member_of = tag_index['memberOf']&.join(';') # SIDs never have semis in
 
     addr =
       [
@@ -238,13 +254,14 @@ module DotCoop
       base_membership_type: nil,
       latitude: nil,
       longitude: nil,
-      geocontainer: nil,
+      geocontainer: geocoded&.osm_uri,
       geocontainer_lat: geocoded&.lat,
       geocontainer_lon: geocoded&.lng,
       geocontainer_confidence: geocoded&.confidence,
       geocoded_addr: addr,
       econ_sector_id: sector,
       org_category_id: category,
+      member_of: member_of,
     }
 
     
@@ -259,7 +276,7 @@ module DotCoop
     )
   end
   
-  def self.dotcoop_import(json_file, csv_file, vocabs_file, geocode)
+  def self.dotcoop_import(json_file, csv_file, vocabs_file, geocode, dotcoop_tag_uri)
     json = IO.read(json_file)
     data = JSON.parse(json)
     
@@ -280,8 +297,17 @@ module DotCoop
       raise "Top `tagDictionary` JSON element should be an object, in #{json_file}"
     end
 
-    vocabs = parse_dotcoop_tag_dictionary(tag_dictionary)
-    IO.write(vocabs_file, JSON.generate(vocabs))
+    vocabs = parse_dotcoop_tag_dictionary(tag_dictionary, dotcoop_tag_uri)
+
+    # Add the orgs_vocab
+    vocabs['prefixes'][dotcoop_tag_uri+MemberOfUUID+"/"] ||= MemberOfSID
+    orgs_vocab = {}
+    orgs_vocabs = vocabs[MemberOfSID+':'] ||= {
+      EN: {
+        "title" => "DotCoop registrant organisation names",
+        "terms" => orgs_vocab,
+      }
+    }    
 
     CSV.open(csv_file, 'w', headers: OutSchema.field_headers, write_headers: true) do |csv|
       organisations.each do |org|
@@ -290,13 +316,16 @@ module DotCoop
           raise "`organisation` JSON elements should be an objects, in #{json_file}"
         end
 
-        # Parse it
-        row = parse_dotcoop_organisation(org, vocabs, geocode)
+        # Parse it - also add the organisation to the vocabs
+        row = parse_dotcoop_organisation(org, vocabs, orgs_vocab, geocode)
 
         # Write it
         csv << row
       end
     end
+
+    
+    IO.write(vocabs_file, JSON.generate(vocabs))    
   end
   
            
@@ -345,7 +374,8 @@ module DotCoop
       cache: cache,
     )
 
-    dotcoop_import original_json, output_csv, dotcoop_vocab_json, geocode
+    dotcoop_tag_uri = config.DOTCOOP_TAG_URI
+    dotcoop_import original_json, output_csv, dotcoop_vocab_json, geocode, dotcoop_tag_uri
     
   rescue => e
     raise "error transforming #{original_json} into #{output_csv}: #{e.message}"
