@@ -24,7 +24,6 @@
 # information.
 
 require 'se_open_data/utils/password_store'
-require 'se_open_data/utils/error_document_generator'
 require 'se_open_data/config'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schemas'
@@ -106,7 +105,7 @@ class Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:, config:)
+  def self.mk_converter(from_schema:, to_schema:, config:, geocode: )
       # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
     ess = config.ESSGLOBAL_URI + 'standard/'
@@ -140,6 +139,18 @@ class Converter
            |
            # A mapping to the target schema field ids
 
+           addr =
+           [
+             main_address_supplemental_1,
+             main_address_supplemental_2,
+             main_address_city,
+             main_address_postcode,
+             main_address_country,
+           ].compact
+             .select {|it| it != nil and it =~ /\S/ }
+             .join(", ")
+           geocoded = geocode.call(addr)
+           
            {
              id: id.to_i,
              name: name || "No Name",
@@ -184,9 +195,11 @@ class Converter
              base_membership_type: base_membership_type(typology, ess+BMT),
              latitude: types.normalise_float(main_address_latitude, default: nil),
              longitude: types.normalise_float(main_address_longitude, default: nil),
-             geocontainer: nil,
-             geocontainer_lat: nil,
-             geocontainer_lon: nil,
+             geocontainer: geocoded&.osm_uri,
+             geocontainer_lat: geocoded&.lat,
+             geocontainer_lon: geocoded&.lng,
+#             geocontainer_confidence: geocoded&.confidence,
+#             geocoded_addr: addr,
            }
     end
   end
@@ -224,26 +237,21 @@ class Converter
     # This defines the input CSV schema we expect (after clean-up and geolocation)
     schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)    
     
+    cache = SeOpenData::Utils::FileCache.new.load(config.GEODATA_CACHE)
+    geocode = SeOpenData::Geocoding.new.build(
+      lookup: :geoapify,
+      api_key: api_key,
+      cache: cache,
+    )
+    
     # A converter between the two
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema, config: config)
+    converter = mk_converter(from_schema: schema, to_schema: StdSchema, config: config,
+                             geocode: geocode)
     
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
     converter.convert File.open(original_csv, "r:bom|utf-8"), converted
     
-    # add location data
-    SeOpenData::CSV.add_postcode_lat_long(infile: converted,
-                                          outfile: output_csv,
-                                          api_key: api_key,
-                                          lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                                          postcode_global_cache: config.GEODATA_CACHE,
-                                          replace_address: false)
-
-    # generate the report files (no need to pass a key)
-    low_bar = 0.05
-    geoapify = SeOpenData::CSV::Standard::GeoapifyStandard::Geocoder.new("")
-    geoapify.gen_geo_report(config.GEODATA_CACHE, low_bar, generated_reports_folder, converted, ["Description"])
-    geoapify.gen_geo_location_confidence_csv(config.GEODATA_CACHE, generated_reports_folder, converted, low_bar)
   end
 
   private
