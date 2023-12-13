@@ -1,13 +1,14 @@
 GIT
   remote: https://github.com/DigitalCommons/se-open-data.git
-  revision: 8c8f294b831d1818b074698d0fe51dd4635dcbd3
-  branch: v2.1.1
+  revision: 8b345f5336932cc1ad1766dd1881ec68bcfbf994
+  branch: v2.2.0
   specs:
-    se_open_data (1.0.0)
+    se_open_data (2.2.0)
+      geocoder (>= 1.8)
       httparty
       i18n
       levenshtein
-      linkeddata
+      linkeddata (>= 3.2)
       nokogiri
       normalize_country
       opencage-geocoder
@@ -30,6 +31,7 @@ GEM
       scanf (~> 1.0)
       sxp (~> 1.2)
       unicode-types (~> 1.8)
+    geocoder (1.8.2)
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
