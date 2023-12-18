@@ -63,6 +63,17 @@ module Converter
     'Membership Type Label (from External Initiative)',
   ]
 
+  def self.parse_no(nature_of_org)
+    case(nature_of_org.to_s.downcase.gsub(/\s+/, ''))
+    when 'obocriteriaenterprise'
+      'communityEnt'
+    when 'supportortrainingorganisation'
+      'supportOrg'
+    else
+      raise "Unrecognised value for nature_of_org: #{nature_of_org}"
+    end
+  end
+
   # Splits the field by the given delimiter, passes to the block for mapping,
   #
   # Parses the block like a CSV row, with default delimiter
@@ -206,7 +217,7 @@ module Converter
           {
             id: id.delete_prefix('rec'),
             name: name || ext_name,
-            nature_of_org: Types.multivalue(nature_of_org) {|subfield| subfield.chomp },
+            nature_of_org: Types.multivalue(nature_of_org) {|subfield| parse_no(subfield) },
             description: description || ext_description,
             relationship_to_obo: Types.multivalue(type_of_relationship) {|subfield| subfield.chomp },
             organisational_structure: _multi_prefix(os, organisational_structure_ids || ext_organisational_structure_ids),
