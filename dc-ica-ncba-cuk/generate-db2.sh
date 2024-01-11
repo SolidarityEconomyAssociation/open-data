@@ -77,9 +77,6 @@ sqlite3  -csv $DB "select Identifier, Domains from $DC_TB" | \
     csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
 #done
 
-
-
-
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
     sqlite3 $DB "alter table domains add column $FK TEXT"
@@ -89,6 +86,11 @@ done
 # and the domains field ($DC_FK there already)
 sqlite3 $DB "create index domain on domains (domain)"
 sqlite3 $DB "create index $DC_FK on domains ($DC_FK)"
+
+# Before we add more domains from other datasets, create a table
+# linking all the .coop domains to their DC registrant orgs.
+sqlite3 $DB "create table dc_domains as select domain, dcid from domains;"
+
 
 # Create foreign refs from domains to $NCBA_TB and $ICA_TB
 # tables based on Domains/Domain matches
@@ -100,17 +102,175 @@ sqlite3 $DB "insert into domains (domain,$CUK_FK) select $CUK_TB.Domain,$CUK_TB.
 # DC, ICA and NCBA databases
 sqlite3 $DB "create table domain_freq as select domain, count(dcid) as dc, count(icaid) as ica, count(ncbaid) as ncba, count(cukid) as cuk from domains group by domain;"
 
-# View left joining ICA and DC to NCBA. i.e. All the NCB orgs.
-# Duplicate fields are disambiguated with a :X suffix, using incrementing indexes as X.
-sqlite3 $DB "create view ncba_x as select ncba.*, dc.*,ica.* from ncba left join (select * from domains, dc where domains.dcid = dc.Identifier) as dc on dc.domain = ncba.domain left join ica on ica.Domain = ncba.Domain and ica.Domain like '%.coop'";
 
-# All the domains linked to DC orgs
-sqlite3 $DB "create view dc_domains as select * from domains, dc where domains.dcid = dc.Identifier;"
+# FIXME remove
+# domains has all the domains, at least once
+# domain_freq has all the domains just once, plus null (plus ''?)
+# select all ncba,
+#   left join ica on ica.domain = ncba.domain
+#   left join dc on dc.id = domains.dcid and domains.domain = ncba.domain
+# select all ica
+#   left join ncba on ncba.domain = ica.domain
+#   left join dc on dc.id = domains.dcid and domains.domain = ica.domain
+#   exclude ncba
+# select all
+# then select all the ica with domains which have ncba freq = 0
+# then select all the dc with ncba freq and ica freq = 0
+#  this last step is more complicated as dc orgs can have more than one domain
+#  select all the domain_freq rows where dcid is set but ica and and ncba are 0
 
-# View left joining DC to ICA. i.e. All the ICA orgs not in ncba_x FIXME or DC?
-sqlite3 $DB "create view ica_x as select ica.*, dc_domains.* from ica left join dc_domains on dc_domains.domain = ica.Domain;"
+# join dc to domain by dcid, getting one row per domain (but possible duplicate dcids)
+# left join domain_freq to this by domain, to get the ica and ncba freqs
+# eliminate those with non-zero
 
-# All the DC domains not in NCBA FIXME or ICA?
-sqlite3 $DB "create view dc_x as select count(dc.Identifier) as NumDomains,dc.* from dc left join (select distinct domains.domain, domains.dcid from domains, domain_freq where domains.domain = domain_freq.domain and domain_freq.ncba = 0 and domain_freq.ica = 0 and domain_freq.cuk = 0) as d on d.dcid = dc.Identifier  group by dc.Identifier;"
 
+# domain ncbaid dcid icaid
+
+#-------
+
+
+# Aim: select each org from all datasets once only, and combine NCBA,
+# DC and ICA information where a correspondance can be established
+# based on the .coop domains.
+#
+# Note that only .coop domains can be guaranteed used by a single
+# organisation, and even then this may be only approximately true
+# (noting the re-use of APEX org domains in CUK dataset)
+#
+# Note: the dotcoop database is being curated to try and identify
+# unique organisations but because of the way registries work, may not
+# always correctly identify registrants that are the same
+# organisation.
+#
+# Note: sometimes the DC table is inconsistent with the NCBA and ICA
+# domains! So you may find .coop domains in the latter two which aren't in
+# the former.
+#
+# Assumptions:
+# - a .coop domain can only be linked to one org
+# - other domains can be linked with one or more orgs
+# - (assuming there are no domains inclulded not linked to an org)
+# - an org can be linked to zero or more domains
+#
+# General procedure: somewhat like deduplicating set members in a Venn diagram,
+# we take one set, then add in the others, whilst removing the overlaps. The overlaps
+# get incrementally broader in each step.
+#
+# allorgs = dc + (ncba - dc) + (ica - dc - ncba)
+#
+# Partially translating into SQL logic:
+# 1) dc [ join ica and ncba via dc_domains table, we know max one .coop domain each ]
+# 2) + ncba without .coop [ left join to dc_domains, select null domain ] 
+# 3) + ica without .coop or ncbaid [ left join to dc_domains, select null domain ]
+#      [ left join ncba on domain, select null ncbid ]
+# FIXME update this
+
+
+# View including all ncba orgs linked to a .coop domain, along with with the dcid
+sqlite3 $DB "create view ncbaid_to_dcid as \
+select \
+  dc_domains.dcid as dcid, \
+  dc.Name as dc_name, \
+  dc.Domains as dc_domains, \
+  ncba.Identifier as ncbaid, \
+  ncba.Name as ncba_name, \
+  ncba.Domain as ncba_domain, \
+  NULL as icaid, \
+  NULL as ica_name, \
+  NULL as ica_domain \
+from ncba \
+left join dc_domains, dc on \
+  ncba.Domain = dc_domains.domain and \
+  dc_domains.dcid = dc.Identifier
+";
+
+# Problem - two different ncba orgs link to same dc org
+#dcid	dc_name	dc_domains	ncbaid	ncba_name	ncba_domain	icaid	ica_name	ica_domain
+#VKoYjW	NRTC	westflorida.coop;winntelwb.coop;victoriaelectric.coop;unitedwb.coop;vecbeatthepeak.coop;trueband.coop;ruralconnect.coop;shelbywb.coop;rswb.coop;oecc.coop;pemtel.coop;nrtc.coop;noblesce.coop;northriver.coop;nepower.coop;marshallremc.coop;mytimetv.coop;llwb.coop;localexede.coop;lcwb.coop;jasperremc.coop;infinium.coop;fcremc.coop;fultoncountyremc.coop;ctv.coop;cimarron.coop;cooperativewireless.coop;ccnc.coop;buynest.coop;bvea.coop;arcadiatel.coop	8227012210.0	National Rural Telecommunications Cooperative	nrtc.coop			
+#VKoYjW	NRTC	westflorida.coop;winntelwb.coop;victoriaelectric.coop;unitedwb.coop;vecbeatthepeak.coop;trueband.coop;ruralconnect.coop;shelbywb.coop;rswb.coop;oecc.coop;pemtel.coop;nrtc.coop;noblesce.coop;northriver.coop;nepower.coop;marshallremc.coop;mytimetv.coop;llwb.coop;localexede.coop;lcwb.coop;jasperremc.coop;infinium.coop;fcremc.coop;fultoncountyremc.coop;ctv.coop;cimarron.coop;cooperativewireless.coop;ccnc.coop;buynest.coop;bvea.coop;arcadiatel.coop	8227153053.0	Cooperative Council of North Carolina	ccnc.coop			
+
+# Ditto for ICA
+sqlite3 $DB "create view icaid_to_dcid as \
+select \
+  dc_domains.dcid as dcid, \
+  dc.Name as dc_name, \
+  dc.Domains as dc_domains, \
+  NULL as ncbaid, \
+  NULL as ncba_name, \
+  NULL as ncba_domain, \
+  ica.Identifier as icaid, \
+  ica.Name as ica_name, \
+  ica.Domain as ica_domain \
+from ica \
+left join dc_domains, dc on \
+  ica.Domain = dc_domains.domain and \
+  dc_domains.dcid = dc.Identifier \
+";
+
+
+# View listing all ncba non .coop orgs
+sqlite3 $DB "create view ncba_not_dc_orgs as \
+select \
+  NULL as dcid, \
+  NULL as dc_name, \
+  NULL as dc_domain, \
+  ncba.Identifier as ncbaid, \
+  ncba.Name as ncba_name, \
+  ncba.Domain as ncba_domain, \
+  NULL as icaid, \
+  NULL as ica_name, \
+  NULL as ica_domain \
+from ncba \
+left join ncbaid_to_dcid as n2d on \
+  ncba.Identifier = n2d.ncbaid \
+where \
+  n2d.ncbaid is NULL \
+"
+
+# Ditto for ICA
+sqlite3 $DB "create view ica_not_dc_orgs as \
+select \
+  NULL as dcid, \
+  NULL as dc_name, \
+  NULL as dc_domain, \
+  NULL as ncbaid, \
+  NULL as ncba_name, \
+  NULL as ncba_domain, \
+  ica.Identifier as icaid, \
+  ica.Name as ica_name, \
+  ica.Domain as ica_domain \
+from ica \
+left join icaid_to_dcid as i2d on \
+  ica.Identifier = i2d.icaid \
+where \
+  i2d.icaid is NULL \
+"
+
+# View combining the dc registered ncba and ica orgs to the matching dc orgs
+sqlite3 $DB "create view dc_orgs as \
+select \
+  dc.Identifier as dcid, \
+  dc.Name as dc_name, \
+  dc.Domains as dc_domains, \
+  n2d.ncbaid as ncbaid, \
+  n2d.ncba_name as ncba_name, \
+  n2d.ncba_domain as ncba_domain, \
+  i2d.icaid as icaid, \
+  i2d.ica_name as ica_name, \
+  i2d.ica_domain as ica_domain \
+from dc \
+left join ncbaid_to_dcid as n2d on \
+  dc.Identifier = n2d.dcid \
+left join icaid_to_dcid as i2d on \
+  dc.Identifier = i2d.dcid \
+;"
+
+# view combining dc registered, non-dc registered ncba and non-dc registered ica orgs
+sqlite3 $DB "create view all_orgs as \
+select * from dc_orgs
+union
+select * from ncba_not_dc_orgs
+union
+select * from ica_not_dc_orgs
+;"
 
