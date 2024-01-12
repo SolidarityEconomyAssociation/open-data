@@ -1,6 +1,6 @@
 OUTDIR=./generated-data
 
-DC_URL=https://dev.data.solidarityeconomy.coop/dotcoop2023/standard.csv
+DC_URL=https://dev.data.solidarityeconomy.coop/dotcoop/standard.csv
 DC_CSV=$OUTDIR/dc.csv 
 DC_TB=dc
 DC_FK=dcid
