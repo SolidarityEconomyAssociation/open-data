@@ -40,7 +40,14 @@ for TB in $ICA_TB $CUK_TB; do
 done
 
 # For ICA, NCBA, CUK: clean them up into bare domains
-for TB in $ICA_TB $NCBA_TB $CUK_TB; do 
+for TB in $ICA_TB $NCBA_TB $CUK_TB; do
+    # Make add a unique index on Identifier
+    sqlite3 $DB "alter table $TB add column temp VARCHAR NOT NULL DEFAULT '-'"
+    sqlite3 $DB "update $TB set temp = Identifier"
+    sqlite3 $DB "alter table $TB drop column Identifier"
+    sqlite3 $DB "alter table $TB rename column temp to Identifier"
+    sqlite3 $DB "create unique index ${TB}Identifier on $TB (Identifier)"
+    
     sqlite3 $DB "update $TB set Domain = lower(Domain)"
     sqlite3 $DB "update $TB set Domain = replace(Domain, 'http://', '')"
     sqlite3 $DB "update $TB set Domain = replace(Domain, 'https://', '')"
