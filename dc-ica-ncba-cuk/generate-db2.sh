@@ -39,6 +39,15 @@ for TB in $ICA_TB $CUK_TB; do
     sqlite3 $DB "update $TB set Domain = Website"
 done
 
+# For ICA, NCBA - make the Identifier field an integer (not a real)
+# Otherwise, sqlite will insert a trailing '.0' on export
+for TB in $ICA_TB $NCBA_TB $CUK_TB; do
+    sqlite3 $DB "alter table $TB add column temp INTEGER"
+    sqlite3 $DB "update $TB set temp = Identifier"
+    sqlite3 $DB "alter table $TB drop column Identifier"
+    sqlite3 $DB "alter table $TB rename column temp to Identifier"
+done
+
 # For ICA, NCBA, CUK: clean them up into bare domains
 for TB in $ICA_TB $NCBA_TB $CUK_TB; do
     # Make add a unique index on Identifier
