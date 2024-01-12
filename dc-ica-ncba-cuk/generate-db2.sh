@@ -30,12 +30,12 @@ csvsql --db sqlite:///$DB --tables $NCBA_TB --blanks --no-constraints --insert $
 csvsql --db sqlite:///$DB --tables $CUK_TB --blanks --no-constraints --insert $CUK_CSV
 
 # Add Domains field to $DC_TB
-sqlite3 $DB "alter table $DC_TB add column Domains TEXT"
+sqlite3 $DB "alter table $DC_TB add column Domains VARCHAR"
 
 # For ICA, CUK: Copy Website URLs as Domain
 for TB in $ICA_TB $CUK_TB; do
     # Add Domain field
-    sqlite3 $DB "alter table $TB add column Domain TEXT"
+    sqlite3 $DB "alter table $TB add column Domain VARCHAR"
     sqlite3 $DB "update $TB set Domain = Website"
 done
 
@@ -79,7 +79,7 @@ sqlite3  -csv $DB "select Identifier, Domains from $DC_TB" | \
 
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
-    sqlite3 $DB "alter table domains add column $FK TEXT"
+    sqlite3 $DB "alter table domains add column $FK VARCHAR"
     sqlite3 $DB "create unique index $FK on domains ($FK)"
 done
 
