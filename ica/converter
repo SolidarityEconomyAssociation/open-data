@@ -222,10 +222,6 @@ class Converter
     # original src csv files
     original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
-    # Intermediate csv files
-    converted = File.join(config.GEN_CSV_DIR, "converted.csv")
-    geolocated = File.join(config.GEN_CSV_DIR, "geolocated.csv")
-
     # Output csv file
     output_csv = config.STANDARD_CSV
     generated_reports_folder = File.join(config.TOP_OUTPUT_DIR, "reports")
@@ -249,8 +245,7 @@ class Converter
                              geocode: geocode)
     
     # Transforms to our standard CSV schema.
-    # Note the BOM and encoding flags, which avoid a MalformedCSVError
-    converter.convert File.open(original_csv, "r:bom|utf-8"), converted
+    converter.json_convert(original_csv, ['values'], output_csv)
     
   end
 
