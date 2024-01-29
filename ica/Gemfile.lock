@@ -1,13 +1,14 @@
 GIT
-  remote: https://github.com/SolidarityEconomyAssociation/se-open-data.git
-  revision: 8c8f294b831d1818b074698d0fe51dd4635dcbd3
-  branch: v2.1.1
+  remote: https://github.com/DigitalCommons/se-open-data.git
+  revision: d805b584aeb352aaad2c60243261b8cf76cae277
+  branch: v2.2.1
   specs:
-    se_open_data (1.0.0)
+    se_open_data (2.2.1)
+      geocoder (>= 1.8)
       httparty
       i18n
       levenshtein
-      linkeddata
+      linkeddata (>= 3.2)
       nokogiri
       normalize_country
       opencage-geocoder
@@ -17,19 +18,20 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.4)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     bcp47 (0.3.3)
       i18n
     builder (3.2.4)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
-    ebnf (2.3.3)
+    ebnf (2.3.5)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
       scanf (~> 1.0)
       sxp (~> 1.2)
       unicode-types (~> 1.8)
+    geocoder (1.8.2)
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
@@ -39,9 +41,9 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.0)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    json-canonicalization (0.3.2)
+    json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
       json-canonicalization (~> 0.3, >= 0.3.2)
@@ -52,8 +54,8 @@ GEM
     json-ld-preloaded (3.2.2)
       json-ld (~> 3.2)
       rdf (~> 3.2)
-    ld-patch (3.2.0)
-      ebnf (~> 2.2)
+    ld-patch (3.2.2)
+      ebnf (~> 2.3)
       rdf (~> 3.2)
       rdf-xsd (~> 3.2)
       sparql (~> 3.2)
@@ -88,30 +90,30 @@ GEM
       sparql (~> 3.2, >= 3.2.4)
       sparql-client (~> 3.2, >= 3.2.1)
       yaml-ld (~> 0.0)
-    logger (1.5.3)
+    logger (1.6.0)
     matrix (0.4.2)
-    mini_mime (1.1.2)
-    mini_portile2 (2.8.2)
+    mini_mime (1.1.5)
+    mini_portile2 (2.8.5)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    nokogiri (1.15.2)
+    nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     normalize_country (0.3.2)
-    opencage-geocoder (3.1.0)
+    opencage-geocoder (3.1.1)
     pdf-core (0.9.0)
     prawn (2.4.0)
       pdf-core (~> 0.9.0)
       ttfunk (~> 1.7)
     prawn-table (0.2.2)
       prawn (>= 1.3.0, < 3.0.0)
-    psych (5.1.0)
+    psych (5.1.2)
       stringio
-    public_suffix (5.0.1)
-    racc (1.6.2)
-    rack (3.0.7)
+    public_suffix (5.0.4)
+    racc (1.7.3)
+    rack (3.0.8)
     rdf (3.2.10)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.2.1)
@@ -134,7 +136,7 @@ GEM
       rdf (~> 3.2)
       sparql (~> 3.2)
       sxp (~> 1.2)
-    rdf-normalize (0.5.1)
+    rdf-normalize (0.6.1)
       rdf (~> 3.2)
     rdf-ordered-repo (3.2.1)
       rdf (~> 3.2, >= 3.2.1)
@@ -204,14 +206,14 @@ GEM
     sparql-client (3.2.1)
       net-http-persistent (~> 4.0, >= 4.0.1)
       rdf (~> 3.2, >= 3.2.6)
-    stringio (3.0.7)
+    stringio (3.1.0)
     sxp (1.2.4)
       matrix (~> 0.4)
       rdf (~> 3.2)
     temple (0.10.2)
     tilt (2.1.0)
     ttfunk (1.7.0)
-    unicode-types (1.8.0)
+    unicode-types (1.9.0)
     yaml-ld (0.0.2)
       json-ld (~> 3.2, >= 3.2.3)
       psych (>= 3.3)
@@ -226,4 +228,4 @@ DEPENDENCIES
   se_open_data!
 
 BUNDLED WITH
-   2.2.17
+   2.4.21
