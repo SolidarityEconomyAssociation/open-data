@@ -24,7 +24,7 @@ curl -f $CUK_URL >$CUK_CSV
 
 
 # --blanks is important otherwise 'NA', 'N/A', 'none' or 'null' -> null!
-csvsql --db sqlite:///$DB --tables $DC_TB --blanks --insert $DC_CSV
+csvsql --db sqlite:///$DB --tables $DC_TB --blanks --no-constraints --insert $DC_CSV
 csvsql --db sqlite:///$DB --tables $ICA_TB --blanks --no-constraints --insert $ICA_CSV
 csvsql --db sqlite:///$DB --tables $NCBA_TB --blanks --no-constraints --insert $NCBA_CSV
 csvsql --db sqlite:///$DB --tables $CUK_TB --blanks --no-constraints --insert $CUK_CSV
