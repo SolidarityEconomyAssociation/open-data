@@ -67,7 +67,17 @@ for TB in $ICA_TB $NCBA_TB $CUK_TB; do
     sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # third?
     # Remove any remaining www. subdomains
     sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like 'www.%.%'"; # third?
+done
 
+# Cleanup for all datasets
+for TB in $ICA_TB $NCBA_TB $DC_TB $CUK_TB; do    
+    # Replace empty strings which represent nulls with nulls
+
+    sqlite3 "$DB" "select f.name from sqlite_master t, pragma_table_info((t.name)) f on t.name <> f.name where t.name = '$TB'" |
+	while IFS=$'\n' read -rs FIELD; do
+	    sqlite3 $DB "update $TB set \`$FIELD\` = NULL where \`$FIELD\` = '';"
+	done
+		   
     # Any orgs with lat/lng 0,0 should be set to null (this is a problem with ICA data at least,
     # which may need fixing properly upstream
     sqlite3 $DB "update $TB set Latitude = null, Longitude = null where Latitude = 0 and Longitude = 0;"
