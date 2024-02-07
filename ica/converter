@@ -34,7 +34,7 @@ require 'normalize_country'
 class Converter
 
   # The output schema
-  StdSchema = SeOpenData::CSV::Schemas::Latest
+  OutSchema = SeOpenData::CSV::Schema.load_file("output.yml")
 
   def self.normalise_country(country, id)
     # Special-case HACKS for ICA data.  We happen to know these cases
@@ -198,8 +198,8 @@ class Converter
              geocontainer: geocoded&.osm_uri,
              geocontainer_lat: geocoded&.lat,
              geocontainer_lon: geocoded&.lng,
-#             geocontainer_confidence: geocoded&.confidence,
-#             geocoded_addr: addr,
+             geocontainer_confidence: geocoded&.confidence,
+             geocoded_addr: addr,
            }
     end
   end
@@ -241,7 +241,7 @@ class Converter
     )
     
     # A converter between the two
-    converter = mk_converter(from_schema: schema, to_schema: StdSchema, config: config,
+    converter = mk_converter(from_schema: schema, to_schema: OutSchema, config: config,
                              geocode: geocode)
     
     # Transforms to our standard CSV schema.
