@@ -141,6 +141,7 @@ class Converter
 
            addr =
            [
+             main_address_street,
              main_address_supplemental_1,
              main_address_supplemental_2,
              main_address_city,
