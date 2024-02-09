@@ -18,7 +18,7 @@ if [ -e $DB ]; then
 fi
 
 curl -f $DC_URL >$DC_CSV
-#curl -f $ICA_URL >$ICA_CSV
+curl -f $ICA_URL >$ICA_CSV
 curl -f $NCBA_URL >$NCBA_CSV
 curl -f $CUK_URL >$CUK_CSV
 
