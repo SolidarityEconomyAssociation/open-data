@@ -1,7 +1,7 @@
 ---
-id: :sse_initiatives
-name: Solidarity Economy Initiatives
-version: 4
+id: :worker_coop_standard
+name: Worker Coop standardised fields
+version: 2
 primary_key:
 - :id
 comment: 
@@ -193,10 +193,6 @@ fields:
   comment: 
 - id: registered_status
   header: Registered Status
-  desc: 
-  comment: 
-- id: new_registered_status
-  header: New Registered Status
   desc: 
   comment: 
 - id: registered_number

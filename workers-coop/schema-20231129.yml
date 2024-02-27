@@ -1,50 +1,98 @@
 ---
 id: :worker-coop
 name: Worker Co-op
-version: 202311239
+version: 20240226
 primary_key:
 - :contact_id
 comment: 
 fields:
-- id: display_name
-  header: Display Name
-  desc: 
-  comment:
-
 - id: contact_id
   header: Contact ID
-  desc: 
-  comment: 
+  desc: Worker.coop's unique identifier for this organisation
+  comment: Should be a unique integer ID.
+
+- id: display_name
+  header: Display Name
+  desc: A human readable name for the organisation.
+  comment: Assumed to be in English, where this matters.
 
 - id: sic_code
   header: Sic Code
   desc: 
-  comment: 
+  comment: An integer ID, or empty
 
 - id: type_of_organisation
   header: Type of organisation
-  desc: 
-  comment: 
+  desc: Indicates the type of the organisation, in terms of its ownership
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+    
+    - 1	Co-operative
+    - 2	Unknown
 
 - id: legal_form
   header: Legal Form
   desc: 
-  comment: 
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+      
+    - 1	Co-operative Society
+    - 2	Community Benefit Society
+    - 3	Community Interest Company
+    - 4	Company
+    - 5	Company Limited by Guarantee
+    - 6	Company Limited by Shares
+    - 7	LLP
+    - 8	PLC
+    - 9	Society
+    - 10	Unincorporated
+    - 11	Unknown
 
 - id: ownership_type
   header: Ownership type
-  desc: 
-  comment: 
+  desc: The type of ownership type organisation
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+    
+    - 1	Self-employed
+    - 2	Workers
+    - 3	Unknown
 
 - id: industry
   header: Industry
-  desc: 
-  comment: 
+  desc: Worker.coop's definition of the industry this organisation operates within
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+    
+    - 1	Agriculture
+    - 2	Arts and Culture
+    - 3	Digital, Media and Communication
+    - 4	Education
+    - 5	Energy and Environment
+    - 6	Finance
+    - 7	Food service, Accommodation and Pubs
+    - 8	Health and Social Care
+    - 9	Housing
+    - 10	Manufacturing
+    - 11	Membership associations, social clubs and trade unions
+    - 12	Other
+    - 13	Professional and Legal services
+    - 14	Retail
+    - 15	Sports and Recreation
+    - 16	Transport
+    - 17	Unknown
 
 - id: registered_status
   header: Registered Status
   desc: 
-  comment: 
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+    
+    - 1	Live
+    - 2	Dormant
+    - 3	In liquidation, administration or winding up
+    - 4	Dead
+    - 5	Unknown
 
 - id: registered_number
   header: Registered Number
@@ -72,76 +120,60 @@ fields:
 
 - id: description
   header: Description
-  desc: 
-  comment: 
+  desc: A human-readable description of the organisation
+  comment: In English, assumed to contain no formatting.
 
 - id: organisational_structure
   header: Organisational structure
-  desc: 
-  comment: 
+  desc: The type of structure used for the organisation
+  comment: An ID (not URI) from the ESSGLOBAL Organisational Structure vocabualary. May be empty
 
 - id: primary_activity
   header: Primary Activity
   desc: 
-  comment: 
+  comment: An ID (not URI) from the ESSGLOBAL Economic Activities vocabualary. May be empty
 
 - id: sector
   header: Sector
   desc: |
-    To complement the sector, which uses hierarchical SIC codes,
+    To complement the SIC sector, which uses hierarchical SIC codes,
     Co-operatives UK produces a simplified, high level and
     non-hierarchical form of classification. It highlights areas most
     prominent in the co-operative sector and is subject to review and
     change over time.
+
+    This classification is derived from the SIC code. The Industry field uses the same taxonomy.
+  comment:  |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
     
-    This classification is derived from the SIC code and contains the
-    following categories:
-      - Agriculture
-      - Arts and Culture
-      - Digital, Media and Communication
-      - Education
-      - Energy and Environment
-      - Finance
-      - Food service, Accommodation and Pubs
-      - Health and Social Care
-      - Housing
-      - Manufacturing
-      - Membership associations, social clubs and trade unions
-      - None
-      - Other
-      - Professional and Legal services
-      - Retail
-      - Sports and Recreation
-      - Transport
-  comment: 'A category label. May be null.'
-  # values:
-  #   - Agriculture
-  #   - Arts and Culture
-  #   - Digital, Media and Communication
-  #   - Education
-  #   - Energy and Environment
-  #   - Finance
-  #   - Food service, Accommodation and Pubs
-  #   - Health and Social Care
-  #   - Housing
-  #   - Manufacturing
-  #   - Membership associations, social clubs and trade unions
-  #   - None
-  #   - Other
-  #   - Professional and Legal services
-  #   - Retail
-  #   - Sports and Recreation
-  #   - Transport
+    - 1	Agriculture
+    - 2	Arts and Culture
+    - 3	Digital, Media and Communication
+    - 4	Education
+    - 5	Energy and Environment
+    - 6	Finance
+    - 7	Food service, Accommodation and Pubs
+    - 8	Health and Social Care
+    - 9	Housing
+    - 10	Manufacturing
+    - 11	Membership associations, social clubs and trade unions
+    - 12	Other
+    - 13	Professional and Legal services
+    - 14	Retail
+    - 15	Sports and Recreation
+    - 16	Transport
+    - 17	Unknown
 
 - id: membership_type
   header: Membership Type
-  desc: 
-  comment: 
+  desc: The kind of membership supported by the organisation.
+  comment: An ID (not URI) from the ESSGLOBAL Base Membership Type vocabualary. May be empty
 
 - id: sic_section
   header: SIC Section
-  comment: 'A category. May be null.'
-  # values:
+  desc: Indicates which of the SIC categorisations applies to this organisation
+  comment: 'A single category, which is a letter of the alphabet. May be empty.'
+  # values correspond to:
   #   - Accommodation and Food Services
   #   - Administrative and Support Services
   #   - Agriculture, Forestry and Fishing
@@ -163,23 +195,16 @@ fields:
   #   - Water Supply; Sewerage and Waste
   #   - Wholesale and Retail; Vehicle Repair
 
-- id: new_registered_status
-  header: New registered status
-  desc: 
-  comment: 
-
 - id: registrar
   header: Registrar
   desc: |
     Derived from the legal form, this indicates who the registrar for the organisation is.
-  comment: 'e.g FCA, Companies House, OSCR etc. Not unique, non-null.'
-  # values:
-  #   - Charity Commission
-  #   - Companies House
-  #   - FCA
-  #   - Legal Form is not defined
-  #   - OSCR
-  #   - Unknown legal form
+  comment: |-
+    An integer ID, or empty. Valid IDs and their descriptive labels are as:
+    
+    - 1	Companies House
+    - 2	FCA
+    - 3	Unknown
 
 - id: street_address
   header: Street Address
@@ -206,33 +231,38 @@ fields:
   desc: 
   comment: 
 
-- id: latitude
-  header: Latitude
-  desc: 
-  comment: 
+- id: country
+  header: Country
+  desc: Indicates the country of the address.
+  comment: |-
+    One of:
+    - United Kingdom
+    - Jersey
 
-- id: longitude
-  header: Longitude
-  desc: 
-  comment: 
-
-- id: country_id
-  header: Country ID
-  desc: 
-  comment: 
+    Possibly other allowed values. Should correspond to the country_id
 
 - id: country_code
   header: iso_code
   desc: The two-letter ISO code for the country.
-  comment: 
+  comment: An two-letter ISO country code.
+
+- id: latitude
+  header: Latitude
+  desc: 
+  comment: A decimal. May be empty if the address is the only indication.
+
+- id: longitude
+  header: Longitude
+  desc: 
+  comment: A decimal. May be empty if the address is the only indication.
 
 - id: email
   header: Email
-  desc: 
-  comment: 
+  desc: A contact email address
+  comment: May be empty
 
 - id: website
   header: Website
   desc: Where available, a link to the organisation’s website.
-  comment: 'A URL. May be null'
+  comment: An URL. May be empty
 

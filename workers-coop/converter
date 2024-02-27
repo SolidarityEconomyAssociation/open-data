@@ -54,6 +54,18 @@ class Converter
     end
   end
 
+  # Fill in blanks and nulls with some value, typically the taxonomy value for "Unknown"
+  def self.fill(value, default)
+    case(value)
+    when nil
+      default
+    when ""
+      default
+    else
+      value
+    end
+  end
+  
   # Returns a schema converter for the given schema.
   #
   # This defines the schema mapping for original data into the
@@ -91,21 +103,20 @@ class Converter
              sector: ,
              membership_type: ,
              sic_section: ,
-             new_registered_status: ,
              registrar: ,
              street_address: ,
              supplemental_address_1: ,
              supplemental_address_2: ,
              city: ,
              postal_code: ,
-             latitude: ,
-             country_id: ,
+             country: ,
              country_code: ,
+             latitude: ,
              longitude: ,
              email: ,
              website: 
            |
-           next if registered_status.downcase == 'dead'
+           next unless registered_status == "1" or registered_status == "2" # Live or dormant
 
            geocoded_addr =
              [
@@ -114,7 +125,7 @@ class Converter
                supplemental_address_2,
                city,
                postal_code,
-               country_code
+               country
              ].keep_if{|it| it&.match(/\S/)}.join(', ')
            
            geocoded = geocode.call(geocoded_addr)
@@ -124,8 +135,8 @@ class Converter
              id: contact_id,
              name: display_name,
              description: description,
-             organisational_structure: organisational_structure.sub(%r{^http.*/}, ''),
-             primary_activity: primary_activity.sub(%r{^http.*/}, ''),
+             organisational_structure: organisational_structure,
+             primary_activity: primary_activity,
              activities: nil,
              street_address: street_address,
              locality: city,
@@ -138,29 +149,28 @@ class Converter
              email: email,
              twitter: nil,
              facebook: nil,
-             companies_house_number: registrar == "Companies House"? registered_number : nil, # FIXME ids?
+             companies_house_number: registrar == "1"? registered_number : nil,
              qualifiers: nil,
-             base_membership_type: membership_type.sub(%r{^http.*/}, ''),
+             base_membership_type: membership_type,
              latitude: latitude,
              longitude: longitude,
-             geocontainer: nil,
+             geocontainer: geocoded&.osm_uri,
              geocontainer_lat: geocoded&.lat,
              geocontainer_lon: geocoded&.lng,
              geocontainer_confidence: geocoded&.confidence,
              geocoded_addr: geocoded_addr,
              supplemental_address_1: supplemental_address_1,
              supplemental_address_2: supplemental_address_2,
-             sector: sector,
+             sector: fill(sector, 17),
              sic_section: sic_section,
              sic_code: sic_code,
-             ownership_type: ownership_type,
-             industry: industry,
-             legal_form: legal_form,
-             type_of_organisation: type_of_organisation,
-             registered_status: registered_status,
-             new_registered_status: new_registered_status,
+             ownership_type: fill(ownership_type, 3),
+             industry: fill(industry, 17),
+             legal_form: fill(legal_form, 11),
+             type_of_organisation: fill(type_of_organisation, 2),
+             registered_status: fill(registered_status, 5),
              registered_number: registered_number,
-             registrar: registrar,
+             registrar: fill(registrar, 3),
              incorporation_date: incorporation_date,
              cuk_id: cuk_id
 
