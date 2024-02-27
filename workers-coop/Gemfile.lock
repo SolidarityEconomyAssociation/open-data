@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/DigitalCommons/se-open-data.git
-  revision: 91462828f3b2fab988bd41a323b7c77f36389048
-  branch: v2.2.0
+  revision: 8c12b5bd55dd04270ef5f86524f40559f3e0d2a1
+  branch: v2.2.2
   specs:
-    se_open_data (1.0.0)
+    se_open_data (2.2.2)
       geocoder (>= 1.8)
       httparty
       i18n
@@ -18,12 +18,13 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.5)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     bcp47 (0.3.3)
       i18n
+    bigdecimal (3.1.7)
     builder (3.2.4)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     ebnf (2.3.5)
       htmlentities (~> 4.3)
@@ -32,7 +33,7 @@ GEM
       sxp (~> 1.2)
       unicode-types (~> 1.8)
     geocoder (1.8.2)
-    haml (6.2.3)
+    haml (6.3.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -42,9 +43,9 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
-    json-canonicalization (0.3.2)
+    json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
       json-canonicalization (~> 0.3, >= 0.3.2)
@@ -91,28 +92,29 @@ GEM
       sparql (~> 3.2, >= 3.2.6)
       sparql-client (~> 3.2, >= 3.2.2)
       yaml-ld (~> 0.0)
-    logger (1.5.3)
+    logger (1.6.0)
     matrix (0.4.2)
     mini_mime (1.1.5)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    nokogiri (1.15.4-x86_64-linux)
+    nokogiri (1.15.6-x86_64-linux)
       racc (~> 1.4)
     normalize_country (0.3.2)
     opencage-geocoder (3.1.1)
-    pdf-core (0.9.0)
-    prawn (2.4.0)
-      pdf-core (~> 0.9.0)
-      ttfunk (~> 1.7)
+    pdf-core (0.10.0)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
     prawn-table (0.2.2)
       prawn (>= 1.3.0, < 3.0.0)
-    psych (5.1.1.1)
+    psych (5.1.2)
       stringio
-    public_suffix (5.0.3)
-    racc (1.7.2)
-    rack (3.0.8)
+    public_suffix (5.0.4)
+    racc (1.7.3)
+    rack (3.0.9.1)
     rdf (3.2.11)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.2.1)
@@ -204,14 +206,15 @@ GEM
     sparql-client (3.2.2)
       net-http-persistent (~> 4.0, >= 4.0.2)
       rdf (~> 3.2, >= 3.2.11)
-    stringio (3.0.8)
+    stringio (3.0.9)
     sxp (1.2.4)
       matrix (~> 0.4)
       rdf (~> 3.2)
     temple (0.10.3)
-    thor (1.3.0)
+    thor (1.3.1)
     tilt (2.3.0)
-    ttfunk (1.7.0)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     unicode-types (1.9.0)
     yaml-ld (0.0.2)
       json-ld (~> 3.2, >= 3.2.3)
@@ -225,6 +228,7 @@ PLATFORMS
 DEPENDENCIES
   rdf-rdfxml (~> 3.2, >= 3.2.1)
   se_open_data!
+  stringio (< 3.1.0)
 
 BUNDLED WITH
-   2.4.21
+   2.4.22
