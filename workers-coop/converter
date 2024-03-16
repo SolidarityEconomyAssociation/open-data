@@ -98,7 +98,9 @@ class Converter
     return SeOpenData::CSV::Schema.converter(
       from_schema: from_schema,
       to_schema: to_schema,
-      input_csv_opts: {skip_blanks: true}
+      input_csv_opts: {skip_blanks: true},
+      reject_invalid_pks: true,
+      reject_duplicate_pks: true,
       #    output_csv_opts: {quote_empty: false}
     ) do | # These parameters match source schema field ids
              display_name: ,
