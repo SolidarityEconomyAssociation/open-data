@@ -1,0 +1,3 @@
+B=https://lod.coop/workers-coop
+
+csvcut -tC header taxonomies-phrasetab.tsv | csvformat -T | ../../map-sse/vocabs/standard/phrasetab2vocabJson  -a ind=$B/ind/ -a cukms=$B/cukms/ -a lf=$B/lf/ -a ot=$B/ot/ -a reg=$B/reg/ -a rst=$B/rst/ -a sec=$B/sec/ -a sics=$B/sics/ -a to=$B/to/ -a ui=$B/ui/  > wc-vocabs.json
