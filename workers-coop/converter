@@ -36,6 +36,14 @@ class Converter
   # The output schema
   StdSchema = SeOpenData::CSV::Schemas::Latest
 
+  ACI = "activities-ica/"
+  BMT = "base-membership-type/"
+  OS = "organisational-structure/"
+  # QF = "qualifiers/"
+  COUN = "countries-iso/"
+  #  REG = "regions-ica/"
+  #  SREG = "super-regions-ica/"
+
   @@sic_code_to_sic_section = {}
   @@sic_division_to_ica_activity = {}
   @@legal_ownership_to_org_membership = {}
@@ -65,6 +73,12 @@ class Converter
       value
     end
   end
+
+  # Prepend an ID with a base, but only if it is set
+  def self.prepend(base, id)
+     return nil if id == nil or id == ""
+     base+id
+  end
   
   # Returns a schema converter for the given schema.
   #
@@ -76,9 +90,10 @@ class Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:, geocode:)
+  def self.mk_converter(from_schema:, to_schema:, geocode:, config:)
       # A convenient alias...
     types = SeOpenData::CSV::Schema::Types
+    ess = config.ESSGLOBAL_URI + 'standard/'
 
     return SeOpenData::CSV::Schema.converter(
       from_schema: from_schema,
@@ -116,7 +131,7 @@ class Converter
              email: ,
              website: 
            |
-           next unless registered_status == "1" or registered_status == "2" # Live or dormant
+           next unless registered_status == "1"  # Live
 
            geocoded_addr =
              [
@@ -135,14 +150,14 @@ class Converter
              id: contact_id,
              name: display_name,
              description: description,
-             organisational_structure: organisational_structure,
-             primary_activity: primary_activity,
+             organisational_structure: prepend(ess+OS, organisational_structure),
+             primary_activity: prepend(ess+ACI, primary_activity),
              activities: nil,
              street_address: street_address,
              locality: city,
              region: nil,
              postcode: postal_code,
-             country_id: country_code,
+             country_id: prepend(ess+COUN, country_code),
              territory_id: nil,
              homepage: types.normalise_url(website, default: nil),
              phone: nil,
@@ -151,7 +166,7 @@ class Converter
              facebook: nil,
              companies_house_number: registrar == "1"? registered_number : nil,
              qualifiers: nil,
-             base_membership_type: membership_type,
+             base_membership_type: prepend(ess+BMT, membership_type),
              latitude: latitude,
              longitude: longitude,
              geocontainer: geocoded&.osm_uri,
@@ -218,7 +233,8 @@ class Converter
     )
 
     # A converter between the two
-    converter = mk_converter(from_schema: input_schema, to_schema: output_schema, geocode: geocode)
+    converter = mk_converter(from_schema: input_schema, to_schema: output_schema,
+                             geocode: geocode, config: config)
 
     # Transforms to our standard CSV schema.
     # Note the BOM and encoding flags, which avoid a MalformedCSVError
@@ -228,7 +244,6 @@ class Converter
   end
 
   private
-
 
 end
 
