@@ -1,0 +1,216 @@
+---
+id: :worker_coop_standard
+name: Worker Coop standardised fields
+version: 2
+primary_key:
+- :id
+comment: 
+fields:
+- id: :id
+  header: Identifier
+  desc: A unique identifier for this initiative
+  comment: "As a consequence of needing to name generated static files with these
+    identifiers, which will then be published by a web server, they must be both
+    a) valid as a portion of a file-name on the (typically, Unix) host's file system,
+    and b) as a URI segment as defined by RFC3986 <https://tools.ietf.org/html/rfc3986#section-3.3>"
+- id: :name
+  header: Name
+  desc: The name of the initiative, as UTF-8 plain text
+  comment: Typically in English, but this depends on the context
+- id: :description
+  header: Description
+  desc: A description of the initiative, as a UTF-8 encoded HTML fragment
+  comment: "Typically in English, but this depends on the context. Hopefully not with
+    malicious content which could compromise security if embedded in a webpage (such
+    as phishing links or scripts), but this should validated and not be assumed
+    blindly to be safe."
+- id: :organisational_structure
+  header: Organisational Structure
+  desc: "The initiative's category of organisational structure. Allowed values are
+    single term URIs from a relevant vocabulary."
+  comment: "This was known as legal_form."
+- id: :primary_activity
+  header: Primary Activity
+  desc: "The main category of actitivity executed by the initiative. Allowed values
+    are single terms from a relevant vocabulary."
+  comment: ''
+- id: :activities
+  header: Activities
+  desc: "Any additional categories of actitivity executed by the initiative. Allowed
+    values are zero or more terms from a relevant vocabulary, separated by semi-colons."
+  comment: ''
+- id: :street_address
+  header: Street Address
+  desc: |
+    An optional street name and postbox number (where applicable) for the main address of
+    the initiative.
+  comment: ''
+- id: :locality
+  header: Locality
+  desc: |
+    An optional sub-regional locality (e.g. town, city, parish) for the main address of the initiative.
+    Typically a textual name, in the local language, UTF-8 encoded.
+  comment: ''
+- id: :region
+  header: Region
+  desc: |
+    An optional sub-national region for the main address of the initiative.
+    Typically a textual name, in the local language, UTF-8 encoded.
+  comment: ''
+- id: :postcode
+  header: Postcode
+  desc: 'An optional postcode or zipcode, applicable in the context of the main address.'
+  comment: ''
+- id: :country_id
+  header: Country ID
+  desc: |
+    An optional country identifier for the main address.
+    Should be an uppercase ISO-3166-1 two-letter country code.
+  comment: ''
+- id: :territory_id
+  header: Territory ID
+  desc: |
+    Indicates the territory in which the initiative operates. Values
+    should be a term from a relevant vocabulary, or other identifier.
+  comment: 'There are ESSGLOBAL SKOS vocabs for the ISO and ICA region/super-region
+    identifiers'
+- id: :homepage
+  header: Website
+  desc: An optional valid URL for the initiative's main web page
+  comment: ''
+- id: :phone
+  header: Phone
+  desc: An optional valid contact telephone number for the initiative
+  comment: Historically, if not international, these have been UK phone numbers.
+- id: :email
+  header: Email
+  desc: An optional valid contact email address for the initiative
+  comment: ''
+- id: :twitter
+  header: Twitter
+  desc: An optional valid URL for the initiative's main Twitter account
+  comment: ''
+- id: :facebook
+  header: Facebook
+  desc: |
+    An optional valid path for the initiative's main Facebook presence. Should be
+    prefixed with `http://facebook.com/` to get the actual URL.
+  comment: |
+    Historically, this can also be an actual URL, but this can cause problems
+    because of the prior assumption it is not.
+- id: :companies_house_number
+  header: Companies House Number
+  desc: A UK Companies House Number, when applicable. Optional.
+  comment: ''
+- id: :qualifiers
+  header: Qualifiers
+  desc: "Additional qualifiers on the initiative. Allowed values are zero or more
+    term URIs from a relevant vocabulary, separated by semi-colons."
+  comment: ''
+- id: :base_membership_type
+  header: Membership Type
+  desc: "The membership type of the initiative. Allowed values are zero or one term
+    URIs from a relevant vocabulary."
+  comment: ''
+- id: :latitude
+  header: Latitude
+  desc: |
+    An optional latitudinal coordinate of the initiative's main address, if known.
+    A floating point number.
+  comment: ''
+- id: :longitude
+  header: Longitude
+  desc: |
+    An optional longitudinal coordinage of the initiative's main address, if known.
+    A floating point number.
+  comment: ''
+- id: :geocontainer
+  header: Geo Container
+  desc: |
+    An optional identifier indicating a geographical region containing the initiative's
+    main address, if known.
+  comment: ''
+- id: :geocontainer_lat
+  header: Geo Container Latitude
+  desc: |
+    An optional latitudinal coordinate of the initiative's main address, when
+    inferred from the address fields. A floating point number.
+  comment: ''
+- id: :geocontainer_lon
+  header: Geo Container Longitude
+  desc: |
+    An optional longitudinal coordinate of the initiative's main address, when
+    inferred from the address fields. A floating point number.
+  comment: ''
+- id: :geocontainer_confidence
+  header: Geo Container Confidence
+  desc: |
+    An optional percentage indicating how certain this geocoded result is.
+  comment: ''
+- id: geocoded_addr
+  header: Geocoded Address
+  desc: The address used for geocoding
+  comment: ''
+- id: supplemental_address_1
+  header: Supplemental Address 1
+  desc: 
+  comment: 
+- id: supplemental_address_2
+  header: Supplemental Address 2
+  desc: 
+  comment: 
+- id: :sector
+  header: Sector
+  desc: |
+    The simplified, high-level economic sector of the organisation
+  comment: Should be an English language identifier phrase
+- id: :sic_section
+  header: SIC Section
+  desc: |
+    The SIC section indicating the general economic sector of the organisation
+  comment: Should be an English language identifier phrase
+- id: :sic_code
+  header: SIC Code
+  desc: |
+    The SIC Code indicating the precise economic sector of the organisation
+  comment: Should be a string of numerals
+- id: :ownership_type
+  header: Ownership Classification
+  desc: |
+    The ownership classification of the organisation
+  comment: Should be an English language identifier phrase
+- id: industry
+  header: Industry
+  desc: 
+  comment: 
+- id: legal_form
+  header: Legal Form
+  desc: 
+  comment: 
+- id: type_of_organisation
+  header: Type of Organisation
+  desc: 
+  comment: 
+- id: registered_status
+  header: Registered Status
+  desc: 
+  comment: 
+- id: registered_number
+  header: Registered Number
+  desc: |
+    The unique identifier allocated by the legal registrar. Note that
+    this is not necessary unique in the dataset as different
+    registrars use different numbering systems.
+  comment: 'e.g 545R, 11253R, 10143R etc. Appears to be unique. May be null.'
+- id: registrar
+  header: Registrar
+  desc: 
+  comment: 
+- id: incorporation_date
+  header: Incorporation Date
+  desc: 
+  comment: 
+- id: cuk_id
+  header: CUK ID
+  desc: 
+  comment: 

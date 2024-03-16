@@ -1,0 +1,63 @@
+Field,ID,Label
+CUK member status,1,Current member
+CUK member status,2,Lapsed member
+CUK member status,3,Not a member
+CUK member status,4,Unknown
+Industry,1,Agriculture
+Industry,2,Arts and Culture
+Industry,3,"Digital, Media and Communication"
+Industry,4,Education
+Industry,5,Energy and Environment
+Industry,6,Finance
+Industry,7,"Food service, Accommodation and Pubs"
+Industry,8,Health and Social Care
+Industry,9,Housing
+Industry,10,Manufacturing
+Industry,11,"Membership associations, social clubs and trade unions"
+Industry,12,Other
+Industry,13,Professional and Legal services
+Industry,14,Retail
+Industry,15,Sports and Recreation
+Industry,16,Transport
+Industry,17,Unknown
+Legal Form,1,Co-operative Society
+Legal Form,2,Community Benefit Society
+Legal Form,3,Community Interest Company
+Legal Form,4,Company
+Legal Form,5,Company Limited by Guarantee
+Legal Form,6,Company Limited by Shares
+Legal Form,7,LLP
+Legal Form,8,PLC
+Legal Form,9,Society
+Legal Form,10,Unincorporated
+Legal Form,11,Unknown
+Ownership Type,1,Self-employed
+Ownership Type,2,Workers
+Ownership Type,3,Unknown
+Registered Status,1,Live
+Registered Status,2,Dormant
+Registered Status,3,"In liquidation, administration or winding up"
+Registered Status,4,Dead
+Registered Status,5,Unknown
+Registrar,1,Companies House
+Registrar,2,FCA
+Registrar,3,Unknown
+Sector,1,Agriculture
+Sector,2,Arts and Culture
+Sector,3,"Digital, Media and Communication"
+Sector,4,Education
+Sector,5,Energy and Environment
+Sector,6,Finance
+Sector,7,"Food service, Accommodation and Pubs"
+Sector,8,Health and Social Care
+Sector,9,Housing
+Sector,10,Manufacturing
+Sector,11,"Membership associations, social clubs and trade unions"
+Sector,12,Other
+Sector,13,Professional and Legal services
+Sector,14,Retail
+Sector,15,Sports and Recreation
+Sector,16,Transport
+Sector,17,Unknown
+Type of Organisation,1,Co-operative
+Type of Organisation,2,Unknown

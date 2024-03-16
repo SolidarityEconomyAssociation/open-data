@@ -1,0 +1,106 @@
+vocab	header	term	property	EN
+cukms:	CUK member status		base_uri	https://lod.coop/workers-coop/cukms/
+ind:	Industry		base_uri	https://lod.coop/workers-coop/ind/
+lf:	Legal Form		base_uri	https://lod.coop/workers-coop/lf/
+ot:	Ownership type		base_uri	https://lod.coop/workers-coop/ot/
+reg:	Registrar		base_uri	https://lod.coop/workers-coop/reg/
+rst:	Registered Status		base_uri	https://lod.coop/workers-coop/rst/
+sec:	Sector		base_uri	https://lod.coop/workers-coop/sec/
+to:	Type of Organisation		base_uri	https://lod.coop/workers-coop/to/
+cukms:	CUK member status		dc:title	CUK Memberhip Status
+ind:	Industry		dc:title	Industry
+lf:	Legal Form		dc:title	Legal Form
+ot:	Ownership type		dc:title	Ownership Type
+reg:	Registrar		dc:title	Registrar
+rst:	Registered Status		dc:title	Registered Status
+sec:	Sector		dc:title	Sector
+to:	Type of Organisation		dc:title	Type of Organisation
+cukms:	CUK member status	1	skos:prefLabel	Current member
+cukms:	CUK member status	2	skos:prefLabel	Lapsed member
+cukms:	CUK member status	3	skos:prefLabel	Not a member
+cukms:	CUK member status	4	skos:prefLabel	Unknown
+ind:	Industry	1	skos:prefLabel	Agriculture
+ind:	Industry	2	skos:prefLabel	Arts and Culture
+ind:	Industry	3	skos:prefLabel	Digital, Media and Communication
+ind:	Industry	4	skos:prefLabel	Education
+ind:	Industry	5	skos:prefLabel	Energy and Environment
+ind:	Industry	6	skos:prefLabel	Finance
+ind:	Industry	7	skos:prefLabel	Food service, Accommodation and Pubs
+ind:	Industry	8	skos:prefLabel	Health and Social Care
+ind:	Industry	9	skos:prefLabel	Housing
+ind:	Industry	10	skos:prefLabel	Manufacturing
+ind:	Industry	11	skos:prefLabel	Membership associations, social clubs and trade unions
+ind:	Industry	12	skos:prefLabel	Other
+ind:	Industry	13	skos:prefLabel	Professional and Legal services
+ind:	Industry	14	skos:prefLabel	Retail
+ind:	Industry	15	skos:prefLabel	Sports and Recreation
+ind:	Industry	16	skos:prefLabel	Transport
+ind:	Industry	17	skos:prefLabel	Unknown
+lf:	Legal Form	1	skos:prefLabel	Co-operative Society
+lf:	Legal Form	2	skos:prefLabel	Community Benefit Society
+lf:	Legal Form	3	skos:prefLabel	Community Interest Company
+lf:	Legal Form	4	skos:prefLabel	Company
+lf:	Legal Form	5	skos:prefLabel	Company Limited by Guarantee
+lf:	Legal Form	6	skos:prefLabel	Company Limited by Shares
+lf:	Legal Form	7	skos:prefLabel	LLP
+lf:	Legal Form	8	skos:prefLabel	PLC
+lf:	Legal Form	9	skos:prefLabel	Society
+lf:	Legal Form	10	skos:prefLabel	Unincorporated
+lf:	Legal Form	11	skos:prefLabel	Unknown
+ot:	Ownership type	1	skos:prefLabel	Self-employed
+ot:	Ownership type	2	skos:prefLabel	Workers
+ot:	Ownership type	3	skos:prefLabel	Unknown
+reg:	Registrar	1	skos:prefLabel	Companies House
+reg:	Registrar	2	skos:prefLabel	FCA
+reg:	Registrar	3	skos:prefLabel	Unknown
+rst:	Registered Status	1	skos:prefLabel	Live
+rst:	Registered Status	2	skos:prefLabel	Dormant
+rst:	Registered Status	3	skos:prefLabel	In liquidation, administration or winding up
+rst:	Registered Status	4	skos:prefLabel	Dead
+rst:	Registered Status	5	skos:prefLabel	Unknown
+sec:	Sector	1	skos:prefLabel	Agriculture
+sec:	Sector	2	skos:prefLabel	Arts and Culture
+sec:	Sector	3	skos:prefLabel	Digital, Media and Communication
+sec:	Sector	4	skos:prefLabel	Education
+sec:	Sector	5	skos:prefLabel	Energy and Environment
+sec:	Sector	6	skos:prefLabel	Finance
+sec:	Sector	7	skos:prefLabel	Food service, Accommodation and Pubs
+sec:	Sector	8	skos:prefLabel	Health and Social Care
+sec:	Sector	9	skos:prefLabel	Housing
+sec:	Sector	10	skos:prefLabel	Manufacturing
+sec:	Sector	11	skos:prefLabel	Membership associations, social clubs and trade unions
+sec:	Sector	12	skos:prefLabel	Other
+sec:	Sector	13	skos:prefLabel	Professional and Legal services
+sec:	Sector	14	skos:prefLabel	Retail
+sec:	Sector	15	skos:prefLabel	Sports and Recreation
+sec:	Sector	16	skos:prefLabel	Transport
+sec:	Sector	17	skos:prefLabel	Unknown
+to:	Type of Organisation	1	skos:prefLabel	Co-operative
+to:	Type of Organisation	2	skos:prefLabel	Unknown
+ui:	UI Labels		dc:title	UI Labels
+ui:	UI Labels		base_uri	https://lod.coop/workers-coop/ui/
+ui:	UI Labels	regNo	skos:prefLabel	Registered Number
+ui:	UI Labels	address	skos:prefLabel	Address
+sics:	SIC Section		dc:title	SIC Section
+sics:	SIC Section		base_uri	https://lod.coop/workers-coop/sics/
+sics:	SIC Section	 A	skos:prefLabel	Agriculture, Forestry and Fishing
+sics:	SIC Section	 B	skos:prefLabel	Mining and Quarrying
+sics:	SIC Section	 C	skos:prefLabel	Manufacturing
+sics:	SIC Section	 D	skos:prefLabel	Electricity, Gas, Steam and Air Conditioning Supply
+sics:	SIC Section	 E	skos:prefLabel	Water Supply; Sewerage, Waste Management and Remediation Activities
+sics:	SIC Section	 F	skos:prefLabel	Construction
+sics:	SIC Section	 G	skos:prefLabel	Wholesale and Retail Trade; Repair Of Motor Vehicles and Motorcycles
+sics:	SIC Section	 H	skos:prefLabel	Transportation and Storage
+sics:	SIC Section	 I	skos:prefLabel	Accommodation and Food Service Activities
+sics:	SIC Section	 J	skos:prefLabel	Information and Communication
+sics:	SIC Section	 K	skos:prefLabel	Financial and Insurance Activities
+sics:	SIC Section	 L	skos:prefLabel	Real Estate Activities
+sics:	SIC Section	 M	skos:prefLabel	Professional, Scientific and Technical Activities
+sics:	SIC Section	 N	skos:prefLabel	Administrative and Support Service Activities
+sics:	SIC Section	 O	skos:prefLabel	Public Administration and Defence; Compulsory Social Security
+sics:	SIC Section	 P	skos:prefLabel	Education
+sics:	SIC Section	 Q	skos:prefLabel	Human Health and Social Work Activities
+sics:	SIC Section	 R	skos:prefLabel	Arts, Entertainment and Recreation
+sics:	SIC Section	 S	skos:prefLabel	Other Service Activities
+sics:	SIC Section	 T	skos:prefLabel	Activities Of Households As Employers; Undifferentiated Goods-and-Services-Producing Activities Of Households For Own Use
+sics:	SIC Section	 U	skos:prefLabel	Activities Of Extraterritorial Organisations and Bodies
