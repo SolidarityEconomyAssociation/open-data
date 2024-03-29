@@ -133,7 +133,6 @@ class Converter
              email: ,
              website: 
            |
-           next unless registered_status == "1"  # Live
 
            geocoded_addr =
              [
