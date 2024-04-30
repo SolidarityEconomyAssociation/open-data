@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+require 'se_open_data/cli'
+
+SeOpenData::Cli.command_murmurations_registration
