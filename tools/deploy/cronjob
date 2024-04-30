@@ -20,6 +20,14 @@ function logify() {
     "$@" > >(sed -e 's/^/  /') 2> >(sed -e 's/^/  ! /') | cat
 }
 
+# Check if seod supports a command, given as the first parameter
+#
+# Somewhat hacky - greps the help output. However, this needs to support
+# older versions of seod, and we can't back-patch something nicer.
+function can() {
+    ( $SEOD 2>&1 || true ) | grep -qE "^- $1\$"
+}
+
 # Process one directory (passed as first argument)
 #
 # This should return a non-zero code if any part fails but the other
@@ -32,9 +40,10 @@ function process {
         logify $dir bundle install --quiet &&
         logify $dir $SEOD download &&
         logify $dir $SEOD convert &&
-        logify $dir $SEOD generate &&
+        ( if can generate; then logify $dir $SEOD generate ; fi ) &&
         logify $dir sudo -nE $SEOD deploy &&
-        logify $dir sudo -nE $SEOD triplestore
+        ( if can triplestore; then logify $dir sudo -nE $SEOD triplestore; fi ) &&
+        ( if can post_success; then logify $dir $SEOD post_success; fi )
     )
 }
 
