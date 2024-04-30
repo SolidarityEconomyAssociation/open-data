@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/DigitalCommons/se-open-data.git
-  revision: b8ed50278b8f645d329d33e9ad3aca6395f15633
-  branch: murmurations-od71
+  revision: 5b1bd781b4d3abddd68d0e637786129824dcde53
+  branch: v2.2.3
   specs:
-    se_open_data (2.2.0)
+    se_open_data (2.2.2)
       geocoder (>= 1.8)
       httparty
       i18n
@@ -18,13 +18,15 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.5)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     bcp47 (0.3.3)
       i18n
+    bigdecimal (3.1.7)
     builder (3.2.4)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
+    csv (3.3.0)
     ebnf (2.3.5)
       htmlentities (~> 4.3)
       rdf (~> 3.2)
@@ -32,17 +34,18 @@ GEM
       sxp (~> 1.2)
       unicode-types (~> 1.8)
     geocoder (1.8.2)
-    haml (6.2.3)
+    haml (6.3.0)
       temple (>= 0.8.2)
       thor
       tilt
     hamster (3.0.0)
       concurrent-ruby (~> 1.0)
     htmlentities (4.3.4)
-    httparty (0.21.0)
+    httparty (0.22.0)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     json-canonicalization (0.4.0)
     json-ld (3.2.5)
@@ -98,21 +101,22 @@ GEM
     multi_xml (0.6.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    nokogiri (1.15.5-x86_64-linux)
+    nokogiri (1.15.6-x86_64-linux)
       racc (~> 1.4)
     normalize_country (0.3.2)
     opencage-geocoder (3.1.1)
-    pdf-core (0.9.0)
-    prawn (2.4.0)
-      pdf-core (~> 0.9.0)
-      ttfunk (~> 1.7)
+    pdf-core (0.10.0)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
     prawn-table (0.2.2)
       prawn (>= 1.3.0, < 3.0.0)
-    psych (5.1.1.1)
+    psych (5.1.2)
       stringio
-    public_suffix (5.0.4)
+    public_suffix (5.0.5)
     racc (1.7.3)
-    rack (3.0.8)
+    rack (3.0.10)
     rdf (3.2.11)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (3.2.1)
@@ -209,9 +213,10 @@ GEM
       matrix (~> 0.4)
       rdf (~> 3.2)
     temple (0.10.3)
-    thor (1.3.0)
+    thor (1.3.1)
     tilt (2.3.0)
-    ttfunk (1.7.0)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     unicode-types (1.9.0)
     yaml-ld (0.0.2)
       json-ld (~> 3.2, >= 3.2.3)
@@ -227,4 +232,4 @@ DEPENDENCIES
   se_open_data!
 
 BUNDLED WITH
-   2.4.21
+   2.4.22
