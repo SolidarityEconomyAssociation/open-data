@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+require 'se_open_data/cli'
+
+SeOpenData::Cli.command_generate_vocab_index
+SeOpenData::Cli.command_generate_rdf
+SeOpenData::Cli.command_generate_digest_index
+SeOpenData::Cli.command_generate_murmurations_profiles

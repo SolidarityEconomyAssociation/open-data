@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/DigitalCommons/se-open-data.git
-  revision: 8b345f5336932cc1ad1766dd1881ec68bcfbf994
-  branch: v2.2.0
+  revision: 5b1bd781b4d3abddd68d0e637786129824dcde53
+  branch: v2.2.3
   specs:
-    se_open_data (2.2.0)
+    se_open_data (2.2.2)
       geocoder (>= 1.8)
       httparty
       i18n
@@ -227,4 +227,4 @@ DEPENDENCIES
   se_open_data!
 
 BUNDLED WITH
-   2.4.21
+   2.4.22
