@@ -1,13 +1,36 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-require 'se_open_data/cli'
 
-# Run the entry point if we're invoked as a script.  This just does
-# the csv download. But we also exit with the returned value, to
-# signal whether it succeeded (return code 0 or true), failed (1 or
-# false), or was just skipped because there is no new data (return
-# code 100)
-#
-# For the purpose of this script
-# @see SeOpenData::Cli#command_http_download
-exit SeOpenData::Cli.command_http_download if __FILE__ == $0
+require 'se_open_data/cli'
+require 'se_open_data/config'
+require 'se_open_data/utils/password_store'
+
+module Downloader
+
+  def self.main
+    config = SeOpenData::Config.load    
+
+    # Make the target directory if needed
+    FileUtils.mkdir_p config.SRC_CSV_DIR
+
+    # Original src csv file
+    original_csv = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
+
+    # # Download the data. There is no etag so we can't tell if it's changed.
+    pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+    airtable_access_token = pass.get config.AIRTABLE_PAT_PATH
+    
+    headers = {
+      'Authorization' => "Bearer #{airtable_access_token}"
+    }
+    data = SeOpenData::Cli.fetch(config.DOWNLOAD_URL, headers: headers)
+    IO.write original_csv, data
+    return true
+  end
+  
+end
+
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Downloader.main if File.absolute_path(__FILE__) == File.absolute_path($0)
+
