@@ -24,7 +24,6 @@
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
 
-require 'se_open_data'
 require 'se_open_data/config'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
@@ -154,7 +153,7 @@ module Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:)
+  def self.mk_converter(from_schema:, to_schema:, geocode:)
     # Find the config file...
     config = SeOpenData::Config.load
     essglobal = config.ESSGLOBAL_URI
@@ -214,6 +213,22 @@ module Converter
                                    secondary_activity_ids || ext_secondary_activity_ids]
                                     .compact.join(';')
           combined_activity_uris = _multi_prefix(ac, combined_activity_ids)
+
+          street_address = street || multivalues(ext_street_address).join(",\n")
+          city = 'Oxford'
+          postcode ||= ext_postcode
+          country = 'Great Britain'
+          country_id = 'GB'
+          geocoded_addr =
+            [
+              street_address,
+              city,
+              country,
+              postcode,
+            ].keep_if{|it| it&.match(/\S/)}.join(', ')
+          
+          geocoded = geocode.call(geocoded_addr)
+          
           {
             id: id.delete_prefix('rec'),
             name: name || ext_name,
@@ -224,11 +239,11 @@ module Converter
             primary_activity: primary_activity_uris,
             activities: secondary_activity_uris,
             combined_activities: combined_activity_uris,
-            street_address: street || multivalues(ext_street_address).join(",\n"),
-            locality: 'Oxford',
+            street_address: street_address,
+            locality: city,
             region: nil,
-            postcode: postcode || ext_postcode,
-            country_id: 'GB',
+            postcode: postcode,
+            country_id: country_id,
             territory_id: nil,
             homepage: Types.normalise_url(website || ext_website, default: nil),
             phone: nil,
@@ -241,9 +256,11 @@ module Converter
             # these fields depend on the street address
             latitude: (street ? latitude : ext_latitude), 
             longitude: (street ? longitude : ext_longitude),
-            geocontainer: nil,
-            geocontainer_lat: nil,
-            geocontainer_lon: nil,
+            geocontainer: geocoded&.osm_uri,
+            geocontainer_lat: geocoded&.lat,
+            geocontainer_lon: geocoded&.lng,
+            geocontainer_confidence: geocoded&.confidence,
+            geocoded_addr: geocoded_addr,
           };
         end
       end
@@ -258,6 +275,20 @@ module Converter
     # Find the config file...
     config = SeOpenData::Config.load
 
+    # Get the Geoapify API key
+    pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
+    api_key = pass.get config.GEOCODER_API_KEY_PATH
+
+    # And the Geodata cache
+    cache = SeOpenData::Utils::FileCache.new.load(config.GEODATA_CACHE)
+
+    # And make a geocoder
+    geocode = SeOpenData::Geocoding.new.build(
+      lookup: :geoapify,
+      api_key: api_key,
+      cache: cache,
+    )
+
     # This defines the input CSV schema we expect (after clean-up an index generation)
     schema = SeOpenData::CSV::Schema.load_file(config.ORIGINAL_CSV_SCHEMA)
     
@@ -269,7 +300,6 @@ module Converter
 
     # Intermediate csv files
     converted_csv = File.join(config.GEN_CSV_DIR, "converted.csv")
-    standard_csv = File.join(config.GEN_CSV_DIR, "standard.csv")
 
     # Output csv file
     output_csv = config.STANDARD_CSV
@@ -278,15 +308,11 @@ module Converter
     convert_to_csv(headers: schema.field_headers, input: original_data, output: converted_csv)
     
     # A converter between the input and standard csv schema
-    converter = mk_converter(from_schema: schema, to_schema: output_schema)
+    converter = mk_converter(from_schema: schema, to_schema: output_schema, geocode: geocode)
 
     # Convert the csv to the standard schema
-    converter.convert File.open(converted_csv), standard_csv
+    converter.convert File.open(converted_csv), output_csv
 
-    SeOpenData::CSV::Converter::LimeSurveyCore
-      .add_postcode_lat_long(infile: standard_csv, outfile: output_csv,
-                             lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-                             to_schema: output_schema)
   rescue => e
     raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
   end
