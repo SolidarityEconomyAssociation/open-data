@@ -1,4 +1,101 @@
 #!/bin/bash
+#
+# NAME
+#
+# generate-db2.sh
+#
+#
+# SYNOPSIS
+#
+# Downloads, sanitises, and combines DotCoop, NCBA, ICA and Coops-UK
+# organisational lists into one global list. A best effort operation,
+# linking them by their .coop domain registrations.
+#
+#
+# USAGE
+# 
+# Define the parameters in `defs.sh`, then run the `generate-db2.sh` script with no options.
+#
+# An intermediate Sqlite3 database will be constructed.  This will
+# contain a table `map_data` which defines what will be used by the
+# consuming Mykomap.
+#
+# defs.sh should define the following environment variables:
+#
+# - DC_URL: an URL to a 'standard Mykomap schema' CSV file containing the DotCoop organisation data 
+# - DC_CSV: the name of a file to download that to
+# - DC_TB: the name of a database table to import that to
+# - DC_FK: the name of the primary key field of that table.
+# - ICA_URL, ICA_CSV, ICA_TB, ICA_FK: ditto, but for the ICA data
+# - NCBA_URL, NCBA_CSV, NCBA_TB, NCBA_FK,
+# - CUK_URL, CUK_CSV, CUK_TB, CUK_FK
+# - DB: the filename of the Sqlite3 database to create
+# - OUT_CSV: the name of a CSV to dump the `map_data` table to
+#
+# A CSV can be dumped from this view, but currently is not done by this script.
+#
+#
+# DISCUSSION
+#
+# Aim: select each org from all datasets once only, and combine NCBA,
+# DC and ICA information where a correspondance can be established
+# based on the .coop domains.
+#
+# Note: all .coop domains can (should!?) be guaranteed to be linked to
+# a single organisation. (This is only approximately true! e.g. We can
+# see the re-use of APEX org .coop domains in the CUK dataset.)
+#
+# Note: the DotCoop database is being curated to try and identify
+# unique organisations, but because of the way registries work, may
+# not always correctly identify registrants that are the same
+# organisation.
+#
+# Note: sometimes the DC table is inconsistent with the NCBA and ICA
+# domains! So you may find .coop domains in the latter two which aren't in
+# the former.
+#
+# Assumptions:
+# - A .coop domain can only be linked to one organisation
+# - Non .coop domains may be linked with one *or more* organisations
+# - There are no DC organisations included which are not linked to a .coop domain
+# - But more generally, an organisation *can* be linked to zero (or more) .coop domains
+#
+# General procedure: somewhat like deduplicating set members in a Venn diagram,
+# we take one set, then add in the others, whilst removing the overlaps. The overlaps
+# get incrementally broader in each step.
+#
+#     all_orgs = dc + (ncba - dc) + (ica - dc - ncba)
+#
+# Partially translating into SQL logic:
+#
+# 1) Select DC organisations
+#    [ left join `ica` and `ncba` to `dc_domains` table where they have a .coop domain ]
+# 2) Add NCBA organisations without a .coop domain
+#    [ left join `dc_domains` to `ncba` on the domain, select those with no .coop domain ] 
+# 3) Add ICA organisations without .coop domain or NCBA links
+#    [ left join `dc_domains` to `ica` on the domain, select those with no .coop domain ]
+#    [ we cannot identify overlaps between ICA and NCBA currently ]
+#
+# Tables and their occupancy expectations:
+# - dc, ncba, ica and cuk: have all the organisations known to each of those datasets
+#   once, plus information about any domains they are associated with (via URLs or otherwise,
+#   although these may be to non .coop and/or shared domains in some cases; the former are
+#   not useful and ignored, the latter are problematic and also ignored, for now, for lack of any
+#   means of resolution)
+# - domains: has all the domains from all datasets, zero or more times (FIXME not used)
+# - domain_freq: has all the domains from all datasets just once, plus null, with
+#   their frequency of appearance in the other datasets. (Null here is for organisations with no
+#   domain associated)
+# - icaid_to_dcid: maps ICA orgs to DC orgs. One row max for each ICA org where a link exists.
+# - icaid_to_dcid: maps NCBA orgs to DC orgs. One row max for each NCBA org where a link exists.
+# - dc_orgs: has all the DC organisations, with links to NCBA and ICA where found
+# - ncba_not_dc_orgs: has all the NCBA organisations which aren't linked in the dc_orgs table
+# - ica_not_dc_orgs: has all the ICA organisations which aren't linked in the dc_orgs table
+#   (and are assumed not to be in the ncba_not_dc_orgs table, but we have no way of inferring)
+# - all_orgs: one row for each organisation - a unification of the previous three tables.
+# - map_data: ditto, but in the form needed for the map CSV, with a unique ID field
+#
+
 set -vx
 set -e
 
@@ -116,86 +213,63 @@ done
 sqlite3 $DB "create index domain on domains (domain)"
 sqlite3 $DB "create index $DC_FK on domains ($DC_FK)"
 
+######################################################################
+# At this point we have sanitised the input data and normalised and
+# separated out the linking domains.
+#
+# Next we can start combining them. We need to create a unifying grand
+# list of organisations, with foreign key links back to the original
+# organisation tables.
+
 # Before we add more domains from other datasets, create a table
 # linking all the .coop domains to their DC registrant orgs.
 sqlite3 $DB "create table dc_domains as select domain, dcid from domains;"
 
 
-# Create foreign refs from domains to $NCBA_TB and $ICA_TB
+# Create foreign refs from domains to $NCBA_TB, $ICA_TB and $CUK_TB
 # tables based on Domains/Domain matches
 sqlite3 $DB "insert into domains (domain,$ICA_FK) select $ICA_TB.Domain,$ICA_TB.Identifier from $ICA_TB;"
 sqlite3 $DB "insert into domains (domain,$NCBA_FK) select $NCBA_TB.Domain,$NCBA_TB.Identifier from $NCBA_TB;"
 sqlite3 $DB "insert into domains (domain,$CUK_FK) select $CUK_TB.Domain,$CUK_TB.Identifier from $CUK_TB;"
 
-# Create a frequency table listing unique domains found and the number of times they appear in
-# DC, ICA and NCBA databases
+# Create a frequency table listing unique domains found and the number
+# of times they appear in DC, ICA and NCBA databases. This is not used
+# directly later, but is useful for analysing the data - notably
+# knowing when assumptions about domains are not valid!
 sqlite3 $DB "create table domain_freq as select domain, count(dcid) as dc, count(icaid) as ica, count(ncbaid) as ncba, count(cukid) as cuk from domains group by domain;"
 
 
-# FIXME remove
-# domains has all the domains, at least once
-# domain_freq has all the domains just once, plus null (plus ''?)
-# select all ncba,
-#   left join ica on ica.domain = ncba.domain
-#   left join dc on dc.id = domains.dcid and domains.domain = ncba.domain
-# select all ica
-#   left join ncba on ncba.domain = ica.domain
-#   left join dc on dc.id = domains.dcid and domains.domain = ica.domain
-#   exclude ncba
-# select all
-# then select all the ica with domains which have ncba freq = 0
-# then select all the dc with ncba freq and ica freq = 0
-#  this last step is more complicated as dc orgs can have more than one domain
-#  select all the domain_freq rows where dcid is set but ica and and ncba are 0
 
-# join dc to domain by dcid, getting one row per domain (but possible duplicate dcids)
-# left join domain_freq to this by domain, to get the ica and ncba freqs
-# eliminate those with non-zero
-
-
-# domain ncbaid dcid icaid
-
-#-------
-
-
-# Aim: select each org from all datasets once only, and combine NCBA,
-# DC and ICA information where a correspondance can be established
-# based on the .coop domains.
+# Define a view which links those NCBA organisations which have a .coop
+# website to a DC organisation, via the common .coop domain.
 #
-# Note that only .coop domains can be guaranteed used by a single
-# organisation, and even then this may be only approximately true
-# (noting the re-use of APEX org domains in CUK dataset)
+# It uses a minimal column schema including just organisation ID and
+# domain fields. But the ID and domain fields for ICA is also included
+# as the same schema will be shared by similar lists for the other
+# data sets.
 #
-# Note: the dotcoop database is being curated to try and identify
-# unique organisations but because of the way registries work, may not
-# always correctly identify registrants that are the same
-# organisation.
+# (The org names are included purely for my own inspection
+# convenience.)
 #
-# Note: sometimes the DC table is inconsistent with the NCBA and ICA
-# domains! So you may find .coop domains in the latter two which aren't in
-# the former.
+# Note that in this case we need to join using an intermediate link
+# table, dc_domains, because of the one-to-many relation from a DC
+# organisation to the domains registered by it. This table is created
+# to simplify later joins in queries, by linking DC and NCBA
+# identifiers directly.
 #
-# Assumptions:
-# - a .coop domain can only be linked to one org
-# - other domains can be linked with one or more orgs
-# - (assuming there are no domains inclulded not linked to an org)
-# - an org can be linked to zero or more domains
+# The resulting table should have 1 row for each NCBA organisation in
+# the ncba table that has a .coop domain, since the ncba dataset only
+# allows one domain (via the website) to be associated.  NCBA
+# organisations with no .coop domain are absent due to the way the
+# join is done, but this is fine - we don't care about NCBA
+# organisations with no .coop domain, since the purpose is to
+# represent links where there are any.
 #
-# General procedure: somewhat like deduplicating set members in a Venn diagram,
-# we take one set, then add in the others, whilst removing the overlaps. The overlaps
-# get incrementally broader in each step.
-#
-# allorgs = dc + (ncba - dc) + (ica - dc - ncba)
-#
-# Partially translating into SQL logic:
-# 1) dc [ join ica and ncba via dc_domains table, we know max one .coop domain each ]
-# 2) + ncba without .coop [ left join to dc_domains, select null domain ] 
-# 3) + ica without .coop or ncbaid [ left join to dc_domains, select null domain ]
-#      [ left join ncba on domain, select null ncbid ]
-# FIXME update this
-
-
-# View including all ncba orgs linked to a .coop domain, along with with the dcid
+# There should also be a 1:1 relation from NCBA organisations to DC
+# organisations - so no duplicate dcid fields.  (In fact there is one
+# case where one DC organisation maps to two NCBA organisations, which
+# seems anomalous, see below. We work around that later, by assuming
+# these are in fact distinct organsiations, and listing both.)
 sqlite3 $DB "create view ncbaid_to_dcid as \
 select \
   dc_domains.dcid as dcid, \
@@ -213,12 +287,39 @@ left join dc_domains, dc on \
   dc_domains.dcid = dc.Identifier
 ";
 
-# Problem - two different ncba orgs link to same dc org
+# The problem case - in which two different ncba orgs link to same dc org:
 #dcid	dc_name	dc_domains	ncbaid	ncba_name	ncba_domain	icaid	ica_name	ica_domain
 #VKoYjW	NRTC	westflorida.coop;winntelwb.coop;victoriaelectric.coop;unitedwb.coop;vecbeatthepeak.coop;trueband.coop;ruralconnect.coop;shelbywb.coop;rswb.coop;oecc.coop;pemtel.coop;nrtc.coop;noblesce.coop;northriver.coop;nepower.coop;marshallremc.coop;mytimetv.coop;llwb.coop;localexede.coop;lcwb.coop;jasperremc.coop;infinium.coop;fcremc.coop;fultoncountyremc.coop;ctv.coop;cimarron.coop;cooperativewireless.coop;ccnc.coop;buynest.coop;bvea.coop;arcadiatel.coop	8227012210.0	National Rural Telecommunications Cooperative	nrtc.coop			
 #VKoYjW	NRTC	westflorida.coop;winntelwb.coop;victoriaelectric.coop;unitedwb.coop;vecbeatthepeak.coop;trueband.coop;ruralconnect.coop;shelbywb.coop;rswb.coop;oecc.coop;pemtel.coop;nrtc.coop;noblesce.coop;northriver.coop;nepower.coop;marshallremc.coop;mytimetv.coop;llwb.coop;localexede.coop;lcwb.coop;jasperremc.coop;infinium.coop;fcremc.coop;fultoncountyremc.coop;ctv.coop;cimarron.coop;cooperativewireless.coop;ccnc.coop;buynest.coop;bvea.coop;arcadiatel.coop	8227153053.0	Cooperative Council of North Carolina	ccnc.coop			
 
+
 # Ditto for ICA
+#
+# i.e Define a view which links those ICA organisations which have a
+# .coop website to a DC organisation, via the common .coop domain.
+#
+# Again, using a minimal column schema including just organisation ID
+# and domain fields, with blanks for NCBA, because the the same schema
+# will be shared by similar lists for the other data sets.
+#
+# (The org names are included purely for my own inspection
+# convenience.)
+#
+# Note that in this case we need to join using an intermediate link
+# table, dc_domains, because of the one-to-many relation from a DC
+# organisation to the domains registered by it. This table is created
+# to simplify later joins in queries, by linking DC and NCBA
+# identifiers directly.
+#
+# The resulting table should have 1 row for each ICA organisation in
+# the ncba table that has a .coop domain, since the ncba dataset only
+# allows one domain (via the website) to be associated.  ICA
+# organisations with no .coop domain are absent due to the way the
+# join is done, but this is fine - we don't care about them since the
+# purpose is to represent links where there are any.
+#
+# There should also be a 1:1 relation from ICA organisations to DC
+# organisations - so no duplicate dcid fields. (This does seem to be the case.)
 sqlite3 $DB "create view icaid_to_dcid as \
 select \
   dc_domains.dcid as dcid, \
@@ -237,7 +338,24 @@ left join dc_domains, dc on \
 ";
 
 
-# View listing all ncba non .coop orgs
+# Define a view listing all NCBA organisations with no link to a DC organisation.
+#
+# We use a minimal column schema including just organisation ID and
+# domain fields, with blanks for non-NCBA fields, because the the same
+# schema will be shared by similar lists for the other data sets.
+#
+# (The org names are included purely for my own inspection
+# convenience.)
+#
+# The link is made using the ncbaid_to_dcid table.
+#
+# Some may be absent but there should be no more than one row for each
+# NCBA organisation.
+#
+# There should also be no more than one of each DC organisation - so no
+# duplicate dcid fields.  (In fact there is one case where one DC
+# organisation maps to two NCBA organisations, which seems anomalous,
+# see below. We work around that later...)
 sqlite3 $DB "create view ncba_not_dc_orgs as \
 select \
   NULL as dcid, \
@@ -257,6 +375,27 @@ where \
 "
 
 # Ditto for ICA
+#
+# i.e. Define a view listing all ICA organisations with no link to a DC organisation.
+#
+# Note in principle, we should also exclude those with a link to NCBA
+# organisations here. However, we have no way of doing that except via
+# the .coop domain, so we don't.
+#
+# We use a minimal column schema including just organisation ID and
+# domain fields, with blanks for non-NCBA fields, because the the same
+# schema will be shared by similar lists for the other data sets.
+#
+# (The org names are included purely for my own inspection
+# convenience.)
+#
+# The link is made using the icaid_to_dcid table.
+#
+# Some may be absent but there should be no more than one row for each
+# ICA organisation.
+#
+# There should also be no more than one of each DC organisation - so no
+# duplicate dcid fields.  (This seems to be the case.)
 sqlite3 $DB "create view ica_not_dc_orgs as \
 select \
   NULL as dcid, \
@@ -275,7 +414,13 @@ where \
   i2d.icaid is NULL \
 "
 
-# View combining the dc registered ncba and ica orgs to the matching dc orgs
+# Define a view listing those DC orgs and their links to NCBA and/or ICA orgs
+#
+# There should be one row for each DC org, and that may include a link to an NCBA org,
+# an ICA, both, or neither.
+#
+# (FIXME In fact we have more rows than DC orgs, because of the 1:2 match
+# in one case to two NCBA organisations)
 sqlite3 $DB "create view dc_orgs as \
 select \
   dc.Identifier as dcid, \
@@ -294,7 +439,17 @@ left join icaid_to_dcid as i2d on \
   dc.Identifier = i2d.dcid \
 ;"
 
-# view combining dc registered, non-dc registered ncba and non-dc registered ica orgs
+# Define a view which concatenates the above tables - this is why they have a common schema.
+#
+# Specifically:
+# - DC registered organisations
+# - non-DC registered NCBA organisations
+# - non-DC registered (assumed non-NCBA) ICA orgs
+#
+# This is the unifying link table. However, note it does not have a
+# unique ID for each row - but the ids together can provide the unique
+# key.
+#
 sqlite3 $DB "create view all_orgs as \
 select * from dc_orgs
 union
@@ -303,13 +458,15 @@ union
 select * from ica_not_dc_orgs
 ;"
 
-# Create the final view for export as map data
+# Create the final view for exporting the data for the map.
+#
+# As part of this, a globally unique ID field is generated.
 #
 # NOTE: we deliberately select the Identifier preferentially from ica,
 # ncba, dc - rather than ica, dc, ncba as for the other fields.  This
 # is because of a duplicate org match resulting in NCBA's orgs, ID
 # 8227012210 and 8227153053, to match the same DotCoop org ID VKoYjW.
-# This is a hacky workaround!
+# A hacky workaround!
 sqlite3 $DB <<'EOF'
 create view map_data as
 select 
