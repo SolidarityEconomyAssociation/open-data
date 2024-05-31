@@ -206,18 +206,15 @@ sql "update $DC_TB set Domains = replace(Domains, 'https://', '')"
 
 # Convert adhoc to vocab fields...?
 
-# Compile lists of DC domains and identifiers
+# Compile a table of DC domains to DC identifiers.
+# We have to go beyond SQL into Perl here, SQL can't easily to the splitting and joining.
 sql -csv "select Identifier, Domains from $DC_TB" | \
     perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d' >$OUTDIR/$DC_TB-domains.csv
-#sql -csv "select Identifier,Domain from $ICA_TB" >>$ICA_TB-domains.csv
-#sql -csv "select Identifier,Domain from $NCBA_TB" >>$NCBA_TB-domains.csv
 
-# Insert the DC domains back as a new 1:* table
-#for tb in $DC_TB $ICA_TB $NCBA_TB; do 
+# Insert the result back as a new 1:* table
 (printf "domain,${DC_FK}\n";
  cat $OUTDIR/$DC_TB-domains.csv) | \
     csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
-#done
 
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
@@ -225,7 +222,7 @@ for FK in $ICA_FK $NCBA_FK $CUK_FK; do
     sql "create unique index $FK on domains ($FK)"
 done
 
-# and the domains field ($DC_FK there already)
+# ...and the domains field ($DC_FK there already)
 sql "create index domain on domains (domain)"
 sql "create index $DC_FK on domains ($DC_FK)"
 
