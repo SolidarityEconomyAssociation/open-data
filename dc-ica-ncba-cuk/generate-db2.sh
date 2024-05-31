@@ -50,9 +50,9 @@
 # not always correctly identify registrants that are the same
 # organisation.
 #
-# Note: sometimes the DC table is inconsistent with the NCBA and ICA
-# domains! So you may find .coop domains in the latter two which aren't in
-# the former.
+# Note: sometimes the DC table is inconsistent with the NCBA, ICA and
+# CUK domains! So you may find .coop domains in the latter which
+# aren't in the former.
 #
 # Assumptions:
 # - A .coop domain can only be linked to one organisation
@@ -64,7 +64,7 @@
 # we take one set, then add in the others, whilst removing the overlaps. The overlaps
 # get incrementally broader in each step.
 #
-#     all_orgs = dc + (ncba - dc) + (ica - dc - ncba)
+#     all_orgs = dc + (ncba - dc) + (ica - dc - ncba) + (cuk - dc - ncba - ica)
 #
 # Partially translating into SQL logic:
 #
@@ -75,6 +75,9 @@
 # 3) Add ICA organisations without .coop domain or NCBA links
 #    [ left join `dc_domains` to `ica` on the domain, select those with no .coop domain ]
 #    [ we cannot identify overlaps between ICA and NCBA currently ]
+# 4) Add CUK organisations without .coop domain or NCBA or ICA links
+#    [ left join `dc_domains` to `cuk` on the domain, select those with no .coop domain ]
+#    [ we cannot identify overlaps between CUK, ICA and NCBA currently ]
 #
 # Tables and their occupancy expectations:
 # - dc, ncba, ica and cuk: have all the organisations known to each of those datasets
@@ -290,6 +293,22 @@ group by dc.Identifier
 having c > 1;
 EOF
 
+# # Assert our assumptions about CUK orgs having only one matching DC org are true
+# Except we happen to know this is true, but work around it, by excluding the
+# duplicates later.
+# sql <<EOF | if_not_empty "Duplicate CUK identifier"
+# select
+#   count(cuk.Identifier) as c,
+#   cuk.Identifier as cukid,
+#   dc.Identifier as dcid
+# from cuk
+# left join dc_domains, dc on
+#   cuk.Domain = dc_domains.domain and
+#   dc_domains.dcid = dc.Identifier
+# group by dc.Identifier
+# having c > 1;
+# EOF
+
 
 # Define a view which links those NCBA organisations which have a .coop
 # website to a DC organisation, via the common .coop domain.
@@ -382,6 +401,42 @@ left join dc_domains, dc on
 EOF
 
 
+# Ditto for CUK
+#
+# i.e Define a view which links those CUK organisations which have a
+# .coop website to a DC organisation, via the common .coop domain.
+#
+# All the above comments apply.
+#
+# Except that the CUK data has a lot of .coop links which are
+# duplicates.  We can't easily identify which, if any, of these CUK
+# organisations really match the DC organisation which registered the
+# .coop domain. In fact, it looks like possibly none do in several
+# cases. Maybe an apex .coop registrant is allowing its members to use
+# its domain as their primary website? (Housing co-ops in particular
+# seem to be doing this.)
+#
+# To work around this, we simply eliminate any CUK organisations which
+# share a DC domain and leave them as distinct organisations, even if
+# perhaps they are the same one. 
+sql <<EOF
+create view cukid_to_dcid as
+select
+  dc_domains.dcid as dcid,
+  dc.Name as dc_name,
+  dc.Domains as dc_domains,
+  cuk.Identifier as cukid,
+  cuk.Name as cuk_name,
+  cuk.Domain as cuk_domain
+from cuk
+left join dc_domains, dc on
+  cuk.Domain = dc_domains.domain and
+  dc_domains.dcid = dc.Identifier
+group by dcid
+having count(dcid) <= 1;
+EOF
+
+
 # Define a view listing all NCBA organisations with no link to a DC organisation.
 #
 # We use a minimal column schema including just organisation ID and
@@ -411,7 +466,10 @@ select
   ncba.Domain as ncba_domain,
   NULL as icaid,
   NULL as ica_name,
-  NULL as ica_domain
+  NULL as ica_domain,
+  NULL as cukid,
+  NULL as cuk_name,
+  NULL as cuk_domain
 from ncba
 left join ncbaid_to_dcid as n2d on
   ncba.Identifier = n2d.ncbaid
@@ -452,7 +510,10 @@ select
   NULL as ncba_domain,
   ica.Identifier as icaid,
   ica.Name as ica_name,
-  ica.Domain as ica_domain
+  ica.Domain as ica_domain,
+  NULL as cukid,
+  NULL as cuk_name,
+  NULL as cuk_domain
 from ica
 left join icaid_to_dcid as i2d on
   ica.Identifier = i2d.icaid
@@ -460,10 +521,55 @@ where
   i2d.icaid is NULL
 EOF
 
-# Define a view listing those DC orgs and their links to NCBA and/or ICA orgs
+# Ditto for CUK
+#
+# i.e. Define a view listing all CUK organisations with no link to a DC organisation.
+#
+# Note in principle, we should also exclude those with a link to NCBA
+# and ICA organisations here. However, we have no way of doing that
+# except via the .coop domain, so we don't.
+#
+# We use a minimal column schema including just organisation ID and
+# domain fields, with blanks for non-NCBA fields, because the the same
+# schema will be shared by similar lists for the other data sets.
+#
+# (The org names are included purely for my own inspection
+# convenience.)
+#
+# The link is made using the cukid_to_dcid table.
+#
+# Some may be absent but there should be no more than one row for each
+# CUK organisation.
+#
+# There should also be no more than one of each DC organisation - so
+# no duplicate dcid fields. (We make sure of this by excluding
+# duplicates from the cukid_to_dcid table)
+sql <<EOF
+create view cuk_not_dc_orgs as
+select
+  NULL as dcid,
+  NULL as dc_name,
+  NULL as dc_domain,
+  NULL as ncbaid,
+  NULL as ncba_name,
+  NULL as ncba_domain,
+  NULL as icaid,
+  NULL as ica_name,
+  NULL as ica_domain,
+  cuk.Identifier as cukid,
+  cuk.Name as cuk_name,
+  cuk.Domain as cuk_domain
+from cuk
+left join cukid_to_dcid as c2d on
+  cuk.Identifier = c2d.cukid
+where
+  c2d.cukid is NULL
+EOF
+
+# Define a view listing those DC orgs and their links to NCBA and/or ICA and/or CUK orgs
 #
 # There should be one row for each DC org, and that may include a link to an NCBA org,
-# an ICA, both, or neither.
+# an ICA, or a CUK org, or some combination thereof.
 #
 # (FIXME In fact we have more rows than DC orgs, because of the 1:2 match
 # in one case to two NCBA organisations)
@@ -478,12 +584,17 @@ select
   n2d.ncba_domain as ncba_domain,
   i2d.icaid as icaid,
   i2d.ica_name as ica_name,
-  i2d.ica_domain as ica_domain
+  i2d.ica_domain as ica_domain,
+  c2d.cukid as cukid,
+  c2d.cuk_name as cuk_name,
+  c2d.cuk_domain as cuk_domain
 from dc
 left join ncbaid_to_dcid as n2d on
   dc.Identifier = n2d.dcid
 left join icaid_to_dcid as i2d on
   dc.Identifier = i2d.dcid
+left join cukid_to_dcid as c2d on
+  dc.Identifier = c2d.dcid
 EOF
 
 # Define a view which concatenates the above tables - this is why they have a common schema.
@@ -492,6 +603,7 @@ EOF
 # - DC registered organisations
 # - non-DC registered NCBA organisations
 # - non-DC registered (assumed non-NCBA) ICA orgs
+# - non-DC registered (assumed non-NCBA non-ICA) CUK orgs
 #
 # This is the unifying link table. However, note it does not have a
 # unique ID for each row - but the ids together can provide the unique
@@ -504,6 +616,8 @@ union
   select * from ncba_not_dc_orgs
 union
   select * from ica_not_dc_orgs
+union
+  select * from cuk_not_dc_orgs
 EOF
 
 # Create the final view for exporting the data for the map.
@@ -511,22 +625,27 @@ EOF
 # As part of this, a globally unique ID field is generated.
 #
 # NOTE: we deliberately select the Identifier preferentially from ica,
-# ncba, dc - rather than ica, dc, ncba as for the other fields.  This
+# ncba, dc, cuk - rather than ica, dc, ncba, cuk as for the other fields.  This
 # is because of a duplicate org match resulting in NCBA's orgs, ID
 # 8227012210 and 8227153053, to match the same DotCoop org ID VKoYjW.
 # A hacky workaround!
+#
+# Note we are also assuming that if one latitude or longitude value is
+# present, the other will be.  This should be valid. If it were not
+# however, we'd get mixed and matched coordinates, i.e.
+# nonesense coordinates.
 sql <<'EOF'
 create view map_data as
 select 
-  'demo/plus/'||coalesce(ica.slug,ncba.slug,dc.slug)||'/'||coalesce(ica.Identifier, ncba.Identifier, dc.Identifier) as Identifier,
-  coalesce(ica.Name, dc.Name, ncba.Name) as Name,
-  coalesce(ica.Description, dc.Description, ncba.Description) as Description,
-  coalesce(ica.Website, dc.Website, ncba.Website) as Website,
-  coalesce(ica.Latitude, dc.Latitude, ncba.Latitude) as Latitude,
-  coalesce(ica.Longitude, dc.Longitude, ncba.Longitude) as Longitude,
-  coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`) as `Geo Container Latitude`,
-  coalesce(ica.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`) as `Geo Container Longitude`,
-  coalesce(ica.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`) as `Geo Container`,
+  'demo/plus/'||coalesce(ica.slug,ncba.slug,dc.slug,cuk.slug)||'/'||coalesce(ica.Identifier, ncba.Identifier, dc.Identifier, cuk.Identifier) as Identifier,
+  coalesce(ica.Name, dc.Name, ncba.Name, cuk.Name) as Name,
+  coalesce(ica.Description, dc.Description, ncba.Description, cuk.Description) as Description,
+  coalesce(ica.Website, dc.Website, ncba.Website, cuk.Website) as Website,
+  coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
+  coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
+  coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
+  coalesce(ica.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`, cuk.`Geo Container Longitude`) as `Geo Container Longitude`,
+  coalesce(ica.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`, cuk.`Geo Container`) as `Geo Container`,
 
   ncba.Identifier as `NCBA Identifier`,
   ncba.Postcode as `NCBA Postcode`,
@@ -544,6 +663,7 @@ select
   ica.`Region` as `ICA Region`,
   ica.`Postcode` as `ICA Postcode`,
   ica.`Country ID` as `ICA Country ID`,
+  ica.`Territory ID` as `ICA Territory ID`,
   ica.`Website` as `ICA Website`,
   ica.`Primary Activity` as `ICA Primary Activity`,
   ica.`Activities` as `ICA Activities`,
@@ -561,11 +681,32 @@ select
   dc.Domains as Domains,
   dc.`Economic Sector ID` as `DC Economic Sector`,
   dc.`Organisational Category ID` as `DC Organisational Category`,
-  dc.`Identifier` is not null as `DC Registered`
+  dc.`Identifier` is not null as `DC Registered`,
+
+  cuk.`Identifier` as `CUK Identifier`, 
+  cuk.`Name` as `CUK Name`,
+  cuk.`Street Address` as `CUK Street Address`,
+  cuk.`Locality` as `CUK Locality`,
+  cuk.`Region` as `CUK Region`,
+  cuk.`Postcode` as `CUK Postcode`,
+  cuk.`Country ID` as `CUK Country ID`,
+  cuk.`Website` as `CUK Website`,
+  cuk.`Primary Activity` as `CUK Primary Activity`,
+  cuk.`Activities` as `CUK Activities`,
+  cuk.`Organisational Structure` as `CUK Organisational Structure`,
+  cuk.`Membership Type` as `CUK Typology`,
+  cuk.`Companies House Number` as `CUK Companies House Number`,
+  cuk.`Sector` as `CUK Sector`,
+  cuk.`SIC Section` as `CUK SIC Section`,
+  cuk.`SIC Code` as `CUK SIC Code`,
+  cuk.`Ownership Classification` as `CUK Ownership Classification`,
+  cuk.`Legal Form` as `CUK Legal Form`,
+  cuk.`Identifier` is not null as `CUK Member`
 from all_orgs
 left join dc on all_orgs.dcid = dc.Identifier
 left join ncba on all_orgs.ncbaid = ncba.Identifier
 left join ica on all_orgs.icaid = ica.Identifier
+left join cuk on all_orgs.cukid = cuk.Identifier
 EOF
 
 # Dump this map_data view to OUT_CSV for use in a Mykomap.
