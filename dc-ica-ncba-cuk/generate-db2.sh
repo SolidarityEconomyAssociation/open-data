@@ -130,6 +130,18 @@ function sql() {
     sqlite3 "$DB" "$@"
 }
 
+# Halts with an error if the standard input to this function is not empty.
+# Used for making assertions about SQL statements.
+function if_not_empty() {
+    local out=$(cat)
+    if [[ $out != '' ]]; then
+	echo "Assertion failed, $*" 2>&1
+	echo "$out" 2>&1
+	exit 1;
+    fi 
+}
+
+
 # Add Domains field to $DC_TB
 sql "alter table $DC_TB add column Domains VARCHAR"
 
@@ -252,6 +264,34 @@ from domains
 group by domain
 EOF
 
+# Assert our assumptions about NCBA orgs having only one matching DC org are true
+# Except we happen to know this is true, but work around it, counting this as two orgs
+# sql <<EOF | if_not_empty "Duplicate NCBA identifier"
+# select
+#   count(ncba.Identifier) as c,
+#   ncba.Identifier as ncbaid,
+#   dc.Identifier as dcid
+# from ncba
+# left join dc_domains, dc on
+#   ncba.Domain = dc_domains.domain and
+#   dc_domains.dcid = dc.Identifier
+# group by dc.Identifier
+# having c > 1;
+# EOF
+
+# Assert our assumptions about ICA orgs having only one matching DC org are true
+sql <<EOF | if_not_empty "Duplicate ICA identifier"
+select
+  count(ica.Identifier) as c,
+  ica.Identifier as icaid,
+  dc.Identifier as dcid
+from ica
+left join dc_domains, dc on
+  ncba.Domain = dc_domains.domain and
+  dc_domains.dcid = dc.Identifier
+group by dc.Identifier
+having c > 1;
+EOF
 
 
 # Define a view which links those NCBA organisations which have a .coop
