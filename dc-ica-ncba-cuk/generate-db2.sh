@@ -258,9 +258,7 @@ EOF
 # website to a DC organisation, via the common .coop domain.
 #
 # It uses a minimal column schema including just organisation ID and
-# domain fields. But the ID and domain fields for ICA is also included
-# as the same schema will be shared by similar lists for the other
-# data sets.
+# domain fields.
 #
 # (The org names are included purely for my own inspection
 # convenience.)
@@ -292,10 +290,7 @@ select
   dc.Domains as dc_domains,
   ncba.Identifier as ncbaid,
   ncba.Name as ncba_name,
-  ncba.Domain as ncba_domain,
-  NULL as icaid,
-  NULL as ica_name,
-  NULL as ica_domain
+  ncba.Domain as ncba_domain
 from ncba
 left join dc_domains, dc on
   ncba.Domain = dc_domains.domain and
@@ -314,8 +309,7 @@ EOF
 # .coop website to a DC organisation, via the common .coop domain.
 #
 # Again, using a minimal column schema including just organisation ID
-# and domain fields, with blanks for NCBA, because the the same schema
-# will be shared by similar lists for the other data sets.
+# and domain fields.
 #
 # (The org names are included purely for my own inspection
 # convenience.)
@@ -341,9 +335,6 @@ select
   dc_domains.dcid as dcid,
   dc.Name as dc_name,
   dc.Domains as dc_domains,
-  NULL as ncbaid,
-  NULL as ncba_name,
-  NULL as ncba_domain,
   ica.Identifier as icaid,
   ica.Name as ica_name,
   ica.Domain as ica_domain
