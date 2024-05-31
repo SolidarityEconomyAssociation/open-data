@@ -126,75 +126,79 @@ csvsql --db sqlite:///$DB --tables $ICA_TB --blanks --no-constraints --insert $I
 csvsql --db sqlite:///$DB --tables $NCBA_TB --blanks --no-constraints --insert $NCBA_CSV
 csvsql --db sqlite:///$DB --tables $CUK_TB --blanks --no-constraints --insert $CUK_CSV
 
+function sql() {
+    sqlite3 "$DB" "$@"
+}
+
 # Add Domains field to $DC_TB
-sqlite3 $DB "alter table $DC_TB add column Domains VARCHAR"
+sql "alter table $DC_TB add column Domains VARCHAR"
 
 # For ICA, CUK: Copy Website URLs as Domain
 for TB in $ICA_TB $CUK_TB; do
     # Add Domain field
-    sqlite3 $DB "alter table $TB add column Domain VARCHAR"
-    sqlite3 $DB "update $TB set Domain = Website"
+    sql "alter table $TB add column Domain VARCHAR"
+    sql "update $TB set Domain = Website"
 done
 
 # For ICA, NCBA - make the Identifier field an integer (not a real)
 # Otherwise, sqlite will insert a trailing '.0' on export
 for TB in $ICA_TB $NCBA_TB $CUK_TB; do
-    sqlite3 $DB "alter table $TB add column temp INTEGER"
-    sqlite3 $DB "update $TB set temp = Identifier"
-    sqlite3 $DB "alter table $TB drop column Identifier"
-    sqlite3 $DB "alter table $TB rename column temp to Identifier"
+    sql "alter table $TB add column temp INTEGER"
+    sql "update $TB set temp = Identifier"
+    sql "alter table $TB drop column Identifier"
+    sql "alter table $TB rename column temp to Identifier"
 done
 
 # For ICA, NCBA, CUK: clean them up into bare domains
 for TB in $ICA_TB $NCBA_TB $CUK_TB; do
     # Make add a unique index on Identifier
-    sqlite3 $DB "alter table $TB add column temp VARCHAR NOT NULL DEFAULT '-'"
-    sqlite3 $DB "update $TB set temp = Identifier"
-    sqlite3 $DB "alter table $TB drop column Identifier"
-    sqlite3 $DB "alter table $TB rename column temp to Identifier"
-    sqlite3 $DB "create unique index ${TB}Identifier on $TB (Identifier)"
+    sql "alter table $TB add column temp VARCHAR NOT NULL DEFAULT '-'"
+    sql "update $TB set temp = Identifier"
+    sql "alter table $TB drop column Identifier"
+    sql "alter table $TB rename column temp to Identifier"
+    sql "create unique index ${TB}Identifier on $TB (Identifier)"
     
-    sqlite3 $DB "update $TB set Domain = lower(Domain)"
-    sqlite3 $DB "update $TB set Domain = replace(Domain, 'http://', '')"
-    sqlite3 $DB "update $TB set Domain = replace(Domain, 'https://', '')"
-    sqlite3 $DB "update $TB set Domain = replace(Domain, 'http://', '')"
-    sqlite3 $DB "update $TB set Domain = substr(Domain, 0, instr(Domain||'/','/'));" # remove paths
-    sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # remove subdomains - well, one level.
-    sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # second
-    sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # third?
+    sql "update $TB set Domain = lower(Domain)"
+    sql "update $TB set Domain = replace(Domain, 'http://', '')"
+    sql "update $TB set Domain = replace(Domain, 'https://', '')"
+    sql "update $TB set Domain = replace(Domain, 'http://', '')"
+    sql "update $TB set Domain = substr(Domain, 0, instr(Domain||'/','/'));" # remove paths
+    sql "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # remove subdomains - well, one level.
+    sql "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # second
+    sql "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like '%.%.coop'"; # third?
     # Remove any remaining www. subdomains
-    sqlite3 $DB "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like 'www.%.%'"; # third?
+    sql "update $TB set Domain = substr(Domain, instr(Domain, '.')+1) where Domain like 'www.%.%'"; # third?
 done
 
 # Cleanup for all datasets
 for TB in $ICA_TB $NCBA_TB $DC_TB $CUK_TB; do
     # Replace empty strings which represent nulls with nulls
-    sqlite3 "$DB" "select f.name from sqlite_master t, pragma_table_info((t.name)) f on t.name <> f.name where t.name = '$TB'" |
+    sql "select f.name from sqlite_master t, pragma_table_info((t.name)) f on t.name <> f.name where t.name = '$TB'" |
 	while IFS=$'\n' read -rs FIELD; do
-	    sqlite3 $DB "update $TB set \`$FIELD\` = NULL where \`$FIELD\` = '';"
+	    sql "update $TB set \`$FIELD\` = NULL where \`$FIELD\` = '';"
 	done
 		   
     # Any orgs with lat/lng 0,0 should be set to null (this is a problem with ICA data at least,
     # which may need fixing properly upstream
-    sqlite3 $DB "update $TB set Latitude = null, Longitude = null where Latitude = 0 and Longitude = 0;"
+    sql "update $TB set Latitude = null, Longitude = null where Latitude = 0 and Longitude = 0;"
 
     # insert a slug field identifying the dataset
-    sqlite3 $DB "alter table $TB add column slug VARCHAR"
-    sqlite3 $DB "update $TB set slug = '$TB'"    
+    sql "alter table $TB add column slug VARCHAR"
+    sql "update $TB set slug = '$TB'"    
 done
 
 # Likewise for DC, copy Website into Domains and clean up (although less cleaning needed)
-sqlite3 $DB "update $DC_TB set Domains = lower(Website)"
-sqlite3 $DB "update $DC_TB set Domains = replace(Domains, 'http://', '')"
-sqlite3 $DB "update $DC_TB set Domains = replace(Domains, 'https://', '')"
+sql "update $DC_TB set Domains = lower(Website)"
+sql "update $DC_TB set Domains = replace(Domains, 'http://', '')"
+sql "update $DC_TB set Domains = replace(Domains, 'https://', '')"
 
 # Convert adhoc to vocab fields...?
 
 # Compile lists of DC domains and identifiers
-sqlite3  -csv $DB "select Identifier, Domains from $DC_TB" | \
+sql -csv "select Identifier, Domains from $DC_TB" | \
     perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d' >$OUTDIR/$DC_TB-domains.csv
-#sqlite3  -csv $DB "select Identifier,Domain from $ICA_TB" >>$ICA_TB-domains.csv
-#sqlite3  -csv $DB "select Identifier,Domain from $NCBA_TB" >>$NCBA_TB-domains.csv
+#sql -csv "select Identifier,Domain from $ICA_TB" >>$ICA_TB-domains.csv
+#sql -csv "select Identifier,Domain from $NCBA_TB" >>$NCBA_TB-domains.csv
 
 # Insert the DC domains back as a new 1:* table
 #for tb in $DC_TB $ICA_TB $NCBA_TB; do 
@@ -205,13 +209,13 @@ sqlite3  -csv $DB "select Identifier, Domains from $DC_TB" | \
 
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
-    sqlite3 $DB "alter table domains add column $FK VARCHAR"
-    sqlite3 $DB "create unique index $FK on domains ($FK)"
+    sql "alter table domains add column $FK VARCHAR"
+    sql "create unique index $FK on domains ($FK)"
 done
 
 # and the domains field ($DC_FK there already)
-sqlite3 $DB "create index domain on domains (domain)"
-sqlite3 $DB "create index $DC_FK on domains ($DC_FK)"
+sql "create index domain on domains (domain)"
+sql "create index $DC_FK on domains ($DC_FK)"
 
 ######################################################################
 # At this point we have sanitised the input data and normalised and
@@ -223,20 +227,20 @@ sqlite3 $DB "create index $DC_FK on domains ($DC_FK)"
 
 # Before we add more domains from other datasets, create a table
 # linking all the .coop domains to their DC registrant orgs.
-sqlite3 $DB "create table dc_domains as select domain, dcid from domains;"
+sql "create table dc_domains as select domain, dcid from domains;"
 
 
 # Create foreign refs from domains to $NCBA_TB, $ICA_TB and $CUK_TB
 # tables based on Domains/Domain matches
-sqlite3 $DB "insert into domains (domain,$ICA_FK) select $ICA_TB.Domain,$ICA_TB.Identifier from $ICA_TB;"
-sqlite3 $DB "insert into domains (domain,$NCBA_FK) select $NCBA_TB.Domain,$NCBA_TB.Identifier from $NCBA_TB;"
-sqlite3 $DB "insert into domains (domain,$CUK_FK) select $CUK_TB.Domain,$CUK_TB.Identifier from $CUK_TB;"
+sql "insert into domains (domain,$ICA_FK) select $ICA_TB.Domain,$ICA_TB.Identifier from $ICA_TB;"
+sql "insert into domains (domain,$NCBA_FK) select $NCBA_TB.Domain,$NCBA_TB.Identifier from $NCBA_TB;"
+sql "insert into domains (domain,$CUK_FK) select $CUK_TB.Domain,$CUK_TB.Identifier from $CUK_TB;"
 
 # Create a frequency table listing unique domains found and the number
 # of times they appear in DC, ICA and NCBA databases. This is not used
 # directly later, but is useful for analysing the data - notably
 # knowing when assumptions about domains are not valid!
-sqlite3 $DB "create table domain_freq as select domain, count(dcid) as dc, count(icaid) as ica, count(ncbaid) as ncba, count(cukid) as cuk from domains group by domain;"
+sql "create table domain_freq as select domain, count(dcid) as dc, count(icaid) as ica, count(ncbaid) as ncba, count(cukid) as cuk from domains group by domain;"
 
 
 
@@ -270,7 +274,7 @@ sqlite3 $DB "create table domain_freq as select domain, count(dcid) as dc, count
 # case where one DC organisation maps to two NCBA organisations, which
 # seems anomalous, see below. We work around that later, by assuming
 # these are in fact distinct organsiations, and listing both.)
-sqlite3 $DB "create view ncbaid_to_dcid as \
+sql "create view ncbaid_to_dcid as \
 select \
   dc_domains.dcid as dcid, \
   dc.Name as dc_name, \
@@ -320,7 +324,7 @@ left join dc_domains, dc on \
 #
 # There should also be a 1:1 relation from ICA organisations to DC
 # organisations - so no duplicate dcid fields. (This does seem to be the case.)
-sqlite3 $DB "create view icaid_to_dcid as \
+sql "create view icaid_to_dcid as \
 select \
   dc_domains.dcid as dcid, \
   dc.Name as dc_name, \
@@ -356,7 +360,7 @@ left join dc_domains, dc on \
 # duplicate dcid fields.  (In fact there is one case where one DC
 # organisation maps to two NCBA organisations, which seems anomalous,
 # see below. We work around that later...)
-sqlite3 $DB "create view ncba_not_dc_orgs as \
+sql "create view ncba_not_dc_orgs as \
 select \
   NULL as dcid, \
   NULL as dc_name, \
@@ -395,8 +399,8 @@ where \
 # ICA organisation.
 #
 # There should also be no more than one of each DC organisation - so no
-# duplicate dcid fields.  (This seems to be the case.)
-sqlite3 $DB "create view ica_not_dc_orgs as \
+# duplicate dcid fields.  (This seems to be the case...)
+sql "create view ica_not_dc_orgs as \
 select \
   NULL as dcid, \
   NULL as dc_name, \
@@ -421,7 +425,7 @@ where \
 #
 # (FIXME In fact we have more rows than DC orgs, because of the 1:2 match
 # in one case to two NCBA organisations)
-sqlite3 $DB "create view dc_orgs as \
+sql "create view dc_orgs as \
 select \
   dc.Identifier as dcid, \
   dc.Name as dc_name, \
@@ -450,7 +454,7 @@ left join icaid_to_dcid as i2d on \
 # unique ID for each row - but the ids together can provide the unique
 # key.
 #
-sqlite3 $DB "create view all_orgs as \
+sql "create view all_orgs as \
 select * from dc_orgs
 union
 select * from ncba_not_dc_orgs
@@ -467,7 +471,7 @@ select * from ica_not_dc_orgs
 # is because of a duplicate org match resulting in NCBA's orgs, ID
 # 8227012210 and 8227153053, to match the same DotCoop org ID VKoYjW.
 # A hacky workaround!
-sqlite3 $DB <<'EOF'
+sql <<'EOF'
 create view map_data as
 select 
   'demo/plus/'||coalesce(ica.slug,ncba.slug,dc.slug)||'/'||coalesce(ica.Identifier, ncba.Identifier, dc.Identifier) as Identifier,
