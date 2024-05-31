@@ -240,7 +240,17 @@ sql "insert into domains (domain,$CUK_FK) select $CUK_TB.Domain,$CUK_TB.Identifi
 # of times they appear in DC, ICA and NCBA databases. This is not used
 # directly later, but is useful for analysing the data - notably
 # knowing when assumptions about domains are not valid!
-sql "create table domain_freq as select domain, count(dcid) as dc, count(icaid) as ica, count(ncbaid) as ncba, count(cukid) as cuk from domains group by domain;"
+sql <<EOF
+create table domain_freq as
+select
+  domain,
+  count(dcid) as dc,
+  count(icaid) as ica,
+  count(ncbaid) as ncba,
+  count(cukid) as cuk
+from domains
+group by domain
+EOF
 
 
 
@@ -274,22 +284,23 @@ sql "create table domain_freq as select domain, count(dcid) as dc, count(icaid) 
 # case where one DC organisation maps to two NCBA organisations, which
 # seems anomalous, see below. We work around that later, by assuming
 # these are in fact distinct organsiations, and listing both.)
-sql "create view ncbaid_to_dcid as \
-select \
-  dc_domains.dcid as dcid, \
-  dc.Name as dc_name, \
-  dc.Domains as dc_domains, \
-  ncba.Identifier as ncbaid, \
-  ncba.Name as ncba_name, \
-  ncba.Domain as ncba_domain, \
-  NULL as icaid, \
-  NULL as ica_name, \
-  NULL as ica_domain \
-from ncba \
-left join dc_domains, dc on \
-  ncba.Domain = dc_domains.domain and \
+sql <<EOF
+create view ncbaid_to_dcid as
+select
+  dc_domains.dcid as dcid,
+  dc.Name as dc_name,
+  dc.Domains as dc_domains,
+  ncba.Identifier as ncbaid,
+  ncba.Name as ncba_name,
+  ncba.Domain as ncba_domain,
+  NULL as icaid,
+  NULL as ica_name,
+  NULL as ica_domain
+from ncba
+left join dc_domains, dc on
+  ncba.Domain = dc_domains.domain and
   dc_domains.dcid = dc.Identifier
-";
+EOF
 
 # The problem case - in which two different ncba orgs link to same dc org:
 #dcid	dc_name	dc_domains	ncbaid	ncba_name	ncba_domain	icaid	ica_name	ica_domain
@@ -324,22 +335,23 @@ left join dc_domains, dc on \
 #
 # There should also be a 1:1 relation from ICA organisations to DC
 # organisations - so no duplicate dcid fields. (This does seem to be the case.)
-sql "create view icaid_to_dcid as \
-select \
-  dc_domains.dcid as dcid, \
-  dc.Name as dc_name, \
-  dc.Domains as dc_domains, \
-  NULL as ncbaid, \
-  NULL as ncba_name, \
-  NULL as ncba_domain, \
-  ica.Identifier as icaid, \
-  ica.Name as ica_name, \
-  ica.Domain as ica_domain \
-from ica \
-left join dc_domains, dc on \
-  ica.Domain = dc_domains.domain and \
-  dc_domains.dcid = dc.Identifier \
-";
+sql <<EOF
+create view icaid_to_dcid as
+select
+  dc_domains.dcid as dcid,
+  dc.Name as dc_name,
+  dc.Domains as dc_domains,
+  NULL as ncbaid,
+  NULL as ncba_name,
+  NULL as ncba_domain,
+  ica.Identifier as icaid,
+  ica.Name as ica_name,
+  ica.Domain as ica_domain
+from ica
+left join dc_domains, dc on
+  ica.Domain = dc_domains.domain and
+  dc_domains.dcid = dc.Identifier
+EOF
 
 
 # Define a view listing all NCBA organisations with no link to a DC organisation.
@@ -360,23 +372,24 @@ left join dc_domains, dc on \
 # duplicate dcid fields.  (In fact there is one case where one DC
 # organisation maps to two NCBA organisations, which seems anomalous,
 # see below. We work around that later...)
-sql "create view ncba_not_dc_orgs as \
-select \
-  NULL as dcid, \
-  NULL as dc_name, \
-  NULL as dc_domain, \
-  ncba.Identifier as ncbaid, \
-  ncba.Name as ncba_name, \
-  ncba.Domain as ncba_domain, \
-  NULL as icaid, \
-  NULL as ica_name, \
-  NULL as ica_domain \
-from ncba \
-left join ncbaid_to_dcid as n2d on \
-  ncba.Identifier = n2d.ncbaid \
-where \
-  n2d.ncbaid is NULL \
-"
+sql <<EOF
+create view ncba_not_dc_orgs as
+select
+  NULL as dcid,
+  NULL as dc_name,
+  NULL as dc_domain,
+  ncba.Identifier as ncbaid,
+  ncba.Name as ncba_name,
+  ncba.Domain as ncba_domain,
+  NULL as icaid,
+  NULL as ica_name,
+  NULL as ica_domain
+from ncba
+left join ncbaid_to_dcid as n2d on
+  ncba.Identifier = n2d.ncbaid
+where
+  n2d.ncbaid is NULL
+EOF
 
 # Ditto for ICA
 #
@@ -400,23 +413,24 @@ where \
 #
 # There should also be no more than one of each DC organisation - so no
 # duplicate dcid fields.  (This seems to be the case...)
-sql "create view ica_not_dc_orgs as \
-select \
-  NULL as dcid, \
-  NULL as dc_name, \
-  NULL as dc_domain, \
-  NULL as ncbaid, \
-  NULL as ncba_name, \
-  NULL as ncba_domain, \
-  ica.Identifier as icaid, \
-  ica.Name as ica_name, \
-  ica.Domain as ica_domain \
-from ica \
-left join icaid_to_dcid as i2d on \
-  ica.Identifier = i2d.icaid \
-where \
-  i2d.icaid is NULL \
-"
+sql <<EOF
+create view ica_not_dc_orgs as
+select
+  NULL as dcid,
+  NULL as dc_name,
+  NULL as dc_domain,
+  NULL as ncbaid,
+  NULL as ncba_name,
+  NULL as ncba_domain,
+  ica.Identifier as icaid,
+  ica.Name as ica_name,
+  ica.Domain as ica_domain
+from ica
+left join icaid_to_dcid as i2d on
+  ica.Identifier = i2d.icaid
+where
+  i2d.icaid is NULL
+EOF
 
 # Define a view listing those DC orgs and their links to NCBA and/or ICA orgs
 #
@@ -425,23 +439,24 @@ where \
 #
 # (FIXME In fact we have more rows than DC orgs, because of the 1:2 match
 # in one case to two NCBA organisations)
-sql "create view dc_orgs as \
-select \
-  dc.Identifier as dcid, \
-  dc.Name as dc_name, \
-  dc.Domains as dc_domains, \
-  n2d.ncbaid as ncbaid, \
-  n2d.ncba_name as ncba_name, \
-  n2d.ncba_domain as ncba_domain, \
-  i2d.icaid as icaid, \
-  i2d.ica_name as ica_name, \
-  i2d.ica_domain as ica_domain \
-from dc \
-left join ncbaid_to_dcid as n2d on \
-  dc.Identifier = n2d.dcid \
-left join icaid_to_dcid as i2d on \
-  dc.Identifier = i2d.dcid \
-;"
+sql <<EOF
+create view dc_orgs as
+select
+  dc.Identifier as dcid,
+  dc.Name as dc_name,
+  dc.Domains as dc_domains,
+  n2d.ncbaid as ncbaid,
+  n2d.ncba_name as ncba_name,
+  n2d.ncba_domain as ncba_domain,
+  i2d.icaid as icaid,
+  i2d.ica_name as ica_name,
+  i2d.ica_domain as ica_domain
+from dc
+left join ncbaid_to_dcid as n2d on
+  dc.Identifier = n2d.dcid
+left join icaid_to_dcid as i2d on
+  dc.Identifier = i2d.dcid
+EOF
 
 # Define a view which concatenates the above tables - this is why they have a common schema.
 #
@@ -454,13 +469,14 @@ left join icaid_to_dcid as i2d on \
 # unique ID for each row - but the ids together can provide the unique
 # key.
 #
-sql "create view all_orgs as \
-select * from dc_orgs
+sql <<EOF
+create view all_orgs as
+  select * from dc_orgs
 union
-select * from ncba_not_dc_orgs
+  select * from ncba_not_dc_orgs
 union
-select * from ica_not_dc_orgs
-;"
+  select * from ica_not_dc_orgs
+EOF
 
 # Create the final view for exporting the data for the map.
 #
