@@ -11,6 +11,8 @@
 # organisational lists into one global list. A best effort operation,
 # linking them by their .coop domain registrations.
 #
+# A unified CSV, usable by a Mykomap, is written out as a last step.
+#
 #
 # USAGE
 # 
@@ -31,8 +33,6 @@
 # - CUK_URL, CUK_CSV, CUK_TB, CUK_FK
 # - DB: the filename of the Sqlite3 database to create
 # - OUT_CSV: the name of a CSV to dump the `map_data` table to
-#
-# A CSV can be dumped from this view, but currently is not done by this script.
 #
 #
 # DISCUSSION
@@ -567,3 +567,6 @@ left join dc on all_orgs.dcid = dc.Identifier
 left join ncba on all_orgs.ncbaid = ncba.Identifier
 left join ica on all_orgs.icaid = ica.Identifier
 EOF
+
+# Dump this map_data view to OUT_CSV for use in a Mykomap.
+sql -csv -header >"$OUT_CSV" "select * from map_data"
