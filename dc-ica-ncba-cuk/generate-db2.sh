@@ -99,21 +99,42 @@
 # - map_data: ditto, but in the form needed for the map CSV, with a unique ID field
 #
 
-set -vx
 set -e
 
-. defs.sh
+expected=(
+    DC_CSV DC_TB DC_FK ICA_CSV ICA_TB ICA_FK NCBA_CSV NCBA_TB NCBA_FK
+    CUK_CSV CUK_TB CUK_FK DB OUT_CSV
+)
+for name in ${expected[@]}; do
+    echo "$name=${!name:?mandatory $name environment variable is not set}"
+done
+
+{ # Parse and validate the command options
+    while getopts "y" option; do
+        case $option in 
+            y) OVERWRITE_DB=1;; # force DB overwrite
+	    *) 
+		echo "Invalid option: $OPTARG"
+		exit 1
+		;;
+	esac
+    done
+    shift $(( $OPTIND - 1 ))
+}
 
 # Safety first - don't blindly overwrite database if it exists
 if [ -e $DB ]; then
-    read -p "Overwrite $DB? [Y/N]" response
-    if [[ "$response" == "Y" ]]; then
-	rm -f $DB;
-    else
-	echo "Stopping."
-	exit 1;
+    if [ -z "$OVERWRITE_DB" ]; then
+	read -p "Overwrite $DB? [Y/N]" response
+	if [[ "$response" != "Y" ]]; then
+	    echo "Stopping."
+	    exit 1;
+	fi
     fi
+    rm -f $DB;
 fi
+
+set -vx
 
 # --blanks is important otherwise 'NA', 'N/A', 'none' or 'null' -> null!
 csvsql --db sqlite:///$DB --tables $DC_TB --blanks --no-constraints --insert $DC_CSV
