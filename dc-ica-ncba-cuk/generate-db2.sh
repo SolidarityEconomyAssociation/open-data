@@ -104,8 +104,6 @@ set -e
 
 . defs.sh
 
-mkdir -p $OUTDIR
-
 # Safety first - don't blindly overwrite database if it exists
 if [ -e $DB ]; then
     read -p "Overwrite $DB? [Y/N]" response
@@ -211,13 +209,12 @@ sql "update $DC_TB set Domains = replace(Domains, 'https://', '')"
 
 # Compile a table of DC domains to DC identifiers.
 # We have to go beyond SQL into Perl here, SQL can't easily to the splitting and joining.
-sql -csv "select Identifier, Domains from $DC_TB" | \
-    perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d' >$OUTDIR/$DC_TB-domains.csv
-
-# Insert the result back as a new 1:* table
-(printf "domain,${DC_FK}\n";
- cat $OUTDIR/$DC_TB-domains.csv) | \
-    csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
+# Insert the result back immediately as a new 1:* table
+sql -csv "select Identifier, Domains from $DC_TB" |
+    (
+	printf "domain,${DC_FK}\n"
+	perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d'
+    ) | csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
 
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
