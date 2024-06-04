@@ -16,7 +16,8 @@
 #
 # USAGE
 # 
-# Define the parameters in `defs.sh`, then run the `generate-db2.sh` script with no options.
+# Define the following environment variables, then run the
+# `generate-db2.sh` script with no options.
 #
 # An intermediate Sqlite3 database will be constructed.  This will
 # contain a table `map_data` which defines what will be used by the
@@ -24,13 +25,12 @@
 #
 # defs.sh should define the following environment variables:
 #
-# - DC_URL: an URL to a 'standard Mykomap schema' CSV file containing the DotCoop organisation data 
-# - DC_CSV: the name of a file to download that to
+# - DC_CSV: the name of a 'standard Mykomap schema' CSV file containing the DotCoop organisation data 
 # - DC_TB: the name of a database table to import that to
 # - DC_FK: the name of the primary key field of that table.
-# - ICA_URL, ICA_CSV, ICA_TB, ICA_FK: ditto, but for the ICA data
-# - NCBA_URL, NCBA_CSV, NCBA_TB, NCBA_FK,
-# - CUK_URL, CUK_CSV, CUK_TB, CUK_FK
+# - ICA_CSV, ICA_TB, ICA_FK: ditto, but for the ICA data
+# - NCBA_CSV, NCBA_TB, NCBA_FK: ditto, but for the NCBA data
+# - CUK_CSV, CUK_TB, CUK_FK: ditto, but for the CUK data
 # - DB: the filename of the Sqlite3 database to create
 # - OUT_CSV: the name of a CSV to dump the `map_data` table to
 #
@@ -114,12 +114,6 @@ if [ -e $DB ]; then
 	exit 1;
     fi
 fi
-
-curl -f $DC_URL >$DC_CSV
-curl -f $ICA_URL >$ICA_CSV
-curl -f $NCBA_URL >$NCBA_CSV
-curl -f $CUK_URL >$CUK_CSV
-
 
 # --blanks is important otherwise 'NA', 'N/A', 'none' or 'null' -> null!
 csvsql --db sqlite:///$DB --tables $DC_TB --blanks --no-constraints --insert $DC_CSV
