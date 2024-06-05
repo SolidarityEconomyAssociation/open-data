@@ -646,6 +646,9 @@ EOF
 # present, the other will be.  This should be valid. If it were not
 # however, we'd get mixed and matched coordinates, i.e.
 # nonesense coordinates.
+#
+# See this point for how we coalesce the various `Country ID` fields into one
+# https://github.com/DigitalCommons/mykomap/issues/249#issuecomment-2150534302
 sql <<'EOF'
 create view map_data as
 select 
@@ -653,6 +656,7 @@ select
   coalesce(ica.Name, dc.Name, ncba.Name, cuk.Name) as Name,
   coalesce(ica.Description, dc.Description, ncba.Description, cuk.Description) as Description,
   coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
+  coalesce(cuk.`Country ID`, ica.`Country ID`, dc.`Country ID`, ncba.`Country ID`) as `Country ID`,
   coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
   coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
   coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
