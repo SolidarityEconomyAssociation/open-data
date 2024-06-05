@@ -723,5 +723,39 @@ left join ica on all_orgs.icaid = ica.Identifier
 left join cuk on all_orgs.cukid = cuk.Identifier
 EOF
 
+
+# Find cases where the non-null country IDs of organisations differ.
+#
+# First get a table mapping organisation IDs to their country ID, from
+# all datasets.  i.e. select id, cid for all cases where cid is not
+# null
+#
+# Then group by ID and count those with more than one entry (because
+# the ID has been listed against more than one Country)
+#
+# Here we include the Name field as a convenience
+sql <<'EOF'
+create view uncorrelated_country_ids as
+select distinct count(cid) as c, group_concat(cid) as cids, id, n as name,
+  `DC Country ID`, `ICA Country ID`, `NCBA Country ID`, `CUK Country ID`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `ICA Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `NCBA Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `CUK Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
 # Dump this map_data view to OUT_CSV for use in a Mykomap.
 sql -csv -header >"$OUT_CSV" "select * from map_data"
