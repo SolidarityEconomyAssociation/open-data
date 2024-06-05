@@ -652,7 +652,7 @@ select
   'demo/plus/'||coalesce(ica.slug,ncba.slug,dc.slug,cuk.slug)||'/'||coalesce(ica.Identifier, ncba.Identifier, dc.Identifier, cuk.Identifier) as Identifier,
   coalesce(ica.Name, dc.Name, ncba.Name, cuk.Name) as Name,
   coalesce(ica.Description, dc.Description, ncba.Description, cuk.Description) as Description,
-  coalesce(ica.Website, dc.Website, ncba.Website, cuk.Website) as Website,
+  coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
   coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
   coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
   coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
