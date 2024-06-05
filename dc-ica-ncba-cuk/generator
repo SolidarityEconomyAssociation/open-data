@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require 'se_open_data/cli'
+require 'se_open_data/config'
+require 'se_open_data/utils/password_store'
+
+module Downloader
+  def self.main
+    config = SeOpenData::Config.load    
+
+    # Make the target directory if needed
+    FileUtils.mkdir_p config.GEN_DOC_DIR
+
+    FileUtils.cp(
+      [config.STANDARD_CSV,
+       File.join(config.TOP_OUTPUT_DIR, File.basename(config.STANDARD_CSV, '.csv')+'.db')],
+      config.GEN_DOC_DIR
+    )
+    
+    return true
+  end
+  
+end
+
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Downloader.main if File.absolute_path(__FILE__) == File.absolute_path($0)
+
+
