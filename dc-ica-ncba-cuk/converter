@@ -31,7 +31,7 @@ module Converter
       'CUK_TB' => 'cuk',
       'CUK_FK' => 'cukid',
       
-      'DB' => File.join(config.TOP_OUTPUT_DIR, File.basename(config.STANDARD_CSV)+'.db'),
+      'DB' => File.join(config.TOP_OUTPUT_DIR, File.basename(config.STANDARD_CSV, '.csv')+'.db'),
       'OUT_CSV' => config.STANDARD_CSV,
     }
     
