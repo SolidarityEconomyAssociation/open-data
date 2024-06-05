@@ -157,7 +157,7 @@ class Converter
                          when 'England','Scotland','Wales','Northern Ireland','Isle of Man' then 'GB'
                          when 'Jersey' then 'JE'
                          when '' then ''
-                         else warn "Unknown nation #{uk_nation} -> GB"; 'GB'
+                         else warn "Unknown nation '#{uk_nation}' -> GB"; 'GB'
                          end,
              territory_id: nil,
              homepage: types.normalise_url(website, default: nil),
