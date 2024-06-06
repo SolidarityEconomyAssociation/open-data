@@ -761,5 +761,38 @@ left join map_data on id = map_data.Identifier
 group by id having c > 1
 EOF
 
+# Similar query as above, but for uncorrelated organisational names
+sql <<'EOF'
+CREATE VIEW uncorrelated_names as
+select distinct count(n) as c, group_concat(n) as names,
+  `DC Country ID`, `ICA Country ID`, `NCBA Country ID`, `CUK Country ID`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `ICA Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `NCBA Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `CUK Name` as n, Identifier as id  from map_data where n is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# This tries to find duplicate names shared by what are listed as separate organisations in the data
+sql <<'EOF'
+CREATE VIEW duplicate_names as
+select Name, count(Identifier) as count, group_concat(Identifier) as ids from map_data
+group by Name
+having count > 1
+order by count desc;
+EOF
+
 # Dump this map_data view to OUT_CSV for use in a Mykomap.
 sql -csv -header >"$OUT_CSV" "select * from map_data"
