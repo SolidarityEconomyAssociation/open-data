@@ -697,6 +697,7 @@ select
   dc.`Postcode` as `DC Postcode`,
   dc.`Country ID` as `DC Country ID`,
   dc.`Domains` as `DC Domains`,
+  dc.`Primary Activity` as `DC Primary Activity`,
   dc.`Economic Sector ID` as `DC Economic Sector`,
   dc.`Organisational Category ID` as `DC Organisational Category`,
   dc.`Identifier` is not null as `DC Registered`,
