@@ -841,7 +841,12 @@ select
   Latitude,
   Longitude,
   `Geo Container Latitude`,
-  `Geo Container Longitude`
+  `Geo Container Longitude`,
+  `Geocoded Address`,
+  `NCBA Member`,
+  `ICA Member`,
+  `DC Registered`,
+  `CUK Member`
 from map_data
 EOF
 
