@@ -658,11 +658,12 @@ select
   coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
   coalesce(cuk.`Country ID`, ica.`Country ID`, dc.`Country ID`, ncba.`Country ID`) as `Country ID`,
   coalesce(ica.`Primary Activity`, cuk.`Primary Activity`, dc.`Primary Activity`) as `Primary Activity`,
-  coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
-  coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
-  coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
-  coalesce(ica.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`, cuk.`Geo Container Longitude`) as `Geo Container Longitude`,
-  coalesce(ica.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`, cuk.`Geo Container`) as `Geo Container`,
+  coalesce(ica.Latitude, cuk.Latitude, dc.Latitude, ncba.Latitude) as Latitude,
+  coalesce(ica.Longitude, cuk.Longitude, dc.Longitude, ncba.Longitude) as Longitude,
+  coalesce(ica.`Geo Container Latitude`, cuk.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`) as `Geo Container Latitude`,
+  coalesce(ica.`Geo Container Longitude`, cuk.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`) as `Geo Container Longitude`,
+  coalesce(ica.`Geo Container`, cuk.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`) as `Geo Container`,
+  coalesce(ica.`Geocoded Address`, cuk.`Geocoded Address`, dc.`Geocoded Address`, ncba.`Geocoded Address`) as `Geocoded Address`,
 
   ncba.Identifier as `NCBA Identifier`,
   ncba.Name as `NCBA Name`,
@@ -673,6 +674,8 @@ select
   ncba.Domain as `NCBA Domain`,
   ncba.`Co-op Sector` as `NCBA Co-op Sector`,
   ncba.Industry as `NCBA Industry`,
+  ncba.`Geocoded Address` as `NCBA Geocoded Address`,
+  ncba.`Geo Container Confidence` as `NCBA Geo Container Confidence`,
   ncba.`Identifier` is not null as `NCBA Member`,
 
   ica.`Identifier` as `ICA Identifier`, 
@@ -688,6 +691,8 @@ select
   ica.`Activities` as `ICA Activities`,
   ica.`Organisational Structure` as `ICA Organisational Structure`,
   ica.`Membership Type` as `ICA Typology`,
+  ica.`Geocoded Address` as `ICA Geocoded Address`,
+  ica.`Geo Container Confidence` as `ICA Geo Container Confidence`,
   ica.`Identifier` is not null as `ICA Member`,
   
   dc.`Identifier` as `DC Identifier`, 
@@ -701,6 +706,8 @@ select
   dc.`Primary Activity` as `DC Primary Activity`,
   dc.`Economic Sector ID` as `DC Economic Sector`,
   dc.`Organisational Category ID` as `DC Organisational Category`,
+  dc.`Geocoded Address` as `DC Geocoded Address`,
+  dc.`Geo Container Confidence` as `DC Geo Container Confidence`,
   dc.`Identifier` is not null as `DC Registered`,
 
   cuk.`Identifier` as `CUK Identifier`, 
@@ -721,6 +728,8 @@ select
   cuk.`SIC Code` as `CUK SIC Code`,
   cuk.`Ownership Classification` as `CUK Ownership Classification`,
   cuk.`Legal Form` as `CUK Legal Form`,
+  cuk.`Geocoded Address` as `CUK Geocoded Address`,
+  cuk.`Geo Container Confidence` as `CUK Geo Container Confidence`,
   cuk.`Identifier` is not null as `CUK Member`
 from all_orgs
 left join dc on all_orgs.dcid = dc.Identifier
