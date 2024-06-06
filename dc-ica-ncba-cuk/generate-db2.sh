@@ -818,5 +818,24 @@ left join map_data on id = map_data.Identifier
 group by id having c > 1
 EOF
 
-# Dump this map_data view to OUT_CSV for use in a Mykomap.
-sql -csv -header >"$OUT_CSV" "select * from map_data"
+# A slimmed-down version which will hopefully load faster.
+# We keep map_data as it's still used for diagnostics and investigation.
+sql <<'EOF'
+create view map_data_lite as
+select 
+  Identifier,
+  Name,
+  Website,
+  `DC Domains`,
+  `Country ID`,
+  `Primary Activity`,
+  Latitude,
+  Longitude,
+  `Geo Container Latitude`,
+  `Geo Container Longitude`
+from map_data
+EOF
+
+
+# Dump this map_data_lite view to OUT_CSV for use in a Mykomap.
+sql -csv -header >"$OUT_CSV" "select * from map_data_lite"
