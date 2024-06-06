@@ -24,11 +24,12 @@
 # See the documentation on [`seod`]({SeOpenData::Cli}) for more
 # information.
 
-require 'se_open_data'
 require 'se_open_data/config'
 require 'se_open_data/csv/schema'
 require 'se_open_data/csv/schema/types'
-require 'se_open_data/csv/converter/limesurveycore'
+require 'se_open_data/geocoding'
+require 'se_open_data/utils/file_cache'
+require 'se_open_data/utils/password_store'
 require 'normalize_country'
 require 'csv'
 
@@ -128,7 +129,7 @@ module Converter
   # and writes the output file. See the documentation for
   # {SeOpenData::CSV::Schema.converter}.
   #
-  def self.mk_converter(from_schema:, to_schema:)
+  def self.mk_converter(from_schema:, to_schema:, geocode:)
     # Find the config file...
     config = SeOpenData::Config.load
     essglobal = config.ESSGLOBAL_URI
@@ -156,6 +157,20 @@ module Converter
         postcode:
         |
         warn [company_name, postcode, country_region].inspect
+        country_id = country(country_region)
+        addr =
+          [
+            city,
+            state_region,
+            postcode,
+            NormalizeCountry(country_id, to: :short)
+          ].compact
+            # try to clean up funny addresses with extra commas etc.
+            .map {|it| it.strip.gsub(/[;,](\s*[;,])+/, ',').gsub(/[\s,;]*$/, '') }
+            .select {|it| it != '' }
+            .join(", ")
+        geocoded = geocode.call(addr)
+        
           {
             id: record_id,
             name: company_name,
@@ -167,7 +182,7 @@ module Converter
             locality: nil,
             region: nil,
             postcode: postcode,
-            country_id: country(country_region),
+            country_id: country_id,
             territory_id: nil,
             homepage: nil,
             phone: nil,
@@ -180,9 +195,11 @@ module Converter
             # these fields depend on the street address
             latitude: nil,
             longitude: nil,
-            geocontainer: nil,
-            geocontainer_lat: nil,
-            geocontainer_lon: nil,
+            geocontainer: geocoded&.osm_uri,
+            geocontainer_lat: geocoded&.lat,
+            geocontainer_lon: geocoded&.lng,
+            geocontainer_confidence: geocoded&.confidence,
+            geocoded_addr: addr,
             
             city: city,
             state_region: state_region,
@@ -211,18 +228,20 @@ module Converter
     # original data file
     original_data = File.join(config.SRC_CSV_DIR, config.ORIGINAL_CSV)
 
-    # Intermediate csv files
-    standard_csv = File.join(config.GEN_CSV_DIR, "standard.csv")
-
-    # Output csv file
-    output_csv = config.STANDARD_CSV
-
-    # A converter between the input and standard csv schema
-    converter = mk_converter(from_schema: schema, to_schema: OutSchema)
-
     # Get the Geoapify API key
     pass = SeOpenData::Utils::PasswordStore.new(use_env_vars: config.USE_ENV_PASSWORDS)
     api_key = pass.get config.GEOCODER_API_KEY_PATH
+
+    cache = SeOpenData::Utils::FileCache.new.load(config.GEODATA_CACHE)
+
+    geocode = SeOpenData::Geocoding.new.build(
+      lookup: :geoapify,
+      api_key: api_key,
+      cache: cache,
+    )
+    
+    # A converter between the input and standard csv schema
+    converter = mk_converter(from_schema: schema, to_schema: OutSchema, geocode: geocode)
 
     # Define the field mappings
     @@industry_to_activity = CsvLookup.new
@@ -242,17 +261,7 @@ module Converter
                                  from: 'NCBA Sector Label', to: 'NCBA Sector ID')
     
     # Convert the csv to the standard schema
-    converter.convert File.open(original_data), standard_csv
-
-    SeOpenData::CSV.add_postcode_lat_long(
-      infile: standard_csv,
-      outfile: output_csv,
-      api_key: api_key,
-      lat_lng_cache: config.POSTCODE_LAT_LNG_CACHE,
-      postcode_global_cache: config.GEODATA_CACHE,
-      replace_address: false,
-      to_schema: OutSchema,
-    )
+    converter.convert File.open(original_data), config.STANDARD_CSV
 
   rescue => e
     raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
