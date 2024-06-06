@@ -657,6 +657,7 @@ select
   coalesce(ica.Description, dc.Description, ncba.Description, cuk.Description) as Description,
   coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
   coalesce(cuk.`Country ID`, ica.`Country ID`, dc.`Country ID`, ncba.`Country ID`) as `Country ID`,
+  coalesce(ica.`Primary Activity`, cuk.`Primary Activity`, dc.`Primary Activity`) as `Primary Activity`,
   coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
   coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
   coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
