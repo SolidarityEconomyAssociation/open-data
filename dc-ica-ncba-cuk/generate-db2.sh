@@ -795,5 +795,27 @@ having count > 1
 order by count desc;
 EOF
 
+# This tries to find mismatching Primary Activity values
+sql <<'EOF'
+CREATE VIEW uncorrelated_primary_activities as
+select distinct count(pa) as c, group_concat(replace(pa,'https://dev.lod.coop/essglobal/2.1/standard/activities-ica/','')) as pas, id, n as name,
+  `DC Primary Activity`, `ICA Primary Activity`, `CUK Primary Activity`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+  union
+  select `ICA Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+  union
+  select `CUK Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
 # Dump this map_data view to OUT_CSV for use in a Mykomap.
 sql -csv -header >"$OUT_CSV" "select * from map_data"
