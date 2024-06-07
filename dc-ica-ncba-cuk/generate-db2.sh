@@ -837,7 +837,7 @@ select
   Website,
   `DC Domains`,
   `Country ID`,
-  `Primary Activity`,
+  replace(map_data.`Primary Activity`, 'https://dev.lod.coop/essglobal/2.1/standard/activities-ica/', '') as `Primary Activity`,
   Latitude,
   Longitude,
   `Geo Container Latitude`,
