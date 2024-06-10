@@ -830,6 +830,50 @@ left join map_data on id = map_data.Identifier
 group by id having c > 1
 EOF
 
+# This tries to find mismatching Organisational Structure values
+sql <<'EOF'
+CREATE VIEW uncorrelated_organisational_structures as
+select distinct count(os) as c, group_concat(replace(os,'https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/','')) as oss, id, n as name,
+  `DC Organisational Structure`, `ICA Organisational Structure`, `CUK Organisational Structure`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`,
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+  union
+  select `ICA Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+  union
+  select `CUK Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# This tries to find mismatching Typology values
+sql <<'EOF'
+CREATE VIEW uncorrelated_typologies as
+select distinct count(ty) as c, group_concat(replace(ty,'https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/','')) as tys, id, n as name,
+  `DC Typology`, `ICA Typology`, `CUK Typology`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`,
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+  union
+  select `ICA Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+  union
+  select `CUK Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
 # A slimmed-down version which will hopefully load faster.
 # We keep map_data as it's still used for diagnostics and investigation.
 sql <<'EOF'
