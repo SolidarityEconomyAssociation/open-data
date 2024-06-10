@@ -658,6 +658,8 @@ select
   coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
   coalesce(cuk.`Country ID`, ica.`Country ID`, dc.`Country ID`, ncba.`Country ID`) as `Country ID`,
   coalesce(ica.`Primary Activity`, cuk.`Primary Activity`, dc.`Primary Activity`) as `Primary Activity`,
+  coalesce(ica.`Organisational Structure`, cuk.`Organisational Structure`, dc.`Organisational Structure`) as `Organisational Structure`,
+  coalesce(ica.`Membership Type`, cuk.`Membership Type`, dc.`Membership Type`) as `Typology`,
   coalesce(ica.Latitude, cuk.Latitude, dc.Latitude, ncba.Latitude) as Latitude,
   coalesce(ica.Longitude, cuk.Longitude, dc.Longitude, ncba.Longitude) as Longitude,
   coalesce(ica.`Geo Container Latitude`, cuk.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`) as `Geo Container Latitude`,
