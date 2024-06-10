@@ -847,7 +847,8 @@ select
   `NCBA Member`,
   `ICA Member`,
   `DC Registered`,
-  `CUK Member`
+  `CUK Member`,
+  `CUK Sector`
 from map_data
 EOF
 
