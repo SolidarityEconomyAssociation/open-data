@@ -888,6 +888,8 @@ select
   `DC Domains`,
   `Country ID`,
   replace(map_data.`Primary Activity`, 'https://dev.lod.coop/essglobal/2.1/standard/activities-ica/', '') as `Primary Activity`,
+  replace(map_data.`Organisational Structure`, 'https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/', '') as `Organisational Structure`,
+  replace(map_data.`Typology`, 'https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/', '') as `Typology`,
   Latitude,
   Longitude,
   `Geo Container Latitude`,
