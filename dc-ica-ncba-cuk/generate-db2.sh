@@ -834,6 +834,7 @@ create view map_data_lite as
 select 
   Identifier,
   Name,
+  Description,
   Website,
   `DC Domains`,
   `Country ID`,
