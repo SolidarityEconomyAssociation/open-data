@@ -672,6 +672,7 @@ select
   ncba.`State/Region` as `NCBA State/Region`,
   ncba.`Country ID` as `NCBA Country ID`,
   ncba.Domain as `NCBA Domain`,
+  ncba.`Primary Activity` as `NCBA Primary Activity`,
   ncba.`Co-op Sector` as `NCBA Co-op Sector`,
   ncba.Industry as `NCBA Industry`,
   ncba.`Geocoded Address` as `NCBA Geocoded Address`,
