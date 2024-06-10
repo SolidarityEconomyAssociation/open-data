@@ -705,6 +705,8 @@ select
   dc.`Country ID` as `DC Country ID`,
   dc.`Domains` as `DC Domains`,
   dc.`Primary Activity` as `DC Primary Activity`,
+  dc.`Organisational Structure` as `DC Organisational Structure`,
+  dc.`Membership Type` as `DC Typology`,
   dc.`Economic Sector ID` as `DC Economic Sector`,
   dc.`Organisational Category ID` as `DC Organisational Category`,
   dc.`Geocoded Address` as `DC Geocoded Address`,
