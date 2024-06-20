@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# See https://www.uk.coop/resources/open-data
+DATE=$(date +%F)
+URL=https://www.uk.coop/sites/default/files/2024-06/open_data_organisations_2024_06.csv
+FILE=original-data/$(basename $URL)
+curl $URL > $FILE
+ln -sfrn $FILE original-data/original.csv
+
+
