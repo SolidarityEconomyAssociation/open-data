@@ -16,7 +16,8 @@
 #
 # USAGE
 # 
-# Define the parameters in `defs.sh`, then run the `generate-db2.sh` script with no options.
+# Define the following environment variables, then run the
+# `generate-db2.sh` script with no options.
 #
 # An intermediate Sqlite3 database will be constructed.  This will
 # contain a table `map_data` which defines what will be used by the
@@ -24,13 +25,12 @@
 #
 # defs.sh should define the following environment variables:
 #
-# - DC_URL: an URL to a 'standard Mykomap schema' CSV file containing the DotCoop organisation data 
-# - DC_CSV: the name of a file to download that to
+# - DC_CSV: the name of a 'standard Mykomap schema' CSV file containing the DotCoop organisation data 
 # - DC_TB: the name of a database table to import that to
 # - DC_FK: the name of the primary key field of that table.
-# - ICA_URL, ICA_CSV, ICA_TB, ICA_FK: ditto, but for the ICA data
-# - NCBA_URL, NCBA_CSV, NCBA_TB, NCBA_FK,
-# - CUK_URL, CUK_CSV, CUK_TB, CUK_FK
+# - ICA_CSV, ICA_TB, ICA_FK: ditto, but for the ICA data
+# - NCBA_CSV, NCBA_TB, NCBA_FK: ditto, but for the NCBA data
+# - CUK_CSV, CUK_TB, CUK_FK: ditto, but for the CUK data
 # - DB: the filename of the Sqlite3 database to create
 # - OUT_CSV: the name of a CSV to dump the `map_data` table to
 #
@@ -99,29 +99,42 @@
 # - map_data: ditto, but in the form needed for the map CSV, with a unique ID field
 #
 
-set -vx
 set -e
 
-. defs.sh
+expected=(
+    DC_CSV DC_TB DC_FK ICA_CSV ICA_TB ICA_FK NCBA_CSV NCBA_TB NCBA_FK
+    CUK_CSV CUK_TB CUK_FK DB OUT_CSV
+)
+for name in ${expected[@]}; do
+    echo "$name=${!name:?mandatory $name environment variable is not set}"
+done
 
-mkdir -p $OUTDIR
+{ # Parse and validate the command options
+    while getopts "y" option; do
+        case $option in 
+            y) OVERWRITE_DB=1;; # force DB overwrite
+	    *) 
+		echo "Invalid option: $OPTARG"
+		exit 1
+		;;
+	esac
+    done
+    shift $(( $OPTIND - 1 ))
+}
 
 # Safety first - don't blindly overwrite database if it exists
 if [ -e $DB ]; then
-    read -p "Overwrite $DB? [Y/N]" response
-    if [[ "$response" == "Y" ]]; then
-	rm -f $DB;
-    else
-	echo "Stopping."
-	exit 1;
+    if [ -z "$OVERWRITE_DB" ]; then
+	read -p "Overwrite $DB? [Y/N]" response
+	if [[ "$response" != "Y" ]]; then
+	    echo "Stopping."
+	    exit 1;
+	fi
     fi
+    rm -f $DB;
 fi
 
-curl -f $DC_URL >$DC_CSV
-curl -f $ICA_URL >$ICA_CSV
-curl -f $NCBA_URL >$NCBA_CSV
-curl -f $CUK_URL >$CUK_CSV
-
+set -vx
 
 # --blanks is important otherwise 'NA', 'N/A', 'none' or 'null' -> null!
 csvsql --db sqlite:///$DB --tables $DC_TB --blanks --no-constraints --insert $DC_CSV
@@ -211,13 +224,12 @@ sql "update $DC_TB set Domains = replace(Domains, 'https://', '')"
 
 # Compile a table of DC domains to DC identifiers.
 # We have to go beyond SQL into Perl here, SQL can't easily to the splitting and joining.
-sql -csv "select Identifier, Domains from $DC_TB" | \
-    perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d' >$OUTDIR/$DC_TB-domains.csv
-
-# Insert the result back as a new 1:* table
-(printf "domain,${DC_FK}\n";
- cat $OUTDIR/$DC_TB-domains.csv) | \
-    csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
+# Insert the result back immediately as a new 1:* table
+sql -csv "select Identifier, Domains from $DC_TB" |
+    (
+	printf "domain,${DC_FK}\n"
+	perl -nE 'chomp; ($id,$d) = split /,/; @d = split /;/, $d; say "$_,$id" for @d'
+    ) | csvsql --db sqlite:///$DB --tables domains --insert --no-constraints -
 
 # Add $ICA_FK and $NCBA_FK fields, and indexes on them
 for FK in $ICA_FK $NCBA_FK $CUK_FK; do 
@@ -634,26 +646,39 @@ EOF
 # present, the other will be.  This should be valid. If it were not
 # however, we'd get mixed and matched coordinates, i.e.
 # nonesense coordinates.
+#
+# See this point for how we coalesce the various `Country ID` fields into one
+# https://github.com/DigitalCommons/mykomap/issues/249#issuecomment-2150534302
 sql <<'EOF'
 create view map_data as
 select 
   'demo/plus/'||coalesce(ica.slug,ncba.slug,dc.slug,cuk.slug)||'/'||coalesce(ica.Identifier, ncba.Identifier, dc.Identifier, cuk.Identifier) as Identifier,
   coalesce(ica.Name, dc.Name, ncba.Name, cuk.Name) as Name,
   coalesce(ica.Description, dc.Description, ncba.Description, cuk.Description) as Description,
-  coalesce(ica.Website, dc.Website, ncba.Website, cuk.Website) as Website,
-  coalesce(ica.Latitude, dc.Latitude, ncba.Latitude, cuk.Latitude) as Latitude,
-  coalesce(ica.Longitude, dc.Longitude, ncba.Longitude, cuk.Longitude) as Longitude,
-  coalesce(ica.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`, cuk.`Geo Container Latitude`) as `Geo Container Latitude`,
-  coalesce(ica.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`, cuk.`Geo Container Longitude`) as `Geo Container Longitude`,
-  coalesce(ica.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`, cuk.`Geo Container`) as `Geo Container`,
+  coalesce(ica.Website, ncba.Website, cuk.Website) as Website,
+  coalesce(cuk.`Country ID`, ica.`Country ID`, dc.`Country ID`, ncba.`Country ID`) as `Country ID`,
+  coalesce(ica.`Primary Activity`, cuk.`Primary Activity`, dc.`Primary Activity`) as `Primary Activity`,
+  coalesce(ica.`Organisational Structure`, cuk.`Organisational Structure`, dc.`Organisational Structure`) as `Organisational Structure`,
+  coalesce(ica.`Membership Type`, cuk.`Membership Type`, dc.`Membership Type`) as `Typology`,
+  coalesce(ica.Latitude, cuk.Latitude, dc.Latitude, ncba.Latitude) as Latitude,
+  coalesce(ica.Longitude, cuk.Longitude, dc.Longitude, ncba.Longitude) as Longitude,
+  coalesce(ica.`Geo Container Latitude`, cuk.`Geo Container Latitude`, dc.`Geo Container Latitude`, ncba.`Geo Container Latitude`) as `Geo Container Latitude`,
+  coalesce(ica.`Geo Container Longitude`, cuk.`Geo Container Longitude`, dc.`Geo Container Longitude`, ncba.`Geo Container Longitude`) as `Geo Container Longitude`,
+  coalesce(ica.`Geo Container`, cuk.`Geo Container`, dc.`Geo Container`, ncba.`Geo Container`) as `Geo Container`,
+  coalesce(ica.`Geocoded Address`, cuk.`Geocoded Address`, dc.`Geocoded Address`, ncba.`Geocoded Address`) as `Geocoded Address`,
 
   ncba.Identifier as `NCBA Identifier`,
+  ncba.Name as `NCBA Name`,
   ncba.Postcode as `NCBA Postcode`,
   ncba.City as `NCBA City`,
   ncba.`State/Region` as `NCBA State/Region`,
   ncba.`Country ID` as `NCBA Country ID`,
+  ncba.Domain as `NCBA Domain`,
+  ncba.`Primary Activity` as `NCBA Primary Activity`,
   ncba.`Co-op Sector` as `NCBA Co-op Sector`,
   ncba.Industry as `NCBA Industry`,
+  ncba.`Geocoded Address` as `NCBA Geocoded Address`,
+  ncba.`Geo Container Confidence` as `NCBA Geo Container Confidence`,
   ncba.`Identifier` is not null as `NCBA Member`,
 
   ica.`Identifier` as `ICA Identifier`, 
@@ -669,6 +694,8 @@ select
   ica.`Activities` as `ICA Activities`,
   ica.`Organisational Structure` as `ICA Organisational Structure`,
   ica.`Membership Type` as `ICA Typology`,
+  ica.`Geocoded Address` as `ICA Geocoded Address`,
+  ica.`Geo Container Confidence` as `ICA Geo Container Confidence`,
   ica.`Identifier` is not null as `ICA Member`,
   
   dc.`Identifier` as `DC Identifier`, 
@@ -678,9 +705,14 @@ select
   dc.`Region` as `DC Region`,
   dc.`Postcode` as `DC Postcode`,
   dc.`Country ID` as `DC Country ID`,
-  dc.Domains as Domains,
+  dc.`Domains` as `DC Domains`,
+  dc.`Primary Activity` as `DC Primary Activity`,
+  dc.`Organisational Structure` as `DC Organisational Structure`,
+  dc.`Membership Type` as `DC Typology`,
   dc.`Economic Sector ID` as `DC Economic Sector`,
   dc.`Organisational Category ID` as `DC Organisational Category`,
+  dc.`Geocoded Address` as `DC Geocoded Address`,
+  dc.`Geo Container Confidence` as `DC Geo Container Confidence`,
   dc.`Identifier` is not null as `DC Registered`,
 
   cuk.`Identifier` as `CUK Identifier`, 
@@ -701,6 +733,8 @@ select
   cuk.`SIC Code` as `CUK SIC Code`,
   cuk.`Ownership Classification` as `CUK Ownership Classification`,
   cuk.`Legal Form` as `CUK Legal Form`,
+  cuk.`Geocoded Address` as `CUK Geocoded Address`,
+  cuk.`Geo Container Confidence` as `CUK Geo Container Confidence`,
   cuk.`Identifier` is not null as `CUK Member`
 from all_orgs
 left join dc on all_orgs.dcid = dc.Identifier
@@ -709,5 +743,166 @@ left join ica on all_orgs.icaid = ica.Identifier
 left join cuk on all_orgs.cukid = cuk.Identifier
 EOF
 
-# Dump this map_data view to OUT_CSV for use in a Mykomap.
-sql -csv -header >"$OUT_CSV" "select * from map_data"
+
+# Find cases where the non-null country IDs of organisations differ.
+#
+# First get a table mapping organisation IDs to their country ID, from
+# all datasets.  i.e. select id, cid for all cases where cid is not
+# null
+#
+# Then group by ID and count those with more than one entry (because
+# the ID has been listed against more than one Country)
+#
+# Here we include the Name field as a convenience
+sql <<'EOF'
+create view uncorrelated_country_ids as
+select distinct count(cid) as c, group_concat(cid) as cids, id, n as name,
+  `DC Country ID`, `ICA Country ID`, `NCBA Country ID`, `CUK Country ID`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `ICA Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `NCBA Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+  union
+  select `CUK Country ID` as cid, Identifier as id, Name as n  from map_data where cid is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# Similar query as above, but for uncorrelated organisational names
+sql <<'EOF'
+CREATE VIEW uncorrelated_names as
+select distinct count(n) as c, group_concat(n) as names,
+  `DC Country ID`, `ICA Country ID`, `NCBA Country ID`, `CUK Country ID`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `ICA Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `NCBA Name` as n, Identifier as id  from map_data where n is not null
+  union
+  select `CUK Name` as n, Identifier as id  from map_data where n is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# This tries to find duplicate names shared by what are listed as separate organisations in the data
+sql <<'EOF'
+CREATE VIEW duplicate_names as
+select Name, count(Identifier) as count, group_concat(Identifier) as ids from map_data
+group by Name
+having count > 1
+order by count desc;
+EOF
+
+# This tries to find mismatching Primary Activity values
+sql <<'EOF'
+CREATE VIEW uncorrelated_primary_activities as
+select distinct count(pa) as c, group_concat(replace(pa,'https://dev.lod.coop/essglobal/2.1/standard/activities-ica/','')) as pas, id, n as name,
+  `DC Primary Activity`, `ICA Primary Activity`, `CUK Primary Activity`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`, 
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+  union
+  select `ICA Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+  union
+  select `CUK Primary Activity` as pa, Identifier as id, Name as n  from map_data where pa is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# This tries to find mismatching Organisational Structure values
+sql <<'EOF'
+CREATE VIEW uncorrelated_organisational_structures as
+select distinct count(os) as c, group_concat(replace(os,'https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/','')) as oss, id, n as name,
+  `DC Organisational Structure`, `ICA Organisational Structure`, `CUK Organisational Structure`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`,
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+  union
+  select `ICA Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+  union
+  select `CUK Organisational Structure` as os, Identifier as id, Name as n  from map_data where os is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# This tries to find mismatching Typology values
+sql <<'EOF'
+CREATE VIEW uncorrelated_typologies as
+select distinct count(ty) as c, group_concat(replace(ty,'https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/','')) as tys, id, n as name,
+  `DC Typology`, `ICA Typology`, `CUK Typology`,
+  `DC Domains`, `ICA Website`, `NCBA Domain`, `CUK Website`,
+  `DC Name`,
+  `ICA Name`, `ICA Street Address`, `ICA Locality`, `ICA Territory ID`,
+  `NCBA name`,
+  `CUK Name`, `CUK Street Address`, `CUK Locality`
+  
+from (
+  select `DC Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+  union
+  select `ICA Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+  union
+  select `CUK Typology` as ty, Identifier as id, Name as n  from map_data where ty is not null
+) 
+left join map_data on id = map_data.Identifier
+group by id having c > 1
+EOF
+
+# A slimmed-down version which will hopefully load faster.
+# We keep map_data as it's still used for diagnostics and investigation.
+sql <<'EOF'
+create view map_data_lite as
+select 
+  Identifier,
+  Name,
+  Description,
+  Website,
+  `DC Domains`,
+  `Country ID`,
+  replace(map_data.`Primary Activity`, 'https://dev.lod.coop/essglobal/2.1/standard/activities-ica/', '') as `Primary Activity`,
+  replace(map_data.`Organisational Structure`, 'https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/', '') as `Organisational Structure`,
+  replace(map_data.`Typology`, 'https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/', '') as `Typology`,
+  Latitude,
+  Longitude,
+  `Geo Container Latitude`,
+  `Geo Container Longitude`,
+  `Geocoded Address`,
+  `NCBA Member`,
+  `ICA Member`,
+  `DC Registered`,
+  `CUK Member`,
+  `CUK Sector`
+from map_data
+EOF
+
+
+# Dump this map_data_lite view to OUT_CSV for use in a Mykomap.
+sql -csv -header >"$OUT_CSV" "select * from map_data_lite"
