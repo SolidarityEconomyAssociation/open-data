@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require 'se_open_data/cli'
+require 'se_open_data/config'
+require 'se_open_data/utils/password_store'
+
+module Converter
+  
+  def self.main
+    config = SeOpenData::Config.load    
+
+    # Make the target directory if needed
+    csv_dir = File.join(config.GEN_DOC_DIR, 'csv')
+    FileUtils.mkdir_p csv_dir
+
+    vars = {
+      'DC_CSV' => File.join(config.SRC_CSV_DIR, 'dc.csv'),
+      'DC_TB' => 'dc',
+      'DC_FK' => 'dcid',
+      
+      'ICA_CSV' => File.join(config.SRC_CSV_DIR, 'ica.csv'),
+      'ICA_TB' => 'ica',
+      'ICA_FK' => 'icaid',
+      
+      'NCBA_CSV' => File.join(config.SRC_CSV_DIR, 'ncba.csv'),
+      'NCBA_TB' => 'ncba',
+      'NCBA_FK' => 'ncbaid',
+      
+      'CUK_CSV' => File.join(config.SRC_CSV_DIR, 'cuk.csv'),
+      'CUK_TB' => 'cuk',
+      'CUK_FK' => 'cukid',
+      
+      'DB' => File.join(config.TOP_OUTPUT_DIR, File.basename(config.STANDARD_CSV, '.csv')+'.db'),
+      'OUT_CSV' => config.STANDARD_CSV,
+    }
+    
+    ENV.merge! vars
+
+    system './generate-db2.sh -y' or raise "error running generate-db2.sh: $?"
+    
+    return true
+  end
+  
+end
+
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Converter.main if File.absolute_path(__FILE__) == File.absolute_path($0)
+

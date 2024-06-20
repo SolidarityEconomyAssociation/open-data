@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require 'se_open_data/cli'
+require 'se_open_data/config'
+require 'se_open_data/utils/password_store'
+
+module Downloader
+  def self.main
+    config = SeOpenData::Config.load    
+
+    # Make the target directory if needed
+    FileUtils.mkdir_p config.SRC_CSV_DIR
+
+    urls = config.map.fetch_values *%w(
+      DC_URL
+      ICA_URL
+      NCBA_URL
+      CUK_URL
+    )
+
+    files = *%w(
+      dc.csv
+      ica.csv
+      ncba.csv
+      cuk.csv
+    )
+
+    urls.zip(files).each do |pair|
+      (url, file) = *pair
+      
+      # Original src csv file
+      path = File.join(config.SRC_CSV_DIR, file)
+
+      # # Download the data.
+      data = SeOpenData::Cli.fetch(url)
+      IO.write path, data
+    end
+    
+    return true
+  end
+  
+end
+
+# Run the entry point if we're invoked as a script
+# This just does the csv conversion.
+Downloader.main if File.absolute_path(__FILE__) == File.absolute_path($0)
+
