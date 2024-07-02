@@ -219,15 +219,23 @@ module Converter
           postcode ||= ext_postcode
           country = 'Great Britain'
           country_id = 'GB'
-          geocoded_addr =
-            [
-              street_address,
-              city,
-              country,
-              postcode,
-            ].keep_if{|it| it&.match(/\S/)}.join(', ')
+          geocoded_addr = nil
+          geocoded = nil
+          unless street_address.to_s == '' and postcode.to_s == ''
+            geocoded_addr =
+              [
+                street_address,
+                city,
+                postcode,
+                country,
+              ].compact
+                # try to clean up funny addresses with extra commas etc.
+                .map {|it| it.strip.gsub(/[;,](\s*[;,])*\s*/, ', ').gsub(/[\s,;]*$/, '') }
+                .select {|it| it != '' }
+                .join(", ")
           
-          geocoded = geocode.call(geocoded_addr)
+            geocoded = geocode.call(geocoded_addr)
+          end
           
           {
             id: id.delete_prefix('rec'),
