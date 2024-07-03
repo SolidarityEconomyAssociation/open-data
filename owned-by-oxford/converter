@@ -261,9 +261,9 @@ module Converter
             companies_house_number: nil,
             qualifiers: nil,
             base_membership_type: nil,
-            # these fields depend on the street address
-            latitude: (street ? latitude : ext_latitude), 
-            longitude: (street ? longitude : ext_longitude),
+            # Use lat/lng fields if set, else use the external initiative lat/lng fields
+            latitude: (latitude.to_s == '' ? ext_latitude : latitude),
+            longitude: (longitude.to_s == '' ? ext_longitude : longitude),
             geocontainer: geocoded&.osm_uri,
             geocontainer_lat: geocoded&.lat,
             geocontainer_lon: geocoded&.lng,
