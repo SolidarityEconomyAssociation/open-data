@@ -1,0 +1,109 @@
+---
+id: :ficu
+name: FICU
+version: 20240929
+primary_key:
+- :charter_number
+comment: 
+fields:
+- id: :charter_number
+  header: Charter number
+  desc: ''
+  comment: ''
+- id: :year_and_quarter
+  header: Year and quarter
+  desc: ''
+  comment: ''
+- id: :year
+  header: Year
+  desc: ''
+  comment: ''
+- id: :quarter
+  header: Quarter
+  desc: ''
+  comment: ''
+- id: :credit_union_name
+  header: Credit Union name
+  desc: ''
+  comment: ''
+- id: :street
+  header: Street
+  desc: ''
+  comment: ''
+- id: :city
+  header: City
+  desc: ''
+  comment: ''
+- id: :state
+  header: State
+  desc: ''
+  comment: ''
+- id: :zip_code
+  header: Zip code
+  desc: ''
+  comment: ''
+- id: :credit_union_type
+  header: Credit Union type
+  desc: ''
+  comment: ''
+- id: :ncua_region
+  header: NCUA region
+  desc: ''
+  comment: ''
+- id: :low_income_designation
+  header: Low-income designation
+  desc: ''
+  comment: ''
+- id: :members
+  header: Members
+  desc: ''
+  comment: ''
+- id: :total_assets
+  header: Total assets
+  desc: ''
+  comment: ''
+- id: :total_loans
+  header: Total loans
+  desc: ''
+  comment: ''
+- id: :total_deposits
+  header: Total deposits
+  desc: ''
+  comment: ''
+- id: :return_on_average_assets
+  header: Return on average assets
+  desc: ''
+  comment: ''
+- id: :net_worth_ratio
+  header: Net worth ratio
+  desc: ''
+  comment: ''
+- id: :loan_to_share_ratio
+  header: Loan-to-share ratio
+  desc: ''
+  comment: ''
+- id: :total_deposits_growth
+  header: Total deposits growth
+  desc: ''
+  comment: ''
+- id: :total_loans_growth
+  header: Total loans growth
+  desc: ''
+  comment: ''
+- id: :total_assets_growth
+  header: Total assets growth
+  desc: ''
+  comment: ''
+- id: :members_growth
+  header: Members growth
+  desc: ''
+  comment: ''
+- id: :net_worth_growth
+  header: Net worth growth
+  desc: ''
+  comment: ''
+- id: :ncua_internal_id
+  header: NCUA internal ID
+  desc: ''
+  comment: ''
+
