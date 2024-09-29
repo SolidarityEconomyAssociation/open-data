@@ -1,0 +1,36 @@
+---
+id: :fca
+name: FCA
+version: 20240929
+primary_key:
+- :uninum
+comment: 
+fields:
+- id: :uninum
+  header: UNINUM
+  desc: ''
+  comment: ''
+- id: :institutionname
+  header: InstitutionName
+  desc: ''
+  comment: ''
+- id: :district
+  header: District
+  desc: ''
+  comment: ''
+- id: :hq_state
+  header: HQ State
+  desc: ''
+  comment: ''
+- id: :ceo
+  header: CEO
+  desc: ''
+  comment: ''
+- id: :cio
+  header: CIO
+  desc: ''
+  comment: ''
+- id: :rssd
+  header: RSSD
+  desc: ''
+  comment: ''
