@@ -108,7 +108,7 @@ module Converter
             postcode: zip,
             country_id: 'US',
             territory_id: nil,
-            homepage: homepage,
+            homepage: Types.normalise_url(homepage, default: nil, full_url: true),
             phone: telephone,
             email: email,
             twitter: nil,
