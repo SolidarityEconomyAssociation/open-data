@@ -1,0 +1,76 @@
+---
+id: :usda
+name: USDA
+version: 20240929
+primary_key:
+- :cooperative_name
+comment: 
+fields:  
+- id: :cooperative_name
+  header: Cooperative Name
+  desc: ''
+  comment: ''
+- id: :street_address
+  header: Street Address
+  desc: ''
+  comment: ''
+- id: :city
+  header: City
+  desc: ''
+  comment: ''
+- id: :state
+  header: State
+  desc: ''
+  comment: ''
+- id: :zip
+  header: Zip
+  desc: ''
+  comment: ''
+- id: :contact_name
+  header: Contact Name
+  desc: ''
+  comment: ''
+- id: :title
+  header: Title
+  desc: ''
+  comment: ''
+- id: :email
+  header: Email
+  desc: ''
+  comment: ''
+- id: :homepage
+  header: Homepage
+  desc: ''
+  comment: ''
+- id: :telephone
+  header: Telphone
+  desc: ''
+  comment: ''
+- id: :fax
+  header: Fax
+  desc: ''
+  comment: ''
+- id: :type_of_cooperative
+  header: Type of Cooperative (Function)
+  desc: ''
+  comment: ''
+- id: :products
+  header: Products
+  desc: ''
+  comment: ''
+- id: :locations_operated
+  header: Locations Operated
+  desc: ''
+  comment: ''
+- id: :number_of_states
+  header: Number of States
+  desc: ''
+  comment: ''
+- id: :usdacode1
+  header: USDAcode1
+  desc: ''
+  comment: ''
+- id: :usdacode2
+  header: USDAcode2
+  desc: ''
+  comment: ''
