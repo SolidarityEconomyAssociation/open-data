@@ -264,7 +264,7 @@ module Converter
     converter.convert File.open(original_data), config.STANDARD_CSV
 
   rescue => e
-    raise "error transforming #{original_data} into #{output_csv}: #{e.message}"
+    raise "error transforming #{original_data} into #{config.STANDARD_CSV}: #{e.message}"
   end
 
   private
