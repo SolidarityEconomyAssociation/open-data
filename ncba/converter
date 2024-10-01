@@ -184,7 +184,7 @@ module Converter
             postcode: postcode,
             country_id: country_id,
             territory_id: nil,
-            homepage: nil,
+            homepage: Types.normalise_url(company_domain, default: nil, full_url: true),
             phone: nil,
             email: nil,
             twitter: nil,
