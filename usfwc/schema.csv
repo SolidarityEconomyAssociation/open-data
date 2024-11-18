@@ -1,0 +1,15 @@
+id,header,description,comment,primary
+name,Name,"","",FALSE
+identifier,Identifier,"","",FALSE
+stripped_id,Stripped Id,"","",TRUE
+website,Website,"","",FALSE
+domain,Domain,"","",FALSE
+latitude,Latitude,"","",FALSE
+longitude,Longitude,"","",FALSE
+postcode,Postcode,"","",FALSE
+city,City,"","",FALSE
+state_region,State/Region,"","",FALSE
+country_id,Country ID,"","",FALSE
+organisational_structure,Organisational Structure,"","",FALSE
+base_membership_type,Base Membership Type,"","",FALSE
+activities_ica,Activities ICA,"","",FALSE

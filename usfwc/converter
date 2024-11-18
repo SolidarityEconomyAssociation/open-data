@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+#
+# This script controls a pipeline of processes that convert the original
+# CSV data into the se_open_data standard, one step at a time.
+#
+# We aim to put only logic specific to this project in this file, and
+# keep it brief and clear. Shared logic should go into the {SeOpenData}
+# library.
+#
+# This script can be invoked directly, or as part of the {SeOpenData}
+# library's command-line API {SeOpenData::Cli}. For example, this
+# just runs the conversion step (or specifically: a script in the
+# current directory called `converter`):
+#
+#     seod convert 
+#
+# And this runs the complete chain of commands generating and
+# deploying the linked data for this project, as configured by
+# `settings/config.txt`:
+#
+#     seod run-all
+#
+# See the documentation on [`seod`]({SeOpenData::Cli}) for more
+# information.
+
+require 'se_open_data/setup'
+require 'se_open_data/csv/schema/types'
+require 'normalize_country'
+
+# A class which defines callback methods #on_header, #on_row, and #on_end, 
+# that are called during the conversion process.
+class Observer < SeOpenData::CSV::Schema::Observer
+  Types = SeOpenData::CSV::Schema::Types
+
+  # Set up anything persistent you need here  
+  def initialize(setup:)
+    super()
+    @geocoder = setup.geocoder
+    vocabs_file = "vocabs.json"
+    @vocabs = JSON.parse(IO.read(vocabs_file))["vocabs"]
+    raise "No vocab element in #{vocabs_file}" unless @vocabs
+  end
+
+  # Look up a vocab description
+  def term(base, desc)
+    return nil if desc == '' or desc == nil
+    vocab = @vocabs[base.to_s]
+    raise "unknown vocab base '#{base}'" unless vocab
+    term = Types.identify_vocab(desc, vocab, lang: "en")
+    raise "unrecognised vocab description text: #{desc}" unless term
+    return term
+  end
+
+  def url(text)
+    return nil if text == '' or text == nil
+    Types.normalise_url(text, throw: true)
+  end
+  
+  # Called with an array of header fields, and a field_map, which
+  # is an array of integers denoting the schema index for each header
+  def on_header(header:, field_map:)
+    @ix = 0
+  end
+
+  def number(text)
+    return nil if text == '' or text == nil
+    text.to_i
+  end
+  
+  def on_row(
+        # These parameters match source schema field ids
+        name:,
+        identifier:,
+        stripped_id:,
+        website:,
+        domain:,
+        latitude:,
+        longitude:,
+        postcode:,
+        city:,
+        state_region:,
+        country_id:,
+        organisational_structure:,
+        base_membership_type:,
+        activities_ica:
+      )
+
+    country = NormalizeCountry(country, to: :short)
+    addr = Types.normalise_addr(city, state_region, postcode, country)
+    warn "row #{stripped_id} #{addr}"
+
+    geocoded = @geocoder.call(addr)
+    @ix += 1
+
+    # Replace these with the actual values to write.
+    # You may yield zero or many times if desired, and the equivalent number
+    # of rows will be emitted.
+    yield id: stripped_id,
+          name: name,
+          description: nil,
+          organisational_structure: term("os", organisational_structure),
+          primary_activity: term("aci", activities_ica),
+          activities: nil,
+          street_address: nil,
+          locality: city,
+          region: state_region,
+          postcode: postcode,
+          country_id: country_id,
+          territory_id: nil,
+          homepage: url(website),
+          phone: nil,
+          email: nil,
+          twitter: nil,
+          facebook: nil,
+          companies_house_number: nil,
+          qualifiers: nil,
+          base_membership_type: term("bmt", base_membership_type),
+          latitude: number(latitude),
+          longitude: number(longitude),
+          geocontainer: geocoded&.osm_uri,
+          geocontainer_lat: geocoded&.lat,
+          geocontainer_lon: geocoded&.lng,
+          geocontainer_confidence: geocoded&.confidence,
+          geocoded_addr: addr,
+          domain: domain
+      end
+
+  # Called after all the rows have been processed
+  def on_end
+  end
+
+end
+
+SeOpenData::Setup
+  .new
+  .convert_with(observer: Observer)
