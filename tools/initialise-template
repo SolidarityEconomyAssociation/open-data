@@ -1,0 +1,61 @@
+#!/bin/env ruby
+require 'csv'
+
+raise 'please supply a label as first argument' unless label = ARGV[0]
+placeholder = 'ncba'
+original_csv = "original-data/original.csv"
+from_schema = "schema.csv"
+
+
+puts `rm -rf ~/.bundle/cache/git; bundle update`
+
+Dir.glob('./**').each do |path|
+  next unless File.file? path
+  case(path)
+  when /~$/
+    warn "removing "+path
+    File.unlink path
+    next
+  when __FILE__, './vocabs.json', /Gemfile.*/, /[.](csv|yaml|yml)$/
+    warn "skipping "+path
+    next
+  end
+
+  warn "substituting #{placeholder} -> #{label} in "+path
+  IO.write(
+    path,
+    IO.read(path)
+      .gsub(placeholder, label.downcase)
+      .gsub(placeholder.upcase, label.upcase)
+  )
+end
+
+warn "reading headers"
+headers = CSV.open(original_csv).first
+
+
+warn "write input schema file"
+CSV.open(from_schema, "w") do |csv|
+  csv << %w(id header description comment primary)
+  headers.each do |header|
+    id = header.downcase.gsub(/\W+/, '_')
+    csv << [id, header, '', '', "FALSE"]
+  end
+end
+
+warn "write output schema file"
+puts `bundle exec schema2schema --from standard output.csv`
+
+warn "writing stats in stats.csv"
+puts `csvstat #{original_csv} >stats.csv`
+
+
+# generating stats
+
+CSV.open(original_csv, headers: true).each do |row|
+  
+end
+
+warn "generate a converter"
+puts `bundle exec gen_converter converter`
+
