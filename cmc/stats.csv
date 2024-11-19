@@ -1,0 +1,114 @@
+  1. "Identifier"
+
+	Type of data:          Number
+	Contains null values:  False
+	Unique values:         6589
+	Smallest value:        1
+	Largest value:         6,589
+	Sum:                   21,710,755
+	Mean:                  3,295
+	Median:                3,295
+	StDev:                 1,902.225
+	Most common values:    1 (1x)
+	                       2 (1x)
+	                       3 (1x)
+	                       4 (1x)
+	                       5 (1x)
+
+  2. "Organization Name"
+
+	Type of data:          Text
+	Contains null values:  False
+	Unique values:         6568
+	Longest value:         105 characters
+	Most common values:    Yeast Van Brewery District Cooperative (4x)
+	                       Serenity Housing Co-op (3x)
+	                       Alethea Global Consulting Cooperative (3x)
+	                       Rockfish Climbing Co-op (2x)
+	                       Cowichan Co-operative Connections Association (2x)
+
+  3. "Street Address"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         6391
+	Longest value:         70 characters
+	Most common values:    None (122x)
+	                       General Delivery (9x)
+	                       RR 1 (7x)
+	                       PO Box 70 (5x)
+	                       PO Box 29 (4x)
+
+  4. "City"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         1842
+	Longest value:         35 characters
+	Most common values:    Montréal (669x)
+	                       Vancouver (231x)
+	                       Québec (217x)
+	                       Toronto (214x)
+	                       Winnipeg (108x)
+
+  5. "State/Region/Province"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         14
+	Longest value:         2 characters
+	Most common values:    QC (2649x)
+	                       ON (1225x)
+	                       BC (668x)
+	                       AB (613x)
+	                       SK (518x)
+
+  6. "Website"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         4117
+	Longest value:         255 characters
+	Most common values:    None (2439x)
+	                       http://www.lifelease.ca (6x)
+	                       http://sam.mb.ca/properties.html (4x)
+	                       https://arctic-coop.com/ (4x)
+	                       https://nsfarmloan.ca/communitypastures/ (3x)
+
+  7. "Domain"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         186
+	Longest value:         32 characters
+	Most common values:    None (6348x)
+	                       cooperativehabitation.coop (15x)
+	                       fechimm.coop (13x)
+	                       cdrq.coop (11x)
+	                       fqcf.coop (8x)
+
+  8. "Activities"
+
+	Type of data:          Text
+	Contains null values:  False
+	Unique values:         23
+	Longest value:         44 characters
+	Most common values:    Housing, Rental and Leasing (53) (2351x)
+	                       Retail Sales(44/45) (678x)
+	                       Financial and insurance (52) (629x)
+	                       Agriculture (11) (422x)
+	                       Public Utilities and Energy Generation (22) (330x)
+
+  9. "Base Membership Type"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         11
+	Longest value:         32 characters
+	Most common values:    Consumer (4871x)
+	                       Multi-stakeholder (593x)
+	                       Producer (519x)
+	                       Worker (338x)
+	                       Mutual (82x)
+
+Row count: 6589

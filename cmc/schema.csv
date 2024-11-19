@@ -1,0 +1,10 @@
+id,header,description,comment,primary
+identifier,Identifier,"","",TRUE
+organization_name,Organization Name,"","",FALSE
+street_address,Street Address,"","",FALSE
+city,City,"","",FALSE
+state_region_province,State/Region/Province,"","",FALSE
+website,Website,"","",FALSE
+domain,Domain,"","",FALSE
+activities,Activities,"","",FALSE
+base_membership_type,Base Membership Type,"","",FALSE
