@@ -1,0 +1,7 @@
+id,header,description,comment,primary
+state,STATE,"","",FALSE
+district,DISTRICT,"","",FALSE
+address1,ADDRESS1,"","",FALSE
+address2,ADDRESS2,"","",FALSE
+member_no,MEMBER_NO,"","",TRUE
+society_name,SOCIETY_NAME,"","",FALSE

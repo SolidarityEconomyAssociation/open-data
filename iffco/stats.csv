@@ -1,0 +1,78 @@
+  1. "STATE"
+
+	Type of data:          Text
+	Contains null values:  False
+	Unique values:         33
+	Longest value:         17 characters
+	Most common values:    UTTAR PRADESH (5258x)
+	                       GUJARAT (4429x)
+	                       RAJASTHAN (3803x)
+	                       MADHYA PRADESH (3024x)
+	                       PUNJAB (2938x)
+
+  2. "DISTRICT"
+
+	Type of data:          Text
+	Contains null values:  False
+	Unique values:         557
+	Longest value:         24 characters
+	Most common values:    LUDHIANA (376x)
+	                       AMRELI (334x)
+	                       MAHESANA (333x)
+	                       SALEM (330x)
+	                       RAJKOT (314x)
+
+  3. "ADDRESS1"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         34874
+	Longest value:         60 characters
+	Most common values:    None (16x)
+	                       MAIN ROAD (12x)
+	                       MARKET YARD, (10x)
+	                       MAIN ROAD, (9x)
+	                       TK BHYAWARA (7x)
+
+  4. "ADDRESS2"
+
+	Type of data:          Text
+	Contains null values:  True (excluded from calculations)
+	Unique values:         11917
+	Longest value:         60 characters
+	Most common values:    None (5052x)
+	                       DT. KANGRA. (160x)
+	                       DT.GUNA (104x)
+	                       DT. JAJPUR. (97x)
+	                       DT.JAIPUR (94x)
+
+  5. "MEMBER_NO"
+
+	Type of data:          Number
+	Contains null values:  False
+	Unique values:         35623
+	Smallest value:        1
+	Largest value:         45,145
+	Sum:                   856,074,376
+	Mean:                  24,031.507
+	Median:                24,207
+	StDev:                 12,800.69
+	Most common values:    42,882 (1x)
+	                       36,734 (1x)
+	                       777 (1x)
+	                       43,894 (1x)
+	                       43,891 (1x)
+
+  6. "SOCIETY_NAME"
+
+	Type of data:          Text
+	Contains null values:  False
+	Unique values:         35512
+	Longest value:         79 characters
+	Most common values:    JAGDISHPUR SADHAN SAHAKARI SAMITI LTD., (4x)
+	                       SAMADHIYALA SEVA SAH MANDALI LTD (3x)
+	                       LAMBA GRAM SEWA SAHAKARI SAMITI LTD. (3x)
+	                       KOTHAKOTA PRIMARY AGRICULTURE COOP. SOCIETY LTD. (2x)
+	                       BICHHIA GRAMIN SEWA SAH.SANSTHA MARYADIT (2x)
+
+Row count: 35623
