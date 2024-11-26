@@ -75,7 +75,7 @@ class Observer < SeOpenData::CSV::Schema::Observer
           name: society_name,
           description: nil,
           organisational_structure: nil,
-          primary_activity: nil,
+          primary_activity: 'ICA10', # Agriculture
           activities: nil,
           street_address: street_address,
           locality: district,
