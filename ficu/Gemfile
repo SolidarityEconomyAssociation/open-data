@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem "se_open_data", :github => "DigitalCommons/se-open-data", :branch => "v2.2.4"
+gem "se_open_data", :github => "DigitalCommons/se-open-data", :tag => "v2.3.0"
 gem "rdf-rdfxml", "~> 3.2", ">= 3.2.1"
 gem "stringio", "< 3.1.0" # Workaround for a 3.1.0 issue
 # The workaround is for a problem similar to this, i.e. RubyGems indexing problems:
